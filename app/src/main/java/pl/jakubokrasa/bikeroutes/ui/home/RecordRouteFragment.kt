@@ -12,15 +12,14 @@ import pl.jakubokrasa.bikeroutes.R
 
 class RecordRouteFragment : Fragment() {
 
-    private lateinit var homeViewModel: HomeViewModel
+    private lateinit var recordRouteViewModel: RecordRouteViewModel
 
     override fun onCreateView(
             inflater: LayoutInflater,
             container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
-        homeViewModel =
-                ViewModelProvider(this).get(HomeViewModel::class.java)
+        recordRouteViewModel = ViewModelProvider(this).get(RecordRouteViewModel::class.java)
         val root = inflater.inflate(R.layout.fragment_record_route, container, false)
         val textView: TextView = root.findViewById(R.id.tv_record_route)
         homeViewModel.text.observe(viewLifecycleOwner, Observer {
