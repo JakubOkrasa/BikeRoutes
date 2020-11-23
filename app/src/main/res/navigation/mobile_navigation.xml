@@ -3,13 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/navigation_home">
+    app:startDestination="@+id/nav_record_route">
 
     <fragment
-        android:id="@+id/navigation_home"
-        android:name="pl.jakubokrasa.bikeroutes.ui.home.HomeFragment"
-        android:label="@string/title_home"
-        tools:layout="@layout/fragment_home" />
+        android:id="@+id/nav_record_route"
+        android:name="pl.jakubokrasa.bikeroutes.ui.home.RecordRouteFragment"
+        android:label="@string/title_record_route"
+        tools:layout="@layout/fragment_record_route" />
 
     <fragment
         android:id="@+id/navigation_dashboard"
