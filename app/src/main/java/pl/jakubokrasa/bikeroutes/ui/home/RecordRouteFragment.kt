@@ -21,10 +21,10 @@ class RecordRouteFragment : Fragment() {
     ): View? {
         recordRouteViewModel = ViewModelProvider(this).get(RecordRouteViewModel::class.java)
         val root = inflater.inflate(R.layout.fragment_record_route, container, false)
-        val textView: TextView = root.findViewById(R.id.tv_record_route)
-        homeViewModel.text.observe(viewLifecycleOwner, Observer {
-            textView.text = it
-        })
+//        val textView: TextView = root.findViewById(R.id.tv_record_route)
+//        recordRouteViewModel.text.observe(viewLifecycleOwner, Observer {
+//            textView.text = it
+//        })
         return root
     }
 }
