@@ -8,7 +8,8 @@
     <org.osmdroid.views.MapView
         android:id="@+id/mv_record_route"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        tilesource="Mapnik">
 
     </org.osmdroid.views.MapView>
 </androidx.constraintlayout.widget.ConstraintLayout>
