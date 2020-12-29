@@ -1,4 +1,4 @@
-package pl.jakubokrasa.bikeroutes.ui.home
+package pl.jakubokrasa.bikeroutes.features.routerecording.ui
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
