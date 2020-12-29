@@ -1,4 +1,4 @@
-package pl.jakubokrasa.bikeroutes.ui.notifications
+package pl.jakubokrasa.bikeroutes.temporary.ui.notifications
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
