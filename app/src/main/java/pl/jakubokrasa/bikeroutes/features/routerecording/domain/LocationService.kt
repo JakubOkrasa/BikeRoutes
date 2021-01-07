@@ -13,12 +13,17 @@ import com.google.android.gms.location.*
 import org.koin.core.component.KoinApiExtension
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import org.osmdroid.util.GeoPoint
+import org.osmdroid.views.overlay.Polyline
 import pl.jakubokrasa.bikeroutes.MainActivity
 import pl.jakubokrasa.bikeroutes.R
 import pl.jakubokrasa.bikeroutes.core.util.LocationUtils
+import pl.jakubokrasa.bikeroutes.features.routerecording.ui.RecordRouteFragment
+import pl.jakubokrasa.bikeroutes.features.routerecording.ui.RecordRouteFragment.Companion.SEND_LOCATION_ACTION
 
 @KoinApiExtension
 class LocationService : Service(), KoinComponent {
+//    private val track = Polyline()
     private val mLocationRequest: LocationRequest by inject()
     private val mFusedLocationClient: FusedLocationProviderClient by inject()
     private val locUtils: LocationUtils by inject()
@@ -81,17 +86,19 @@ class LocationService : Service(), KoinComponent {
             .setTicker("Location Service started (ticker)").build()
 
         startForeground(SERVICE_NOTIFICATION_ID, notification) //todo w przykladzie to jest w onUnBind (wtedy notifikacja jest widoczna tylko gdy aplikacja jest zminimalizowana
-
+        requestLocationUpdates()
         return START_NOT_STICKY
     }
 
     override fun onDestroy() {
         Log.d(LOG_TAG, "onDestroy")
-        mServiceHandler.removeCallbacksAndMessages(null) //todo ?? why without super.onDestroy
+        mServiceHandler.removeCallbacksAndMessages(null)
+        super.onDestroy()
     }
 
     fun requestLocationUpdates() {
         Log.i(LOG_TAG, "Requesting location updates")
+        Log.d(LOG_TAG, "service request updates Thread: ${Thread.currentThread().name}")
         locUtils.setRequestingLocationUpdates(this, true)
         locationCallbackInit()
         try {
@@ -118,9 +125,11 @@ class LocationService : Service(), KoinComponent {
         }
     }
 
-    private fun onNewLocation(location: Location) {
-        Log.i(LOG_TAG, "New location: $location")
-        mLocation = location
+    private fun onNewLocation(loc: Location) {
+//        Log.i(LOG_TAG, "New location: $loc")
+        Log.d(LOG_TAG, "service Thread: ${Thread.currentThread().name}")
+        mLocation = loc
+        recordCurrentLocationInTrack(GeoPoint(loc.latitude, loc.longitude))
 
         // Notify anyone listening for broadcasts about the new location.
 //        val intent =
@@ -133,6 +142,19 @@ class LocationService : Service(), KoinComponent {
 //            mNotificationManager.notify(NOTIFICATION_ID, getNotification())
 //        }
     }
+
+    private fun recordCurrentLocationInTrack(newLocation: GeoPoint) {
+        Log.i(LOG_TAG, "POINT: lat: ${newLocation.latitude}, lng: ${newLocation.longitude}")
+
+        //send update UI broadcast
+        val newLocIntent = Intent()
+        newLocIntent.action = SEND_LOCATION_ACTION
+        newLocIntent.putExtra("EXTRA_LAT", newLocation.latitude)
+        newLocIntent.putExtra("EXTRA_LNG", newLocation.longitude)
+        sendBroadcast(newLocIntent)
+    }
+
+
 
     private fun removeLocationUpdates() {
         Log.i(LOG_TAG, "Removing location updates");
@@ -151,8 +173,6 @@ class LocationService : Service(), KoinComponent {
     companion object {
         const val CHANNEL_DEFAULT_IMPORTANCE = "service_notification_channel"
         const val SERVICE_NOTIFICATION_ID = 1
-        const val UPDATE_INTERVAL_IN_MILLISECONDS = 10000L;
-        const val FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS = UPDATE_INTERVAL_IN_MILLISECONDS / 2
         val LOG_TAG: String = LocationService::class.java.simpleName
 
 

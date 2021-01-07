@@ -9,20 +9,17 @@ import pl.jakubokrasa.bikeroutes.core.util.LocationUtils
 import pl.jakubokrasa.bikeroutes.features.routerecording.domain.LocationService
 
 
-@OptIn(KoinApiExtension::class)
 val locationModule = module {
     single { LocationServices.getFusedLocationProviderClient(androidContext());}
     single {LocationUtils(get(), get())}
-    single {LocationService()}
     single { createLocationRequest() }
-
 }
 
-@KoinApiExtension
-private fun createLocationRequest(): LocationRequest {
-    val locationRequest = LocationRequest()
-    locationRequest.interval = LocationService.UPDATE_INTERVAL_IN_MILLISECONDS
-    locationRequest.fastestInterval = LocationService.FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS
-    locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-    return locationRequest
-}
+private fun createLocationRequest() =
+    LocationRequest()
+        .setInterval(UPDATE_INTERVAL_IN_MILLISECONDS)
+        .setFastestInterval(FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS)
+        .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+
+const val UPDATE_INTERVAL_IN_MILLISECONDS = 1_000L;
+const val FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS = UPDATE_INTERVAL_IN_MILLISECONDS / 2
