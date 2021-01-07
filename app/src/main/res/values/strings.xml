@@ -3,4 +3,5 @@
     <string name="title_record_route">Record a route</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
+    <string name="location_service_notif_title">Location updates service</string>
 </resources>
