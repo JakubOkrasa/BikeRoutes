@@ -57,12 +57,27 @@ class LocationService : Service(), KoinComponent {
         mLocationCallback = object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult) {
                 super.onLocationResult(locationResult)
-                onNewLocation(locationResult.lastLocation)
+                val location = locationResult.lastLocation
+//                var lastTime = SystemClock.elapsedRealtimeNanos()
+                val accuracy = location.accuracy
+                Log.d(LOG_TAG, "accuracy: $accuracy")
+//                location.takeIf { accuracy<50 }
+////                    ?.let {
+//                        if (accuracy<15||lastTime-location.elapsedRealtimeNanos>5_000_000_000) {
+//                            lastTime = location.elapsedRealtimeNanos
+                            onNewLocation((location))
+
+
+//                        }
+//                    }
+//                if(location.accuracy>15) { return }
+//                onNewLocation(locationResult.lastLocation)
+
+
+
             }
         }
     }
-
-
 
     private fun createNotificationChannel() {
         val notifyManager =
