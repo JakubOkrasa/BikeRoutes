@@ -23,6 +23,16 @@
         app:layout_constraintLeft_toLeftOf="parent"
         android:text="start service"
         />
+
+    <Button
+        android:id="@+id/bt_stop_recording"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:text="stop service"
+        android:visibility="gone"
+        />
     <TextView
         android:id="@+id/tv_accuracy"
         android:layout_width="wrap_content"

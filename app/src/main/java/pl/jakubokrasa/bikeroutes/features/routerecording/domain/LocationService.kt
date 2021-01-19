@@ -114,10 +114,11 @@ class LocationService : Service(), KoinComponent {
     override fun onDestroy() {
         Log.d(LOG_TAG, "onDestroy")
         mServiceHandler.removeCallbacksAndMessages(null)
+        removeLocationUpdates()
         super.onDestroy()
     }
 
-    fun requestLocationUpdates() {
+    private fun requestLocationUpdates() {
         Log.i(LOG_TAG, "Requesting location updates")
         Log.d(LOG_TAG, "service request updates Thread: ${Thread.currentThread().name}")
         locUtils.setRequestingLocationUpdates(this, true)
@@ -167,18 +168,16 @@ class LocationService : Service(), KoinComponent {
 
 
     private fun removeLocationUpdates() {
-        Log.i(LOG_TAG, "Removing location updates");
+        Log.i(LOG_TAG, "Removing location updates")
         try {
-            mFusedLocationClient.removeLocationUpdates(mLocationCallback);
-            locUtils.setRequestingLocationUpdates(this, false);
-            stopSelf();
+            mFusedLocationClient.removeLocationUpdates(mLocationCallback)
+            locUtils.setRequestingLocationUpdates(this, false)
+            stopSelf()
         } catch (unlikely: SecurityException) {
-            locUtils.setRequestingLocationUpdates(this, true);
-            Log.e(LOG_TAG, "Lost location permission. Could not remove updates. $unlikely");
+            locUtils.setRequestingLocationUpdates(this, true)
+            Log.e(LOG_TAG, "Lost location permission. Could not remove updates. $unlikely")
         }
     }
-
-
 
     companion object {
         const val CHANNEL_DEFAULT_IMPORTANCE = "service_notification_channel"

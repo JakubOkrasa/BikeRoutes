@@ -8,6 +8,7 @@ import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.location.Location
+import android.opengl.Visibility
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -65,6 +66,7 @@ class RecordRouteFragment : Fragment(), KoinComponent
         requestPermissionsIfNecessary(OSM_PERMISSIONS)
 
         val recordTrackBt = root.findViewById<Button>(R.id.bt_record)
+        val stopRecordingBt = root.findViewById<Button>(R.id.bt_stop_recording)
         recordTrackBt.setOnClickListener() {
 
             if (!arePermissionGranted(OSM_PERMISSIONS)) {
@@ -73,6 +75,14 @@ class RecordRouteFragment : Fragment(), KoinComponent
                 requireActivity().startService(Intent(context, LocationService::class.java))
 //                requireActivity().stopService(Intent(context, LocationService::class.java))
             }
+            recordTrackBt.visibility = View.GONE
+            stopRecordingBt.visibility = View.VISIBLE
+        }
+
+        stopRecordingBt.setOnClickListener() {
+            stopLocationService()
+            stopRecordingBt.visibility = View.GONE
+            recordTrackBt.visibility = View.VISIBLE
         }
 
         accuracyTv = root.findViewById(R.id.tv_accuracy)
@@ -183,6 +193,10 @@ class RecordRouteFragment : Fragment(), KoinComponent
         map.overlayManager.add(track)
         map.invalidate()
 //        Log.d(LOG_TAG, "Thread: ${Thread.currentThread().name}")
+    }
+
+    private fun stopLocationService() {
+        requireActivity().stopService(Intent(requireContext(), LocationService::class.java))
     }
 
 
