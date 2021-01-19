@@ -9,6 +9,7 @@ import android.location.Location
 import android.os.*
 import android.util.Log
 import androidx.core.app.NotificationCompat
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.google.android.gms.location.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -30,6 +31,7 @@ class LocationService : Service(), KoinComponent {
     private val mLocationRequest: LocationRequest by inject()
     private val mFusedLocationClient: FusedLocationProviderClient by inject()
     private val locUtils: LocationUtils by inject()
+    private val mLocalBR: LocalBroadcastManager by inject()
     private lateinit var mLocationCallback: LocationCallback
     private lateinit var mServiceHandler: Handler
     private lateinit var mNotificationManager: NotificationManager
@@ -156,7 +158,7 @@ class LocationService : Service(), KoinComponent {
         newLocIntent.putExtra("EXTRA_LAT", loc.latitude)
         newLocIntent.putExtra("EXTRA_LNG", loc.longitude)
         newLocIntent.putExtra("EXTRA_ACC", loc.accuracy)
-        sendBroadcast(newLocIntent)
+        mLocalBR.sendBroadcast(newLocIntent)
 
     }
 

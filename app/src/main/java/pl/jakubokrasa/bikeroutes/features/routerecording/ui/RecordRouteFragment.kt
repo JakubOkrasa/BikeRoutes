@@ -8,7 +8,6 @@ import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,8 +17,11 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.preference.PreferenceManager.getDefaultSharedPreferences
 import org.koin.core.component.KoinApiExtension
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
@@ -30,11 +32,11 @@ import org.osmdroid.views.overlay.Polyline
 import pl.jakubokrasa.bikeroutes.BuildConfig
 import pl.jakubokrasa.bikeroutes.R
 import pl.jakubokrasa.bikeroutes.features.routerecording.domain.LocationService
-import java.util.*
 import kotlin.collections.ArrayList
 
 
-class RecordRouteFragment : Fragment()
+@KoinApiExtension
+class RecordRouteFragment : Fragment(), KoinComponent
 {
 
     private lateinit var recordRouteViewModel: RecordRouteViewModel
@@ -44,8 +46,8 @@ class RecordRouteFragment : Fragment()
     private var trackPointsList: ArrayList<GeoPoint> = ArrayList()
     private lateinit var accuracyTv: TextView
     private lateinit var lastAccuracyTv : TextView
+    private val mLocalBR: LocalBroadcastManager by inject()
 
-    @KoinApiExtension
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
@@ -85,12 +87,12 @@ class RecordRouteFragment : Fragment()
     override fun onStart() {
         super.onStart()
         val locFilter = IntentFilter(SEND_LOCATION_ACTION)
-        requireActivity().registerReceiver(tempReceiver, locFilter)
+        mLocalBR.registerReceiver(locationServiceReceiver, locFilter)
     }
 
     override fun onStop() {
         super.onStop()
-        requireActivity().unregisterReceiver(tempReceiver)
+        mLocalBR.unregisterReceiver(locationServiceReceiver)
     }
 
 //    private fun setCurrentLocation() {
@@ -177,7 +179,7 @@ class RecordRouteFragment : Fragment()
 //
 //    }
 
-    private val tempReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+    private val locationServiceReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             val lat = intent!!.getDoubleExtra("EXTRA_LAT", -1.0)
             val lng = intent.getDoubleExtra("EXTRA_LNG", -1.0)
