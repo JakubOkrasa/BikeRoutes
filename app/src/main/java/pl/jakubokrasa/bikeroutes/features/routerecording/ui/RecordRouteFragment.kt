@@ -44,6 +44,7 @@ class RecordRouteFragment : Fragment()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
+        requireActivity().window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         requireActivity().startService(Intent(context, LocationService::class.java))
         recordRouteViewModel = ViewModelProvider(this).get(RecordRouteViewModel::class.java)
         Configuration.getInstance().load(context, getDefaultSharedPreferences(context)) //osmdroid config
