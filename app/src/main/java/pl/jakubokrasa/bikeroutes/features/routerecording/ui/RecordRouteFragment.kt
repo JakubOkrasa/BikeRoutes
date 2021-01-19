@@ -64,9 +64,6 @@ class RecordRouteFragment : Fragment(), KoinComponent
         map.setTileSource(TileSourceFactory.MAPNIK)
         requestPermissionsIfNecessary(OSM_PERMISSIONS)
 
-//        requestLocationUpdatesIfPermsAreGranted()
-//        setCurrentLocation()
-
         val recordTrackBt = root.findViewById<Button>(R.id.bt_record)
         recordTrackBt.setOnClickListener() {
 
@@ -165,24 +162,6 @@ class RecordRouteFragment : Fragment(), KoinComponent
     val mIgnorer = NetworkLocationIgnorer()
     var mLastTime: Long = 0 // milliseconds
 
-//    override fun onLocationChanged(location: Location) {
-//        val currentTime = System.currentTimeMillis()
-//        if (mIgnorer.shouldIgnore(location.provider, currentTime)) return
-//        val dT: Double = currentTime - mLastTime.toDouble()
-//        if (dT < 100.0) {
-//            //Toast.makeText(this, pLoc.getProvider()+" dT="+dT, Toast.LENGTH_SHORT).show();
-//            return
-//        }
-//        mLastTime = currentTime
-//
-//        Log.d(LOG_TAG, "altitude: ${location.altitude}")
-//        val lat = location.latitude
-//        val lng = location.longitude
-//        recordCurrentLocationInTrack(GeoPoint(lat, lng))
-//
-//
-//    }
-
     private val locationServiceReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             val loc = intent!!.getParcelableExtra<Location>("EXTRA_LOCATION")
@@ -207,20 +186,9 @@ class RecordRouteFragment : Fragment(), KoinComponent
     }
 
 
-//    override fun onProviderEnabled(provider: String) {}
-//
-//    override fun onProviderDisabled(provider: String) {}
-//
-//    override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {
-//        Log.d(LOG_TAG, "location listener status: $status")
-//    }
-
-
     companion object {
         const val REQUEST_PERMISSIONS_REQUEST_CODE = 0
         private val LOG_TAG: String? = RecordRouteFragment::class.simpleName
-        const val MIN_LOCATION_LISTENER_TIME_MS = 200L
-        const val MIN_LOCATION_LISTENER_DISTANCE_M = 1f
         val OSM_PERMISSIONS = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.WRITE_EXTERNAL_STORAGE)
         const val SEND_LOCATION_ACTION = BuildConfig.APPLICATION_ID + ".send_location_action"
