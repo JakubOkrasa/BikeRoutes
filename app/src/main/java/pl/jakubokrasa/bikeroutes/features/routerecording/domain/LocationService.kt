@@ -103,8 +103,9 @@ class LocationService : Service(), KoinComponent {
             .setSmallIcon(R.drawable.ic_loc_service).setContentIntent(pendingIntent)
             .setTicker("Location Service started (ticker)").build()
 
-        startForeground(SERVICE_NOTIFICATION_ID, notification) //todo w przykladzie to jest w onUnBind (wtedy notifikacja jest widoczna tylko gdy aplikacja jest zminimalizowana
-        requestLocationUpdates()
+            startForeground(SERVICE_NOTIFICATION_ID, notification) //todo w przykladzie to jest w onUnBind (wtedy notifikacja jest widoczna tylko gdy aplikacja jest zminimalizowana
+            requestLocationUpdates()
+
         return START_NOT_STICKY
     }
 
