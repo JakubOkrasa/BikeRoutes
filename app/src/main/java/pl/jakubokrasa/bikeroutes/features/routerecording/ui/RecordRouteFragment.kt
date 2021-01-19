@@ -7,7 +7,9 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.graphics.Color
+import android.location.Location
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,6 +24,7 @@ import androidx.preference.PreferenceManager.getDefaultSharedPreferences
 import org.koin.core.component.KoinApiExtension
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import org.koin.java.KoinJavaComponent.inject
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
@@ -32,6 +35,7 @@ import org.osmdroid.views.overlay.Polyline
 import pl.jakubokrasa.bikeroutes.BuildConfig
 import pl.jakubokrasa.bikeroutes.R
 import pl.jakubokrasa.bikeroutes.features.routerecording.domain.LocationService
+import java.util.*
 import kotlin.collections.ArrayList
 
 
@@ -181,11 +185,11 @@ class RecordRouteFragment : Fragment(), KoinComponent
 
     private val locationServiceReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
-            val lat = intent!!.getDoubleExtra("EXTRA_LAT", -1.0)
-            val lng = intent.getDoubleExtra("EXTRA_LNG", -1.0)
-            val acc = intent.getFloatExtra("EXTRA_ACC", -1f)
-            accuracyTv.text = acc.toString()
-            newLocationUpdateUI(GeoPoint(lat, lng))
+            val loc = intent!!.getParcelableExtra<Location>("EXTRA_LOCATION")
+            loc?.let {
+                accuracyTv.text = loc.accuracy.toString()
+                newLocationUpdateUI(GeoPoint(loc.latitude, loc.longitude))
+            }
         }
     }
 

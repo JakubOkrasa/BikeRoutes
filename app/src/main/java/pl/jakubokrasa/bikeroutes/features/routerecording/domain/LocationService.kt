@@ -155,9 +155,7 @@ class LocationService : Service(), KoinComponent {
         //send update UI broadcast
         val newLocIntent = Intent()
         newLocIntent.action = SEND_LOCATION_ACTION
-        newLocIntent.putExtra("EXTRA_LAT", loc.latitude)
-        newLocIntent.putExtra("EXTRA_LNG", loc.longitude)
-        newLocIntent.putExtra("EXTRA_ACC", loc.accuracy)
+        newLocIntent.putExtra("EXTRA_LOCATION", loc)
         mLocalBR.sendBroadcast(newLocIntent)
 
     }
