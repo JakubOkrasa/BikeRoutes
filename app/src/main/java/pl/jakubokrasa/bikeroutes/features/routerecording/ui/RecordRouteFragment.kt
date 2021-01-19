@@ -6,18 +6,19 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.Button
-import android.widget.Toast
+import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.preference.PreferenceManager.getDefaultSharedPreferences
-import org.koin.android.ext.android.inject
 import org.koin.core.component.KoinApiExtension
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
@@ -29,6 +30,8 @@ import org.osmdroid.views.overlay.Polyline
 import pl.jakubokrasa.bikeroutes.BuildConfig
 import pl.jakubokrasa.bikeroutes.R
 import pl.jakubokrasa.bikeroutes.features.routerecording.domain.LocationService
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 class RecordRouteFragment : Fragment()
@@ -39,6 +42,8 @@ class RecordRouteFragment : Fragment()
     private var track: Polyline = Polyline()
     private lateinit var mRotationGestureOverlay: Overlay
     private var trackPointsList: ArrayList<GeoPoint> = ArrayList()
+    private lateinit var accuracyTv: TextView
+    private lateinit var lastAccuracyTv : TextView
 
     @KoinApiExtension
     override fun onCreateView(
@@ -63,20 +68,24 @@ class RecordRouteFragment : Fragment()
                 requestPermissions(OSM_PERMISSIONS, REQUEST_PERMISSIONS_REQUEST_CODE)
             } else {
                 requireActivity().startService(Intent(context, LocationService::class.java))
+//                requireActivity().stopService(Intent(context, LocationService::class.java))
             }
         }
 
+        accuracyTv = root.findViewById(R.id.tv_accuracy)
+        lastAccuracyTv = root.findViewById(R.id.tv_last_accuracy)
         map.setMultiTouchControls(true)
-        track.outlinePaint.strokeWidth = 2F
-
+        map.controller.setZoom(18.0)
+        track.outlinePaint.strokeWidth = 7F
+        track.outlinePaint.color = Color.MAGENTA
 
         return root
     }
 
     override fun onStart() {
         super.onStart()
-        val filter = IntentFilter(SEND_LOCATION_ACTION)
-        requireActivity().registerReceiver(tempReceiver, filter)
+        val locFilter = IntentFilter(SEND_LOCATION_ACTION)
+        requireActivity().registerReceiver(tempReceiver, locFilter)
     }
 
     override fun onStop() {
@@ -172,6 +181,8 @@ class RecordRouteFragment : Fragment()
         override fun onReceive(context: Context?, intent: Intent?) {
             val lat = intent!!.getDoubleExtra("EXTRA_LAT", -1.0)
             val lng = intent.getDoubleExtra("EXTRA_LNG", -1.0)
+            val acc = intent.getFloatExtra("EXTRA_ACC", -1f)
+            accuracyTv.text = acc.toString()
             newLocationUpdateUI(GeoPoint(lat, lng))
         }
     }
@@ -183,11 +194,10 @@ class RecordRouteFragment : Fragment()
             //we get the location for the first time:
             track.isEnabled = true
         }
-        map.controller.setZoom(18.0)
         map.controller.animateTo(newLocation)
         map.overlayManager.add(track)
         map.invalidate()
-        Log.d(LOG_TAG, "Thread: ${Thread.currentThread().name}")
+//        Log.d(LOG_TAG, "Thread: ${Thread.currentThread().name}")
     }
 
 

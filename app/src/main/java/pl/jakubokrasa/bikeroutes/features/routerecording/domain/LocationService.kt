@@ -134,27 +134,18 @@ class LocationService : Service(), KoinComponent {
         mLocation = loc
         recordCurrentLocationInTrack(GeoPoint(loc.latitude, loc.longitude))
 
-        // Notify anyone listening for broadcasts about the new location.
-//        val intent =
-//            Intent(ACTION_BROADCAST)
-//        intent.putExtra(EXTRA_LOCATION, location)
-//        LocalBroadcastManager.getInstance(applicationContext).sendBroadcast(intent)
+        //send update UI broadcast
+        val newLocIntent = Intent()
+        newLocIntent.action = SEND_LOCATION_ACTION
+        newLocIntent.putExtra("EXTRA_LAT", loc.latitude)
+        newLocIntent.putExtra("EXTRA_LNG", loc.longitude)
+        newLocIntent.putExtra("EXTRA_ACC", loc.accuracy)
+        sendBroadcast(newLocIntent)
 
-        // Update notification content if running as a foreground service.
-//        if (serviceIsRunningInForeground(this)) {
-//            mNotificationManager.notify(NOTIFICATION_ID, getNotification())
-//        }
     }
 
     private fun recordCurrentLocationInTrack(newLocation: GeoPoint) {
         Log.i(LOG_TAG, "POINT: lat: ${newLocation.latitude}, lng: ${newLocation.longitude}")
-
-        //send update UI broadcast
-        val newLocIntent = Intent()
-        newLocIntent.action = SEND_LOCATION_ACTION
-        newLocIntent.putExtra("EXTRA_LAT", newLocation.latitude)
-        newLocIntent.putExtra("EXTRA_LNG", newLocation.longitude)
-        sendBroadcast(newLocIntent)
     }
 
 
