@@ -9,7 +9,11 @@ import android.location.Location
 import android.os.*
 import android.util.Log
 import androidx.core.app.NotificationCompat
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.google.android.gms.location.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import org.koin.core.component.KoinApiExtension
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -27,6 +31,7 @@ class LocationService : Service(), KoinComponent {
     private val mLocationRequest: LocationRequest by inject()
     private val mFusedLocationClient: FusedLocationProviderClient by inject()
     private val locUtils: LocationUtils by inject()
+    private val mLocalBR: LocalBroadcastManager by inject()
     private lateinit var mLocationCallback: LocationCallback
     private lateinit var mServiceHandler: Handler
     private lateinit var mNotificationManager: NotificationManager
@@ -54,12 +59,27 @@ class LocationService : Service(), KoinComponent {
         mLocationCallback = object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult) {
                 super.onLocationResult(locationResult)
-                onNewLocation(locationResult.lastLocation)
+                val location = locationResult.lastLocation
+//                var lastTime = SystemClock.elapsedRealtimeNanos()
+                val accuracy = location.accuracy
+                Log.d(LOG_TAG, "accuracy: $accuracy")
+//                location.takeIf { accuracy<50 }
+////                    ?.let {
+//                        if (accuracy<15||lastTime-location.elapsedRealtimeNanos>5_000_000_000) {
+//                            lastTime = location.elapsedRealtimeNanos
+                            onNewLocation((location))
+
+
+//                        }
+//                    }
+//                if(location.accuracy>15) { return }
+//                onNewLocation(locationResult.lastLocation)
+
+
+
             }
         }
     }
-
-
 
     private fun createNotificationChannel() {
         val notifyManager =
@@ -85,18 +105,20 @@ class LocationService : Service(), KoinComponent {
             .setSmallIcon(R.drawable.ic_loc_service).setContentIntent(pendingIntent)
             .setTicker("Location Service started (ticker)").build()
 
-        startForeground(SERVICE_NOTIFICATION_ID, notification) //todo w przykladzie to jest w onUnBind (wtedy notifikacja jest widoczna tylko gdy aplikacja jest zminimalizowana
-        requestLocationUpdates()
+            startForeground(SERVICE_NOTIFICATION_ID, notification) //todo w przykladzie to jest w onUnBind (wtedy notifikacja jest widoczna tylko gdy aplikacja jest zminimalizowana
+            requestLocationUpdates()
+
         return START_NOT_STICKY
     }
 
     override fun onDestroy() {
         Log.d(LOG_TAG, "onDestroy")
         mServiceHandler.removeCallbacksAndMessages(null)
+        removeLocationUpdates()
         super.onDestroy()
     }
 
-    fun requestLocationUpdates() {
+    private fun requestLocationUpdates() {
         Log.i(LOG_TAG, "Requesting location updates")
         Log.d(LOG_TAG, "service request updates Thread: ${Thread.currentThread().name}")
         locUtils.setRequestingLocationUpdates(this, true)
@@ -131,44 +153,31 @@ class LocationService : Service(), KoinComponent {
         mLocation = loc
         recordCurrentLocationInTrack(GeoPoint(loc.latitude, loc.longitude))
 
-        // Notify anyone listening for broadcasts about the new location.
-//        val intent =
-//            Intent(ACTION_BROADCAST)
-//        intent.putExtra(EXTRA_LOCATION, location)
-//        LocalBroadcastManager.getInstance(applicationContext).sendBroadcast(intent)
+        //send update UI broadcast
+        val newLocIntent = Intent()
+        newLocIntent.action = SEND_LOCATION_ACTION
+        newLocIntent.putExtra("EXTRA_LOCATION", loc)
+        mLocalBR.sendBroadcast(newLocIntent)
 
-        // Update notification content if running as a foreground service.
-//        if (serviceIsRunningInForeground(this)) {
-//            mNotificationManager.notify(NOTIFICATION_ID, getNotification())
-//        }
     }
 
     private fun recordCurrentLocationInTrack(newLocation: GeoPoint) {
         Log.i(LOG_TAG, "POINT: lat: ${newLocation.latitude}, lng: ${newLocation.longitude}")
-
-        //send update UI broadcast
-        val newLocIntent = Intent()
-        newLocIntent.action = SEND_LOCATION_ACTION
-        newLocIntent.putExtra("EXTRA_LAT", newLocation.latitude)
-        newLocIntent.putExtra("EXTRA_LNG", newLocation.longitude)
-        sendBroadcast(newLocIntent)
     }
 
 
 
     private fun removeLocationUpdates() {
-        Log.i(LOG_TAG, "Removing location updates");
+        Log.i(LOG_TAG, "Removing location updates")
         try {
-            mFusedLocationClient.removeLocationUpdates(mLocationCallback);
-            locUtils.setRequestingLocationUpdates(this, false);
-            stopSelf();
+            mFusedLocationClient.removeLocationUpdates(mLocationCallback)
+            locUtils.setRequestingLocationUpdates(this, false)
+            stopSelf()
         } catch (unlikely: SecurityException) {
-            locUtils.setRequestingLocationUpdates(this, true);
-            Log.e(LOG_TAG, "Lost location permission. Could not remove updates. $unlikely");
+            locUtils.setRequestingLocationUpdates(this, true)
+            Log.e(LOG_TAG, "Lost location permission. Could not remove updates. $unlikely")
         }
     }
-
-
 
     companion object {
         const val CHANNEL_DEFAULT_IMPORTANCE = "service_notification_channel"

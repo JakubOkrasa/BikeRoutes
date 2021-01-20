@@ -6,19 +6,26 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
+import android.graphics.Color
+import android.location.Location
+import android.opengl.Visibility
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.Button
-import android.widget.Toast
+import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.preference.PreferenceManager.getDefaultSharedPreferences
-import org.koin.android.ext.android.inject
 import org.koin.core.component.KoinApiExtension
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
+import org.koin.java.KoinJavaComponent.inject
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
@@ -29,9 +36,12 @@ import org.osmdroid.views.overlay.Polyline
 import pl.jakubokrasa.bikeroutes.BuildConfig
 import pl.jakubokrasa.bikeroutes.R
 import pl.jakubokrasa.bikeroutes.features.routerecording.domain.LocationService
+import java.util.*
+import kotlin.collections.ArrayList
 
 
-class RecordRouteFragment : Fragment()
+@KoinApiExtension
+class RecordRouteFragment : Fragment(), KoinComponent
 {
 
     private lateinit var recordRouteViewModel: RecordRouteViewModel
@@ -39,11 +49,14 @@ class RecordRouteFragment : Fragment()
     private var track: Polyline = Polyline()
     private lateinit var mRotationGestureOverlay: Overlay
     private var trackPointsList: ArrayList<GeoPoint> = ArrayList()
+    private lateinit var accuracyTv: TextView
+    private lateinit var lastAccuracyTv : TextView
+    private val mLocalBR: LocalBroadcastManager by inject()
 
-    @KoinApiExtension
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
+        requireActivity().window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         requireActivity().startService(Intent(context, LocationService::class.java))
         recordRouteViewModel = ViewModelProvider(this).get(RecordRouteViewModel::class.java)
         Configuration.getInstance().load(context, getDefaultSharedPreferences(context)) //osmdroid config
@@ -52,35 +65,45 @@ class RecordRouteFragment : Fragment()
         map.setTileSource(TileSourceFactory.MAPNIK)
         requestPermissionsIfNecessary(OSM_PERMISSIONS)
 
-//        requestLocationUpdatesIfPermsAreGranted()
-//        setCurrentLocation()
-
         val recordTrackBt = root.findViewById<Button>(R.id.bt_record)
+        val stopRecordingBt = root.findViewById<Button>(R.id.bt_stop_recording)
         recordTrackBt.setOnClickListener() {
 
             if (!arePermissionGranted(OSM_PERMISSIONS)) {
                 requestPermissions(OSM_PERMISSIONS, REQUEST_PERMISSIONS_REQUEST_CODE)
             } else {
                 requireActivity().startService(Intent(context, LocationService::class.java))
+//                requireActivity().stopService(Intent(context, LocationService::class.java))
             }
+            recordTrackBt.visibility = View.GONE
+            stopRecordingBt.visibility = View.VISIBLE
         }
 
-        map.setMultiTouchControls(true)
-        track.outlinePaint.strokeWidth = 2F
+        stopRecordingBt.setOnClickListener() {
+            stopLocationService()
+            stopRecordingBt.visibility = View.GONE
+            recordTrackBt.visibility = View.VISIBLE
+        }
 
+        accuracyTv = root.findViewById(R.id.tv_accuracy)
+        lastAccuracyTv = root.findViewById(R.id.tv_last_accuracy)
+        map.setMultiTouchControls(true)
+        map.controller.setZoom(18.0)
+        track.outlinePaint.strokeWidth = 7F
+        track.outlinePaint.color = Color.MAGENTA
 
         return root
     }
 
     override fun onStart() {
         super.onStart()
-        val filter = IntentFilter(SEND_LOCATION_ACTION)
-        requireActivity().registerReceiver(tempReceiver, filter)
+        val locFilter = IntentFilter(SEND_LOCATION_ACTION)
+        mLocalBR.registerReceiver(locationServiceReceiver, locFilter)
     }
 
     override fun onStop() {
         super.onStop()
-        requireActivity().unregisterReceiver(tempReceiver)
+        mLocalBR.unregisterReceiver(locationServiceReceiver)
     }
 
 //    private fun setCurrentLocation() {
@@ -149,29 +172,13 @@ class RecordRouteFragment : Fragment()
     val mIgnorer = NetworkLocationIgnorer()
     var mLastTime: Long = 0 // milliseconds
 
-//    override fun onLocationChanged(location: Location) {
-//        val currentTime = System.currentTimeMillis()
-//        if (mIgnorer.shouldIgnore(location.provider, currentTime)) return
-//        val dT: Double = currentTime - mLastTime.toDouble()
-//        if (dT < 100.0) {
-//            //Toast.makeText(this, pLoc.getProvider()+" dT="+dT, Toast.LENGTH_SHORT).show();
-//            return
-//        }
-//        mLastTime = currentTime
-//
-//        Log.d(LOG_TAG, "altitude: ${location.altitude}")
-//        val lat = location.latitude
-//        val lng = location.longitude
-//        recordCurrentLocationInTrack(GeoPoint(lat, lng))
-//
-//
-//    }
-
-    private val tempReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+    private val locationServiceReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
-            val lat = intent!!.getDoubleExtra("EXTRA_LAT", -1.0)
-            val lng = intent.getDoubleExtra("EXTRA_LNG", -1.0)
-            newLocationUpdateUI(GeoPoint(lat, lng))
+            val loc = intent!!.getParcelableExtra<Location>("EXTRA_LOCATION")
+            loc?.let {
+                accuracyTv.text = loc.accuracy.toString()
+                newLocationUpdateUI(GeoPoint(loc.latitude, loc.longitude))
+            }
         }
     }
 
@@ -182,28 +189,20 @@ class RecordRouteFragment : Fragment()
             //we get the location for the first time:
             track.isEnabled = true
         }
-        map.controller.setZoom(18.0)
         map.controller.animateTo(newLocation)
         map.overlayManager.add(track)
         map.invalidate()
-        Log.d(LOG_TAG, "Thread: ${Thread.currentThread().name}")
+//        Log.d(LOG_TAG, "Thread: ${Thread.currentThread().name}")
     }
 
-
-//    override fun onProviderEnabled(provider: String) {}
-//
-//    override fun onProviderDisabled(provider: String) {}
-//
-//    override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {
-//        Log.d(LOG_TAG, "location listener status: $status")
-//    }
+    private fun stopLocationService() {
+        requireActivity().stopService(Intent(requireContext(), LocationService::class.java))
+    }
 
 
     companion object {
         const val REQUEST_PERMISSIONS_REQUEST_CODE = 0
         private val LOG_TAG: String? = RecordRouteFragment::class.simpleName
-        const val MIN_LOCATION_LISTENER_TIME_MS = 200L
-        const val MIN_LOCATION_LISTENER_DISTANCE_M = 1f
         val OSM_PERMISSIONS = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.WRITE_EXTERNAL_STORAGE)
         const val SEND_LOCATION_ACTION = BuildConfig.APPLICATION_ID + ".send_location_action"

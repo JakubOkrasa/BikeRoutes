@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <EditTextPreference
+        android:key="max_inaccuracy"
+        android:title="max inaccuracy [m]"
+        android:defaultValue="30" />
+
+    <EditTextPreference
+        android:key="max_conditional_inaccuracy"
+        android:title="max conditional inaccuracy [m]"
+        android:defaultValue="10" />
+
+    <EditTextPreference
+        android:key="max_waiting_time"
+        android:title="max waiting time [s]"
+        android:defaultValue="3" />
+</androidx.preference.PreferenceScreen>

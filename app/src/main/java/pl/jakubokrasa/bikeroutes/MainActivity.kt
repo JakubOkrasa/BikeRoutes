@@ -1,6 +1,7 @@
 package pl.jakubokrasa.bikeroutes
 
 import android.os.Bundle
+import android.view.WindowManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
@@ -22,6 +23,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.nav_record_route, R.id.navigation_dashboard, R.id.navigation_notifications))
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+
     }
 
 
