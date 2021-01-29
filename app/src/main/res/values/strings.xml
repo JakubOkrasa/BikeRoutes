@@ -4,4 +4,10 @@
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
     <string name="location_service_notif_title">Location updates service</string>
+    <string name="signup_btn">Sign up</string>
+    <string name="login_btn">Log in</string>
+    <string name="email_hint">Enter your email</string>
+    <string name="password_hint">Enter your password</string>
+    <string name="back">BACK</string>
+    <string name="get_password_link">get password link</string>
 </resources>

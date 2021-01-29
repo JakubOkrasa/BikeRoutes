@@ -7,8 +7,8 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
-    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
 
     <application
         android:name=".core.app.App"
@@ -18,11 +18,17 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.BikeRoutes">
+        <activity android:name=".features.user.ui.LoginActivity"></activity>
+        <activity android:name=".features.user.ui.SignUpActivity" />
+        <activity
+            android:name=".ui.login.LoginActivity"
+            android:label="@string/title_activity_login" />
+
         <service
             android:name=".features.routerecording.domain.LocationService"
             android:enabled="true"
             android:exported="false"
-            android:foregroundServiceType="location"></service>
+            android:foregroundServiceType="location" />
 
         <activity
             android:name=".MainActivity"
