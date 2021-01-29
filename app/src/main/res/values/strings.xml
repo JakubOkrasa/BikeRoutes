@@ -3,6 +3,8 @@
     <string name="title_record_route">Record a route</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
+    <string name="title_activity_login">Log in</string>
+    <string name="title_activity_sign_up">Sign Up</string>
     <string name="location_service_notif_title">Location updates service</string>
     <string name="signup_btn">Sign up</string>
     <string name="login_btn">Log in</string>

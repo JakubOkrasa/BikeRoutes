@@ -12,7 +12,7 @@ import pl.jakubokrasa.bikeroutes.MainActivity
 import pl.jakubokrasa.bikeroutes.R
 import pl.jakubokrasa.bikeroutes.databinding.ActivitySignUpBinding
 
-class SignUpActivity() : AppCompatActivity() {
+class SignUpActivity : AppCompatActivity() {
     private val auth: FirebaseAuth by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {

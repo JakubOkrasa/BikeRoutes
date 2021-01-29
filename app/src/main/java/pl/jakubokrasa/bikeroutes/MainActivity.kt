@@ -1,6 +1,7 @@
 package pl.jakubokrasa.bikeroutes
 
 import android.os.Bundle
+import android.util.Log
 import android.view.WindowManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
@@ -8,8 +9,11 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.google.firebase.auth.FirebaseAuth
+import org.koin.android.ext.android.inject
 
 class MainActivity : AppCompatActivity() {
+    private val auth: FirebaseAuth by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,6 +27,8 @@ class MainActivity : AppCompatActivity() {
                 R.id.nav_record_route, R.id.navigation_dashboard, R.id.navigation_notifications))
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+
+        Log.d("MainActivity", "logged as " + auth.currentUser?.email.toString())
 
     }
 
