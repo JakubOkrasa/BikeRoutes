@@ -10,15 +10,20 @@ import com.google.firebase.auth.FirebaseAuth
 import org.koin.android.ext.android.inject
 import pl.jakubokrasa.bikeroutes.MainActivity
 import pl.jakubokrasa.bikeroutes.R
+import pl.jakubokrasa.bikeroutes.core.extensions.viewBinding
 import pl.jakubokrasa.bikeroutes.databinding.ActivitySignUpBinding
+import pl.jakubokrasa.bikeroutes.databinding.FragmentAccountBinding
 
 class SignUpActivity : AppCompatActivity() {
     private val auth: FirebaseAuth by inject()
+    private lateinit var binding: ActivitySignUpBinding
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_sign_up)
-        val binding = ActivitySignUpBinding.inflate(layoutInflater)
+        binding = ActivitySignUpBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
 
         binding.signupBtn.setOnClickListener{
             var email: String = binding.emailEt.text.toString()
@@ -34,7 +39,7 @@ class SignUpActivity : AppCompatActivity() {
                         startActivity(intent)
                         finish()
                     }else {
-                        Toast.makeText(this, "Registration Failed", Toast.LENGTH_LONG).show()
+                        Toast.makeText(this, "Registration Failed. Possible cause: Password must have at least 6 characters", Toast.LENGTH_LONG).show()
                     }
                 })
             }

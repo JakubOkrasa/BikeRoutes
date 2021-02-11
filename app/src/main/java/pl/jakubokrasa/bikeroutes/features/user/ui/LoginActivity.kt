@@ -11,14 +11,17 @@ import org.koin.android.ext.android.inject
 import pl.jakubokrasa.bikeroutes.MainActivity
 import pl.jakubokrasa.bikeroutes.R
 import pl.jakubokrasa.bikeroutes.databinding.ActivityLoginBinding
+import pl.jakubokrasa.bikeroutes.databinding.ActivitySignUpBinding
 
 class LoginActivity : AppCompatActivity() {
     private val auth: FirebaseAuth by inject()
+    private lateinit var binding: ActivityLoginBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_login)
-        val binding = ActivityLoginBinding.inflate(layoutInflater)
+        binding = ActivityLoginBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
 
         binding.loginBtn.setOnClickListener{
             var email: String = binding.emailEt.text.toString()
