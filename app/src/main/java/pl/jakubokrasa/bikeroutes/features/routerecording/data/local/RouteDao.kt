@@ -3,24 +3,30 @@ package pl.jakubokrasa.bikeroutes.features.routerecording.data.local
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.room.Dao
+import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Transaction
+import org.osmdroid.util.GeoPoint
 import pl.jakubokrasa.bikeroutes.features.routerecording.data.local.model.PointCached
+import pl.jakubokrasa.bikeroutes.features.routerecording.data.local.model.RouteCached
+import pl.jakubokrasa.bikeroutes.features.routerecording.data.local.model.RouteWithPointsCached
+import pl.jakubokrasa.bikeroutes.features.routerecording.domain.model.Point
 import pl.jakubokrasa.bikeroutes.features.routerecording.domain.model.Route
 
 @Dao
 interface RouteDao {
-//    "INSERT INTO PointCached(geoPoint) VALUES(:point) JOIN"
-//    INSERT INTO PointCached(geoPoint) SELECT * FROM PointCached INNER JOIN RouteCached ON PointCached //todo spróbuj dodAC ROUTEid do PointCached; ale wtedy może
-                                                                                                        //     todo być redundacja, może lepiej spytaj na slacku
-    @Query("INSERT INTO (geoPoint) SELECT * FROM PointCached INNER JOIN RouteCached ON PointCached")
-    @Transaction
-    suspend fun insertCurrentRoutePoint(point: Route)
+    @Insert
+    suspend fun insertRoute(route: RouteCached)
 
-    @Query("SELECT * from RouteCached WHERE  ORDER BY id ASC")
     @Transaction
-    fun getCurrentRoute(): MutableLiveData<List<Route>>
-//
+    @Query("INSERT INTO PointCached(geoPoint, routeId) VALUES(:point, (SELECT routeId FROM RouteCached WHERE current=1 LIMIT 1))")
+    suspend fun insertCurrentRoutePoint(point: GeoPoint)
+
+    @Transaction
+    @Query("SELECT * from RouteCached JOIN PointCached on RouteCached.routeId=PointCached.routeId WHERE current=1")
+    fun getCurrentRoute(): RouteWithPointsCached
+
+
 //    @Query("DELETE FROM RouteCached")
 //    fun deleteCurrentRoute()
 }

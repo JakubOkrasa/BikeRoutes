@@ -6,16 +6,18 @@ import pl.jakubokrasa.bikeroutes.features.routerecording.domain.model.Point
 import pl.jakubokrasa.bikeroutes.features.routerecording.domain.model.Route
 
 data class RouteWithPointsCached(
-    @Embedded val route: Route,
+    @Embedded val route: RouteCached,
     @Relation(
         parentColumn = "routeId",
         entityColumn = "pointId"
     )
-    val points: List<Point>
+    val points: List<PointCached>
 ) {
-//    fun toRouteWithPoints() = RouteWithPoints(
-//        route.routeId,
-//        route.current,
-//        points
-//    )
+    fun toRoute() = Route(
+        route.routeId,
+        route.current,
+        points.map {
+            Point(it.pointId, it.geoPoint)
+        }
+    )
 }

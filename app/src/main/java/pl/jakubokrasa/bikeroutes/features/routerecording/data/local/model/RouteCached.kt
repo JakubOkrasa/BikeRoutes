@@ -12,5 +12,4 @@ data class RouteCached(
     val current: Boolean
     )
 {
-//    fun toRoute() = Route(routeId, current)
 }
