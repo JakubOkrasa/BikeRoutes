@@ -8,8 +8,11 @@ import pl.jakubokrasa.bikeroutes.features.routerecording.ui.RouteRepository
 
 class RouteRepositoryImpl(private val dao: RouteDao): RouteRepository {
     override suspend fun getCurrentRoute(): Route {
-       return Route(1L, true, listOf(Point(1L, GeoPoint(10.32, 5.84))))
-//       return dao.getCurrentRoute().toRoute()
+       return dao.getCurrentRoute().toRoute()
+    }
+
+    override suspend fun insertCurrentRoutePoint(geoPoint: GeoPoint) {
+        return dao.insertCurrentRoutePoint(geoPoint)
     }
 
 }

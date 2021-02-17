@@ -8,9 +8,7 @@ import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.location.Location
-import android.opengl.Visibility
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,10 +20,10 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.preference.PreferenceManager.getDefaultSharedPreferences
+import org.koin.android.viewmodel.ext.android.viewModel
 import org.koin.core.component.KoinApiExtension
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import org.koin.java.KoinJavaComponent.inject
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
@@ -36,7 +34,6 @@ import org.osmdroid.views.overlay.Polyline
 import pl.jakubokrasa.bikeroutes.BuildConfig
 import pl.jakubokrasa.bikeroutes.R
 import pl.jakubokrasa.bikeroutes.features.routerecording.domain.LocationService
-import java.util.*
 import kotlin.collections.ArrayList
 
 
@@ -52,6 +49,7 @@ class RecordRouteFragment : Fragment(), KoinComponent
     private lateinit var accuracyTv: TextView
     private lateinit var lastAccuracyTv : TextView
     private val mLocalBR: LocalBroadcastManager by inject()
+    private val viewModel: RecordRouteViewModel by viewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -94,6 +92,15 @@ class RecordRouteFragment : Fragment(), KoinComponent
 
         return root
     }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+//        observeCurrentRoute()
+    }
+
+//    private fun observeCurrentRoute() {
+//
+//    }
 
     override fun onStart() {
         super.onStart()
@@ -184,6 +191,11 @@ class RecordRouteFragment : Fragment(), KoinComponent
 
 
     private fun newLocationUpdateUI(newLocation: GeoPoint) {
+//        viewModel.insertCurrentPoint(newLocation)
+//
+//        viewModel.routes.observe(this, androidx.lifecycle.Observer {
+//            it.points
+//        })
         track.addPoint(newLocation)
         if (!track.isEnabled) {
             //we get the location for the first time:

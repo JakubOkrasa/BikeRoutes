@@ -19,12 +19,12 @@ interface RouteDao {
     suspend fun insertRoute(route: RouteCached)
 
     @Transaction
-    @Query("INSERT INTO PointCached(geoPoint, routeId) VALUES(:point, (SELECT routeId FROM RouteCached WHERE current=1 LIMIT 1))")
-    suspend fun insertCurrentRoutePoint(point: GeoPoint)
+    @Query("INSERT INTO PointCached(geoPoint, routeId) VALUES(:geoPoint, (SELECT routeId FROM RouteCached WHERE current=1 LIMIT 1))")
+    suspend fun insertCurrentRoutePoint(geoPoint: GeoPoint)
 
     @Transaction
     @Query("SELECT * from RouteCached JOIN PointCached on RouteCached.routeId=PointCached.routeId WHERE current=1")
-    fun getCurrentRoute(): RouteWithPointsCached
+    suspend fun getCurrentRoute(): RouteWithPointsCached
 
 
 //    @Query("DELETE FROM RouteCached")
