@@ -23,6 +23,8 @@ class RecordRouteViewModel(private val getCurrentRouteUseCase: GetCurrentRouteUs
             result -> result.onSuccess {
                 routesLiveData.value = RouteDisplayable(it)
         }
+            result.onFailure { Log.e(LOG_TAG, "route not inserte") }
+
         }
     }
 
@@ -31,9 +33,8 @@ class RecordRouteViewModel(private val getCurrentRouteUseCase: GetCurrentRouteUs
             params = geoPoint,
             scope = viewModelScope
         ) {
-          result -> result.onSuccess {
-              Log.d(LOG_TAG, "point inserted")
-        }
+          result -> result.onSuccess { Log.d(LOG_TAG, "point inserted") }
+            result.onFailure { Log.e(LOG_TAG, "point not inserted") }
         }
     }
 

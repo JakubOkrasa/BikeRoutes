@@ -2,10 +2,7 @@ package pl.jakubokrasa.bikeroutes.features.routerecording.data.local
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.Query
-import androidx.room.Transaction
+import androidx.room.*
 import org.osmdroid.util.GeoPoint
 import pl.jakubokrasa.bikeroutes.features.routerecording.data.local.model.PointCached
 import pl.jakubokrasa.bikeroutes.features.routerecording.data.local.model.RouteCached
@@ -15,7 +12,7 @@ import pl.jakubokrasa.bikeroutes.features.routerecording.domain.model.Route
 
 @Dao
 interface RouteDao {
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertRoute(route: RouteCached)
 
     @Transaction

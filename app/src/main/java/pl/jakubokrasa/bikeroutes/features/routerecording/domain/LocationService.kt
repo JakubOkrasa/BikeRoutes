@@ -14,9 +14,9 @@ import com.google.android.gms.location.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
-import org.koin.core.component.KoinApiExtension
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
+import org.koin.core.KoinComponent
+
+import org.koin.core.inject
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.overlay.Polyline
 import pl.jakubokrasa.bikeroutes.MainActivity
@@ -25,7 +25,6 @@ import pl.jakubokrasa.bikeroutes.core.util.LocationUtils
 import pl.jakubokrasa.bikeroutes.features.routerecording.ui.RecordRouteFragment
 import pl.jakubokrasa.bikeroutes.features.routerecording.ui.RecordRouteFragment.Companion.SEND_LOCATION_ACTION
 
-@KoinApiExtension
 class LocationService : Service(), KoinComponent {
 //    private val track = Polyline()
     private val mLocationRequest: LocationRequest by inject()
