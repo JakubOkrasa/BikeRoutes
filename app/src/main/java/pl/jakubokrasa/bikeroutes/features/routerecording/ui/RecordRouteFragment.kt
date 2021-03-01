@@ -13,87 +13,70 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.widget.Button
-import android.widget.TextView
+import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.preference.PreferenceManager.getDefaultSharedPreferences
-import org.koin.androidx.scope.lifecycleScope
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.androidx.viewmodel.scope.viewModel
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
-import org.osmdroid.util.NetworkLocationIgnorer
-import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Overlay
 import org.osmdroid.views.overlay.Polyline
 import pl.jakubokrasa.bikeroutes.BuildConfig
 import pl.jakubokrasa.bikeroutes.R
+import pl.jakubokrasa.bikeroutes.databinding.FragmentRecordRouteBinding
 import pl.jakubokrasa.bikeroutes.features.routerecording.domain.LocationService
+import pl.jakubokrasa.bikeroutes.features.routerecording.ui.model.RouteDisplayable
+import kotlin.collections.ArrayList
 
 
-class RecordRouteFragment : Fragment(), KoinComponent
-{
-
-    private lateinit var map: MapView
+class RecordRouteFragment() : Fragment(R.layout.fragment_record_route), KoinComponent {
     private var polyline: Polyline = Polyline()
     private lateinit var mRotationGestureOverlay: Overlay
     private var trackPointsList: ArrayList<GeoPoint> = ArrayList()
-    private lateinit var accuracyTv: TextView
-    private lateinit var lastAccuracyTv : TextView
     private val mLocalBR: LocalBroadcastManager by inject()
     private val viewModel: RecordRouteViewModel by viewModel()
-//    private val viewModel: RecordRouteViewModel by viewModel()
-//    private val viewModel by lazy {
-//        getViewModel<RecordRouteViewModel>(get(), this)
-//    }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
-    ): View? {
+    //from https://developer.android.com/topic/libraries/view-binding
+    private var _binding: FragmentRecordRouteBinding? = null
+    private val binding get() = _binding!! // This property is only valid between onCreateView and onDestroyView.
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        _binding = FragmentRecordRouteBinding.bind(view)
         requireActivity().window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-        val root = inflater.inflate(R.layout.fragment_record_route, container, false)
-        requireActivity().startService(Intent(context, LocationService::class.java))
-        Configuration.getInstance().load(context, getDefaultSharedPreferences(context)) //osmdroid config
-        map = root.findViewById(R.id.mv_record_route) // TODO: 12/29/2020 replace with view binding
-        map.setTileSource(TileSourceFactory.MAPNIK)
         requestPermissionsIfNecessary(OSM_PERMISSIONS)
+        Configuration.getInstance().load(context, getDefaultSharedPreferences(context)) //osmdroid config
 
-        val recordTrackBt = root.findViewById<Button>(R.id.bt_record)
-        val stopRecordingBt = root.findViewById<Button>(R.id.bt_stop_recording)
-        recordTrackBt.setOnClickListener() {
+        binding.btStartRecord.setOnClickListener(btRecordRouteOnClick)
+        binding.btStopRecord.setOnClickListener(btStopRecordOnClick)
 
-            if (!arePermissionGranted(OSM_PERMISSIONS)) {
-                requestPermissions(OSM_PERMISSIONS, REQUEST_PERMISSIONS_REQUEST_CODE)
-            } else {
-                requireActivity().startService(Intent(context, LocationService::class.java))
-//                requireActivity().stopService(Intent(context, LocationService::class.java))
-            }
-            recordTrackBt.visibility = View.GONE
-            stopRecordingBt.visibility = View.VISIBLE
-        }
 
-        stopRecordingBt.setOnClickListener() {
-            stopLocationService()
-            stopRecordingBt.visibility = View.GONE
-            recordTrackBt.visibility = View.VISIBLE
-        }
-        observeCurrentRoute()
-        accuracyTv = root.findViewById(R.id.tv_accuracy)
-        lastAccuracyTv = root.findViewById(R.id.tv_last_accuracy)
-        map.setMultiTouchControls(true)
-        map.controller.setZoom(18.0)
-        polyline.outlinePaint.strokeWidth = 7F
-        polyline.outlinePaint.color = Color.MAGENTA
-
-        return root
+        setMapViewProperties()
+        setPolylineProperties()
     }
 
-    override fun onStart() {
+//    override fun onCreateView(
+//        inflater: LayoutInflater,
+//        container: ViewGroup?,
+//        savedInstanceState: Bundle?
+//    ): View? {
+//        val root = binding.root
+//
+//
+//        return root
+//    }
+
+//    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+//        super.onViewCreated(view, savedInstanceState)
+//
+//    }
+
+   override fun onStart() {
         super.onStart()
         val locFilter = IntentFilter(SEND_LOCATION_ACTION)
         mLocalBR.registerReceiver(locationServiceReceiver, locFilter)
@@ -102,6 +85,37 @@ class RecordRouteFragment : Fragment(), KoinComponent
     override fun onStop() {
         super.onStop()
         mLocalBR.unregisterReceiver(locationServiceReceiver)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        //this will refresh the osmdroid configuration on resuming.
+        //if you make changes to the configuration, use
+        //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        //Configuration.getInstance().load(this, PreferenceManager.getDefaultSharedPreferences(this));
+        binding.mapView.onResume(); //needed for compass, my location overlays, v6.0.0 and up
+    }
+
+    override fun onPause() {
+        super.onPause()
+        //this will refresh the osmdroid configuration on resuming.
+        //if you make changes to the configuration, use
+        //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        //Configuration.getInstance().save(this, prefs);
+        binding.mapView.onPause() //needed for compass, my location overlays, v6.0.0 and up
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int, permissions: Array<String?>, grantResults: IntArray
+    ) {
+        val permissionsToRequest: ArrayList<String?> = ArrayList()
+        for (i in grantResults.indices) {
+            permissionsToRequest.add(permissions[i])
+        }
+        if (permissionsToRequest.isNotEmpty()) {
+            requestPermissions(permissionsToRequest.toTypedArray(),
+                REQUEST_PERMISSIONS_REQUEST_CODE)
+        }
     }
 
     private fun requestPermissionsIfNecessary(permissions: Array<String>) {
@@ -118,68 +132,13 @@ class RecordRouteFragment : Fragment(), KoinComponent
         }
     }
 
-    private fun arePermissionGranted(permissions: Array<String>): Boolean {  //todo use requestPermissionsIfNecessary method instead
-        for (perm in permissions) {
-            if (ContextCompat.checkSelfPermission(requireContext(), perm) != PackageManager.PERMISSION_GRANTED
-            ) return false
-        }
-        return true
-    }
-
-    override fun onResume() {
-        super.onResume()
-        //this will refresh the osmdroid configuration on resuming.
-        //if you make changes to the configuration, use
-        //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        //Configuration.getInstance().load(this, PreferenceManager.getDefaultSharedPreferences(this));
-        map.onResume(); //needed for compass, my location overlays, v6.0.0 and up
-    }
-
-    override fun onPause() {
-        super.onPause()
-        //this will refresh the osmdroid configuration on resuming.
-        //if you make changes to the configuration, use
-        //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        //Configuration.getInstance().save(this, prefs);
-        map.onPause() //needed for compass, my location overlays, v6.0.0 and up
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int, permissions: Array<String?>, grantResults: IntArray
-    ) {
-        val permissionsToRequest: ArrayList<String?> = ArrayList()
-        for (i in grantResults.indices) {
-            permissionsToRequest.add(permissions[i])
-        }
-        if (permissionsToRequest.isNotEmpty()) {
-            requestPermissions(permissionsToRequest.toTypedArray(),
-                REQUEST_PERMISSIONS_REQUEST_CODE)
-        }
-    }
-
-    val mIgnorer = NetworkLocationIgnorer()
-    var mLastTime: Long = 0 // milliseconds
-
-    private val locationServiceReceiver: BroadcastReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            val loc = intent!!.getParcelableExtra<Location>("EXTRA_LOCATION")
-            loc?.let {
-                accuracyTv.text = loc.accuracy.toString()
-                newLocationUpdateUI(GeoPoint(loc.latitude, loc.longitude))
-            }
-        }
-    }
-
-
     private fun newLocationUpdateUI(newLocation: GeoPoint) {
         viewModel.insertCurrentPoint(newLocation)
-        if (!polyline.isEnabled) {
-            //we get the location for the first time:
-            polyline.isEnabled = true
-        }
-        map.controller.animateTo(newLocation)
-        map.overlayManager.add(polyline)
-        map.invalidate()
+        if (!polyline.isEnabled) polyline.isEnabled = true //we get the location for the first time:
+        observeCurrentRoute()
+        binding.mapView.controller.animateTo(newLocation)
+        binding.mapView.overlayManager.add(polyline)
+        binding.mapView.invalidate()
 //        Log.d(LOG_TAG, "Thread: ${Thread.currentThread().name}")
     }
 
@@ -187,6 +146,47 @@ class RecordRouteFragment : Fragment(), KoinComponent
         requireActivity().stopService(Intent(requireContext(), LocationService::class.java))
     }
 
+    private fun observeCurrentRoute() {
+        viewModel.route.observe(viewLifecycleOwner, {
+            val geoPoints = it.points.map { point -> point.geoPoint }
+            polyline.setPoints(geoPoints)
+        })
+    }
+
+    private fun setMapViewProperties() {
+        binding.mapView.setTileSource(TileSourceFactory.MAPNIK)
+        binding.mapView.setMultiTouchControls(true)
+        binding.mapView.controller.setZoom(18.0)
+    }
+
+    private fun setPolylineProperties() {
+        polyline.outlinePaint.strokeWidth = 7F
+        polyline.outlinePaint.color = Color.MAGENTA
+    }
+
+    private val locationServiceReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            val loc = intent!!.getParcelableExtra<Location>("EXTRA_LOCATION")
+            loc?.let {
+                binding.tvAccuracy.text = loc.accuracy.toString()
+                newLocationUpdateUI(GeoPoint(loc.latitude, loc.longitude))
+            }
+        }
+    }
+
+    private val btStopRecordOnClick = View.OnClickListener()  {
+        stopLocationService()
+        binding.btStopRecord.visibility = View.GONE
+        binding.btStartRecord.visibility = View.VISIBLE
+    }
+
+    private val btRecordRouteOnClick = View.OnClickListener() {
+        viewModel.insertNewRoute(RouteDisplayable(5, true, ArrayList()).toRoute()) // TODO: 2/17/2021 now routeId is hardcoded
+        requireActivity().startService(Intent(context, LocationService::class.java))
+        observeCurrentRoute()
+        binding.btStartRecord.visibility = View.GONE
+        binding.btStopRecord.visibility = View.VISIBLE
+    }
 
     companion object {
         const val REQUEST_PERMISSIONS_REQUEST_CODE = 0
@@ -194,14 +194,5 @@ class RecordRouteFragment : Fragment(), KoinComponent
         val OSM_PERMISSIONS = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.WRITE_EXTERNAL_STORAGE)
         const val SEND_LOCATION_ACTION = BuildConfig.APPLICATION_ID + ".send_location_action"
-
-
     }
-    private fun observeCurrentRoute() {
-        viewModel.routes.observe(this, {
-            polyline.setPoints(it.points.map { point -> point.geoPoint })
-            it.points
-        })
-    }
-
 }

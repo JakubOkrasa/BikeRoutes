@@ -7,10 +7,15 @@ import androidx.lifecycle.viewModelScope
 import org.osmdroid.util.GeoPoint
 import pl.jakubokrasa.bikeroutes.features.routerecording.domain.GetCurrentRouteUseCase
 import pl.jakubokrasa.bikeroutes.features.routerecording.domain.InsertCurrentPointUseCase
+import pl.jakubokrasa.bikeroutes.features.routerecording.domain.InsertNewRouteUseCase
+import pl.jakubokrasa.bikeroutes.features.routerecording.domain.model.Route
 import pl.jakubokrasa.bikeroutes.features.routerecording.ui.model.RouteDisplayable
 
-class RecordRouteViewModel(private val getCurrentRouteUseCase: GetCurrentRouteUseCase, private val insertCurrentPointUseCase: InsertCurrentPointUseCase) : ViewModel() {
-    val routes by lazy {
+class RecordRouteViewModel(
+    private val getCurrentRouteUseCase: GetCurrentRouteUseCase,
+    private val insertCurrentPointUseCase: InsertCurrentPointUseCase,
+    private val insertNewRouteUseCase: InsertNewRouteUseCase) : ViewModel() {
+    val route by lazy {
         MutableLiveData<RouteDisplayable>()
             .also { getCurrentRoute(it) }
     }
@@ -23,8 +28,18 @@ class RecordRouteViewModel(private val getCurrentRouteUseCase: GetCurrentRouteUs
             result -> result.onSuccess {
                 routesLiveData.value = RouteDisplayable(it)
         }
-            result.onFailure { Log.e(LOG_TAG, "route not inserte") }
+            result.onFailure { Log.e(LOG_TAG, "getCurrentRoute FAILURE") }
 
+        }
+    }
+
+    fun insertNewRoute(route: Route) {
+        insertNewRouteUseCase(
+            params = route,
+            scope = viewModelScope
+        ) {
+                result -> result.onSuccess { Log.d(LOG_TAG, "route inserted")}
+            result.onFailure { Log.e(LOG_TAG, "route not inserted") }
         }
     }
 
@@ -33,7 +48,10 @@ class RecordRouteViewModel(private val getCurrentRouteUseCase: GetCurrentRouteUs
             params = geoPoint,
             scope = viewModelScope
         ) {
-          result -> result.onSuccess { Log.d(LOG_TAG, "point inserted") }
+          result -> result.onSuccess {
+            Log.d(LOG_TAG, "point inserted")
+            getCurrentRoute(this.route)} // todo nie wiem czy to może tu być
+
             result.onFailure { Log.e(LOG_TAG, "point not inserted") }
         }
     }

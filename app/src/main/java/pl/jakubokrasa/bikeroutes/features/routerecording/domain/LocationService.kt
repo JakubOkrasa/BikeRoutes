@@ -147,10 +147,11 @@ class LocationService : Service(), KoinComponent {
     }
 
     private fun onNewLocation(loc: Location) {
-//        Log.i(LOG_TAG, "New location: $loc")
         Log.d(LOG_TAG, "service Thread: ${Thread.currentThread().name}")
+        if(this::mLocation.isInitialized && mLocation.latitude==loc.latitude && mLocation.longitude==loc.longitude) //temporary solution (todo ignore similar locations)
+            return
         mLocation = loc
-        recordCurrentLocationInTrack(GeoPoint(loc.latitude, loc.longitude))
+        Log.i(LOG_TAG, "new location: lat: ${loc.latitude}, lng: ${loc.longitude}")
 
         //send update UI broadcast
         val newLocIntent = Intent()
@@ -159,12 +160,6 @@ class LocationService : Service(), KoinComponent {
         mLocalBR.sendBroadcast(newLocIntent)
 
     }
-
-    private fun recordCurrentLocationInTrack(newLocation: GeoPoint) {
-        Log.i(LOG_TAG, "POINT: lat: ${newLocation.latitude}, lng: ${newLocation.longitude}")
-    }
-
-
 
     private fun removeLocationUpdates() {
         Log.i(LOG_TAG, "Removing location updates")

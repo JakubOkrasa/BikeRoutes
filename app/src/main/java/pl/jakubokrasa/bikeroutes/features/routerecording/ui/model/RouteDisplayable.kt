@@ -8,6 +8,9 @@ data class RouteDisplayable(
     val current: Boolean,
     var points: List<Point>
 ) {
+    fun toRoute(): Route {
+        return Route(this.routeId, this.current, this.points)
+    }
 
     constructor(route: Route) : this (
         routeId = route.routeId,

@@ -6,6 +6,7 @@ import org.osmdroid.util.GeoPoint
 
 
 class GeoPointConverter {
+    // todo AA robi to w inny sposob: jvmstatic + typetoken
     @TypeConverter
     fun toGeoPoint(data: String?): GeoPoint {
         return Gson().fromJson(data, GeoPoint::class.java)
