@@ -8,7 +8,7 @@ import pl.jakubokrasa.bikeroutes.features.routerecording.data.local.model.PointC
 import pl.jakubokrasa.bikeroutes.features.routerecording.data.local.model.RouteCached
 import pl.jakubokrasa.bikeroutes.features.routerecording.domain.model.Route
 
-@Database(entities = [RouteCached::class, PointCached::class], version = 1, exportSchema = false)
+@Database(entities = [RouteCached::class, PointCached::class], version = 4, exportSchema = false)
 @TypeConverters(GeoPointConverter::class)
 abstract class RoutesDatabase : RoomDatabase() {
     abstract fun routeDao(): RouteDao

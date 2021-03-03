@@ -17,7 +17,6 @@ class RecordRouteViewModel(
     private val insertNewRouteUseCase: InsertNewRouteUseCase) : ViewModel() {
     val route by lazy {
         MutableLiveData<RouteDisplayable>()
-            .also { getCurrentRoute(it) }
     }
 
     private fun getCurrentRoute(routesLiveData: MutableLiveData<RouteDisplayable>) {
@@ -50,7 +49,10 @@ class RecordRouteViewModel(
         ) {
           result -> result.onSuccess {
             Log.d(LOG_TAG, "point inserted")
-            getCurrentRoute(this.route)} // todo nie wiem czy to może tu być
+            getCurrentRoute(this.route)  //todo nie wiem czy to nie powinno być robione automatycznie przez routeslivedata. Już wiem,
+                                        // RouteDisplayable nie zawiera listy punktów, więc livedata nie powoduje odświerzenia widoku
+                                        //to powoduje że livedata jest tu chyba bezużyteczna
+        }
 
             result.onFailure { Log.e(LOG_TAG, "point not inserted") }
         }

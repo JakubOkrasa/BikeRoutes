@@ -9,12 +9,10 @@ import android.content.pm.PackageManager
 import android.graphics.Color
 import android.location.Location
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.view.WindowManager
-import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.preference.PreferenceManager.getDefaultSharedPreferences
@@ -24,19 +22,18 @@ import org.koin.core.inject
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
-import org.osmdroid.views.overlay.Overlay
-import org.osmdroid.views.overlay.Polyline
+import org.osmdroid.views.overlay.*
 import pl.jakubokrasa.bikeroutes.BuildConfig
 import pl.jakubokrasa.bikeroutes.R
 import pl.jakubokrasa.bikeroutes.databinding.FragmentRecordRouteBinding
 import pl.jakubokrasa.bikeroutes.features.routerecording.domain.LocationService
 import pl.jakubokrasa.bikeroutes.features.routerecording.ui.model.RouteDisplayable
-import kotlin.collections.ArrayList
 
 
 class RecordRouteFragment() : Fragment(R.layout.fragment_record_route), KoinComponent {
     private var polyline: Polyline = Polyline()
     private lateinit var mRotationGestureOverlay: Overlay
+    private lateinit var mPreviousLocMarker: Marker
     private var trackPointsList: ArrayList<GeoPoint> = ArrayList()
     private val mLocalBR: LocalBroadcastManager by inject()
     private val viewModel: RecordRouteViewModel by viewModel()
@@ -59,22 +56,6 @@ class RecordRouteFragment() : Fragment(R.layout.fragment_record_route), KoinComp
         setMapViewProperties()
         setPolylineProperties()
     }
-
-//    override fun onCreateView(
-//        inflater: LayoutInflater,
-//        container: ViewGroup?,
-//        savedInstanceState: Bundle?
-//    ): View? {
-//        val root = binding.root
-//
-//
-//        return root
-//    }
-
-//    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-//        super.onViewCreated(view, savedInstanceState)
-//
-//    }
 
    override fun onStart() {
         super.onStart()
@@ -132,14 +113,24 @@ class RecordRouteFragment() : Fragment(R.layout.fragment_record_route), KoinComp
         }
     }
 
-    private fun newLocationUpdateUI(newLocation: GeoPoint) {
-        viewModel.insertCurrentPoint(newLocation)
+    private fun newLocationUpdateUI(geoPoint: GeoPoint) {
+        viewModel.insertCurrentPoint(geoPoint)
         if (!polyline.isEnabled) polyline.isEnabled = true //we get the location for the first time:
         observeCurrentRoute()
-        binding.mapView.controller.animateTo(newLocation)
+        binding.mapView.controller.animateTo(geoPoint)
         binding.mapView.overlayManager.add(polyline)
+        showCurrentLocationMarker(geoPoint)
         binding.mapView.invalidate()
-//        Log.d(LOG_TAG, "Thread: ${Thread.currentThread().name}")
+    }
+
+    private fun showCurrentLocationMarker(geoPoint: GeoPoint) {
+        val currentLocMarker = Marker(binding.mapView, context)
+        currentLocMarker.icon = ResourcesCompat.getDrawable(resources, R.drawable.marker_my_location, null)
+        currentLocMarker.position = GeoPoint(geoPoint)
+        currentLocMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER)
+        if(this::mPreviousLocMarker.isInitialized) binding.mapView.overlays.remove(mPreviousLocMarker)
+        binding.mapView.overlays.add(currentLocMarker)
+        mPreviousLocMarker = currentLocMarker
     }
 
     private fun stopLocationService() {
@@ -168,7 +159,6 @@ class RecordRouteFragment() : Fragment(R.layout.fragment_record_route), KoinComp
         override fun onReceive(context: Context?, intent: Intent?) {
             val loc = intent!!.getParcelableExtra<Location>("EXTRA_LOCATION")
             loc?.let {
-                binding.tvAccuracy.text = loc.accuracy.toString()
                 newLocationUpdateUI(GeoPoint(loc.latitude, loc.longitude))
             }
         }

@@ -9,7 +9,7 @@ data class RouteWithPointsCached(
     @Embedded val route: RouteCached,
     @Relation(
         parentColumn = "routeId",
-        entityColumn = "pointId"
+        entityColumn = "routeId"
     )
     val points: List<PointCached>
 ) {

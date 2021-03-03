@@ -20,4 +20,6 @@ private fun createDatabase(context: Context) =
         context,
         RoutesDatabase::class.java,
         "route_db"
-    ).build()
+    )
+        .fallbackToDestructiveMigration()
+        .build()

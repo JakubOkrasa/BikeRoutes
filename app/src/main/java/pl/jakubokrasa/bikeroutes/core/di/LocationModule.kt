@@ -11,13 +11,14 @@ val locationModule = module {
     single { LocationServices.getFusedLocationProviderClient(androidContext());}
     single {LocationUtils(get(), get())}
     single { createLocationRequest() }
-}
+} 
 
 private fun createLocationRequest() =
     LocationRequest()
         .setInterval(UPDATE_INTERVAL_IN_MILLISECONDS)
         .setFastestInterval(FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS)
         .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+//        .setSmallestDisplacement(5f)
 
 const val UPDATE_INTERVAL_IN_MILLISECONDS = 4_000L;
 const val FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS = UPDATE_INTERVAL_IN_MILLISECONDS / 2
