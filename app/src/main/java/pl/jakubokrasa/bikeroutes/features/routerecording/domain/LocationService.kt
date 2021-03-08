@@ -21,7 +21,6 @@ import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.overlay.Polyline
 import pl.jakubokrasa.bikeroutes.MainActivity
 import pl.jakubokrasa.bikeroutes.R
-import pl.jakubokrasa.bikeroutes.core.util.CustomHandler
 import pl.jakubokrasa.bikeroutes.core.util.LocationUtils
 import pl.jakubokrasa.bikeroutes.features.routerecording.ui.RecordRouteFragment
 import pl.jakubokrasa.bikeroutes.features.routerecording.ui.RecordRouteFragment.Companion.SEND_LOCATION_ACTION
@@ -61,8 +60,10 @@ class LocationService : Service(), KoinComponent {
         mLocationCallback = object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult) {
                 super.onLocationResult(locationResult)
-                val location = locationResult.lastLocation
-                if(location!=null) onNewLocation(location) //todo move this if somewhere maybe
+                locationResult.let {
+                    val location = it.lastLocation
+                    onNewLocation(location)
+                }
             }
         }
     }
