@@ -7,16 +7,16 @@
     tools:context=".features.routerecording.ui.RecordRouteFragment">
 
     <org.osmdroid.views.MapView
-        android:id="@+id/mv_record_route"
+        android:id="@+id/map_view"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/bt_record"
+        app:layout_constraintTop_toBottomOf="@id/bt_start_record"
         tilesource="Mapnik">
     </org.osmdroid.views.MapView>
 
     <Button
-        android:id="@+id/bt_record"
+        android:id="@+id/bt_start_record"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
@@ -25,36 +25,12 @@
         />
 
     <Button
-        android:id="@+id/bt_stop_recording"
+        android:id="@+id/bt_stop_record"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         android:text="stop service"
-        android:visibility="gone"
-        />
-    <TextView
-        android:id="@+id/tv_accuracy"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="30sp"
-        android:text="-1"
-        android:textColor="#FF0000"
-        app:layout_constraintLeft_toRightOf="@id/bt_record"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_margin="10dp"
-        />
-
-    <TextView
-        android:id="@+id/tv_last_accuracy"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="20sp"
-        android:text="-1"
-        android:textColor="#FF0000"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_accuracy"
-        android:layout_margin="10dp"
         android:visibility="gone"
         />
 </androidx.constraintlayout.widget.ConstraintLayout>

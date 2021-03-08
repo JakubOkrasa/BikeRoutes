@@ -14,20 +14,19 @@ import com.google.android.gms.location.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
-import org.koin.core.component.KoinApiExtension
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
+import org.koin.core.KoinComponent
+
+import org.koin.core.inject
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.overlay.Polyline
 import pl.jakubokrasa.bikeroutes.MainActivity
 import pl.jakubokrasa.bikeroutes.R
+import pl.jakubokrasa.bikeroutes.core.util.CustomHandler
 import pl.jakubokrasa.bikeroutes.core.util.LocationUtils
 import pl.jakubokrasa.bikeroutes.features.routerecording.ui.RecordRouteFragment
 import pl.jakubokrasa.bikeroutes.features.routerecording.ui.RecordRouteFragment.Companion.SEND_LOCATION_ACTION
 
-@KoinApiExtension
 class LocationService : Service(), KoinComponent {
-//    private val track = Polyline()
     private val mLocationRequest: LocationRequest by inject()
     private val mFusedLocationClient: FusedLocationProviderClient by inject()
     private val locUtils: LocationUtils by inject()
@@ -36,6 +35,9 @@ class LocationService : Service(), KoinComponent {
     private lateinit var mServiceHandler: Handler
     private lateinit var mNotificationManager: NotificationManager
     private lateinit var mLocation: Location
+
+//    private lateinit var customHandler: CustomHandler
+//    private lateinit var handlerThread: HandlerThread
 
 
     override fun onBind(intent: Intent): IBinder? {
@@ -60,23 +62,7 @@ class LocationService : Service(), KoinComponent {
             override fun onLocationResult(locationResult: LocationResult) {
                 super.onLocationResult(locationResult)
                 val location = locationResult.lastLocation
-//                var lastTime = SystemClock.elapsedRealtimeNanos()
-                val accuracy = location.accuracy
-                Log.d(LOG_TAG, "accuracy: $accuracy")
-//                location.takeIf { accuracy<50 }
-////                    ?.let {
-//                        if (accuracy<15||lastTime-location.elapsedRealtimeNanos>5_000_000_000) {
-//                            lastTime = location.elapsedRealtimeNanos
-                            onNewLocation((location))
-
-
-//                        }
-//                    }
-//                if(location.accuracy>15) { return }
-//                onNewLocation(locationResult.lastLocation)
-
-
-
+                if(location!=null) onNewLocation(location) //todo move this if somewhere maybe
             }
         }
     }
@@ -89,6 +75,7 @@ class LocationService : Service(), KoinComponent {
                 "Location Service notification",
                 NotificationManager.IMPORTANCE_DEFAULT)
             channel.description = "the notification informs about running Location service"
+            channel.setSound(null, null) //rename channel if there is a sound still
             notifyManager.createNotificationChannel(channel)
         }
     }
@@ -101,9 +88,12 @@ class LocationService : Service(), KoinComponent {
             }
 
         val notification = NotificationCompat.Builder(this, CHANNEL_DEFAULT_IMPORTANCE)
-            .setContentTitle("Location Service").setContentText("is running")
-            .setSmallIcon(R.drawable.ic_loc_service).setContentIntent(pendingIntent)
-            .setTicker("Location Service started (ticker)").build()
+            .setContentTitle("Location Service")
+            .setContentText("is running")
+            .setSmallIcon(R.drawable.ic_loc_service)
+            .setContentIntent(pendingIntent)
+            .setSound(null)
+            .setTicker("Route recording started").build()
 
             startForeground(SERVICE_NOTIFICATION_ID, notification) //todo w przykladzie to jest w onUnBind (wtedy notifikacja jest widoczna tylko gdy aplikacja jest zminimalizowana
             requestLocationUpdates()
@@ -148,10 +138,9 @@ class LocationService : Service(), KoinComponent {
     }
 
     private fun onNewLocation(loc: Location) {
-//        Log.i(LOG_TAG, "New location: $loc")
         Log.d(LOG_TAG, "service Thread: ${Thread.currentThread().name}")
         mLocation = loc
-        recordCurrentLocationInTrack(GeoPoint(loc.latitude, loc.longitude))
+        Log.i(LOG_TAG, "new location: lat: ${loc.latitude}, lng: ${loc.longitude}")
 
         //send update UI broadcast
         val newLocIntent = Intent()
@@ -160,12 +149,6 @@ class LocationService : Service(), KoinComponent {
         mLocalBR.sendBroadcast(newLocIntent)
 
     }
-
-    private fun recordCurrentLocationInTrack(newLocation: GeoPoint) {
-        Log.i(LOG_TAG, "POINT: lat: ${newLocation.latitude}, lng: ${newLocation.longitude}")
-    }
-
-
 
     private fun removeLocationUpdates() {
         Log.i(LOG_TAG, "Removing location updates")
@@ -183,7 +166,5 @@ class LocationService : Service(), KoinComponent {
         const val CHANNEL_DEFAULT_IMPORTANCE = "service_notification_channel"
         const val SERVICE_NOTIFICATION_ID = 1
         val LOG_TAG: String = LocationService::class.java.simpleName
-
-
     }
 }
