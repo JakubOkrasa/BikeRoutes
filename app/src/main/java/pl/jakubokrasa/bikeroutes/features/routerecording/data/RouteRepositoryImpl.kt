@@ -24,4 +24,8 @@ class RouteRepositoryImpl(private val dao: RouteDao): RouteRepository {
         return dao.insertCurrentRoutePoint(geoPoint)
     }
 
+    override suspend fun markRouteAsNotCurrent() {
+        dao.markRouteAsNotCurrent()
+    }
+
 }

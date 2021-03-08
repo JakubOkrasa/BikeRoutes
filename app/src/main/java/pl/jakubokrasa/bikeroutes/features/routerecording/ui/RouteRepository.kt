@@ -13,4 +13,6 @@ interface RouteRepository {
 
     suspend fun insertCurrentRoutePoint(geoPoint: GeoPoint)
 
+    suspend fun markRouteAsNotCurrent()
+
 }
