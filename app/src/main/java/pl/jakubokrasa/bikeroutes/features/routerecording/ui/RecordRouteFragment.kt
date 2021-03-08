@@ -9,8 +9,10 @@ import android.content.pm.PackageManager
 import android.graphics.Color
 import android.location.Location
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.WindowManager
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
@@ -37,6 +39,11 @@ class RecordRouteFragment() : Fragment(R.layout.fragment_record_route), KoinComp
     private var trackPointsList: ArrayList<GeoPoint> = ArrayList()
     private val mLocalBR: LocalBroadcastManager by inject()
     private val viewModel: RecordRouteViewModel by viewModel()
+    private val requestMultiplePermissions = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
+        permissions.entries.forEach {
+            Log.d(LOG_TAG, "permission: ${it.key} = ${it.value}")
+        }
+    }
 
     //from https://developer.android.com/topic/libraries/view-binding
     private var _binding: FragmentRecordRouteBinding? = null
@@ -86,19 +93,6 @@ class RecordRouteFragment() : Fragment(R.layout.fragment_record_route), KoinComp
         binding.mapView.onPause() //needed for compass, my location overlays, v6.0.0 and up
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int, permissions: Array<String?>, grantResults: IntArray
-    ) {
-        val permissionsToRequest: ArrayList<String?> = ArrayList()
-        for (i in grantResults.indices) {
-            permissionsToRequest.add(permissions[i])
-        }
-        if (permissionsToRequest.isNotEmpty()) {
-            requestPermissions(permissionsToRequest.toTypedArray(),
-                REQUEST_PERMISSIONS_REQUEST_CODE)
-        }
-    }
-
     private fun requestPermissionsIfNecessary(permissions: Array<String>) {
         val permissionsToRequest: ArrayList<String> = ArrayList()
         for (perm in permissions) {
@@ -108,8 +102,7 @@ class RecordRouteFragment() : Fragment(R.layout.fragment_record_route), KoinComp
             }
         }
         if (permissionsToRequest.isNotEmpty()) {
-            requestPermissions(permissionsToRequest.toTypedArray(),
-                REQUEST_PERMISSIONS_REQUEST_CODE)
+            requestMultiplePermissions.launch(permissionsToRequest.toTypedArray())
         }
     }
 
@@ -179,7 +172,6 @@ class RecordRouteFragment() : Fragment(R.layout.fragment_record_route), KoinComp
     }
 
     companion object {
-        const val REQUEST_PERMISSIONS_REQUEST_CODE = 0
         private val LOG_TAG: String? = RecordRouteFragment::class.simpleName
         val OSM_PERMISSIONS = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.WRITE_EXTERNAL_STORAGE)
