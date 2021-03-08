@@ -35,10 +35,6 @@ class LocationService : Service(), KoinComponent {
     private lateinit var mNotificationManager: NotificationManager
     private lateinit var mLocation: Location
 
-//    private lateinit var customHandler: CustomHandler
-//    private lateinit var handlerThread: HandlerThread
-
-
     override fun onBind(intent: Intent): IBinder? {
         return null
     }
