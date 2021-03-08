@@ -17,11 +17,15 @@ class RouteRepositoryImpl(private val dao: RouteDao): RouteRepository {
 //    }
 
     override suspend fun insertRoute(route: Route) {
-        dao.insertRoute(RouteCached(route.routeId, route.current))
+        dao.insertRoute(RouteCached(0, route.current)) //routeId=0 to be auto-generated
     }
 
     override suspend fun insertCurrentRoutePoint(geoPoint: GeoPoint) {
         return dao.insertCurrentRoutePoint(geoPoint)
+    }
+
+    override suspend fun markRouteAsNotCurrent() {
+        dao.markRouteAsNotCurrent()
     }
 
 }

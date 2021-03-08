@@ -23,10 +23,6 @@ interface RouteDao {
     @Query("SELECT * from RouteCached WHERE current=1")
     suspend fun getCurrentRoute(): RouteWithPointsCached
 
-//    @Query("INSERT INTO (select current from RouteCached where current=1) VALUES(0) WHERE current=1")
-//    suspend fun markRouteAsNotCurrent()
-
-
-//    @Query("DELETE FROM RouteCached")
-//    fun deleteCurrentRoute()
+    @Query("UPDATE RouteCached SET current=0 WHERE current=1")
+    suspend fun markRouteAsNotCurrent()
 }
