@@ -14,7 +14,6 @@ data class RouteWithPointsCached(
     val points: List<PointCached>
 ) {
     fun toRoute() = Route(
-        route.routeId,
         route.current,
         points.map {
             Point(it.pointId, it.geoPoint)

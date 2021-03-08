@@ -5,7 +5,7 @@ import pl.jakubokrasa.bikeroutes.features.routerecording.domain.model.Route
 import pl.jakubokrasa.bikeroutes.features.routerecording.ui.RouteRepository
 
 class InsertNewRouteUseCase(private val routeRepository: RouteRepository):UseCase<Unit, Route>() {
-    override suspend fun action(route: Route) {
-        routeRepository.insertRoute(route)
+    override suspend fun action(params: Route) {
+        routeRepository.insertRoute(params)
     }
 }

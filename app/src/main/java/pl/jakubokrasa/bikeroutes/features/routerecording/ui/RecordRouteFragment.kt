@@ -164,7 +164,7 @@ class RecordRouteFragment() : Fragment(R.layout.fragment_record_route), KoinComp
     }
 
     private val btRecordRouteOnClick = View.OnClickListener() {
-        viewModel.insertNewRoute(RouteDisplayable(5, true, ArrayList()).toRoute()) // TODO: 2/17/2021 now routeId is hardcoded
+        viewModel.insertNewRoute(RouteDisplayable(true, ArrayList()).toRoute()) // TODO: 2/17/2021 now routeId is hardcoded
         requireActivity().startService(Intent(context, LocationService::class.java))
         observeCurrentRoute()
         binding.btStartRecord.visibility = View.GONE
