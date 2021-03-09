@@ -2,20 +2,9 @@ package pl.jakubokrasa.bikeroutes.core.app
 
 import android.app.Application
 import android.content.res.Configuration
-import androidx.room.Room
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.runBlocking
-import org.koin.android.ext.android.inject
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
-import org.osmdroid.util.GeoPoint
 import pl.jakubokrasa.bikeroutes.core.di.koinInjector
-import pl.jakubokrasa.bikeroutes.features.routerecording.data.RouteRepositoryImpl
-import pl.jakubokrasa.bikeroutes.features.routerecording.data.local.RouteDao
-import pl.jakubokrasa.bikeroutes.features.routerecording.data.local.RoutesDatabase
-import pl.jakubokrasa.bikeroutes.features.routerecording.data.local.model.RouteCached
-import pl.jakubokrasa.bikeroutes.features.routerecording.domain.GetCurrentRouteUseCase
-import pl.jakubokrasa.bikeroutes.features.routerecording.ui.RouteRepository
 
 class App: Application() {
     override fun onCreate() {
@@ -28,15 +17,15 @@ class App: Application() {
     }
 
 //    private fun startDB() {
-////        val db: RoutesDatabase = Room.databaseBuilder(
+////        val db: RouteAndPointDatabase = Room.databaseBuilder(
 ////            applicationContext,
-////            RoutesDatabase::class.java,
+////            RouteAndPointDatabase::class.java,
 ////            "route_db"
 ////        ).build()
-////        val dao: RouteDao = db.routeDao()
+////        val dao: RouteAndPointDao = db.routeDao()
 ////        val repo: RouteRepositoryImpl = RouteRepositoryImpl(dao)
 //        val repo: RouteRepositoryImpl by inject()
-//        val dao: RouteDao by inject()
+//        val dao: RouteAndPointDao by inject()
 //        runBlocking {
 ////            val usecase = GetCurrentRouteUseCase(repo)
 ////            usecase(Unit, GlobalScope)

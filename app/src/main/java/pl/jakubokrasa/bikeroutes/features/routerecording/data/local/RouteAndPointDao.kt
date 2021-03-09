@@ -11,7 +11,7 @@ import pl.jakubokrasa.bikeroutes.features.routerecording.domain.model.Point
 import pl.jakubokrasa.bikeroutes.features.routerecording.domain.model.Route
 
 @Dao
-interface RouteDao {
+interface RouteAndPointDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertRoute(route: RouteCached)
 
