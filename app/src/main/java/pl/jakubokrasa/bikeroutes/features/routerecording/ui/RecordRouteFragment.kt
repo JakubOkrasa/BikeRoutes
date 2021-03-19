@@ -18,7 +18,7 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.preference.PreferenceManager.getDefaultSharedPreferences
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 import org.osmdroid.config.Configuration
@@ -29,7 +29,7 @@ import pl.jakubokrasa.bikeroutes.BuildConfig
 import pl.jakubokrasa.bikeroutes.R
 import pl.jakubokrasa.bikeroutes.databinding.FragmentRecordRouteBinding
 import pl.jakubokrasa.bikeroutes.features.routerecording.domain.LocationService
-import pl.jakubokrasa.bikeroutes.features.routerecording.ui.model.RouteDisplayable
+import pl.jakubokrasa.bikeroutes.features.routerecording.ui.model.RouteWithPointsDisplayable
 
 
 class RecordRouteFragment() : Fragment(R.layout.fragment_record_route), KoinComponent {
@@ -38,7 +38,7 @@ class RecordRouteFragment() : Fragment(R.layout.fragment_record_route), KoinComp
     private lateinit var mPreviousLocMarker: Marker
     private var trackPointsList: ArrayList<GeoPoint> = ArrayList()
     private val mLocalBR: LocalBroadcastManager by inject()
-    private val viewModel: RecordRouteViewModel by viewModel()
+    private val viewModel: RouteViewModel by sharedViewModel()
     private val requestMultiplePermissions = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
         permissions.entries.forEach {
             Log.d(LOG_TAG, "permission: ${it.key} = ${it.value}")
@@ -165,7 +165,7 @@ class RecordRouteFragment() : Fragment(R.layout.fragment_record_route), KoinComp
     }
 
     private val btRecordRouteOnClick = View.OnClickListener() {
-        viewModel.insertNewRoute(RouteDisplayable(true, ArrayList()).toRoute())
+        viewModel.insertNewRoute(RouteWithPointsDisplayable(true, ArrayList()).toRoute())
         requireActivity().startService(Intent(context, LocationService::class.java))
         observeCurrentRoute()
         binding.btStartRecord.visibility = View.GONE

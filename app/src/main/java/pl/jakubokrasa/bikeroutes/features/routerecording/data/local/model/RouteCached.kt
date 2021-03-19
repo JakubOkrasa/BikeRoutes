@@ -9,6 +9,8 @@ import pl.jakubokrasa.bikeroutes.features.routerecording.domain.model.Route
 data class RouteCached(
     @PrimaryKey(autoGenerate = true)
     val routeId: Long,
+    val name: String,
+    val distance: Int,
     val current: Boolean
     )
 {
