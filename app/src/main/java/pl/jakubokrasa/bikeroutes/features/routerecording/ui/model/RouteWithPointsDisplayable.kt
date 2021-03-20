@@ -1,22 +1,32 @@
 package pl.jakubokrasa.bikeroutes.features.routerecording.ui.model
 
+import pl.jakubokrasa.bikeroutes.core.user.sharingType
 import pl.jakubokrasa.bikeroutes.features.routerecording.domain.model.Point
 import pl.jakubokrasa.bikeroutes.features.routerecording.domain.model.Route
 
 data class RouteWithPointsDisplayable(
     val name: String,
-    val distance: Int,
+    val description: String,
     val current: Boolean,
+    val distance: Int,
+    val sharingType: sharingType,
     var points: List<Point>
 ) {
     fun toRoute(): Route {
-        return Route(this.name, this.distance, this.current, this.points)
+        return Route(
+            name = name,
+            description = description,
+            current = current,
+            distance = distance,
+            sharingType = sharingType,
+            points = points)
     }
 
     constructor(route: Route) : this (
         name = route.name,
-        distance = route.distance,
+        description = route.description,
         current = route.current,
-        points = route.points
-        )
+        distance = route.distance,
+        sharingType = route.sharingType,
+        points = route.points)
 }

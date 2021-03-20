@@ -9,6 +9,7 @@ import android.content.pm.PackageManager
 import android.graphics.Color
 import android.location.Location
 import android.os.Bundle
+import android.text.TextUtils.replace
 import android.util.Log
 import android.view.View
 import android.view.WindowManager
@@ -16,6 +17,9 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.add
+import androidx.fragment.app.commit
+import androidx.fragment.app.replace
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.preference.PreferenceManager.getDefaultSharedPreferences
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
@@ -27,6 +31,10 @@ import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.overlay.*
 import pl.jakubokrasa.bikeroutes.BuildConfig
 import pl.jakubokrasa.bikeroutes.R
+import pl.jakubokrasa.bikeroutes.core.extentions.makeGone
+import pl.jakubokrasa.bikeroutes.core.extentions.makeVisible
+import pl.jakubokrasa.bikeroutes.core.extentions.replaceChildFragment
+import pl.jakubokrasa.bikeroutes.core.user.sharingType
 import pl.jakubokrasa.bikeroutes.databinding.FragmentRecordRouteBinding
 import pl.jakubokrasa.bikeroutes.features.routerecording.domain.LocationService
 import pl.jakubokrasa.bikeroutes.features.routerecording.ui.model.RouteWithPointsDisplayable
@@ -160,12 +168,30 @@ class RecordRouteFragment() : Fragment(R.layout.fragment_record_route), KoinComp
     private val btStopRecordOnClick = View.OnClickListener()  {
         stopLocationService()
         viewModel.markRouteAsNotCurrent()
-        binding.btStopRecord.visibility = View.GONE
-        binding.btStartRecord.visibility = View.VISIBLE
+
+        childFragmentManager.commit {
+            replace<SaveRouteFragment>(binding.clFrgContainer.id)
+            setReorderingAllowed(true)
+            addToBackStack("Save a route") // name can be null
+        }
+
+//        val saveRouteFragment = SaveRouteFragment()
+//        replaceChildFragment(saveRouteFragment, R.id.cl_frg_container)
+
+//        binding.btStopRecord.makeGone()
+//        binding.btStartRecord.makeVisible()
     }
 
     private val btRecordRouteOnClick = View.OnClickListener() {
-        viewModel.insertNewRoute(RouteWithPointsDisplayable(true, ArrayList()).toRoute())
+        viewModel.insertNewRoute(RouteWithPointsDisplayable(
+            name = "",
+            description = "",
+            distance = 0,
+            current = true,
+            sharingType = sharingType.PRIVATE,
+            points = ArrayList()
+        ).toRoute())
+
         requireActivity().startService(Intent(context, LocationService::class.java))
         observeCurrentRoute()
         binding.btStartRecord.visibility = View.GONE

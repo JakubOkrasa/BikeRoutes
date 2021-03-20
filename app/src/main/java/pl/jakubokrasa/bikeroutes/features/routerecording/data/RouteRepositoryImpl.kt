@@ -26,7 +26,11 @@ class RouteRepositoryImpl(private val routeAndPointDao: RouteAndPointDao): Route
 //    }
 
     override suspend fun insertRoute(route: Route) {
-        routeAndPointDao.insertRoute(RouteCached(0, route.current)) //routeId=0 to be auto-generated
+        routeAndPointDao.insertRoute(RouteCached(0, route.name, route.description, route.current, route.distance,  route.sharingType)) //routeId=0 to be auto-generated
+    }
+
+    override suspend fun updateCurrentRouteName(name: String) {
+        routeAndPointDao.updateCurrentRouteName(name)
     }
 
     override suspend fun insertCurrentRoutePoint(geoPoint: GeoPoint) {

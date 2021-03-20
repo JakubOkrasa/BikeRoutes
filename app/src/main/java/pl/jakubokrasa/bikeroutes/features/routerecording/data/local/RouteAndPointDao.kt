@@ -26,6 +26,13 @@ interface RouteAndPointDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertRoute(route: RouteCached)
 
+
+    @Query("UPDATE RouteCached SET name=:name WHERE current=1")
+    suspend fun updateCurrentRouteName(name: String)
+
+//    @Query("UPDATE RouteCached SET description=:desc WHERE routeId=:id")
+//    suspend fun updateRouteDescription(id: Long, desc: String)
+
     @Transaction
     @Query("INSERT INTO PointCached(geoPoint, routeId) VALUES(:geoPoint, (SELECT routeId FROM RouteCached WHERE current=1 LIMIT 1))")
     suspend fun insertCurrentRoutePoint(geoPoint: GeoPoint)

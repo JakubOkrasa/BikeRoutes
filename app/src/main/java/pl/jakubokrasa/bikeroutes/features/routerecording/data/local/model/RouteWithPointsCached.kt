@@ -11,12 +11,14 @@ data class RouteWithPointsCached(
         parentColumn = "routeId",
         entityColumn = "routeId"
     )
-    val points: List<PointCached>
+    var points: List<PointCached>
 ) {
     fun toRoute() = Route(
         route.name,
-        route.distance,
+        route.description,
         route.current,
+        route.distance,
+        route.sharingType,
         points.map {
             Point(it.pointId, it.geoPoint)
         }
