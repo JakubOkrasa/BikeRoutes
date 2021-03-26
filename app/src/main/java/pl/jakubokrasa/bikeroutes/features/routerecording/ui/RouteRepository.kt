@@ -6,14 +6,16 @@ import pl.jakubokrasa.bikeroutes.features.routerecording.domain.model.Route
 
 interface RouteRepository {
     suspend fun getCurrentRoute(): Route
+    suspend fun getCurrentRouteId(): Long
+
 
     suspend fun getMyRoutes(): List<Route>
 
-//    suspend fun insertRoute(routeCached: RouteCached)
-
     suspend fun insertRoute(route: Route)
 
-    suspend fun updateCurrentRouteName(name: String)
+    suspend fun updateRouteName(routeId: Long, name: String)
+    suspend fun updateRouteDescription(routeId: Long, description: String)
+    suspend fun updateRouteDistance(routeId: Long, distance: Int)
 
     suspend fun insertCurrentRoutePoint(geoPoint: GeoPoint)
 

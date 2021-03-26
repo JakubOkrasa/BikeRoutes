@@ -3,15 +3,17 @@ package pl.jakubokrasa.bikeroutes.features.routerecording.ui.model
 import pl.jakubokrasa.bikeroutes.core.user.sharingType
 import pl.jakubokrasa.bikeroutes.features.routerecording.domain.model.Point
 import pl.jakubokrasa.bikeroutes.features.routerecording.domain.model.Route
+import java.io.Serializable
 
-data class RouteWithPointsDisplayable(
+data class RouteWithPointsDisplayable (
     val name: String,
     val description: String,
     val current: Boolean,
     val distance: Int,
     val sharingType: sharingType,
     var points: List<Point>
-) {
+): Serializable {
+
     fun toRoute(): Route {
         return Route(
             name = name,

@@ -1,8 +1,12 @@
 package pl.jakubokrasa.bikeroutes.features.myroutes.ui
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
-import androidx.fragment.app.Fragment
+import android.widget.Filter
+import android.widget.Toast
+import androidx.core.os.bundleOf
+import androidx.fragment.app.*
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import org.koin.android.ext.android.inject
@@ -12,9 +16,10 @@ import pl.jakubokrasa.bikeroutes.R
 import pl.jakubokrasa.bikeroutes.databinding.FragmentMyRoutesBinding
 import pl.jakubokrasa.bikeroutes.features.routerecording.domain.model.Point
 import pl.jakubokrasa.bikeroutes.features.routerecording.ui.RouteViewModel
+import pl.jakubokrasa.bikeroutes.features.routerecording.ui.SaveRouteFragment
 import pl.jakubokrasa.bikeroutes.features.routerecording.ui.model.RouteWithPointsDisplayable
 
-class MyRoutesFragment : Fragment(R.layout.fragment_my_routes) {
+class MyRoutesFragment : Fragment(R.layout.fragment_my_routes){
     private val viewModel: RouteViewModel by sharedViewModel() //make shared view model
     private var _binding: FragmentMyRoutesBinding? = null
     private val binding get() = _binding!!
@@ -30,20 +35,15 @@ class MyRoutesFragment : Fragment(R.layout.fragment_my_routes) {
         initRecycler()
     }
 
-    fun initObservers() {
-        observeMyRoutes()
+    override fun onResume() {
+        super.onResume()
+        initObservers()
+        initRecycler()
     }
 
-
-//    fun dummyData(): ArrayList<RouteWithPointsDisplayable> {
-//        var list = ArrayList<RouteWithPointsDisplayable>()
-//        list.add(RouteWithPointsDisplayable(false, listOf(Point(100L, GeoPoint(10.32, 5.84)))))
-//        list.add(RouteWithPointsDisplayable(false, listOf(Point(101L, GeoPoint(10.32, 5.84)), Point(111L, GeoPoint(10.32, 5.84)))))
-//        list.add(RouteWithPointsDisplayable(false, listOf(Point(102L, GeoPoint(10.32, 5.84)), Point(112L, GeoPoint(10.32, 5.84)))))
-//        list.add(RouteWithPointsDisplayable(false, listOf(Point(103L, GeoPoint(10.32, 5.84)), Point(113L, GeoPoint(10.32, 5.84)), Point(123L, GeoPoint(10.32, 5.84)))))
-//        return list
-//        // routeId chyba jednak potrzebne >> a może nie, tu w środku jest listOf
-//    }
+    private fun initObservers() {
+        observeMyRoutes()
+    }
 
     private fun observeMyRoutes() {
         viewModel.myRoutes.observe(viewLifecycleOwner) {
@@ -55,7 +55,24 @@ class MyRoutesFragment : Fragment(R.layout.fragment_my_routes) {
         with(binding.recyclerView) {
             addItemDecoration(divider)
             setHasFixedSize(true)
+            myRoutesRecyclerAdapter.onItemClick = { route ->
+
+                childFragmentManager.commit {
+                    add<FollowRouteFragment>(binding.frgContainer.id)
+                    setReorderingAllowed(true)
+                    addToBackStack("Follow route")
+                    childFragmentManager.setFragmentResult("requestKey", bundleOf("route" to route))
+//                    arguments = Bundle() .also { it.putSerializable("route", route) }
+//                    arguments = bundleOf(Pair("route", route))
+
+
+                }
+            }
             adapter = myRoutesRecyclerAdapter
         }
+    }
+
+    companion object {
+        val LOG_TAG = MyRoutesFragment::class.simpleName
     }
 }

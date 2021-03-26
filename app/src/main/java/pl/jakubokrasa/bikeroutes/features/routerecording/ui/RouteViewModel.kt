@@ -4,10 +4,7 @@ import android.util.Log
 import androidx.lifecycle.*
 import org.osmdroid.util.GeoPoint
 import pl.jakubokrasa.bikeroutes.features.myroutes.domain.GetMyRoutesUseCase
-import pl.jakubokrasa.bikeroutes.features.routerecording.domain.GetCurrentRouteUseCase
-import pl.jakubokrasa.bikeroutes.features.routerecording.domain.InsertCurrentPointUseCase
-import pl.jakubokrasa.bikeroutes.features.routerecording.domain.InsertNewRouteUseCase
-import pl.jakubokrasa.bikeroutes.features.routerecording.domain.MarkRouteAsNotCurrentUseCase
+import pl.jakubokrasa.bikeroutes.features.routerecording.domain.*
 import pl.jakubokrasa.bikeroutes.features.routerecording.domain.model.Route
 import pl.jakubokrasa.bikeroutes.features.routerecording.ui.model.RouteWithPointsDisplayable
 
@@ -16,6 +13,7 @@ class RouteViewModel(
     private val insertCurrentPointUseCase: InsertCurrentPointUseCase,
     private val markRouteAsNotCurrentUseCase: MarkRouteAsNotCurrentUseCase,
     private val getMyRoutesUseCase: GetMyRoutesUseCase,
+    private val putRouteSaveDataUseCase: PutRouteSaveDataUseCase,
     private val insertNewRouteUseCase: InsertNewRouteUseCase) : ViewModel() {
     val route by lazy {
         MutableLiveData<RouteWithPointsDisplayable>()
@@ -37,7 +35,7 @@ class RouteViewModel(
             params = Unit,
             scope = viewModelScope
         ) {
-            result -> result.onSuccess {
+            result -> result.onSuccess { //todo route -> ..
                 currentRouteLiveData.value = RouteWithPointsDisplayable(it)
         }
             result.onFailure { Log.e(LOG_TAG, "getCurrentRoute FAILURE") }
@@ -93,6 +91,16 @@ class RouteViewModel(
         ) {
             result -> result.onSuccess { Log.d(LOG_TAG, "route marked as not current")}
             result.onFailure { Log.e(LOG_TAG, "route NOT marked as not current") }
+        }
+    }
+
+    fun putRouteSaveData(data: DataRouteSave) {
+        putRouteSaveDataUseCase(
+            params = data,
+            scope = viewModelScope
+        ){
+                result -> result.onSuccess { Log.d(LOG_TAG, "route final data saved")}
+            result.onFailure { Log.e(LOG_TAG, "route final data save error") }
         }
     }
 

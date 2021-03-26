@@ -7,14 +7,19 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".features.myroutes.ui.MyRoutesFragment">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_view"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager">
+        android:layout_height="match_parent"
+        android:id="@+id/frg_container">
 
-        
-    </androidx.recyclerview.widget.RecyclerView>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            android:layout_marginBottom="50dp">
+        </androidx.recyclerview.widget.RecyclerView>
 
+    </FrameLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

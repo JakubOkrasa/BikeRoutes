@@ -1,6 +1,5 @@
 package pl.jakubokrasa.bikeroutes.features.routerecording.data
 
-import android.util.Log
 import org.osmdroid.util.GeoPoint
 import pl.jakubokrasa.bikeroutes.features.routerecording.data.local.RouteAndPointDao
 import pl.jakubokrasa.bikeroutes.features.routerecording.data.local.model.RouteCached
@@ -11,26 +10,28 @@ class RouteRepositoryImpl(private val routeAndPointDao: RouteAndPointDao): Route
     override suspend fun getCurrentRoute(): Route {
        return routeAndPointDao.getCurrentRoute().toRoute()
     }
-
-    override suspend fun getMyRoutes(): List<Route> {
-        Log.d("RouteRepositoryImpl", "getMyRoutes() call")
-
-        return routeAndPointDao.getMyRoutes().map { it.toRoute() }
-            .also { it.forEach{
-                Log.d("RouteRepositoryImpl", String.format("got route with %d point(s).", it.points.size))
-            }}
+    override suspend fun getCurrentRouteId(): Long {
+        return routeAndPointDao.getCurrentRouteId()
     }
 
-//    override suspend fun insertRoute(routeCached: RouteCached) { // TODO: 2/17/2021 czy tu nie powinno być Route z w. danych? RouteRepository (interface) jest w w. domeny
-//        andPointDao.insertRoute(routeCached)
-//    }
+    override suspend fun getMyRoutes(): List<Route> {
+        return routeAndPointDao.getMyRoutes().map { it.toRoute() }
+    }
 
     override suspend fun insertRoute(route: Route) {
         routeAndPointDao.insertRoute(RouteCached(0, route.name, route.description, route.current, route.distance,  route.sharingType)) //routeId=0 to be auto-generated
     }
 
-    override suspend fun updateCurrentRouteName(name: String) {
-        routeAndPointDao.updateCurrentRouteName(name)
+    override suspend fun updateRouteName(routeId: Long, name: String) {
+        routeAndPointDao.updateRouteName(routeId, name)
+    }
+
+    override suspend fun updateRouteDescription(routeId: Long, description: String) {
+        routeAndPointDao.updateRouteDescription(routeId, description)
+    }
+
+    override suspend fun updateRouteDistance(routeId: Long, distance: Int) {
+        routeAndPointDao.updateRouteDistance(routeId, distance)
     }
 
     override suspend fun insertCurrentRoutePoint(geoPoint: GeoPoint) {
