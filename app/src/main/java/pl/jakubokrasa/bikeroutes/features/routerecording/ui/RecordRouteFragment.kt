@@ -14,22 +14,38 @@ import android.view.View
 import android.view.WindowManager
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
+import androidx.core.content.edit
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.add
+import androidx.fragment.app.commit
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.preference.PreferenceManager.getDefaultSharedPreferences
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
-import org.osmdroid.views.overlay.*
+import org.osmdroid.views.overlay.Marker
+import org.osmdroid.views.overlay.Overlay
+import org.osmdroid.views.overlay.Polyline
 import pl.jakubokrasa.bikeroutes.BuildConfig
 import pl.jakubokrasa.bikeroutes.R
+import pl.jakubokrasa.bikeroutes.core.extentions.PreferenceManager
+import pl.jakubokrasa.bikeroutes.core.extentions.getDouble
+import pl.jakubokrasa.bikeroutes.core.extentions.makeGone
+import pl.jakubokrasa.bikeroutes.core.extentions.makeVisible
+import pl.jakubokrasa.bikeroutes.core.user.sharingType
 import pl.jakubokrasa.bikeroutes.databinding.FragmentRecordRouteBinding
 import pl.jakubokrasa.bikeroutes.features.routerecording.domain.LocationService
-import pl.jakubokrasa.bikeroutes.features.routerecording.ui.model.RouteDisplayable
+import pl.jakubokrasa.bikeroutes.features.routerecording.ui.model.RouteWithPointsDisplayable
 
 
 class RecordRouteFragment() : Fragment(R.layout.fragment_record_route), KoinComponent {
@@ -38,7 +54,8 @@ class RecordRouteFragment() : Fragment(R.layout.fragment_record_route), KoinComp
     private lateinit var mPreviousLocMarker: Marker
     private var trackPointsList: ArrayList<GeoPoint> = ArrayList()
     private val mLocalBR: LocalBroadcastManager by inject()
-    private val viewModel: RecordRouteViewModel by viewModel()
+    private val viewModel: RouteViewModel by sharedViewModel()
+    private val preferenceManager: PreferenceManager by inject()
     private val requestMultiplePermissions = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
         permissions.entries.forEach {
             Log.d(LOG_TAG, "permission: ${it.key} = ${it.value}")
@@ -106,6 +123,54 @@ class RecordRouteFragment() : Fragment(R.layout.fragment_record_route), KoinComp
         }
     }
 
+    private val locationServiceReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            val loc = intent!!.getParcelableExtra<Location>("EXTRA_LOCATION")
+            loc?.let {
+//                viewLifecycleOwner.lifecycleScope {
+//                    updateDistance(GeoPoint(loc))
+//                }
+//                CoroutineScope(Dispatchers.Default).launch {
+//                }
+                updateDistance(GeoPoint(loc))
+                newLocationUpdateUI(GeoPoint(loc))
+            }
+        }
+    }
+
+    @Synchronized
+    private fun updateDistance(newGeoPoint: GeoPoint) {
+        with(preferenceManager.preferences) {
+            val currentSum = getInt(PREF_KEY_DISTANCE_SUM, 0)
+            if(contains(PREF_KEY_LAST_LAT) && contains(PREF_KEY_LAST_LNG)) {
+                val lastLat = getDouble(PREF_KEY_LAST_LAT, 0.0)
+                val lastLng = getDouble(PREF_KEY_LAST_LNG, 0.0)
+
+                edit {
+                    viewLifecycleOwner.lifecycleScope.launchWhenCreated {
+                        withContext(Dispatchers.Default) {
+                            val distanceFromLastPoint = getDistanceInMeters(GeoPoint(lastLat, lastLng), newGeoPoint)
+                            putInt(PREF_KEY_DISTANCE_SUM, currentSum + distanceFromLastPoint)
+                        }
+
+                    }
+
+                }
+            }
+        }
+
+    }
+
+    private fun getDistanceInMeters(p1: GeoPoint, p2: GeoPoint): Int { // not the original function, original in npp
+        val lat1 = p1.latitude
+        val lng1 = p1.longitude
+        val lat2 = p2.latitude
+        val lng2 = p2.longitude
+        val dist = FloatArray(1)
+        Location.distanceBetween(lat1, lng1, lat2, lng2, dist)
+        return dist[0].toInt()
+    }
+
     private fun newLocationUpdateUI(geoPoint: GeoPoint) {
         viewModel.insertCurrentPoint(geoPoint)
         if (!polyline.isEnabled) polyline.isEnabled = true //we get the location for the first time:
@@ -118,10 +183,13 @@ class RecordRouteFragment() : Fragment(R.layout.fragment_record_route), KoinComp
 
     private fun showCurrentLocationMarker(geoPoint: GeoPoint) {
         val currentLocMarker = Marker(binding.mapView, context)
-        currentLocMarker.icon = ResourcesCompat.getDrawable(resources, R.drawable.marker_my_location, null)
+        currentLocMarker.icon = ResourcesCompat.getDrawable(resources,
+            R.drawable.marker_my_location,
+            null)
         currentLocMarker.position = GeoPoint(geoPoint)
         currentLocMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER)
-        if(this::mPreviousLocMarker.isInitialized) binding.mapView.overlays.remove(mPreviousLocMarker)
+        if(this::mPreviousLocMarker.isInitialized) binding.mapView.overlays.remove(
+            mPreviousLocMarker)
         binding.mapView.overlays.add(currentLocMarker)
         mPreviousLocMarker = currentLocMarker
     }
@@ -138,7 +206,7 @@ class RecordRouteFragment() : Fragment(R.layout.fragment_record_route), KoinComp
     }
 
     private fun setMapViewProperties() {
-        binding.mapView.setTileSource(TileSourceFactory.MAPNIK)
+        binding.mapView.setTileSource(TileSourceFactory.HIKEBIKEMAP)
         binding.mapView.setMultiTouchControls(true)
         binding.mapView.controller.setZoom(18.0)
     }
@@ -148,24 +216,29 @@ class RecordRouteFragment() : Fragment(R.layout.fragment_record_route), KoinComp
         polyline.outlinePaint.color = Color.MAGENTA
     }
 
-    private val locationServiceReceiver: BroadcastReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            val loc = intent!!.getParcelableExtra<Location>("EXTRA_LOCATION")
-            loc?.let {
-                newLocationUpdateUI(GeoPoint(loc.latitude, loc.longitude))
-            }
-        }
-    }
-
     private val btStopRecordOnClick = View.OnClickListener()  {
         stopLocationService()
-        viewModel.markRouteAsNotCurrent()
-        binding.btStopRecord.visibility = View.GONE
-        binding.btStartRecord.visibility = View.VISIBLE
+
+        childFragmentManager.commit {
+            add<SaveRouteFragment>(binding.clFrgContainer.id)
+            setReorderingAllowed(true)
+            addToBackStack("Save a route") // name can be null
+        }
+
+        binding.btStopRecord.makeGone()
+        binding.btStartRecord.makeVisible()
     }
 
     private val btRecordRouteOnClick = View.OnClickListener() {
-        viewModel.insertNewRoute(RouteDisplayable(true, ArrayList()).toRoute())
+        viewModel.insertNewRoute(RouteWithPointsDisplayable(
+            name = "",
+            description = "",
+            distance = 0,
+            current = true,
+            sharingType = sharingType.PRIVATE,
+            points = ArrayList()
+        ).toRoute())
+
         requireActivity().startService(Intent(context, LocationService::class.java))
         observeCurrentRoute()
         binding.btStartRecord.visibility = View.GONE
@@ -174,8 +247,12 @@ class RecordRouteFragment() : Fragment(R.layout.fragment_record_route), KoinComp
 
     companion object {
         private val LOG_TAG: String? = RecordRouteFragment::class.simpleName
-        val OSM_PERMISSIONS = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION,
+        val OSM_PERMISSIONS = arrayOf(
+            Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.WRITE_EXTERNAL_STORAGE)
         const val SEND_LOCATION_ACTION = BuildConfig.APPLICATION_ID + ".send_location_action"
+        const val PREF_KEY_DISTANCE_SUM = "distance_sum"
+        const val PREF_KEY_LAST_LAT = "last_lat"
+        const val PREF_KEY_LAST_LNG = "last_lng"
     }
 }

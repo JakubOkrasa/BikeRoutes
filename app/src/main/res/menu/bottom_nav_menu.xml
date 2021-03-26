@@ -4,12 +4,12 @@
     <item
         android:id="@+id/nav_record_route"
         android:icon="@drawable/ic_record_black_24dp"
-        android:title="@string/title_record_route" />
+        android:title="@string/nav_title_record_route" />
 
     <item
-        android:id="@+id/navigation_dashboard"
+        android:id="@+id/nav_my_routes"
         android:icon="@drawable/ic_dashboard_black_24dp"
-        android:title="@string/title_dashboard" />
+        android:title="@string/nav_title_my_routes" />
 
     <item
         android:id="@+id/navigation_notifications"
