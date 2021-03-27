@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:text="Information about route"
+            android:text="Save a route"
             android:textSize="20sp"
             android:padding="7dp"
             android:textStyle="bold"

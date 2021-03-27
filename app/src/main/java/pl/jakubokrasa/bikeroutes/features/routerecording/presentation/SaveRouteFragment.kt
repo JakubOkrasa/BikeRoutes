@@ -1,9 +1,8 @@
-package pl.jakubokrasa.bikeroutes.features.routerecording.ui
+package pl.jakubokrasa.bikeroutes.features.routerecording.presentation
 
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
-import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
@@ -12,7 +11,7 @@ import pl.jakubokrasa.bikeroutes.core.extentions.PreferenceManager
 import pl.jakubokrasa.bikeroutes.core.extentions.hideKeyboard
 import pl.jakubokrasa.bikeroutes.databinding.FragmentSaveRouteBinding
 import pl.jakubokrasa.bikeroutes.features.routerecording.domain.DataRouteSave
-import pl.jakubokrasa.bikeroutes.features.routerecording.ui.RecordRouteFragment.Companion.PREF_KEY_DISTANCE_SUM
+import pl.jakubokrasa.bikeroutes.features.routerecording.presentation.RecordRouteFragment.Companion.PREF_KEY_DISTANCE_SUM
 
 class SaveRouteFragment : Fragment(R.layout.fragment_save_route) {
 

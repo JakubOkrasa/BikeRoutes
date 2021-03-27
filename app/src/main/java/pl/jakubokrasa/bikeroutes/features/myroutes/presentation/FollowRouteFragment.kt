@@ -1,34 +1,30 @@
-package pl.jakubokrasa.bikeroutes.features.myroutes.ui
+package pl.jakubokrasa.bikeroutes.features.myroutes.presentation
 
 import android.graphics.Color
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import androidx.fragment.app.FragmentResultListener
-import androidx.fragment.app.setFragmentResultListener
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.views.overlay.Polyline
 import pl.jakubokrasa.bikeroutes.R
 import pl.jakubokrasa.bikeroutes.databinding.FragmentFollowRouteBinding
-import pl.jakubokrasa.bikeroutes.databinding.FragmentMyRoutesBinding
-import pl.jakubokrasa.bikeroutes.databinding.FragmentSaveRouteBinding
-import pl.jakubokrasa.bikeroutes.features.routerecording.ui.RouteViewModel
-import pl.jakubokrasa.bikeroutes.features.routerecording.ui.model.RouteWithPointsDisplayable
+import pl.jakubokrasa.bikeroutes.features.routerecording.presentation.RouteViewModel
+import pl.jakubokrasa.bikeroutes.features.routerecording.presentation.model.RouteWithPointsDisplayable
 
 class FollowRouteFragment : Fragment(R.layout.fragment_follow_route) {
 
     private var _binding: FragmentFollowRouteBinding? = null
     private val binding get() = _binding!!
-//    private val viewModel: RouteViewModel by sharedViewModel()
+    private val viewModel: RouteViewModel by sharedViewModel()
     private lateinit var route: RouteWithPointsDisplayable
     private val polyline = Polyline()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentFollowRouteBinding.bind(view)
+
+        updateToolbar()
 
         parentFragmentManager.setFragmentResultListener("requestKey", viewLifecycleOwner, {
              _, bundle ->
@@ -44,6 +40,34 @@ class FollowRouteFragment : Fragment(R.layout.fragment_follow_route) {
                 binding.mapView.invalidate()
         })
 
+    }
+
+    private fun updateToolbar() {
+        binding.toolbar.inflateMenu(R.menu.menu_followroute_home)
+        binding.toolbar.setOnMenuItemClickListener {
+            when (it.itemId) {
+                R.id.action_followroute_edit -> {
+                    clearToolbarMenu()
+                    binding.toolbar.inflateMenu(R.menu.menu_followroute_edit)
+                    binding.toolbar.setOnMenuItemClickListener {
+                        when (it.itemId) {
+                            R.id.action_followroute_done -> {
+                                clearToolbarMenu()
+                                updateToolbar()
+                                true
+                            }
+                            R.id.action_followroute_remove -> {
+                                viewModel.deleteRoute(route.toRoute())
+                                true
+                            }
+                            else -> false
+                        }
+                    }
+                    true
+                }
+                else -> false
+            }
+        }
     }
 
     private fun updateRouteInfo() {
@@ -68,6 +92,10 @@ class FollowRouteFragment : Fragment(R.layout.fragment_follow_route) {
     private fun getFormattedDistance(distance: Int): String {
         return if (distance < 1_000) String.format("%dm", route.distance)
         else String.format("%.1fkm", (route.distance / 1_000.0).toFloat())
+    }
+
+    fun clearToolbarMenu() {
+        binding.toolbar.menu.clear()
     }
 
 }

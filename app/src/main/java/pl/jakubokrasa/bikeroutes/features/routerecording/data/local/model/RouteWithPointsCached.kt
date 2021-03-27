@@ -14,6 +14,7 @@ data class RouteWithPointsCached(
     var points: List<PointCached>
 ) {
     fun toRoute() = Route(
+        route.routeId,
         route.name,
         route.description,
         route.current,

@@ -1,7 +1,6 @@
-package pl.jakubokrasa.bikeroutes.features.routerecording.ui
+package pl.jakubokrasa.bikeroutes.features.routerecording.presentation
 
 import org.osmdroid.util.GeoPoint
-import pl.jakubokrasa.bikeroutes.features.routerecording.data.local.model.RouteCached
 import pl.jakubokrasa.bikeroutes.features.routerecording.domain.model.Route
 
 interface RouteRepository {
@@ -18,6 +17,8 @@ interface RouteRepository {
     suspend fun updateRouteDistance(routeId: Long, distance: Int)
 
     suspend fun insertCurrentRoutePoint(geoPoint: GeoPoint)
+
+    suspend fun deleteRoute(route: Route)
 
     suspend fun markRouteAsNotCurrent()
 

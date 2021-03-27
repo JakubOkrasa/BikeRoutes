@@ -1,23 +1,15 @@
-package pl.jakubokrasa.bikeroutes.features.myroutes.ui
+package pl.jakubokrasa.bikeroutes.features.myroutes.presentation
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
-import android.widget.Filter
-import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.fragment.app.*
 import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.LinearLayoutManager
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import org.osmdroid.util.GeoPoint
 import pl.jakubokrasa.bikeroutes.R
 import pl.jakubokrasa.bikeroutes.databinding.FragmentMyRoutesBinding
-import pl.jakubokrasa.bikeroutes.features.routerecording.domain.model.Point
-import pl.jakubokrasa.bikeroutes.features.routerecording.ui.RouteViewModel
-import pl.jakubokrasa.bikeroutes.features.routerecording.ui.SaveRouteFragment
-import pl.jakubokrasa.bikeroutes.features.routerecording.ui.model.RouteWithPointsDisplayable
+import pl.jakubokrasa.bikeroutes.features.routerecording.presentation.RouteViewModel
 
 class MyRoutesFragment : Fragment(R.layout.fragment_my_routes){
     private val viewModel: RouteViewModel by sharedViewModel() //make shared view model

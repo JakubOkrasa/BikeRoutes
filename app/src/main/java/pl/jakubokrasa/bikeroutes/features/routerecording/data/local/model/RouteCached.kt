@@ -18,4 +18,12 @@ data class RouteCached(
     val sharingType: sharingType,
     )
 {
+    constructor(route: Route): this (
+        routeId = route.routeId,
+        name = route.name,
+        description = route.description,
+        current = route.current,
+        distance = route.distance,
+        sharingType = route.sharingType
+    )
 }

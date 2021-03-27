@@ -43,6 +43,9 @@ interface RouteAndPointDao {
     @Query("UPDATE RouteCached SET distance=:distance WHERE routeId=:id")
     suspend fun updateRouteDistance(id: Long, distance: Int)
 
+    @Delete
+    suspend fun deleteRoute(route: RouteCached)
+
     //=============================================
 
     @Transaction

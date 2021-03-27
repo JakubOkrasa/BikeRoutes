@@ -1,12 +1,13 @@
-package pl.jakubokrasa.bikeroutes.features.routerecording.ui
+package pl.jakubokrasa.bikeroutes.features.routerecording.presentation
 
 import android.util.Log
 import androidx.lifecycle.*
 import org.osmdroid.util.GeoPoint
+import pl.jakubokrasa.bikeroutes.features.myroutes.domain.DeleteRouteUseCase
 import pl.jakubokrasa.bikeroutes.features.myroutes.domain.GetMyRoutesUseCase
 import pl.jakubokrasa.bikeroutes.features.routerecording.domain.*
 import pl.jakubokrasa.bikeroutes.features.routerecording.domain.model.Route
-import pl.jakubokrasa.bikeroutes.features.routerecording.ui.model.RouteWithPointsDisplayable
+import pl.jakubokrasa.bikeroutes.features.routerecording.presentation.model.RouteWithPointsDisplayable
 
 class RouteViewModel(
     private val getCurrentRouteUseCase: GetCurrentRouteUseCase,
@@ -14,7 +15,8 @@ class RouteViewModel(
     private val markRouteAsNotCurrentUseCase: MarkRouteAsNotCurrentUseCase,
     private val getMyRoutesUseCase: GetMyRoutesUseCase,
     private val putRouteSaveDataUseCase: PutRouteSaveDataUseCase,
-    private val insertNewRouteUseCase: InsertNewRouteUseCase) : ViewModel() {
+    private val insertRouteUseCase: InsertRouteUseCase,
+    private val deleteRouteUseCase: DeleteRouteUseCase) : ViewModel() {
     val route by lazy {
         MutableLiveData<RouteWithPointsDisplayable>()
     }
@@ -59,7 +61,7 @@ class RouteViewModel(
     }
 
     fun insertNewRoute(route: Route) {
-        insertNewRouteUseCase(
+        insertRouteUseCase(
             params = route,
             scope = viewModelScope
         ) {
@@ -101,6 +103,16 @@ class RouteViewModel(
         ){
                 result -> result.onSuccess { Log.d(LOG_TAG, "route final data saved")}
             result.onFailure { Log.e(LOG_TAG, "route final data save error") }
+        }
+    }
+
+    fun deleteRoute(route: Route) {
+        deleteRouteUseCase(
+            params = route,
+            scope = viewModelScope
+        ){
+                result -> result.onSuccess { Log.d(LOG_TAG, "route removed")}
+            result.onFailure { Log.e(LOG_TAG, "route removing error") }
         }
     }
 

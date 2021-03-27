@@ -1,14 +1,10 @@
-package pl.jakubokrasa.bikeroutes.features.myroutes.ui
+package pl.jakubokrasa.bikeroutes.features.myroutes.presentation
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import pl.jakubokrasa.bikeroutes.R
 import pl.jakubokrasa.bikeroutes.databinding.RvMyroutesItemBinding
-import pl.jakubokrasa.bikeroutes.features.routerecording.ui.model.RouteWithPointsDisplayable
+import pl.jakubokrasa.bikeroutes.features.routerecording.presentation.model.RouteWithPointsDisplayable
 
 class MyRoutesRecyclerAdapter() : RecyclerView.Adapter<MyRoutesRecyclerAdapter.MyRoutesViewHolder>() {
 

@@ -1,4 +1,4 @@
-package pl.jakubokrasa.bikeroutes.features.routerecording.ui
+package pl.jakubokrasa.bikeroutes.features.routerecording.presentation
 
 import android.Manifest
 import android.content.BroadcastReceiver
@@ -19,13 +19,10 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.add
 import androidx.fragment.app.commit
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.preference.PreferenceManager.getDefaultSharedPreferences
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.core.KoinComponent
@@ -45,7 +42,7 @@ import pl.jakubokrasa.bikeroutes.core.extentions.makeVisible
 import pl.jakubokrasa.bikeroutes.core.user.sharingType
 import pl.jakubokrasa.bikeroutes.databinding.FragmentRecordRouteBinding
 import pl.jakubokrasa.bikeroutes.features.routerecording.domain.LocationService
-import pl.jakubokrasa.bikeroutes.features.routerecording.ui.model.RouteWithPointsDisplayable
+import pl.jakubokrasa.bikeroutes.features.routerecording.presentation.model.RouteWithPointsDisplayable
 
 
 class RecordRouteFragment() : Fragment(R.layout.fragment_record_route), KoinComponent {
@@ -231,6 +228,7 @@ class RecordRouteFragment() : Fragment(R.layout.fragment_record_route), KoinComp
 
     private val btRecordRouteOnClick = View.OnClickListener() {
         viewModel.insertNewRoute(RouteWithPointsDisplayable(
+            routeId = 0,
             name = "",
             description = "",
             distance = 0,

@@ -5,14 +5,26 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        tools:context=".features.myroutes.ui.FollowRouteFragment"
+        tools:context=".features.myroutes.presentation.FollowRouteFragment"
         android:background="@color/white">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="#AA13AA00"
+        android:layout_height="60dp">
+
+        <TextView
+            style="@style/BR_ToolbarTv"
+            android:text="Follow a route"/>
+    </androidx.appcompat.widget.Toolbar>
 
     <LinearLayout
         android:id="@+id/ll_route_info"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_constraintTop_toTopOf="parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
         app:layout_constraintStart_toStartOf="parent"
         android:orientation="vertical">
 

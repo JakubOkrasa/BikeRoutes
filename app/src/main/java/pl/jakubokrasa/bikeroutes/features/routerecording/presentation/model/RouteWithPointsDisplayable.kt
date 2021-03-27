@@ -1,4 +1,4 @@
-package pl.jakubokrasa.bikeroutes.features.routerecording.ui.model
+package pl.jakubokrasa.bikeroutes.features.routerecording.presentation.model
 
 import pl.jakubokrasa.bikeroutes.core.user.sharingType
 import pl.jakubokrasa.bikeroutes.features.routerecording.domain.model.Point
@@ -6,6 +6,7 @@ import pl.jakubokrasa.bikeroutes.features.routerecording.domain.model.Route
 import java.io.Serializable
 
 data class RouteWithPointsDisplayable (
+    val routeId: Long,
     val name: String,
     val description: String,
     val current: Boolean,
@@ -16,6 +17,7 @@ data class RouteWithPointsDisplayable (
 
     fun toRoute(): Route {
         return Route(
+            routeId = routeId,
             name = name,
             description = description,
             current = current,
@@ -25,6 +27,7 @@ data class RouteWithPointsDisplayable (
     }
 
     constructor(route: Route) : this (
+        routeId = route.routeId,
         name = route.name,
         description = route.description,
         current = route.current,

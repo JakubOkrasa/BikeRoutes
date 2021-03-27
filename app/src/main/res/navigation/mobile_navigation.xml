@@ -7,13 +7,13 @@
 
     <fragment
         android:id="@+id/nav_record_route"
-        android:name="pl.jakubokrasa.bikeroutes.features.routerecording.ui.RecordRouteFragment"
+        android:name="pl.jakubokrasa.bikeroutes.features.routerecording.presentation.RecordRouteFragment"
         android:label="@string/nav_title_record_route"
         tools:layout="@layout/fragment_record_route" />
 
     <fragment
         android:id="@+id/nav_my_routes"
-        android:name="pl.jakubokrasa.bikeroutes.features.myroutes.ui.MyRoutesFragment"
+        android:name="pl.jakubokrasa.bikeroutes.features.myroutes.presentation.MyRoutesFragment"
         android:label="@string/nav_title_my_routes"
         tools:layout="@layout/fragment_my_routes" />
 

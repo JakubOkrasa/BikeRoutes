@@ -4,7 +4,7 @@ import org.osmdroid.util.GeoPoint
 import pl.jakubokrasa.bikeroutes.features.routerecording.data.local.RouteAndPointDao
 import pl.jakubokrasa.bikeroutes.features.routerecording.data.local.model.RouteCached
 import pl.jakubokrasa.bikeroutes.features.routerecording.domain.model.Route
-import pl.jakubokrasa.bikeroutes.features.routerecording.ui.RouteRepository
+import pl.jakubokrasa.bikeroutes.features.routerecording.presentation.RouteRepository
 
 class RouteRepositoryImpl(private val routeAndPointDao: RouteAndPointDao): RouteRepository {
     override suspend fun getCurrentRoute(): Route {
@@ -36,6 +36,10 @@ class RouteRepositoryImpl(private val routeAndPointDao: RouteAndPointDao): Route
 
     override suspend fun insertCurrentRoutePoint(geoPoint: GeoPoint) {
         return routeAndPointDao.insertCurrentRoutePoint(geoPoint)
+    }
+
+    override suspend fun deleteRoute(route: Route) {
+        routeAndPointDao.deleteRoute(RouteCached(route))
     }
 
     override suspend fun markRouteAsNotCurrent() {

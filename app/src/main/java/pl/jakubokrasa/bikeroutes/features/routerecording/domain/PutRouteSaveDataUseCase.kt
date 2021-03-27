@@ -1,7 +1,7 @@
 package pl.jakubokrasa.bikeroutes.features.routerecording.domain
 
 import pl.jakubokrasa.bikeroutes.core.base.domain.UseCase
-import pl.jakubokrasa.bikeroutes.features.routerecording.ui.RouteRepository
+import pl.jakubokrasa.bikeroutes.features.routerecording.presentation.RouteRepository
 
 class PutRouteSaveDataUseCase(private val routeRepository: RouteRepository): UseCase<Unit, DataRouteSave>() {
     override suspend fun action(params: DataRouteSave) {
