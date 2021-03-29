@@ -19,6 +19,7 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.add
 import androidx.fragment.app.commit
+import androidx.fragment.app.replace
 import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.preference.PreferenceManager.getDefaultSharedPreferences
@@ -35,10 +36,7 @@ import org.osmdroid.views.overlay.Overlay
 import org.osmdroid.views.overlay.Polyline
 import pl.jakubokrasa.bikeroutes.BuildConfig
 import pl.jakubokrasa.bikeroutes.R
-import pl.jakubokrasa.bikeroutes.core.extentions.PreferenceManager
-import pl.jakubokrasa.bikeroutes.core.extentions.getDouble
-import pl.jakubokrasa.bikeroutes.core.extentions.makeGone
-import pl.jakubokrasa.bikeroutes.core.extentions.makeVisible
+import pl.jakubokrasa.bikeroutes.core.extentions.*
 import pl.jakubokrasa.bikeroutes.core.user.sharingType
 import pl.jakubokrasa.bikeroutes.databinding.FragmentRecordRouteBinding
 import pl.jakubokrasa.bikeroutes.features.routerecording.domain.LocationService
@@ -217,7 +215,7 @@ class RecordRouteFragment() : Fragment(R.layout.fragment_record_route), KoinComp
         stopLocationService()
 
         childFragmentManager.commit {
-            add<SaveRouteFragment>(binding.clFrgContainer.id)
+            replace<SaveRouteFragment>(binding.clFrgContainer.id)
             setReorderingAllowed(true)
             addToBackStack("Save a route") // name can be null
         }

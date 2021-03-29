@@ -2,10 +2,13 @@ package pl.jakubokrasa.bikeroutes.features.routerecording.presentation
 
 import android.util.Log
 import androidx.lifecycle.*
+import kotlinx.coroutines.launch
 import org.osmdroid.util.GeoPoint
+import pl.jakubokrasa.bikeroutes.core.user.sharingType
 import pl.jakubokrasa.bikeroutes.features.myroutes.domain.DeleteRouteUseCase
 import pl.jakubokrasa.bikeroutes.features.myroutes.domain.GetMyRoutesUseCase
 import pl.jakubokrasa.bikeroutes.features.routerecording.domain.*
+import pl.jakubokrasa.bikeroutes.features.routerecording.domain.model.Point
 import pl.jakubokrasa.bikeroutes.features.routerecording.domain.model.Route
 import pl.jakubokrasa.bikeroutes.features.routerecording.presentation.model.RouteWithPointsDisplayable
 
@@ -20,10 +23,14 @@ class RouteViewModel(
     val route by lazy {
         MutableLiveData<RouteWithPointsDisplayable>()
     }
+
+
+
     private val _myRoutes by lazy {
         MutableLiveData<List<Route>>()
             .also { getMyRoutes(it) }
     }
+
 
     val myRoutes: LiveData<List<RouteWithPointsDisplayable>> by lazy { //todo consider what is going on here (from AA)
         _myRoutes.map { myRoutes ->
@@ -48,16 +55,23 @@ class RouteViewModel(
 
 
     private fun getMyRoutes(routeLiveData: MutableLiveData<List<Route>>) {
-        getMyRoutesUseCase(
-            params = Unit,
-            scope = viewModelScope
-        ) {
-                result -> result.onSuccess {
-                    routeLiveData.value = it
-        }
-            result.onFailure { Log.e(LOG_TAG, "getMyRoutes FAILURE") }
+//        getMyRoutesUseCase(
+//            params = Unit,
+//            scope = viewModelScope
+//        ) {
+//                result -> result.onSuccess {
+//                    routeLiveData.value = it.value
+//        }
+//            result.onFailure { Log.e(LOG_TAG, "getMyRoutes FAILURE") }
+//
+//        }
 
-        }
+//        Log.d(LOG_TAG, "vm getMyRouted called")
+//        routeLiveData.value = listOf(Route(222, "test", "", false, 0, sharingType.PRIVATE, listOf(
+//            Point(222, GeoPoint(0.0, 0.0)))))
+//            getMyRoutesUseCase.getMyRoutes().value //todo to zwraca null
+
+        routeLiveData.postValue(getMyRoutesUseCase.getMyRoutes().value)
     }
 
     fun insertNewRoute(route: Route) {

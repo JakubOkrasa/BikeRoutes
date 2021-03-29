@@ -1,5 +1,7 @@
 package pl.jakubokrasa.bikeroutes.features.routerecording.presentation
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import org.osmdroid.util.GeoPoint
 import pl.jakubokrasa.bikeroutes.features.routerecording.domain.model.Route
 
@@ -8,7 +10,7 @@ interface RouteRepository {
     suspend fun getCurrentRouteId(): Long
 
 
-    suspend fun getMyRoutes(): List<Route>
+    fun getMyRoutes(): LiveData<List<Route>>
 
     suspend fun insertRoute(route: Route)
 

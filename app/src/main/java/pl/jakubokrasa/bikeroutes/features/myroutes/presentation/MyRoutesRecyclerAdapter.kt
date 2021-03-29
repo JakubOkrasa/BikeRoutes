@@ -9,10 +9,7 @@ import pl.jakubokrasa.bikeroutes.features.routerecording.presentation.model.Rout
 class MyRoutesRecyclerAdapter() : RecyclerView.Adapter<MyRoutesRecyclerAdapter.MyRoutesViewHolder>() {
 
     var onItemClick: ((RouteWithPointsDisplayable) -> Unit)? = null
-    private var routes = mutableListOf<RouteWithPointsDisplayable>();
-//    constructor(routes: MutableList<RouteWithPointsDisplayable>) : this() {
-//        this.routes = routes
-//    }
+    private var routes = mutableListOf<RouteWithPointsDisplayable>()
 
     fun setItems(routes: List<RouteWithPointsDisplayable>) {
         if (routes.isNotEmpty()) this.routes.clear()
@@ -50,7 +47,6 @@ class MyRoutesRecyclerAdapter() : RecyclerView.Adapter<MyRoutesRecyclerAdapter.M
             }
         }
         init {
-            // Define click listener for the MyRoutesViewHolder's View.
             itemView.setOnClickListener {
                 onItemClick?.invoke(routes[adapterPosition])
             }
