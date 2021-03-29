@@ -35,10 +35,7 @@ import org.osmdroid.views.overlay.Overlay
 import org.osmdroid.views.overlay.Polyline
 import pl.jakubokrasa.bikeroutes.BuildConfig
 import pl.jakubokrasa.bikeroutes.R
-import pl.jakubokrasa.bikeroutes.core.extentions.PreferenceManager
-import pl.jakubokrasa.bikeroutes.core.extentions.getDouble
-import pl.jakubokrasa.bikeroutes.core.extentions.makeGone
-import pl.jakubokrasa.bikeroutes.core.extentions.makeVisible
+import pl.jakubokrasa.bikeroutes.core.extentions.*
 import pl.jakubokrasa.bikeroutes.core.user.sharingType
 import pl.jakubokrasa.bikeroutes.databinding.FragmentRecordRouteBinding
 import pl.jakubokrasa.bikeroutes.features.routerecording.domain.LocationService
@@ -135,7 +132,6 @@ class RecordRouteFragment() : Fragment(R.layout.fragment_record_route), KoinComp
         }
     }
 
-    @Synchronized
     private fun updateDistance(newGeoPoint: GeoPoint) {
         with(preferenceManager.preferences) {
             val currentSum = getInt(PREF_KEY_DISTANCE_SUM, 0)
@@ -147,11 +143,16 @@ class RecordRouteFragment() : Fragment(R.layout.fragment_record_route), KoinComp
                     viewLifecycleOwner.lifecycleScope.launchWhenCreated {
                         withContext(Dispatchers.Default) {
                             val distanceFromLastPoint = getDistanceInMeters(GeoPoint(lastLat, lastLng), newGeoPoint)
-                            putInt(PREF_KEY_DISTANCE_SUM, currentSum + distanceFromLastPoint)
+                            val sum = currentSum + distanceFromLastPoint
+                            putInt(PREF_KEY_DISTANCE_SUM, sum)
                         }
 
                     }
 
+                }
+                edit {
+                    putDouble(PREF_KEY_LAST_LAT, newGeoPoint.latitude)
+                    putDouble(PREF_KEY_LAST_LNG, newGeoPoint.longitude)
                 }
             }
         }
