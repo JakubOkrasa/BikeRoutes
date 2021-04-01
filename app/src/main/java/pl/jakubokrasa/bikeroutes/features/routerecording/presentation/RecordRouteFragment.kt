@@ -51,9 +51,7 @@ class RecordRouteFragment() : Fragment(R.layout.fragment_record_route), KoinComp
     private val viewModel: RouteViewModel by sharedViewModel()
     private val preferenceManager: PreferenceManager by inject()
     private val requestMultiplePermissions = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
-        permissions.entries.forEach {
-            Log.d(LOG_TAG, "permission: ${it.key} = ${it.value}")
-        }
+        permissions.entries.forEach { Log.d(LOG_TAG, "permission: ${it.key} = ${it.value}") }
     }
 
     //from https://developer.android.com/topic/libraries/view-binding
@@ -69,7 +67,6 @@ class RecordRouteFragment() : Fragment(R.layout.fragment_record_route), KoinComp
 
         binding.btStartRecord.setOnClickListener(btRecordRouteOnClick)
         binding.btStopRecord.setOnClickListener(btStopRecordOnClick)
-
 
         setMapViewProperties()
         setPolylineProperties()
@@ -132,9 +129,9 @@ class RecordRouteFragment() : Fragment(R.layout.fragment_record_route), KoinComp
         }
     }
 
-    private fun updateDistance(newGeoPoint: GeoPoint) {
+    private fun updateDistance(newGeoPoint: GeoPoint) { //todo Maybe update distance in VIEWMODEL!
         with(preferenceManager.preferences) {
-            val currentSum = getInt(PREF_KEY_DISTANCE_SUM, 0)
+            val currentSum = getFloat(PREF_KEY_DISTANCE_SUM, 0F)
             if(contains(PREF_KEY_LAST_LAT) && contains(PREF_KEY_LAST_LNG)) {
                 val lastLat = getDouble(PREF_KEY_LAST_LAT, 0.0)
                 val lastLng = getDouble(PREF_KEY_LAST_LNG, 0.0)
@@ -142,31 +139,32 @@ class RecordRouteFragment() : Fragment(R.layout.fragment_record_route), KoinComp
                 edit {
                     viewLifecycleOwner.lifecycleScope.launchWhenCreated {
                         withContext(Dispatchers.Default) {
-                            val distanceFromLastPoint = getDistanceInMeters(GeoPoint(lastLat, lastLng), newGeoPoint)
+                            val distanceFromLastPoint =
+                                getDistanceInMeters(GeoPoint(lastLat, lastLng), newGeoPoint)
                             val sum = currentSum + distanceFromLastPoint
-                            putInt(PREF_KEY_DISTANCE_SUM, sum)
+                            putFloat(PREF_KEY_DISTANCE_SUM, sum)
                         }
 
                     }
 
                 }
-                edit {
-                    putDouble(PREF_KEY_LAST_LAT, newGeoPoint.latitude)
-                    putDouble(PREF_KEY_LAST_LNG, newGeoPoint.longitude)
-                }
+            }
+            edit {
+                putDouble(PREF_KEY_LAST_LAT, newGeoPoint.latitude)
+                putDouble(PREF_KEY_LAST_LNG, newGeoPoint.longitude)
             }
         }
 
     }
 
-    private fun getDistanceInMeters(p1: GeoPoint, p2: GeoPoint): Int { // not the original function, original in npp
+    private fun getDistanceInMeters(p1: GeoPoint, p2: GeoPoint): Float { // not the original function, original in npp
         val lat1 = p1.latitude
         val lng1 = p1.longitude
         val lat2 = p2.latitude
         val lng2 = p2.longitude
         val dist = FloatArray(1)
         Location.distanceBetween(lat1, lng1, lat2, lng2, dist)
-        return dist[0].toInt()
+        return dist[0]
     }
 
     private fun newLocationUpdateUI(geoPoint: GeoPoint) {
@@ -250,7 +248,7 @@ class RecordRouteFragment() : Fragment(R.layout.fragment_record_route), KoinComp
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.WRITE_EXTERNAL_STORAGE)
         const val SEND_LOCATION_ACTION = BuildConfig.APPLICATION_ID + ".send_location_action"
-        const val PREF_KEY_DISTANCE_SUM = "distance_sum"
+        const val PREF_KEY_DISTANCE_SUM = "distance_sum_float"
         const val PREF_KEY_LAST_LAT = "last_lat"
         const val PREF_KEY_LAST_LNG = "last_lng"
     }

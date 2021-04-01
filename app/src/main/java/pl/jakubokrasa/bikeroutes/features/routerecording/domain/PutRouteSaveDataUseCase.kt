@@ -6,14 +6,13 @@ import pl.jakubokrasa.bikeroutes.features.routerecording.presentation.RouteRepos
 class PutRouteSaveDataUseCase(private val routeRepository: RouteRepository): UseCase<Unit, DataRouteSave>() {
     override suspend fun action(params: DataRouteSave) {
         val id = routeRepository.getCurrentRouteId()
-        routeRepository.updateRouteName(id, params.name)
+//        routeRepository.updateRouteName(id, params.name)
         routeRepository.updateRouteDescription(id, params.description)
         routeRepository.updateRouteDistance(id, params.distance)
     }
 }
 
 data class DataRouteSave (
-    val routeId: Long,
     val name: String,
     val description: String,
     val distance: Int
