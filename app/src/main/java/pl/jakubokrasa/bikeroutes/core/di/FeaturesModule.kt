@@ -18,12 +18,13 @@ val featuresModule = module {
     factory { InsertRouteUseCase(get())}
     factory { MarkRouteAsNotCurrentUseCase(get())}
     factory { GetMyRoutesUseCase(get())}
-    factory { PutRouteSaveDataUseCase(get())}
+    factory { PutRouteSaveDataUseCase(get(), get())}
     factory { DeleteRouteUseCase(get())}
+    factory { UpdateDistanceByPrefsUseCase(get())}
 
 //    factory<RvItemClickListener> { MyRoutesFragment() }
 
-    viewModel { RouteViewModel(get(), get(), get(), get(), get(), get(), get()) }
+    viewModel { RouteViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
     factory { MyRoutesRecyclerAdapter() }
 }
 

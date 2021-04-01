@@ -16,7 +16,9 @@ class RouteViewModel(
     private val getMyRoutesUseCase: GetMyRoutesUseCase,
     private val putRouteSaveDataUseCase: PutRouteSaveDataUseCase,
     private val insertRouteUseCase: InsertRouteUseCase,
-    private val deleteRouteUseCase: DeleteRouteUseCase) : ViewModel() {
+    private val deleteRouteUseCase: DeleteRouteUseCase,
+    private val updateDistanceByPrefsUseCase: UpdateDistanceByPrefsUseCase
+) : ViewModel() {
     val route by lazy {
         MutableLiveData<RouteWithPointsDisplayable>()
     }
@@ -113,6 +115,17 @@ class RouteViewModel(
         ){
                 result -> result.onSuccess { Log.d(LOG_TAG, "route removed")}
             result.onFailure { Log.e(LOG_TAG, "route removing error") }
+        }
+    }
+
+    fun updateDistanceByPrefs(geoPoint: GeoPoint) {
+        updateDistanceByPrefsUseCase(
+            params = geoPoint,
+            scope = viewModelScope
+        ){
+            result ->
+                result.onSuccess { Log.d(LOG_TAG, "distance update by prefs OK")}
+                result.onFailure { Log.e(LOG_TAG, "distance update by prefs error") }
         }
     }
 

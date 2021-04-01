@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import pl.jakubokrasa.bikeroutes.BuildConfig
 
-class PreferenceManager(ctx: Context) {
+class PreferenceHelper(ctx: Context) {
     private val filePath = BuildConfig.APPLICATION_ID + ".preferences"
     val preferences: SharedPreferences = ctx.getSharedPreferences(filePath, Context.MODE_PRIVATE)
 
