@@ -1,9 +1,5 @@
 package pl.jakubokrasa.bikeroutes.features.routerecording.data
 
-import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.map
 import org.osmdroid.util.GeoPoint
 import pl.jakubokrasa.bikeroutes.features.routerecording.data.local.RouteAndPointDao
 import pl.jakubokrasa.bikeroutes.features.routerecording.data.local.model.RouteCached
@@ -18,12 +14,8 @@ class RouteRepositoryImpl(private val routeAndPointDao: RouteAndPointDao): Route
         return routeAndPointDao.getCurrentRouteId()
     }
 
-    override fun getMyRoutes(): LiveData<List<Route>> {
-        Log.i("i", "id")
-        return routeAndPointDao.getMyRoutes().map { list ->
-            list.map { it.toRoute() }
-        }
-        //.map { it.value.toRoute() }
+    override suspend fun getMyRoutes(): List<Route> {
+        return routeAndPointDao.getMyRoutes().map { it.toRoute() }
     }
 
     override suspend fun insertRoute(route: Route) {

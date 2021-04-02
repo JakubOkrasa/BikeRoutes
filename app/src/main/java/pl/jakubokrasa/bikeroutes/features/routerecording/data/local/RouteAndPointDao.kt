@@ -18,7 +18,7 @@ interface RouteAndPointDao {
     suspend fun getCurrentRoute(): RouteWithPointsCached
 
     @Query("SELECT * from RouteCached WHERE current=0")
-    fun getMyRoutes(): LiveData<List<RouteWithPointsCached>>
+    suspend fun getMyRoutes(): List<RouteWithPointsCached>
 
 //    @Query("SELECT * from RouteCached WHERE name")
 //    suspend fun getRouteByName(routeName: String): RouteWithPointsCached
