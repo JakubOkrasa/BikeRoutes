@@ -7,9 +7,9 @@ import pl.jakubokrasa.bikeroutes.core.base.domain.UseCase
 import pl.jakubokrasa.bikeroutes.core.extentions.PreferenceHelper
 import pl.jakubokrasa.bikeroutes.core.extentions.getDouble
 import pl.jakubokrasa.bikeroutes.core.extentions.putDouble
-import pl.jakubokrasa.bikeroutes.core.util.PreferenceKeys.PREF_KEY_DISTANCE_SUM
-import pl.jakubokrasa.bikeroutes.core.util.PreferenceKeys.PREF_KEY_LAST_LAT
-import pl.jakubokrasa.bikeroutes.core.util.PreferenceKeys.PREF_KEY_LAST_LNG
+import pl.jakubokrasa.bikeroutes.core.extentions.PreferenceHelper.Companion.PREF_KEY_DISTANCE_SUM
+import pl.jakubokrasa.bikeroutes.core.extentions.PreferenceHelper.Companion.PREF_KEY_LAST_LAT
+import pl.jakubokrasa.bikeroutes.core.extentions.PreferenceHelper.Companion.PREF_KEY_LAST_LNG
 
 class UpdateDistanceByPrefsUseCase(private val preferenceHelper: PreferenceHelper) :
     UseCase<Unit, GeoPoint>() {

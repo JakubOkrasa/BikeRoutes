@@ -9,7 +9,7 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import pl.jakubokrasa.bikeroutes.R
 import pl.jakubokrasa.bikeroutes.core.extentions.PreferenceHelper
 import pl.jakubokrasa.bikeroutes.core.extentions.hideKeyboard
-import pl.jakubokrasa.bikeroutes.core.util.PreferenceKeys.PREF_KEY_DISTANCE_SUM
+import pl.jakubokrasa.bikeroutes.core.extentions.PreferenceHelper.Companion.PREF_KEY_DISTANCE_SUM
 import pl.jakubokrasa.bikeroutes.databinding.FragmentSaveRouteBinding
 import pl.jakubokrasa.bikeroutes.features.routerecording.domain.DataRouteSave
 import kotlin.math.roundToInt
