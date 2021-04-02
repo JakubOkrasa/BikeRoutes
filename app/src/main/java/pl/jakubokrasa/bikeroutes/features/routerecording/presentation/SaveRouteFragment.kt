@@ -30,9 +30,9 @@ class SaveRouteFragment : Fragment(R.layout.fragment_save_route) {
     private val btSaveOnClick = View.OnClickListener() {
         val name = binding.etName.text.toString()
         val description = binding.etDescription.text.toString()
-        val distance = preferenceHelper.preferences.getFloat(PREF_KEY_DISTANCE_SUM, 0F)
+        val distance = preferenceHelper.preferences.getInt(PREF_KEY_DISTANCE_SUM, 0)
         if(name.isEmpty()) showToast("Route must have a name")
-        else viewModel.putRouteSaveData(DataRouteSave(name, description, distance.roundToInt()))
+        else viewModel.putRouteSaveData(DataRouteSave(name, description, distance))
         hideKeyboard()
         parentFragmentManager.popBackStack()
     }

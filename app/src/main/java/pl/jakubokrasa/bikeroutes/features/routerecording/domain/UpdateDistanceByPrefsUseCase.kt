@@ -10,6 +10,7 @@ import pl.jakubokrasa.bikeroutes.core.extentions.putDouble
 import pl.jakubokrasa.bikeroutes.core.extentions.PreferenceHelper.Companion.PREF_KEY_DISTANCE_SUM
 import pl.jakubokrasa.bikeroutes.core.extentions.PreferenceHelper.Companion.PREF_KEY_LAST_LAT
 import pl.jakubokrasa.bikeroutes.core.extentions.PreferenceHelper.Companion.PREF_KEY_LAST_LNG
+import kotlin.math.roundToInt
 
 class UpdateDistanceByPrefsUseCase(private val preferenceHelper: PreferenceHelper) :
     UseCase<Unit, GeoPoint>() {
@@ -19,7 +20,7 @@ class UpdateDistanceByPrefsUseCase(private val preferenceHelper: PreferenceHelpe
 
     private fun updateDistance(newGeoPoint: GeoPoint) { //todo consider moving it to data layer
         with(preferenceHelper.preferences) {
-            val currentSum = getFloat(PREF_KEY_DISTANCE_SUM, 0F)
+            val currentSum = getInt(PREF_KEY_DISTANCE_SUM, 0)
             if (contains(PREF_KEY_LAST_LAT) && contains(PREF_KEY_LAST_LNG)) {
                 val lastLat = getDouble(PREF_KEY_LAST_LAT, 0.0)
                 val lastLng = getDouble(PREF_KEY_LAST_LNG, 0.0)
@@ -28,7 +29,7 @@ class UpdateDistanceByPrefsUseCase(private val preferenceHelper: PreferenceHelpe
                     val distanceFromLastPoint =
                         getDistanceInMeters(GeoPoint(lastLat, lastLng), newGeoPoint)
                     val sum = currentSum + distanceFromLastPoint
-                    putFloat(PREF_KEY_DISTANCE_SUM, sum)
+                    putInt(PREF_KEY_DISTANCE_SUM, sum)
                 }
             }
             edit {
@@ -41,14 +42,14 @@ class UpdateDistanceByPrefsUseCase(private val preferenceHelper: PreferenceHelpe
 
     private fun getDistanceInMeters(
         p1: GeoPoint, p2: GeoPoint
-    ): Float { // not the original function, original in npp
+    ): Int { // not the original function, original in npp
         val lat1 = p1.latitude
         val lng1 = p1.longitude
         val lat2 = p2.latitude
         val lng2 = p2.longitude
         val dist = FloatArray(1)
         Location.distanceBetween(lat1, lng1, lat2, lng2, dist)
-        return dist[0]
+        return dist[0].roundToInt()
     }
 
 }

@@ -7,7 +7,7 @@ import pl.jakubokrasa.bikeroutes.BuildConfig
 class PreferenceHelper(ctx: Context) {
 
     companion object {
-        const val PREF_KEY_DISTANCE_SUM = "distance_sum_float"
+        const val PREF_KEY_DISTANCE_SUM = "distance_sum"
         const val PREF_KEY_LAST_LAT = "last_lat"
         const val PREF_KEY_LAST_LNG = "last_lng"
     }
