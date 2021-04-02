@@ -14,16 +14,12 @@ import android.view.View
 import android.view.WindowManager
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
-import androidx.core.content.edit
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.add
 import androidx.fragment.app.commit
-import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.preference.PreferenceManager.getDefaultSharedPreferences
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.core.KoinComponent
 import org.koin.core.inject
@@ -35,8 +31,7 @@ import org.osmdroid.views.overlay.Overlay
 import org.osmdroid.views.overlay.Polyline
 import pl.jakubokrasa.bikeroutes.BuildConfig
 import pl.jakubokrasa.bikeroutes.R
-import pl.jakubokrasa.bikeroutes.core.extentions.PreferenceManager
-import pl.jakubokrasa.bikeroutes.core.extentions.getDouble
+import pl.jakubokrasa.bikeroutes.core.extentions.PreferenceHelper
 import pl.jakubokrasa.bikeroutes.core.extentions.makeGone
 import pl.jakubokrasa.bikeroutes.core.extentions.makeVisible
 import pl.jakubokrasa.bikeroutes.core.user.sharingType
@@ -52,11 +47,9 @@ class RecordRouteFragment() : Fragment(R.layout.fragment_record_route), KoinComp
     private var trackPointsList: ArrayList<GeoPoint> = ArrayList()
     private val mLocalBR: LocalBroadcastManager by inject()
     private val viewModel: RouteViewModel by sharedViewModel()
-    private val preferenceManager: PreferenceManager by inject()
+    private val preferenceHelper: PreferenceHelper by inject()
     private val requestMultiplePermissions = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
-        permissions.entries.forEach {
-            Log.d(LOG_TAG, "permission: ${it.key} = ${it.value}")
-        }
+        permissions.entries.forEach { Log.d(LOG_TAG, "permission: ${it.key} = ${it.value}") }
     }
 
     //from https://developer.android.com/topic/libraries/view-binding
@@ -72,7 +65,6 @@ class RecordRouteFragment() : Fragment(R.layout.fragment_record_route), KoinComp
 
         binding.btStartRecord.setOnClickListener(btRecordRouteOnClick)
         binding.btStopRecord.setOnClickListener(btStopRecordOnClick)
-
 
         setMapViewProperties()
         setPolylineProperties()
@@ -93,8 +85,8 @@ class RecordRouteFragment() : Fragment(R.layout.fragment_record_route), KoinComp
         super.onResume()
         //this will refresh the osmdroid configuration on resuming.
         //if you make changes to the configuration, use
-        //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        //Configuration.getInstance().load(this, PreferenceManager.getDefaultSharedPreferences(this));
+        //SharedPreferences prefs = PreferenceHelper.getDefaultSharedPreferences(this);
+        //Configuration.getInstance().load(this, PreferenceHelper.getDefaultSharedPreferences(this));
         binding.mapView.onResume(); //needed for compass, my location overlays, v6.0.0 and up
     }
 
@@ -102,7 +94,7 @@ class RecordRouteFragment() : Fragment(R.layout.fragment_record_route), KoinComp
         super.onPause()
         //this will refresh the osmdroid configuration on resuming.
         //if you make changes to the configuration, use
-        //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        //SharedPreferences prefs = PreferenceHelper.getDefaultSharedPreferences(this);
         //Configuration.getInstance().save(this, prefs);
         binding.mapView.onPause() //needed for compass, my location overlays, v6.0.0 and up
     }
@@ -124,48 +116,10 @@ class RecordRouteFragment() : Fragment(R.layout.fragment_record_route), KoinComp
         override fun onReceive(context: Context?, intent: Intent?) {
             val loc = intent!!.getParcelableExtra<Location>("EXTRA_LOCATION")
             loc?.let {
-//                viewLifecycleOwner.lifecycleScope {
-//                    updateDistance(GeoPoint(loc))
-//                }
-//                CoroutineScope(Dispatchers.Default).launch {
-//                }
-                updateDistance(GeoPoint(loc))
+                viewModel.updateDistanceByPrefs(GeoPoint(loc))
                 newLocationUpdateUI(GeoPoint(loc))
             }
         }
-    }
-
-    @Synchronized
-    private fun updateDistance(newGeoPoint: GeoPoint) {
-        with(preferenceManager.preferences) {
-            val currentSum = getInt(PREF_KEY_DISTANCE_SUM, 0)
-            if(contains(PREF_KEY_LAST_LAT) && contains(PREF_KEY_LAST_LNG)) {
-                val lastLat = getDouble(PREF_KEY_LAST_LAT, 0.0)
-                val lastLng = getDouble(PREF_KEY_LAST_LNG, 0.0)
-
-                edit {
-                    viewLifecycleOwner.lifecycleScope.launchWhenCreated {
-                        withContext(Dispatchers.Default) {
-                            val distanceFromLastPoint = getDistanceInMeters(GeoPoint(lastLat, lastLng), newGeoPoint)
-                            putInt(PREF_KEY_DISTANCE_SUM, currentSum + distanceFromLastPoint)
-                        }
-
-                    }
-
-                }
-            }
-        }
-
-    }
-
-    private fun getDistanceInMeters(p1: GeoPoint, p2: GeoPoint): Int { // not the original function, original in npp
-        val lat1 = p1.latitude
-        val lng1 = p1.longitude
-        val lat2 = p2.latitude
-        val lng2 = p2.longitude
-        val dist = FloatArray(1)
-        Location.distanceBetween(lat1, lng1, lat2, lng2, dist)
-        return dist[0].toInt()
     }
 
     private fun newLocationUpdateUI(geoPoint: GeoPoint) {
@@ -249,8 +203,6 @@ class RecordRouteFragment() : Fragment(R.layout.fragment_record_route), KoinComp
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.WRITE_EXTERNAL_STORAGE)
         const val SEND_LOCATION_ACTION = BuildConfig.APPLICATION_ID + ".send_location_action"
-        const val PREF_KEY_DISTANCE_SUM = "distance_sum"
-        const val PREF_KEY_LAST_LAT = "last_lat"
-        const val PREF_KEY_LAST_LNG = "last_lng"
+
     }
 }
