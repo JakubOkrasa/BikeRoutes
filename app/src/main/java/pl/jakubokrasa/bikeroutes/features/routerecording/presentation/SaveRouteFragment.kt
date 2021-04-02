@@ -25,20 +25,19 @@ class SaveRouteFragment : Fragment(R.layout.fragment_save_route) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentSaveRouteBinding.bind(view)
         binding.btSave.setOnClickListener(btSaveOnClick)
-
     }
 
     private val btSaveOnClick = View.OnClickListener() {
         val name = binding.etName.text.toString()
+        val description = binding.etDescription.text.toString()
         val distance = preferenceHelper.preferences.getFloat(PREF_KEY_DISTANCE_SUM, 0F)
-        if(name.isEmpty()) {
-            Toast.makeText(context, "Name the route!", Toast.LENGTH_LONG).show()
-        } else {
-            viewModel.putRouteSaveData(DataRouteSave(name, binding.etDescription.text.toString(), distance.roundToInt()))
-
-            viewModel.markRouteAsNotCurrent()
-        }
+        if(name.isEmpty()) showToast("Route must have a name")
+        else viewModel.putRouteSaveData(DataRouteSave(name, description, distance.roundToInt()))
         hideKeyboard()
         parentFragmentManager.popBackStack()
+    }
+
+    private fun showToast(message: String) {
+        Toast.makeText(context, message, Toast.LENGTH_LONG).show()
     }
 }

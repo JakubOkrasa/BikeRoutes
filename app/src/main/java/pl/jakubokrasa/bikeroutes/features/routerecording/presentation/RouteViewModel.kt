@@ -103,7 +103,11 @@ class RouteViewModel(
             params = data,
             scope = viewModelScope
         ){
-                result -> result.onSuccess { Log.d(LOG_TAG, "route final data saved")}
+                result ->
+            result.onSuccess {
+                Log.d(LOG_TAG, "route final data saved")
+                markRouteAsNotCurrent()
+            }
             result.onFailure { Log.e(LOG_TAG, "route final data save error") }
         }
     }

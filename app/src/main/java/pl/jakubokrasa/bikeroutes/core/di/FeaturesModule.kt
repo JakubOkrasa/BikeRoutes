@@ -22,8 +22,6 @@ val featuresModule = module {
     factory { DeleteRouteUseCase(get())}
     factory { UpdateDistanceByPrefsUseCase(get())}
 
-//    factory<RvItemClickListener> { MyRoutesFragment() }
-
     viewModel { RouteViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
     factory { MyRoutesRecyclerAdapter() }
 }

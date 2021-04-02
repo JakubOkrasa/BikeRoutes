@@ -11,9 +11,9 @@ import pl.jakubokrasa.bikeroutes.core.extentions.PreferenceHelper.Companion.PREF
 class PutRouteSaveDataUseCase(private val routeRepository: RouteRepository, private val preferenceHelper: PreferenceHelper): UseCase<Unit, DataRouteSave>() {
     override suspend fun action(params: DataRouteSave) {
         val id = routeRepository.getCurrentRouteId()
-//        routeRepository.updateRouteName(id, params.name) // causes error
         routeRepository.updateRouteDescription(id, params.description)
         routeRepository.updateRouteDistance(id, params.distance)
+        routeRepository.updateRouteName(id, params.name) // causes error
         preparePrefsForNextRoute()
     }
 
