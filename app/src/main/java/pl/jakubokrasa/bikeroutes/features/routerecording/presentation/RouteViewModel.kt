@@ -88,7 +88,7 @@ class RouteViewModel(
         }
     }
 
-    fun markRouteAsNotCurrent() {
+    private fun markRouteAsNotCurrent() {
         markRouteAsNotCurrentUseCase(
             params = Unit,
             scope = viewModelScope
