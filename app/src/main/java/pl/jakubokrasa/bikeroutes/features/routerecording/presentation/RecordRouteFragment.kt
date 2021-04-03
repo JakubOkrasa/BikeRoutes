@@ -62,6 +62,7 @@ class RecordRouteFragment() : Fragment(R.layout.fragment_record_route), KoinComp
         requireActivity().window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         requestPermissionsIfNecessary(OSM_PERMISSIONS)
         Configuration.getInstance().load(context, getDefaultSharedPreferences(context)) //osmdroid config
+        observeCurrentRoute()
 
         binding.btStartRecord.setOnClickListener(btRecordRouteOnClick)
         binding.btStopRecord.setOnClickListener(btStopRecordOnClick)
@@ -125,7 +126,6 @@ class RecordRouteFragment() : Fragment(R.layout.fragment_record_route), KoinComp
     private fun newLocationUpdateUI(geoPoint: GeoPoint) {
         viewModel.insertCurrentPoint(geoPoint)
         if (!polyline.isEnabled) polyline.isEnabled = true //we get the location for the first time:
-        observeCurrentRoute()
         binding.mapView.controller.animateTo(geoPoint)
         binding.mapView.overlayManager.add(polyline)
         showCurrentLocationMarker(geoPoint)
@@ -168,8 +168,9 @@ class RecordRouteFragment() : Fragment(R.layout.fragment_record_route), KoinComp
     }
 
     private val btStopRecordOnClick = View.OnClickListener()  {
+        polyline.setPoints(ArrayList<GeoPoint>())
+        binding.mapView.invalidate()
         stopLocationService()
-
         childFragmentManager.commit {
             add<SaveRouteFragment>(binding.clFrgContainer.id)
             setReorderingAllowed(true)
@@ -192,7 +193,6 @@ class RecordRouteFragment() : Fragment(R.layout.fragment_record_route), KoinComp
         ).toRoute())
 
         requireActivity().startService(Intent(context, LocationService::class.java))
-        observeCurrentRoute()
         binding.btStartRecord.visibility = View.GONE
         binding.btStopRecord.visibility = View.VISIBLE
     }
