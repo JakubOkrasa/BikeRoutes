@@ -168,8 +168,10 @@ class RecordRouteFragment() : Fragment(R.layout.fragment_record_route), KoinComp
     }
 
     private val btStopRecordOnClick = View.OnClickListener()  {
+        polyline.setPoints(ArrayList<GeoPoint>())
+//        binding.mapView.overlays.remove(polyline)
+        binding.mapView.invalidate()
         stopLocationService()
-
         childFragmentManager.commit {
             add<SaveRouteFragment>(binding.clFrgContainer.id)
             setReorderingAllowed(true)
