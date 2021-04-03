@@ -51,6 +51,7 @@ class RecordRouteFragment() : Fragment(R.layout.fragment_record_route), KoinComp
     private val requestMultiplePermissions = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
         permissions.entries.forEach { Log.d(LOG_TAG, "permission: ${it.key} = ${it.value}") }
     }
+    private var recording = false
 
     //from https://developer.android.com/topic/libraries/view-binding
     private var _binding: FragmentRecordRouteBinding? = null
@@ -63,6 +64,8 @@ class RecordRouteFragment() : Fragment(R.layout.fragment_record_route), KoinComp
         requestPermissionsIfNecessary(OSM_PERMISSIONS)
         Configuration.getInstance().load(context, getDefaultSharedPreferences(context)) //osmdroid config
         observeCurrentRoute()
+
+        requireActivity().startService(Intent(context, LocationService::class.java))
 
         binding.btStartRecord.setOnClickListener(btRecordRouteOnClick)
         binding.btStopRecord.setOnClickListener(btStopRecordOnClick)
@@ -79,6 +82,7 @@ class RecordRouteFragment() : Fragment(R.layout.fragment_record_route), KoinComp
 
     override fun onStop() {
         super.onStop()
+        if(!recording) stopLocationService()
         mLocalBR.unregisterReceiver(locationServiceReceiver)
     }
 
@@ -168,7 +172,8 @@ class RecordRouteFragment() : Fragment(R.layout.fragment_record_route), KoinComp
     }
 
     private val btStopRecordOnClick = View.OnClickListener()  {
-        polyline.setPoints(ArrayList<GeoPoint>())
+        recording = false
+        polyline.setPoints(ArrayList<GeoPoint>()) // strange behaviour: when you make it after stopLocationService(), it doesn't work
         binding.mapView.invalidate()
         stopLocationService()
         childFragmentManager.commit {
@@ -182,6 +187,7 @@ class RecordRouteFragment() : Fragment(R.layout.fragment_record_route), KoinComp
     }
 
     private val btRecordRouteOnClick = View.OnClickListener() {
+        recording = true
         viewModel.insertNewRoute(RouteWithPointsDisplayable(
             routeId = 0,
             name = "",
@@ -192,7 +198,6 @@ class RecordRouteFragment() : Fragment(R.layout.fragment_record_route), KoinComp
             points = ArrayList()
         ).toRoute())
 
-        requireActivity().startService(Intent(context, LocationService::class.java))
         binding.btStartRecord.visibility = View.GONE
         binding.btStopRecord.visibility = View.VISIBLE
     }
