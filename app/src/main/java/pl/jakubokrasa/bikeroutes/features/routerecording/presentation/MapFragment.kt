@@ -117,15 +117,7 @@ class MapFragment() : Fragment(R.layout.fragment_map), KoinComponent {
         }
     }
 
-    private val locationServiceReceiver: BroadcastReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            val loc = intent!!.getParcelableExtra<Location>("EXTRA_LOCATION")
-            loc?.let {
-                if(recording) viewModel.updateDistanceByPrefs(GeoPoint(loc))
-                newLocationUpdateUI(GeoPoint(loc))
-            }
-        }
-    }
+
 
     private fun newLocationUpdateUI(geoPoint: GeoPoint) {
         if(recording) {
@@ -171,6 +163,16 @@ class MapFragment() : Fragment(R.layout.fragment_map), KoinComponent {
     private fun setPolylineProperties() {
         polyline.outlinePaint.strokeWidth = 7F
         polyline.outlinePaint.color = Color.MAGENTA
+    }
+
+    private val locationServiceReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            val loc = intent!!.getParcelableExtra<Location>("EXTRA_LOCATION")
+            loc?.let {
+                if(recording) viewModel.updateDistanceByPrefs(GeoPoint(loc))
+                newLocationUpdateUI(GeoPoint(loc))
+            }
+        }
     }
 
     private val btStopRecordOnClick = View.OnClickListener()  {
