@@ -26,6 +26,7 @@ class LocationService : Service(), KoinComponent {
     private val mLocalBR: LocalBroadcastManager by inject()
     private lateinit var mLocationCallback: LocationCallback
     private lateinit var mServiceHandler: Handler
+    private lateinit var handlerThread: HandlerThread
     private lateinit var mNotificationManager: NotificationManager
     private lateinit var mLocation: Location
 
@@ -36,7 +37,7 @@ class LocationService : Service(), KoinComponent {
     override fun onCreate() {
         Log.i(LOG_TAG, "onCreate")
         getLastLocation()
-        val handlerThread = HandlerThread(LOG_TAG)
+        handlerThread = HandlerThread(LOG_TAG)
         handlerThread.start()
         mServiceHandler = Handler(handlerThread.looper)
         mNotificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
@@ -107,7 +108,7 @@ class LocationService : Service(), KoinComponent {
         try {
             mFusedLocationClient.requestLocationUpdates(mLocationRequest,
                 mLocationCallback,
-                Looper.myLooper())
+                handlerThread.looper)
         } catch (unlikely: SecurityException) {
             locUtils.setRequestingLocationUpdates(this, false)
             Log.e(LOG_TAG, "Lost location permission. Could not request updates. $unlikely")
@@ -146,6 +147,7 @@ class LocationService : Service(), KoinComponent {
         try {
             mFusedLocationClient.removeLocationUpdates(mLocationCallback)
             locUtils.setRequestingLocationUpdates(this, false)
+            handlerThread.quit()
             stopSelf()
         } catch (unlikely: SecurityException) {
             locUtils.setRequestingLocationUpdates(this, true)
