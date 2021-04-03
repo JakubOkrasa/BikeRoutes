@@ -2,15 +2,18 @@ package pl.jakubokrasa.bikeroutes.features.myroutes.presentation
 
 import android.graphics.Color
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.View
+import androidx.fragment.app.Fragment
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
+import org.osmdroid.util.BoundingBox
+import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.overlay.Polyline
 import pl.jakubokrasa.bikeroutes.R
 import pl.jakubokrasa.bikeroutes.databinding.FragmentFollowRouteBinding
 import pl.jakubokrasa.bikeroutes.features.routerecording.presentation.RouteViewModel
 import pl.jakubokrasa.bikeroutes.features.routerecording.presentation.model.RouteWithPointsDisplayable
+
 
 class FollowRouteFragment : Fragment(R.layout.fragment_follow_route) {
 
@@ -19,27 +22,31 @@ class FollowRouteFragment : Fragment(R.layout.fragment_follow_route) {
     private val viewModel: RouteViewModel by sharedViewModel()
     private lateinit var route: RouteWithPointsDisplayable
     private val polyline = Polyline()
+    private var first = true
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentFollowRouteBinding.bind(view)
 
         updateToolbar()
+        showRoute(view)
 
-        parentFragmentManager.setFragmentResultListener("requestKey", viewLifecycleOwner, {
-             _, bundle ->
-            route = bundle.getSerializable("route") as RouteWithPointsDisplayable
-            updateRouteInfo()
-            polyline.setPoints(route.points.map {p -> p.geoPoint})
-                if (!polyline.isEnabled) polyline.isEnabled = true //we get the location for the first time:
-                binding.mapView.controller.animateTo(polyline.bounds.centerWithDateLine)
-                binding.mapView.overlayManager.add(polyline)
-//        showCurrentLocationMarker(geoPoint)
-                setMapViewProperties()
-                setPolylineProperties()
-                binding.mapView.invalidate()
-        })
+    }
 
+    private fun showRoute(view: View) {
+        view.post {
+            parentFragmentManager.setFragmentResultListener("requestKey",
+                viewLifecycleOwner,
+                { _, bundle ->
+                    route = bundle.getSerializable("route") as RouteWithPointsDisplayable
+                    updateRouteInfo()
+
+                    //        showCurrentLocationMarker(geoPoint)
+                    setMapViewProperties(setZoom = false)
+                    setPolylineProperties()
+                    binding.mapView.invalidate()
+                })
+        }
     }
 
     private fun updateToolbar() {
@@ -77,14 +84,17 @@ class FollowRouteFragment : Fragment(R.layout.fragment_follow_route) {
         binding.tvRouteRideTime.text = "todo ridetime"
     }
 
-
-    private fun setMapViewProperties() {
+    private fun setMapViewProperties(setZoom: Boolean = true) {
         binding.mapView.setTileSource(TileSourceFactory.HIKEBIKEMAP)
         binding.mapView.setMultiTouchControls(true)
-        binding.mapView.controller.setZoom(18.0)
+        binding.mapView.overlayManager.add(polyline)
+        binding.mapView.zoomToBoundingBox(polyline.bounds, false, 18)
+        if(setZoom) binding.mapView.controller.setZoom(18.0)
     }
 
     private fun setPolylineProperties() {
+        polyline.setPoints(route.points.map { p -> p.geoPoint })
+        if (!polyline.isEnabled) polyline.isEnabled = true //we get the location for the first time
         polyline.outlinePaint.strokeWidth = 7F
         polyline.outlinePaint.color = Color.MAGENTA
     }
