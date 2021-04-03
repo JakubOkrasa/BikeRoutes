@@ -121,17 +121,19 @@ class MapFragment() : Fragment(R.layout.fragment_map), KoinComponent {
         override fun onReceive(context: Context?, intent: Intent?) {
             val loc = intent!!.getParcelableExtra<Location>("EXTRA_LOCATION")
             loc?.let {
-                viewModel.updateDistanceByPrefs(GeoPoint(loc))
+                if(recording) viewModel.updateDistanceByPrefs(GeoPoint(loc))
                 newLocationUpdateUI(GeoPoint(loc))
             }
         }
     }
 
     private fun newLocationUpdateUI(geoPoint: GeoPoint) {
-        viewModel.insertCurrentPoint(geoPoint)
-        if (!polyline.isEnabled) polyline.isEnabled = true //we get the location for the first time:
+        if(recording) {
+            viewModel.insertCurrentPoint(geoPoint)
+            binding.mapView.overlayManager.add(polyline)
+            if (!polyline.isEnabled) polyline.isEnabled = true //we get the location for the first time
+        }
         binding.mapView.controller.animateTo(geoPoint)
-        binding.mapView.overlayManager.add(polyline)
         showCurrentLocationMarker(geoPoint)
         binding.mapView.invalidate()
     }
@@ -198,8 +200,8 @@ class MapFragment() : Fragment(R.layout.fragment_map), KoinComponent {
             points = ArrayList()
         ).toRoute())
 
-        binding.btStartRecord.visibility = View.GONE
-        binding.btStopRecord.visibility = View.VISIBLE
+        binding.btStartRecord.makeGone()
+        binding.btStopRecord.makeVisible()
     }
 
     companion object {
