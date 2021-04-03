@@ -53,6 +53,22 @@ class FollowRouteFragment : Fragment(R.layout.fragment_follow_route) {
         mLocalBR.registerReceiver(locationServiceReceiver, locFilter)
     }
 
+    override fun onResume() {
+        super.onResume()
+        binding.mapView.onResume();
+    }
+
+    override fun onPause() {
+        super.onPause()
+        binding.mapView.onPause()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        mLocalBR.unregisterReceiver(locationServiceReceiver)
+        stopLocationService()
+    }
+
     private fun showRoute(view: View) {
         view.post {
             parentFragmentManager.setFragmentResultListener("requestKey",
@@ -152,6 +168,10 @@ class FollowRouteFragment : Fragment(R.layout.fragment_follow_route) {
                 newLocationUpdateUI(GeoPoint(loc))
             }
         }
+    }
+
+    private fun stopLocationService() {
+        requireActivity().stopService(Intent(requireContext(), LocationService::class.java))
     }
 
 }
