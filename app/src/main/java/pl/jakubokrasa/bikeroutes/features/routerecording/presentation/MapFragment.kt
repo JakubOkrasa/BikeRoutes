@@ -35,12 +35,12 @@ import pl.jakubokrasa.bikeroutes.core.extentions.PreferenceHelper
 import pl.jakubokrasa.bikeroutes.core.extentions.makeGone
 import pl.jakubokrasa.bikeroutes.core.extentions.makeVisible
 import pl.jakubokrasa.bikeroutes.core.user.sharingType
-import pl.jakubokrasa.bikeroutes.databinding.FragmentRecordRouteBinding
+import pl.jakubokrasa.bikeroutes.databinding.FragmentMapBinding
 import pl.jakubokrasa.bikeroutes.features.routerecording.domain.LocationService
 import pl.jakubokrasa.bikeroutes.features.routerecording.presentation.model.RouteWithPointsDisplayable
 
 
-class RecordRouteFragment() : Fragment(R.layout.fragment_record_route), KoinComponent {
+class MapFragment() : Fragment(R.layout.fragment_map), KoinComponent {
     private var polyline: Polyline = Polyline()
     private lateinit var mRotationGestureOverlay: Overlay
     private lateinit var mPreviousLocMarker: Marker
@@ -54,12 +54,12 @@ class RecordRouteFragment() : Fragment(R.layout.fragment_record_route), KoinComp
     private var recording = false
 
     //from https://developer.android.com/topic/libraries/view-binding
-    private var _binding: FragmentRecordRouteBinding? = null
+    private var _binding: FragmentMapBinding? = null
     private val binding get() = _binding!! // This property is only valid between onCreateView and onDestroyView.
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        _binding = FragmentRecordRouteBinding.bind(view)
+        _binding = FragmentMapBinding.bind(view)
         requireActivity().window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         requestPermissionsIfNecessary(OSM_PERMISSIONS)
         Configuration.getInstance().load(context, getDefaultSharedPreferences(context)) //osmdroid config
@@ -203,7 +203,7 @@ class RecordRouteFragment() : Fragment(R.layout.fragment_record_route), KoinComp
     }
 
     companion object {
-        private val LOG_TAG: String? = RecordRouteFragment::class.simpleName
+        private val LOG_TAG: String? = MapFragment::class.simpleName
         val OSM_PERMISSIONS = arrayOf(
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.WRITE_EXTERNAL_STORAGE)
