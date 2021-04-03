@@ -35,12 +35,12 @@ import pl.jakubokrasa.bikeroutes.core.extentions.PreferenceHelper
 import pl.jakubokrasa.bikeroutes.core.extentions.makeGone
 import pl.jakubokrasa.bikeroutes.core.extentions.makeVisible
 import pl.jakubokrasa.bikeroutes.core.user.sharingType
-import pl.jakubokrasa.bikeroutes.databinding.FragmentRecordRouteBinding
+import pl.jakubokrasa.bikeroutes.databinding.FragmentMapBinding
 import pl.jakubokrasa.bikeroutes.features.routerecording.domain.LocationService
 import pl.jakubokrasa.bikeroutes.features.routerecording.presentation.model.RouteWithPointsDisplayable
 
 
-class RecordRouteFragment() : Fragment(R.layout.fragment_record_route), KoinComponent {
+class MapFragment() : Fragment(R.layout.fragment_map), KoinComponent {
     private var polyline: Polyline = Polyline()
     private lateinit var mRotationGestureOverlay: Overlay
     private lateinit var mPreviousLocMarker: Marker
@@ -51,18 +51,21 @@ class RecordRouteFragment() : Fragment(R.layout.fragment_record_route), KoinComp
     private val requestMultiplePermissions = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
         permissions.entries.forEach { Log.d(LOG_TAG, "permission: ${it.key} = ${it.value}") }
     }
+    private var recording = false
 
     //from https://developer.android.com/topic/libraries/view-binding
-    private var _binding: FragmentRecordRouteBinding? = null
+    private var _binding: FragmentMapBinding? = null
     private val binding get() = _binding!! // This property is only valid between onCreateView and onDestroyView.
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        _binding = FragmentRecordRouteBinding.bind(view)
+        _binding = FragmentMapBinding.bind(view)
         requireActivity().window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         requestPermissionsIfNecessary(OSM_PERMISSIONS)
         Configuration.getInstance().load(context, getDefaultSharedPreferences(context)) //osmdroid config
         observeCurrentRoute()
+
+        requireActivity().startService(Intent(context, LocationService::class.java))
 
         binding.btStartRecord.setOnClickListener(btRecordRouteOnClick)
         binding.btStopRecord.setOnClickListener(btStopRecordOnClick)
@@ -79,6 +82,7 @@ class RecordRouteFragment() : Fragment(R.layout.fragment_record_route), KoinComp
 
     override fun onStop() {
         super.onStop()
+        if(!recording) stopLocationService()
         mLocalBR.unregisterReceiver(locationServiceReceiver)
     }
 
@@ -117,17 +121,19 @@ class RecordRouteFragment() : Fragment(R.layout.fragment_record_route), KoinComp
         override fun onReceive(context: Context?, intent: Intent?) {
             val loc = intent!!.getParcelableExtra<Location>("EXTRA_LOCATION")
             loc?.let {
-                viewModel.updateDistanceByPrefs(GeoPoint(loc))
+                if(recording) viewModel.updateDistanceByPrefs(GeoPoint(loc))
                 newLocationUpdateUI(GeoPoint(loc))
             }
         }
     }
 
     private fun newLocationUpdateUI(geoPoint: GeoPoint) {
-        viewModel.insertCurrentPoint(geoPoint)
-        if (!polyline.isEnabled) polyline.isEnabled = true //we get the location for the first time:
+        if(recording) {
+            viewModel.insertCurrentPoint(geoPoint)
+            binding.mapView.overlayManager.add(polyline)
+            if (!polyline.isEnabled) polyline.isEnabled = true //we get the location for the first time
+        }
         binding.mapView.controller.animateTo(geoPoint)
-        binding.mapView.overlayManager.add(polyline)
         showCurrentLocationMarker(geoPoint)
         binding.mapView.invalidate()
     }
@@ -168,8 +174,8 @@ class RecordRouteFragment() : Fragment(R.layout.fragment_record_route), KoinComp
     }
 
     private val btStopRecordOnClick = View.OnClickListener()  {
-        polyline.setPoints(ArrayList<GeoPoint>())
-//        binding.mapView.overlays.remove(polyline)
+        recording = false
+        polyline.setPoints(ArrayList<GeoPoint>()) // strange behaviour: when you make it after stopLocationService(), it doesn't work
         binding.mapView.invalidate()
         stopLocationService()
         childFragmentManager.commit {
@@ -183,6 +189,7 @@ class RecordRouteFragment() : Fragment(R.layout.fragment_record_route), KoinComp
     }
 
     private val btRecordRouteOnClick = View.OnClickListener() {
+        recording = true
         viewModel.insertNewRoute(RouteWithPointsDisplayable(
             routeId = 0,
             name = "",
@@ -193,13 +200,12 @@ class RecordRouteFragment() : Fragment(R.layout.fragment_record_route), KoinComp
             points = ArrayList()
         ).toRoute())
 
-        requireActivity().startService(Intent(context, LocationService::class.java))
-        binding.btStartRecord.visibility = View.GONE
-        binding.btStopRecord.visibility = View.VISIBLE
+        binding.btStartRecord.makeGone()
+        binding.btStopRecord.makeVisible()
     }
 
     companion object {
-        private val LOG_TAG: String? = RecordRouteFragment::class.simpleName
+        private val LOG_TAG: String? = MapFragment::class.simpleName
         val OSM_PERMISSIONS = arrayOf(
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.WRITE_EXTERNAL_STORAGE)
