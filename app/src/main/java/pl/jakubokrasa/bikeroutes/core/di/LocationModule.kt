@@ -2,6 +2,7 @@ package pl.jakubokrasa.bikeroutes.core.di
 
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.LocationSettingsRequest
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 import pl.jakubokrasa.bikeroutes.core.util.LocationUtils
@@ -9,9 +10,11 @@ import pl.jakubokrasa.bikeroutes.core.util.LocationUtils
 
 val locationModule = module {
     single { LocationServices.getFusedLocationProviderClient(androidContext());}
-    single {LocationUtils(get(), get())}
     single { createLocationRequest() }
-} 
+    single { LocationServices.getSettingsClient(androidContext()) }
+    single { LocationSettingsRequest.Builder().addLocationRequest(get()).build() }
+//    single { LocationUtils(get(), get(), get()) }
+}
 
 private fun createLocationRequest() =
     LocationRequest()

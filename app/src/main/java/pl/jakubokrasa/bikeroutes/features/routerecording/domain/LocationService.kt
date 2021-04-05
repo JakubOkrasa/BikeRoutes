@@ -6,6 +6,7 @@ import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
 import android.location.Location
+import android.location.LocationManager
 import android.os.*
 import android.util.Log
 import androidx.core.app.NotificationCompat
@@ -22,7 +23,7 @@ import pl.jakubokrasa.bikeroutes.features.routerecording.presentation.MapFragmen
 class LocationService : Service(), KoinComponent {
     private val mLocationRequest: LocationRequest by inject()
     private val mFusedLocationClient: FusedLocationProviderClient by inject()
-    private val locUtils: LocationUtils by inject()
+//    private val locUtils: LocationUtils by inject()
     private val mLocalBR: LocalBroadcastManager by inject()
     private lateinit var mLocationCallback: LocationCallback
     private lateinit var mServiceHandler: Handler
@@ -41,11 +42,13 @@ class LocationService : Service(), KoinComponent {
         handlerThread.start()
         mServiceHandler = Handler(handlerThread.looper)
         mNotificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-
         createNotificationChannel()
         super.onCreate()
 
     }
+
+
+
 
     private fun locationCallbackInit() {
         mLocationCallback = object : LocationCallback() {
@@ -103,14 +106,14 @@ class LocationService : Service(), KoinComponent {
     private fun requestLocationUpdates() {
         Log.i(LOG_TAG, "Requesting location updates")
         Log.d(LOG_TAG, "service request updates Thread: ${Thread.currentThread().name}")
-        locUtils.setRequestingLocationUpdates(this, true)
+//        locUtils.setRequestingLocationUpdates(this, true)
         locationCallbackInit()
         try {
             mFusedLocationClient.requestLocationUpdates(mLocationRequest,
                 mLocationCallback,
                 handlerThread.looper)
         } catch (unlikely: SecurityException) {
-            locUtils.setRequestingLocationUpdates(this, false)
+//            locUtils.setRequestingLocationUpdates(this, false)
             Log.e(LOG_TAG, "Lost location permission. Could not request updates. $unlikely")
         }
     }
@@ -146,11 +149,11 @@ class LocationService : Service(), KoinComponent {
         Log.i(LOG_TAG, "Removing location updates")
         try {
             mFusedLocationClient.removeLocationUpdates(mLocationCallback)
-            locUtils.setRequestingLocationUpdates(this, false)
+//            locUtils.setRequestingLocationUpdates(this, false)
             handlerThread.quit()
             stopSelf()
         } catch (unlikely: SecurityException) {
-            locUtils.setRequestingLocationUpdates(this, true)
+//            locUtils.setRequestingLocationUpdates(this, true)
             Log.e(LOG_TAG, "Lost location permission. Could not remove updates. $unlikely")
         }
     }
