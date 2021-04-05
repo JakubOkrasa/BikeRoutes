@@ -10,6 +10,7 @@ class PreferenceHelper(ctx: Context) {
         const val PREF_KEY_DISTANCE_SUM = "distance_sum"
         const val PREF_KEY_LAST_LAT = "last_lat"
         const val PREF_KEY_LAST_LNG = "last_lng"
+        const val PREF_KEY_REQUESTING_LOCATION_UPDATES = "requesting_location_updates";
     }
 
     private val filePath = BuildConfig.APPLICATION_ID + ".preferences"

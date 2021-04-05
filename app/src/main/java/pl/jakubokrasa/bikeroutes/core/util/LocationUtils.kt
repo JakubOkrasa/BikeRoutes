@@ -1,22 +1,18 @@
 package pl.jakubokrasa.bikeroutes.core.util
 
 import android.content.Context
-import android.content.SharedPreferences
+import androidx.core.content.edit
+import pl.jakubokrasa.bikeroutes.core.extentions.PreferenceHelper
+import pl.jakubokrasa.bikeroutes.core.extentions.PreferenceHelper.Companion.PREF_KEY_REQUESTING_LOCATION_UPDATES
 
-class LocationUtils
-    (
-    private val preferences: SharedPreferences, private val prefsEditor: SharedPreferences.Editor
-)
-{
+class LocationUtils(private val preferenceHelper: PreferenceHelper) {
     fun requestingLocationUpdates(context: Context?): Boolean {
-        return preferences.getBoolean(KEY_REQUESTING_LOCATION_UPDATES, false)
+        return preferenceHelper.preferences.getBoolean(PREF_KEY_REQUESTING_LOCATION_UPDATES, false)
     }
 
     fun setRequestingLocationUpdates(context: Context?, requestingLocationUpdates: Boolean) {
-        prefsEditor.putBoolean(KEY_REQUESTING_LOCATION_UPDATES, requestingLocationUpdates).apply()
-    }
-
-    companion object {
-        const val KEY_REQUESTING_LOCATION_UPDATES = "requesting_location_updates";
+        preferenceHelper.preferences.edit {
+            putBoolean(PREF_KEY_REQUESTING_LOCATION_UPDATES, requestingLocationUpdates).apply()
+        }
     }
 }
