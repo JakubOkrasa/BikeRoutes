@@ -1,5 +1,6 @@
 package pl.jakubokrasa.bikeroutes.features.myroutes.presentation
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -14,10 +15,9 @@ import androidx.fragment.app.Fragment
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import org.koin.core.inject
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
-import org.osmdroid.util.BoundingBox
 import org.osmdroid.util.GeoPoint
+import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.Polyline
 import pl.jakubokrasa.bikeroutes.R
@@ -39,6 +39,8 @@ class FollowRouteFragment : Fragment(R.layout.fragment_follow_route) {
     private val mLocalBR: LocalBroadcastManager by inject()
     private lateinit var mPreviousLocMarker: Marker
 
+    private var followLocationMode = false
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentFollowRouteBinding.bind(view)
@@ -48,6 +50,7 @@ class FollowRouteFragment : Fragment(R.layout.fragment_follow_route) {
         updateToolbar()
         showRoute(view)
 
+        binding.btShowLocation.setOnClickListener(btShowLocationOnClick)
     }
 
     override fun onStart() {
@@ -148,6 +151,7 @@ class FollowRouteFragment : Fragment(R.layout.fragment_follow_route) {
 
     private fun newLocationUpdateUI(geoPoint: GeoPoint) {
         showCurrentLocationMarker(geoPoint)
+        if(followLocationMode) binding.mapView.controller.animateTo(geoPoint)
         binding.mapView.invalidate()
     }
 
@@ -173,8 +177,17 @@ class FollowRouteFragment : Fragment(R.layout.fragment_follow_route) {
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
+    private val btShowLocationOnClick = View.OnClickListener {
+        binding.mapView.controller.animateTo(mPreviousLocMarker.position)
+        followLocationMode = true
+        binding.mapView.setOnTouchListener { _, _ ->
+            followLocationMode = false //todo to się wykonuje za każdym dotknięciem. Można spróbować tego uniknąć https://stackoverflow.com/a/6619160/9343040
+            false // todo co tu oznacza false?
+        }
+    }
+
     private fun stopLocationService() {
         requireActivity().stopService(Intent(requireContext(), LocationService::class.java))
     }
-
 }
