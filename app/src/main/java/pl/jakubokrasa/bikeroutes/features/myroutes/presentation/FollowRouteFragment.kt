@@ -1,5 +1,6 @@
 package pl.jakubokrasa.bikeroutes.features.myroutes.presentation
 
+import android.app.Activity
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -20,6 +21,7 @@ import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.Polyline
 import pl.jakubokrasa.bikeroutes.R
+import pl.jakubokrasa.bikeroutes.core.util.LocationUtils
 import pl.jakubokrasa.bikeroutes.databinding.FragmentFollowRouteBinding
 import pl.jakubokrasa.bikeroutes.features.routerecording.domain.LocationService
 import pl.jakubokrasa.bikeroutes.features.routerecording.presentation.MapFragment.Companion.SEND_LOCATION_ACTION
@@ -41,6 +43,7 @@ class FollowRouteFragment : Fragment(R.layout.fragment_follow_route) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentFollowRouteBinding.bind(view)
         requireActivity().startService(Intent(context, LocationService::class.java))
+        LocationUtils(activity as Activity).enableGpsIfNecessary()
 
         updateToolbar()
         showRoute(view)

@@ -1,25 +1,32 @@
 package pl.jakubokrasa.bikeroutes.features.routerecording.presentation
 
 import android.Manifest
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
+import android.app.Activity
+import android.app.Service
+import android.content.*
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.location.Location
+import android.location.LocationManager
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.WindowManager
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.add
 import androidx.fragment.app.commit
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.preference.PreferenceManager.getDefaultSharedPreferences
+import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.common.api.ResolvableApiException
+import com.google.android.gms.location.LocationSettingsRequest
+import com.google.android.gms.location.LocationSettingsStatusCodes
+import com.google.android.gms.location.SettingsClient
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.core.KoinComponent
 import org.koin.core.inject
@@ -35,6 +42,7 @@ import pl.jakubokrasa.bikeroutes.core.extentions.PreferenceHelper
 import pl.jakubokrasa.bikeroutes.core.extentions.makeGone
 import pl.jakubokrasa.bikeroutes.core.extentions.makeVisible
 import pl.jakubokrasa.bikeroutes.core.user.sharingType
+import pl.jakubokrasa.bikeroutes.core.util.LocationUtils
 import pl.jakubokrasa.bikeroutes.databinding.FragmentMapBinding
 import pl.jakubokrasa.bikeroutes.features.routerecording.domain.LocationService
 import pl.jakubokrasa.bikeroutes.features.routerecording.presentation.model.RouteWithPointsDisplayable
@@ -63,6 +71,7 @@ class MapFragment() : Fragment(R.layout.fragment_map), KoinComponent {
         requireActivity().window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         requestPermissionsIfNecessary(OSM_PERMISSIONS)
         Configuration.getInstance().load(context, getDefaultSharedPreferences(context)) //osmdroid config
+        LocationUtils(activity as Activity).enableGpsIfNecessary()
         observeCurrentRoute()
 
         requireActivity().startService(Intent(context, LocationService::class.java))
@@ -72,6 +81,7 @@ class MapFragment() : Fragment(R.layout.fragment_map), KoinComponent {
 
         setMapViewProperties()
         setPolylineProperties()
+
     }
 
    override fun onStart() {
@@ -163,6 +173,32 @@ class MapFragment() : Fragment(R.layout.fragment_map), KoinComponent {
     private fun setPolylineProperties() {
         polyline.outlinePaint.strokeWidth = 7F
         polyline.outlinePaint.color = Color.MAGENTA
+    }
+
+
+
+    fun askUserToEnableGps(settingsClient: SettingsClient, locationSettingsRequest: LocationSettingsRequest) {
+        settingsClient.checkLocationSettings(locationSettingsRequest).addOnSuccessListener((context as Activity)) { //  GPS is already enable, callback GPS status through listener
+            // do noting
+        }
+            .addOnFailureListener(context as Activity) { exception ->
+                val statusCode = (exception as ApiException).statusCode
+                when (statusCode) {
+                    LocationSettingsStatusCodes.RESOLUTION_REQUIRED -> {
+                        try {
+                            val rae = exception as ResolvableApiException
+                            rae.startResolutionForResult(context as Activity, 1000) //todo extract  int LOCATION_REQUEST
+                        } catch (exp: IntentSender.SendIntentException) {
+                            Log.w(LocationUtils.LOG_TAG, "Unable to enable GPS, error while resolving LocationSettingsStatusCodes.RESOLUTION_REQUIRED")
+                        }
+                    }
+                    LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE -> {
+                        Log.e(LocationUtils.LOG_TAG, "Unable to enable GPS, LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE")
+                        val errorMsg = "An error occured while turning GPS on. Try to do that in System Settings."
+                        Toast.makeText(context, errorMsg, Toast.LENGTH_LONG).show()
+                    }
+                }
+            }
     }
 
     private val locationServiceReceiver: BroadcastReceiver = object : BroadcastReceiver() {
