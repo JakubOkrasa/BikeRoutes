@@ -1,8 +1,8 @@
-package pl.jakubokrasa.bikeroutes.features.routerecording.presentation.model
+package pl.jakubokrasa.bikeroutes.features.map.presentation.model
 
 import pl.jakubokrasa.bikeroutes.core.user.sharingType
-import pl.jakubokrasa.bikeroutes.features.routerecording.domain.model.Point
-import pl.jakubokrasa.bikeroutes.features.routerecording.domain.model.Route
+import pl.jakubokrasa.bikeroutes.features.map.domain.model.Point
+import pl.jakubokrasa.bikeroutes.features.map.domain.model.Route
 import java.io.Serializable
 
 data class RouteWithPointsDisplayable (

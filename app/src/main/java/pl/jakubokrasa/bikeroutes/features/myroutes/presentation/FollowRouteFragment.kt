@@ -17,16 +17,15 @@ import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
-import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.Polyline
 import pl.jakubokrasa.bikeroutes.R
 import pl.jakubokrasa.bikeroutes.core.util.LocationUtils
 import pl.jakubokrasa.bikeroutes.databinding.FragmentFollowRouteBinding
-import pl.jakubokrasa.bikeroutes.features.routerecording.domain.LocationService
-import pl.jakubokrasa.bikeroutes.features.routerecording.presentation.MapFragment.Companion.SEND_LOCATION_ACTION
-import pl.jakubokrasa.bikeroutes.features.routerecording.presentation.RouteViewModel
-import pl.jakubokrasa.bikeroutes.features.routerecording.presentation.model.RouteWithPointsDisplayable
+import pl.jakubokrasa.bikeroutes.features.map.domain.LocationService
+import pl.jakubokrasa.bikeroutes.features.map.presentation.MapFragment.Companion.SEND_LOCATION_ACTION
+import pl.jakubokrasa.bikeroutes.features.map.presentation.RouteViewModel
+import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteWithPointsDisplayable
 
 
 class FollowRouteFragment : Fragment(R.layout.fragment_follow_route) {

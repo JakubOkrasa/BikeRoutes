@@ -5,10 +5,12 @@ import org.koin.dsl.module
 import pl.jakubokrasa.bikeroutes.features.myroutes.domain.DeleteRouteUseCase
 import pl.jakubokrasa.bikeroutes.features.myroutes.domain.GetMyRoutesUseCase
 import pl.jakubokrasa.bikeroutes.features.myroutes.presentation.MyRoutesRecyclerAdapter
-import pl.jakubokrasa.bikeroutes.features.routerecording.data.RouteRepositoryImpl
-import pl.jakubokrasa.bikeroutes.features.routerecording.domain.*
-import pl.jakubokrasa.bikeroutes.features.routerecording.presentation.RouteViewModel
-import pl.jakubokrasa.bikeroutes.features.routerecording.presentation.RouteRepository
+import pl.jakubokrasa.bikeroutes.features.map.data.RouteRepositoryImpl
+import pl.jakubokrasa.bikeroutes.features.map.domain.*
+import pl.jakubokrasa.bikeroutes.features.map.navigation.MapNavigator
+import pl.jakubokrasa.bikeroutes.features.map.navigation.MapNavigatorImpl
+import pl.jakubokrasa.bikeroutes.features.map.presentation.RouteViewModel
+import pl.jakubokrasa.bikeroutes.features.map.presentation.RouteRepository
 
 val featuresModule = module {
     factory<RouteRepository> { RouteRepositoryImpl(get()) }
@@ -24,6 +26,8 @@ val featuresModule = module {
 
     viewModel { RouteViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
     factory { MyRoutesRecyclerAdapter() }
+
+    factory<MapNavigator> { MapNavigatorImpl(get()) }
 }
 
 

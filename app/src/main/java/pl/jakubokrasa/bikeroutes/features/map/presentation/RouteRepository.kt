@@ -1,7 +1,7 @@
-package pl.jakubokrasa.bikeroutes.features.routerecording.presentation
+package pl.jakubokrasa.bikeroutes.features.map.presentation
 
 import org.osmdroid.util.GeoPoint
-import pl.jakubokrasa.bikeroutes.features.routerecording.domain.model.Route
+import pl.jakubokrasa.bikeroutes.features.map.domain.model.Route
 
 interface RouteRepository {
     suspend fun getCurrentRoute(): Route

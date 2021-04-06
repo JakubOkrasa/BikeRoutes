@@ -1,4 +1,4 @@
-package pl.jakubokrasa.bikeroutes.features.routerecording.presentation
+package pl.jakubokrasa.bikeroutes.features.map.presentation
 
 import android.Manifest
 import android.app.Activity
@@ -41,8 +41,9 @@ import pl.jakubokrasa.bikeroutes.core.extentions.makeVisible
 import pl.jakubokrasa.bikeroutes.core.user.sharingType
 import pl.jakubokrasa.bikeroutes.core.util.LocationUtils
 import pl.jakubokrasa.bikeroutes.databinding.FragmentMapBinding
-import pl.jakubokrasa.bikeroutes.features.routerecording.domain.LocationService
-import pl.jakubokrasa.bikeroutes.features.routerecording.presentation.model.RouteWithPointsDisplayable
+import pl.jakubokrasa.bikeroutes.features.map.domain.LocationService
+import pl.jakubokrasa.bikeroutes.features.map.navigation.MapNavigator
+import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteWithPointsDisplayable
 
 
 class MapFragment() : BaseFragment(R.layout.fragment_map), KoinComponent {
@@ -50,6 +51,7 @@ class MapFragment() : BaseFragment(R.layout.fragment_map), KoinComponent {
     private lateinit var mRotationGestureOverlay: Overlay
     private lateinit var mPreviousLocMarker: Marker
     private val mLocalBR: LocalBroadcastManager by inject()
+    private val mapNavigator: MapNavigator by inject()
     private val requestMultiplePermissions = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
         permissions.entries.forEach { Log.d(LOG_TAG, "permission: ${it.key} = ${it.value}") }
     }
@@ -211,12 +213,12 @@ class MapFragment() : BaseFragment(R.layout.fragment_map), KoinComponent {
         polyline.setPoints(ArrayList<GeoPoint>()) // strange behaviour: when you make it after stopLocationService(), it doesn't work
         binding.mapView.invalidate()
         stopLocationService()
-        childFragmentManager.commit {
-            add<SaveRouteFragment>(binding.clFrgContainer.id)
-            setReorderingAllowed(true)
-            addToBackStack("Save a route") // name can be null
-        }
-
+//        childFragmentManager.commit {
+//            add<SaveRouteFragment>(binding.clFrgContainer.id)
+//            setReorderingAllowed(true)
+//            addToBackStack("Save a route") // name can be null
+//        }
+        mapNavigator.openSaveRouteFragment()
         binding.btStopRecord.makeGone()
         binding.btStartRecord.makeVisible()
 
@@ -243,7 +245,7 @@ class MapFragment() : BaseFragment(R.layout.fragment_map), KoinComponent {
         binding.btStopRecord.makeVisible()
     }
 
-    private fun enableRecordingMode() {
+    private fun enableRecordingMode() { //todo not a clean practice (public to use it in ViewModel)
         preferenceHelper.preferences.edit {
             putBoolean(PREF_KEY_MAPFRAGMENT_MODE_RECORDING, true)
         }

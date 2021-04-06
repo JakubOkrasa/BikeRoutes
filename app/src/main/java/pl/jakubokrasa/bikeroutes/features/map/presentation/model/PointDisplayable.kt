@@ -1,7 +1,7 @@
-package pl.jakubokrasa.bikeroutes.features.routerecording.presentation.model
+package pl.jakubokrasa.bikeroutes.features.map.presentation.model
 
 import org.osmdroid.util.GeoPoint
-import pl.jakubokrasa.bikeroutes.features.routerecording.domain.model.Point
+import pl.jakubokrasa.bikeroutes.features.map.domain.model.Point
 
 data class PointDisplayable(
     val pointId: Long,

@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import pl.jakubokrasa.bikeroutes.databinding.RvMyroutesItemBinding
-import pl.jakubokrasa.bikeroutes.features.routerecording.presentation.model.RouteWithPointsDisplayable
+import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteWithPointsDisplayable
 
 class MyRoutesRecyclerAdapter() : RecyclerView.Adapter<MyRoutesRecyclerAdapter.MyRoutesViewHolder>() {
 

@@ -1,9 +1,9 @@
-package pl.jakubokrasa.bikeroutes.features.routerecording.data.local.model
+package pl.jakubokrasa.bikeroutes.features.map.data.local.model
 
 import androidx.room.Embedded
 import androidx.room.Relation
-import pl.jakubokrasa.bikeroutes.features.routerecording.domain.model.Point
-import pl.jakubokrasa.bikeroutes.features.routerecording.domain.model.Route
+import pl.jakubokrasa.bikeroutes.features.map.domain.model.Point
+import pl.jakubokrasa.bikeroutes.features.map.domain.model.Route
 
 data class RouteWithPointsCached(
     @Embedded val route: RouteCached,

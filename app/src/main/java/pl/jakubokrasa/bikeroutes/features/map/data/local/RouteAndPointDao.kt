@@ -1,15 +1,9 @@
-package pl.jakubokrasa.bikeroutes.features.routerecording.data.local
+package pl.jakubokrasa.bikeroutes.features.map.data.local
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.room.*
 import org.osmdroid.util.GeoPoint
-import pl.jakubokrasa.bikeroutes.features.routerecording.data.local.model.PointCached
-import pl.jakubokrasa.bikeroutes.features.routerecording.data.local.model.RouteCached
-import pl.jakubokrasa.bikeroutes.features.routerecording.data.local.model.RouteWithPointsCached
-import pl.jakubokrasa.bikeroutes.features.routerecording.domain.model.Point
-import pl.jakubokrasa.bikeroutes.features.routerecording.domain.model.Route
-import java.util.*
+import pl.jakubokrasa.bikeroutes.features.map.data.local.model.RouteCached
+import pl.jakubokrasa.bikeroutes.features.map.data.local.model.RouteWithPointsCached
 
 @Dao
 interface RouteAndPointDao {

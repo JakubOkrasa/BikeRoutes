@@ -1,13 +1,13 @@
-package pl.jakubokrasa.bikeroutes.features.routerecording.presentation
+package pl.jakubokrasa.bikeroutes.features.map.presentation
 
 import android.util.Log
 import androidx.lifecycle.*
 import org.osmdroid.util.GeoPoint
 import pl.jakubokrasa.bikeroutes.features.myroutes.domain.DeleteRouteUseCase
 import pl.jakubokrasa.bikeroutes.features.myroutes.domain.GetMyRoutesUseCase
-import pl.jakubokrasa.bikeroutes.features.routerecording.domain.*
-import pl.jakubokrasa.bikeroutes.features.routerecording.domain.model.Route
-import pl.jakubokrasa.bikeroutes.features.routerecording.presentation.model.RouteWithPointsDisplayable
+import pl.jakubokrasa.bikeroutes.features.map.domain.*
+import pl.jakubokrasa.bikeroutes.features.map.domain.model.Route
+import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteWithPointsDisplayable
 
 class RouteViewModel(
     private val getCurrentRouteUseCase: GetCurrentRouteUseCase,

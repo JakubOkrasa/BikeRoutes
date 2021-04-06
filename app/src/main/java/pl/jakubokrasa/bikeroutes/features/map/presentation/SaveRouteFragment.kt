@@ -1,19 +1,13 @@
-package pl.jakubokrasa.bikeroutes.features.routerecording.presentation
+package pl.jakubokrasa.bikeroutes.features.map.presentation
 
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
-import androidx.fragment.app.Fragment
-import org.koin.android.ext.android.inject
-import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import pl.jakubokrasa.bikeroutes.R
 import pl.jakubokrasa.bikeroutes.core.base.BaseFragment
-import pl.jakubokrasa.bikeroutes.core.extentions.PreferenceHelper
 import pl.jakubokrasa.bikeroutes.core.extentions.hideKeyboard
 import pl.jakubokrasa.bikeroutes.core.extentions.PreferenceHelper.Companion.PREF_KEY_DISTANCE_SUM
 import pl.jakubokrasa.bikeroutes.databinding.FragmentSaveRouteBinding
-import pl.jakubokrasa.bikeroutes.features.routerecording.domain.DataRouteSave
-import kotlin.math.roundToInt
+import pl.jakubokrasa.bikeroutes.features.map.domain.DataRouteSave
 
 class SaveRouteFragment : BaseFragment(R.layout.fragment_save_route) {
 

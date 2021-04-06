@@ -1,6 +1,5 @@
-package pl.jakubokrasa.bikeroutes.features.routerecording.domain.model
+package pl.jakubokrasa.bikeroutes.features.map.domain.model
 
-import org.osmdroid.util.GeoPoint
 import pl.jakubokrasa.bikeroutes.core.user.sharingType
 
 data class Route(
