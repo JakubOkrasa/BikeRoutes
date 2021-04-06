@@ -5,6 +5,7 @@ import pl.jakubokrasa.bikeroutes.features.routerecording.data.local.RouteAndPoin
 import pl.jakubokrasa.bikeroutes.features.routerecording.data.local.model.RouteCached
 import pl.jakubokrasa.bikeroutes.features.routerecording.domain.model.Route
 import pl.jakubokrasa.bikeroutes.features.routerecording.presentation.RouteRepository
+import java.util.*
 
 class RouteRepositoryImpl(private val routeAndPointDao: RouteAndPointDao): RouteRepository {
     override suspend fun getCurrentRoute(): Route {
@@ -35,7 +36,8 @@ class RouteRepositoryImpl(private val routeAndPointDao: RouteAndPointDao): Route
     }
 
     override suspend fun insertCurrentRoutePoint(geoPoint: GeoPoint) {
-        return routeAndPointDao.insertCurrentRoutePoint(geoPoint)
+        val createdAt = System.currentTimeMillis()
+        return routeAndPointDao.insertCurrentRoutePoint(geoPoint, createdAt)
     }
 
     override suspend fun deleteRoute(route: Route) {

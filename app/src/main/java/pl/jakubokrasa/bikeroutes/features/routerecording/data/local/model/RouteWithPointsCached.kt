@@ -21,7 +21,7 @@ data class RouteWithPointsCached(
         route.distance,
         route.sharingType,
         points.map {
-            Point(it.pointId, it.geoPoint)
+            Point(it.pointId, it.geoPoint, it.createdAt)
         }
     )
 }

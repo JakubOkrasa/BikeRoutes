@@ -9,6 +9,7 @@ import pl.jakubokrasa.bikeroutes.features.routerecording.data.local.model.RouteC
 import pl.jakubokrasa.bikeroutes.features.routerecording.data.local.model.RouteWithPointsCached
 import pl.jakubokrasa.bikeroutes.features.routerecording.domain.model.Point
 import pl.jakubokrasa.bikeroutes.features.routerecording.domain.model.Route
+import java.util.*
 
 @Dao
 interface RouteAndPointDao {
@@ -49,8 +50,8 @@ interface RouteAndPointDao {
     //=============================================
 
     @Transaction
-    @Query("INSERT INTO PointCached(geoPoint, routeId) VALUES(:geoPoint, (SELECT routeId FROM RouteCached WHERE current=1 LIMIT 1))")
-    suspend fun insertCurrentRoutePoint(geoPoint: GeoPoint)
+    @Query("INSERT INTO PointCached(geoPoint, routeId, createdAt) VALUES(:geoPoint, (SELECT routeId FROM RouteCached WHERE current=1 LIMIT 1), :createdAt)")
+    suspend fun insertCurrentRoutePoint(geoPoint: GeoPoint, createdAt: Long)
 
 
     @Query("UPDATE RouteCached SET current=0 WHERE current=1")

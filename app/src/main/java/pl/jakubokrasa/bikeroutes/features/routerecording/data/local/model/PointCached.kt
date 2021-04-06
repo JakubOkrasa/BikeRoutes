@@ -4,14 +4,15 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
 import org.osmdroid.util.GeoPoint
-import pl.jakubokrasa.bikeroutes.core.util.GeoPointConverter
+import pl.jakubokrasa.bikeroutes.core.util.converter.GeoPointConverter
+import java.util.*
 
 @Entity
 data class PointCached(
     @PrimaryKey(autoGenerate = true)
     val pointId: Long,
     val routeId: Long,
-    @TypeConverters(GeoPointConverter::class)
-    val geoPoint: GeoPoint
+    val geoPoint: GeoPoint,
+    val createdAt: Long
 ) {
 }

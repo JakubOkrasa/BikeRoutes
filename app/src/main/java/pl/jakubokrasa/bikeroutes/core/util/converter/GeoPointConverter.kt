@@ -1,4 +1,4 @@
-package pl.jakubokrasa.bikeroutes.core.util
+package pl.jakubokrasa.bikeroutes.core.util.converter
 
 import androidx.room.TypeConverter
 import com.google.gson.Gson
