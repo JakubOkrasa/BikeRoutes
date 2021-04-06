@@ -8,23 +8,19 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import pl.jakubokrasa.bikeroutes.R
+import pl.jakubokrasa.bikeroutes.core.base.BaseFragment
 import pl.jakubokrasa.bikeroutes.databinding.FragmentMyRoutesBinding
 import pl.jakubokrasa.bikeroutes.features.routerecording.presentation.RouteViewModel
 
-class MyRoutesFragment : Fragment(R.layout.fragment_my_routes){
-    private val viewModel: RouteViewModel by sharedViewModel() //make shared view model
+class MyRoutesFragment : BaseFragment(R.layout.fragment_my_routes){
     private var _binding: FragmentMyRoutesBinding? = null
     private val binding get() = _binding!!
     private val myRoutesRecyclerAdapter: MyRoutesRecyclerAdapter by inject()
     private val divider: DividerItemDecoration by inject()
 
-
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentMyRoutesBinding.bind(view)
-        initObservers()
-        initRecycler()
     }
 
     override fun onResume() {
@@ -33,8 +29,14 @@ class MyRoutesFragment : Fragment(R.layout.fragment_my_routes){
         initRecycler()
     }
 
-    private fun initObservers() {
+    override fun initObservers() {
+        super.initObservers()
         observeMyRoutes()
+    }
+
+    override fun initViews() {
+        super.initViews()
+        initRecycler()
     }
 
     private fun observeMyRoutes() {

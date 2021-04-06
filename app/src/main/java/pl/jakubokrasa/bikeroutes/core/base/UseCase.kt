@@ -1,4 +1,4 @@
-package pl.jakubokrasa.bikeroutes.core.base.domain
+package pl.jakubokrasa.bikeroutes.core.base
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

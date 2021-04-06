@@ -3,7 +3,7 @@ package pl.jakubokrasa.bikeroutes.features.routerecording.domain
 import android.location.Location
 import androidx.core.content.edit
 import org.osmdroid.util.GeoPoint
-import pl.jakubokrasa.bikeroutes.core.base.domain.UseCase
+import pl.jakubokrasa.bikeroutes.core.base.UseCase
 import pl.jakubokrasa.bikeroutes.core.extentions.PreferenceHelper
 import pl.jakubokrasa.bikeroutes.core.extentions.getDouble
 import pl.jakubokrasa.bikeroutes.core.extentions.putDouble

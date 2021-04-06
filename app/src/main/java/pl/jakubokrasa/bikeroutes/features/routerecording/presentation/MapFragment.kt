@@ -2,12 +2,10 @@ package pl.jakubokrasa.bikeroutes.features.routerecording.presentation
 
 import android.Manifest
 import android.app.Activity
-import android.app.Service
 import android.content.*
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.location.Location
-import android.location.LocationManager
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -15,10 +13,8 @@ import android.view.WindowManager
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.content.edit
 import androidx.core.content.res.ResourcesCompat
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.add
 import androidx.fragment.app.commit
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
@@ -28,7 +24,6 @@ import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.LocationSettingsRequest
 import com.google.android.gms.location.LocationSettingsStatusCodes
 import com.google.android.gms.location.SettingsClient
-import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 import org.osmdroid.config.Configuration
@@ -39,7 +34,7 @@ import org.osmdroid.views.overlay.Overlay
 import org.osmdroid.views.overlay.Polyline
 import pl.jakubokrasa.bikeroutes.BuildConfig
 import pl.jakubokrasa.bikeroutes.R
-import pl.jakubokrasa.bikeroutes.core.extentions.PreferenceHelper
+import pl.jakubokrasa.bikeroutes.core.base.BaseFragment
 import pl.jakubokrasa.bikeroutes.core.extentions.PreferenceHelper.Companion.PREF_KEY_MAPFRAGMENT_MODE_RECORDING
 import pl.jakubokrasa.bikeroutes.core.extentions.makeGone
 import pl.jakubokrasa.bikeroutes.core.extentions.makeVisible
@@ -50,13 +45,11 @@ import pl.jakubokrasa.bikeroutes.features.routerecording.domain.LocationService
 import pl.jakubokrasa.bikeroutes.features.routerecording.presentation.model.RouteWithPointsDisplayable
 
 
-class MapFragment() : Fragment(R.layout.fragment_map), KoinComponent {
+class MapFragment() : BaseFragment(R.layout.fragment_map), KoinComponent {
     private var polyline: Polyline = Polyline()
     private lateinit var mRotationGestureOverlay: Overlay
     private lateinit var mPreviousLocMarker: Marker
     private val mLocalBR: LocalBroadcastManager by inject()
-    private val viewModel: RouteViewModel by sharedViewModel()
-    private val preferenceHelper: PreferenceHelper by inject()
     private val requestMultiplePermissions = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
         permissions.entries.forEach { Log.d(LOG_TAG, "permission: ${it.key} = ${it.value}") }
     }
