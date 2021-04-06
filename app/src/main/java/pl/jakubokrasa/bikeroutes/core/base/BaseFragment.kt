@@ -15,7 +15,7 @@ import pl.jakubokrasa.bikeroutes.R
 import pl.jakubokrasa.bikeroutes.core.extentions.PreferenceHelper
 import pl.jakubokrasa.bikeroutes.features.routerecording.presentation.RouteViewModel
 
-open class BaseFragment(@LayoutRes layoutRes: Int): Fragment() {
+open class BaseFragment(@LayoutRes layoutRes: Int): Fragment(layoutRes) {
     protected val viewModel: RouteViewModel by sharedViewModel()
     protected val preferenceHelper: PreferenceHelper by inject()
 
@@ -25,9 +25,9 @@ open class BaseFragment(@LayoutRes layoutRes: Int): Fragment() {
         initObservers()
     }
 
-    protected open fun initViews() {}
+    open fun initViews() {}
 
-    protected open fun initObservers() {}
+    open fun initObservers() {}
 
     protected fun showToast(msg: String?) {
         Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()

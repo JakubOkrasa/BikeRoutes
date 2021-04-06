@@ -21,6 +21,9 @@ class MyRoutesFragment : BaseFragment(R.layout.fragment_my_routes){
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentMyRoutesBinding.bind(view)
+        initRecycler() // todo ten init powinien być w initViews() ale wtedy jest java.lang.NullPointerException
+                        //at pl.jakubokrasa.bikeroutes.features.myroutes.presentation.MyRoutesFragment.getBinding(MyRoutesFragment.kt:17)
+                        //w AA to działą
     }
 
     override fun onResume() {
@@ -36,7 +39,7 @@ class MyRoutesFragment : BaseFragment(R.layout.fragment_my_routes){
 
     override fun initViews() {
         super.initViews()
-        initRecycler()
+
     }
 
     private fun observeMyRoutes() {

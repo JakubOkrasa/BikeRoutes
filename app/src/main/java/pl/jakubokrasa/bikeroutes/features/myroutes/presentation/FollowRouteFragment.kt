@@ -21,6 +21,7 @@ import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.Polyline
 import pl.jakubokrasa.bikeroutes.R
+import pl.jakubokrasa.bikeroutes.core.base.BaseFragment
 import pl.jakubokrasa.bikeroutes.core.util.LocationUtils
 import pl.jakubokrasa.bikeroutes.databinding.FragmentFollowRouteBinding
 import pl.jakubokrasa.bikeroutes.features.routerecording.domain.LocationService
@@ -29,11 +30,10 @@ import pl.jakubokrasa.bikeroutes.features.routerecording.presentation.RouteViewM
 import pl.jakubokrasa.bikeroutes.features.routerecording.presentation.model.RouteWithPointsDisplayable
 
 
-class FollowRouteFragment : Fragment(R.layout.fragment_follow_route) {
+class FollowRouteFragment : BaseFragment(R.layout.fragment_follow_route) {
 
     private var _binding: FragmentFollowRouteBinding? = null
     private val binding get() = _binding!!
-    private val viewModel: RouteViewModel by sharedViewModel()
     private lateinit var route: RouteWithPointsDisplayable
     private val polyline = Polyline()
     private val mLocalBR: LocalBroadcastManager by inject()
