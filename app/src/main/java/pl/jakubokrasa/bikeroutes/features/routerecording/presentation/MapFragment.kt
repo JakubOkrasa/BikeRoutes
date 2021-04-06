@@ -16,6 +16,7 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.getSystemService
+import androidx.core.content.edit
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.add
@@ -39,6 +40,7 @@ import org.osmdroid.views.overlay.Polyline
 import pl.jakubokrasa.bikeroutes.BuildConfig
 import pl.jakubokrasa.bikeroutes.R
 import pl.jakubokrasa.bikeroutes.core.extentions.PreferenceHelper
+import pl.jakubokrasa.bikeroutes.core.extentions.PreferenceHelper.Companion.PREF_KEY_MAPFRAGMENT_MODE_RECORDING
 import pl.jakubokrasa.bikeroutes.core.extentions.makeGone
 import pl.jakubokrasa.bikeroutes.core.extentions.makeVisible
 import pl.jakubokrasa.bikeroutes.core.user.sharingType
@@ -52,14 +54,12 @@ class MapFragment() : Fragment(R.layout.fragment_map), KoinComponent {
     private var polyline: Polyline = Polyline()
     private lateinit var mRotationGestureOverlay: Overlay
     private lateinit var mPreviousLocMarker: Marker
-    private var trackPointsList: ArrayList<GeoPoint> = ArrayList()
     private val mLocalBR: LocalBroadcastManager by inject()
     private val viewModel: RouteViewModel by sharedViewModel()
     private val preferenceHelper: PreferenceHelper by inject()
     private val requestMultiplePermissions = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
         permissions.entries.forEach { Log.d(LOG_TAG, "permission: ${it.key} = ${it.value}") }
     }
-    private var recording = false
 
     //from https://developer.android.com/topic/libraries/view-binding
     private var _binding: FragmentMapBinding? = null
@@ -82,6 +82,8 @@ class MapFragment() : Fragment(R.layout.fragment_map), KoinComponent {
         setMapViewProperties()
         setPolylineProperties()
 
+        if(!isRecordingMode())
+            disableRecordingMode()
     }
 
    override fun onStart() {
@@ -92,7 +94,8 @@ class MapFragment() : Fragment(R.layout.fragment_map), KoinComponent {
 
     override fun onStop() {
         super.onStop()
-        if(!recording) stopLocationService()
+        if(!isRecordingMode())
+            stopLocationService()
         mLocalBR.unregisterReceiver(locationServiceReceiver)
     }
 
@@ -102,7 +105,7 @@ class MapFragment() : Fragment(R.layout.fragment_map), KoinComponent {
         //if you make changes to the configuration, use
         //SharedPreferences prefs = PreferenceHelper.getDefaultSharedPreferences(this);
         //Configuration.getInstance().load(this, PreferenceHelper.getDefaultSharedPreferences(this));
-        binding.mapView.onResume(); //needed for compass, my location overlays, v6.0.0 and up
+        binding.mapView.onResume() //needed for compass, my location overlays, v6.0.0 and up
     }
 
     override fun onPause() {
@@ -130,7 +133,7 @@ class MapFragment() : Fragment(R.layout.fragment_map), KoinComponent {
 
 
     private fun newLocationUpdateUI(geoPoint: GeoPoint) {
-        if(recording) {
+        if(isRecordingMode()) {
             viewModel.insertCurrentPoint(geoPoint)
             binding.mapView.overlayManager.add(polyline)
             if (!polyline.isEnabled) polyline.isEnabled = true //we get the location for the first time
@@ -205,14 +208,13 @@ class MapFragment() : Fragment(R.layout.fragment_map), KoinComponent {
         override fun onReceive(context: Context?, intent: Intent?) {
             val loc = intent!!.getParcelableExtra<Location>("EXTRA_LOCATION")
             loc?.let {
-                if(recording) viewModel.updateDistanceByPrefs(GeoPoint(loc))
+                if(isRecordingMode()) viewModel.updateDistanceByPrefs(GeoPoint(loc))
                 newLocationUpdateUI(GeoPoint(loc))
             }
         }
     }
 
     private val btStopRecordOnClick = View.OnClickListener()  {
-        recording = false
         polyline.setPoints(ArrayList<GeoPoint>()) // strange behaviour: when you make it after stopLocationService(), it doesn't work
         binding.mapView.invalidate()
         stopLocationService()
@@ -224,10 +226,16 @@ class MapFragment() : Fragment(R.layout.fragment_map), KoinComponent {
 
         binding.btStopRecord.makeGone()
         binding.btStartRecord.makeVisible()
+
+        preferenceHelper.preferences.edit {
+            remove(PREF_KEY_MAPFRAGMENT_MODE_RECORDING)
+        }
     }
 
+
+
     private val btRecordRouteOnClick = View.OnClickListener() {
-        recording = true
+        enableRecordingMode()
         viewModel.insertNewRoute(RouteWithPointsDisplayable(
             routeId = 0,
             name = "",
@@ -241,6 +249,20 @@ class MapFragment() : Fragment(R.layout.fragment_map), KoinComponent {
         binding.btStartRecord.makeGone()
         binding.btStopRecord.makeVisible()
     }
+
+    private fun enableRecordingMode() {
+        preferenceHelper.preferences.edit {
+            putBoolean(PREF_KEY_MAPFRAGMENT_MODE_RECORDING, true)
+        }
+    }
+
+    private fun disableRecordingMode() {
+        preferenceHelper.preferences.edit {
+            putBoolean(PREF_KEY_MAPFRAGMENT_MODE_RECORDING, false)
+        }
+    }
+
+    private fun isRecordingMode() = preferenceHelper.preferences.getBoolean(PREF_KEY_MAPFRAGMENT_MODE_RECORDING, false)
 
     companion object {
         private val LOG_TAG: String? = MapFragment::class.simpleName
