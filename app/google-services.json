@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "25071054279",
+    "project_id": "bikeroutes-f8a4d",
+    "storage_bucket": "bikeroutes-f8a4d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:25071054279:android:3324278c8dab465cc03de2",
+        "android_client_info": {
+          "package_name": "pl.jakubokrasa.bikeroutes"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "25071054279-ghnmjcki8e272r9nk29255lnmrk04j4n.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAa_csovqnYvsalOs3OG3HyroI7-Vn293s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "25071054279-ghnmjcki8e272r9nk29255lnmrk04j4n.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
