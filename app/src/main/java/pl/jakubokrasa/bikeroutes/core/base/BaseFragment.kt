@@ -10,7 +10,7 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import pl.jakubokrasa.bikeroutes.core.extentions.PreferenceHelper
 import pl.jakubokrasa.bikeroutes.features.map.presentation.RouteViewModel
 
-open class BaseFragment(@LayoutRes layoutRes: Int): Fragment() {
+open class BaseFragment(@LayoutRes layoutRes: Int): Fragment(layoutRes) {
     protected val viewModel: RouteViewModel by sharedViewModel()
     protected val preferenceHelper: PreferenceHelper by inject()
 
