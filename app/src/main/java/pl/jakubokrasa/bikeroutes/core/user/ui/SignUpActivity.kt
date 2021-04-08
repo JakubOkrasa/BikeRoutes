@@ -10,8 +10,9 @@ import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.auth.FirebaseAuth
 import org.koin.android.ext.android.inject
 import pl.jakubokrasa.bikeroutes.MainActivity
-import pl.jakubokrasa.bikeroutes.core.extentions.PreferenceHelper
-import pl.jakubokrasa.bikeroutes.core.extentions.PreferenceHelper.Companion.PREF_KEY_USER_EMAIL
+import pl.jakubokrasa.bikeroutes.core.extensions.PreferenceHelper
+import pl.jakubokrasa.bikeroutes.core.extensions.PreferenceHelper.Companion.PREF_KEY_USER_EMAIL
+import pl.jakubokrasa.bikeroutes.core.extensions.PreferenceHelper.Companion.PREF_KEY_USER_PASSWORD
 import pl.jakubokrasa.bikeroutes.databinding.ActivitySignUpBinding
 
 class SignUpActivity : AppCompatActivity() {
@@ -36,6 +37,7 @@ class SignUpActivity : AppCompatActivity() {
                     if(task.isSuccessful){
                         preferenceHelper.preferences.edit {
                             putString(PREF_KEY_USER_EMAIL, email)
+                            putString(PREF_KEY_USER_PASSWORD, password)
                         }
                         Toast.makeText(this, "Successfully Registered", Toast.LENGTH_LONG).show()
                         val intent = Intent(this, MainActivity::class.java)

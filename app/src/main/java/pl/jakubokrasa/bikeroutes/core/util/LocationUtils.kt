@@ -6,7 +6,6 @@ import android.content.Context
 import android.content.IntentSender
 import android.location.LocationManager
 import android.util.Log
-import android.widget.Toast
 import androidx.core.content.edit
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.api.ResolvableApiException
@@ -15,8 +14,8 @@ import com.google.android.gms.location.LocationSettingsStatusCodes
 import com.google.android.gms.location.SettingsClient
 import org.koin.core.KoinComponent
 import org.koin.core.inject
-import pl.jakubokrasa.bikeroutes.core.extentions.PreferenceHelper
-import pl.jakubokrasa.bikeroutes.core.extentions.PreferenceHelper.Companion.PREF_KEY_REQUESTING_LOCATION_UPDATES
+import pl.jakubokrasa.bikeroutes.core.extensions.PreferenceHelper
+import pl.jakubokrasa.bikeroutes.core.extensions.PreferenceHelper.Companion.PREF_KEY_REQUESTING_LOCATION_UPDATES
 
 class LocationUtils(private val activity: Activity): KoinComponent {
     private val preferenceHelper: PreferenceHelper by inject()

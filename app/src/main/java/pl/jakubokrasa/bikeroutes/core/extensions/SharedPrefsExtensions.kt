@@ -1,4 +1,4 @@
-package pl.jakubokrasa.bikeroutes.core.extentions
+package pl.jakubokrasa.bikeroutes.core.extensions
 
 import android.content.Context
 import android.content.SharedPreferences

@@ -10,8 +10,9 @@ import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.auth.FirebaseAuth
 import org.koin.android.ext.android.inject
 import pl.jakubokrasa.bikeroutes.MainActivity
-import pl.jakubokrasa.bikeroutes.core.extentions.PreferenceHelper
-import pl.jakubokrasa.bikeroutes.core.extentions.PreferenceHelper.Companion.PREF_KEY_USER_EMAIL
+import pl.jakubokrasa.bikeroutes.core.extensions.PreferenceHelper
+import pl.jakubokrasa.bikeroutes.core.extensions.PreferenceHelper.Companion.PREF_KEY_USER_EMAIL
+import pl.jakubokrasa.bikeroutes.core.extensions.PreferenceHelper.Companion.PREF_KEY_USER_PASSWORD
 import pl.jakubokrasa.bikeroutes.databinding.ActivityLoginBinding
 
 class LoginActivity : AppCompatActivity() {
@@ -26,8 +27,8 @@ class LoginActivity : AppCompatActivity() {
         setContentView(view)
 
         binding.loginBtn.setOnClickListener{
-            var email: String = binding.emailEt.text.toString()
-            var password: String = binding.passwordEt.text.toString()
+            val email: String = binding.emailEt.text.toString()
+            val password: String = binding.passwordEt.text.toString()
             if(TextUtils.isEmpty(email) || TextUtils.isEmpty(password)) {
                 Toast.makeText(this@LoginActivity, "Please fill all the fields", Toast.LENGTH_LONG).show()
             } else{
@@ -35,6 +36,7 @@ class LoginActivity : AppCompatActivity() {
                     if(task.isSuccessful) {
                         preferenceHelper.preferences.edit {
                             putString(PREF_KEY_USER_EMAIL, email)
+                            putString(PREF_KEY_USER_PASSWORD, password)
                         }
                         Toast.makeText(this, "Successfully Logged In", Toast.LENGTH_LONG).show()
                         val intent = Intent(this, MainActivity::class.java)

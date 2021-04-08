@@ -6,7 +6,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.DividerItemDecoration
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
-import pl.jakubokrasa.bikeroutes.core.extentions.PreferenceHelper
+import pl.jakubokrasa.bikeroutes.core.extensions.PreferenceHelper
 
 val appModule = module {
     factory { DividerItemDecoration(androidContext(), DividerItemDecoration.VERTICAL) }
