@@ -18,14 +18,8 @@
         tools:layout="@layout/fragment_my_routes" />
 
     <fragment
-        android:id="@+id/navigation_notifications"
-        android:name="pl.jakubokrasa.bikeroutes.temporary.ui.settings.SettingsFragment"
-        android:label="@string/title_notifications"
-        tools:layout="@layout/fragment_notifications" />
-
-    <fragment
         android:id="@+id/navigation_account"
-        android:name="pl.jakubokrasa.bikeroutes.temporary.ui.account.AccountFragment"
+        android:name="pl.jakubokrasa.bikeroutes.core.user.ui.AccountFragment"
         android:label="@string/title_account"
         tools:layout="@layout/fragment_account" />
 </navigation>

@@ -1,4 +1,4 @@
-package pl.jakubokrasa.bikeroutes.features.user.ui
+package pl.jakubokrasa.bikeroutes.core.user.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
