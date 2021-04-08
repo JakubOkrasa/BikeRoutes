@@ -20,7 +20,7 @@ val appModule = module {
     single { LocalBroadcastManager.getInstance(androidContext())}
     single { PreferenceHelper(androidContext()) }
 
-    single { ActivityProvider(androidApplication()) }
+    single(createdAtStart = true) { ActivityProvider(androidApplication()) }
     factory<FragmentNavigator> { FragmentNavigatorImpl(
         get(),
         navHostFragmentRes = R.id.nav_host_fragment,
