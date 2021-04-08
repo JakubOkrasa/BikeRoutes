@@ -19,6 +19,7 @@ class MyRoutesFragment : BaseFragment(R.layout.fragment_my_routes){
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentMyRoutesBinding.bind(view)
+        initRecycler()
     }
 
     override fun onResume() {
@@ -34,7 +35,6 @@ class MyRoutesFragment : BaseFragment(R.layout.fragment_my_routes){
 
     override fun initViews() {
         super.initViews()
-        initRecycler()
     }
 
     private fun observeMyRoutes() {
