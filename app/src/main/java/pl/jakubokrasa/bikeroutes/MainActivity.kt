@@ -10,7 +10,7 @@ import com.google.firebase.auth.FirebaseAuth
 import org.koin.android.ext.android.inject
 
 class MainActivity : AppCompatActivity() {
-    private val auth: FirebaseAuth by inject()
+    private val auth: FirebaseAuth by inject() // for debug
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

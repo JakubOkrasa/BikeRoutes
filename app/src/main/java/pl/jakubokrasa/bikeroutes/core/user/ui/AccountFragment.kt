@@ -1,14 +1,15 @@
 package pl.jakubokrasa.bikeroutes.core.user.ui
 
-import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
+import com.google.firebase.auth.FirebaseAuth
+import org.koin.android.ext.android.inject
 import pl.jakubokrasa.bikeroutes.R
 import pl.jakubokrasa.bikeroutes.core.base.BaseFragment
 import pl.jakubokrasa.bikeroutes.databinding.FragmentAccountBinding
 
 class AccountFragment : BaseFragment(R.layout.fragment_account) {
+    private val auth: FirebaseAuth by inject()
     private var _binding: FragmentAccountBinding? = null
     private val binding get() = _binding!!
 
@@ -16,10 +17,6 @@ class AccountFragment : BaseFragment(R.layout.fragment_account) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentAccountBinding.bind(view)
 
-        binding.btAccount.setOnClickListener {
-            Log.d("LOG", "btAccount clicked")
-            val intent = Intent(requireContext(), SignUpActivity::class.java)
-            startActivity(intent)
-        }
+        binding.tvLoggedAs.text = "you are logged as" + auth.currentUser?.email.toString()
     }
 }
