@@ -22,7 +22,7 @@
         <activity android:name=".core.user.ui.ForgotPasswordActivity"></activity>
         <activity android:name=".core.user.ui.SignUpActivity" />
         <activity
-            android:name=".core.user.ui.LoginFragment"
+            android:name=".core.user.ui.LoginActivity"
             android:label="@string/title_activity_login" />
         <service
             android:name=".features.routerecording.domain.LocationService"

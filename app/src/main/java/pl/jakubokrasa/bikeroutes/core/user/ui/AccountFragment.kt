@@ -2,10 +2,13 @@ package pl.jakubokrasa.bikeroutes.core.user.ui
 
 import android.os.Bundle
 import android.view.View
+import androidx.core.content.edit
 import com.google.firebase.auth.FirebaseAuth
 import org.koin.android.ext.android.inject
 import pl.jakubokrasa.bikeroutes.R
 import pl.jakubokrasa.bikeroutes.core.base.BaseFragment
+import pl.jakubokrasa.bikeroutes.core.extentions.PreferenceHelper
+import pl.jakubokrasa.bikeroutes.core.extentions.PreferenceHelper.Companion.PREF_KEY_USER_EMAIL
 import pl.jakubokrasa.bikeroutes.databinding.FragmentAccountBinding
 
 class AccountFragment : BaseFragment(R.layout.fragment_account) {
@@ -17,6 +20,11 @@ class AccountFragment : BaseFragment(R.layout.fragment_account) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentAccountBinding.bind(view)
 
-        binding.tvLoggedAs.text = "you are logged as" + auth.currentUser?.email.toString()
+        binding.tvLoggedAs.text = "you are logged as " + auth.currentUser?.email.toString()
+
+        binding.btLogout.setOnClickListener {
+            auth.signOut()
+            preferenceHelper.preferences.edit { putString(PREF_KEY_USER_EMAIL, "") }
+        }
     }
 }

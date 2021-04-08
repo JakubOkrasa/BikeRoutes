@@ -12,6 +12,9 @@ class PreferenceHelper(ctx: Context) {
         const val PREF_KEY_LAST_LNG = "last_lng"
         const val PREF_KEY_REQUESTING_LOCATION_UPDATES = "requesting_location_updates"
         const val PREF_KEY_MAPFRAGMENT_MODE_RECORDING = "mapfragment_recording"
+
+        const val PREF_KEY_USER_EMAIL = "user_email"
+        const val PREF_KEY_USER_PASSWORD = "user_password"
     }
 
     private val filePath = BuildConfig.APPLICATION_ID + ".preferences"

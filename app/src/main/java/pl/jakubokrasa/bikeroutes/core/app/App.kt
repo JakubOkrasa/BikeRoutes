@@ -12,9 +12,6 @@ class App: Application() {
         startKoin()
     }
 
-    override fun onConfigurationChanged(newConfig: Configuration) {
-        super.onConfigurationChanged(newConfig)
-    }
     private fun startKoin() {
         startKoin {
             androidContext(this@App)

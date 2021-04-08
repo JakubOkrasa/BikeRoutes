@@ -5,16 +5,19 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.TextUtils
 import android.widget.Toast
+import androidx.core.content.edit
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.auth.FirebaseAuth
 import org.koin.android.ext.android.inject
 import pl.jakubokrasa.bikeroutes.MainActivity
+import pl.jakubokrasa.bikeroutes.core.extentions.PreferenceHelper
+import pl.jakubokrasa.bikeroutes.core.extentions.PreferenceHelper.Companion.PREF_KEY_USER_EMAIL
 import pl.jakubokrasa.bikeroutes.databinding.ActivitySignUpBinding
 
 class SignUpActivity : AppCompatActivity() {
     private val auth: FirebaseAuth by inject()
     private lateinit var binding: ActivitySignUpBinding
-
+    private val preferenceHelper: PreferenceHelper by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,6 +34,9 @@ class SignUpActivity : AppCompatActivity() {
             } else{
                 auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(this, OnCompleteListener{ task ->
                     if(task.isSuccessful){
+                        preferenceHelper.preferences.edit {
+                            putString(PREF_KEY_USER_EMAIL, email)
+                        }
                         Toast.makeText(this, "Successfully Registered", Toast.LENGTH_LONG).show()
                         val intent = Intent(this, MainActivity::class.java)
                         startActivity(intent)
@@ -43,7 +49,7 @@ class SignUpActivity : AppCompatActivity() {
         }
 
         binding.loginBtn.setOnClickListener{
-            val intent = Intent(this, LoginFragment::class.java)
+            val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
             finish()
         }
