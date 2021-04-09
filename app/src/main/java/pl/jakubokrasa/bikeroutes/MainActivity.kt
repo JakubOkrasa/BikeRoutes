@@ -14,7 +14,7 @@ import org.koin.android.ext.android.inject
 import pl.jakubokrasa.bikeroutes.core.extensions.PreferenceHelper
 import pl.jakubokrasa.bikeroutes.core.extensions.PreferenceHelper.Companion.PREF_KEY_USER_EMAIL
 import pl.jakubokrasa.bikeroutes.core.extensions.PreferenceHelper.Companion.PREF_KEY_USER_PASSWORD
-import pl.jakubokrasa.bikeroutes.core.user.ui.LoginActivity
+import pl.jakubokrasa.bikeroutes.core.user.presentation.LoginActivity
 
 class MainActivity : AppCompatActivity() {
     private val auth: FirebaseAuth by inject()

@@ -19,7 +19,7 @@
 
     <fragment
         android:id="@+id/navigation_account"
-        android:name="pl.jakubokrasa.bikeroutes.core.user.ui.AccountFragment"
+        android:name="pl.jakubokrasa.bikeroutes.core.user.presentation.AccountFragment"
         android:label="@string/title_account"
         tools:layout="@layout/fragment_account" />
 </navigation>

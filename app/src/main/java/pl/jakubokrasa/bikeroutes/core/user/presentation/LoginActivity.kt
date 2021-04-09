@@ -1,4 +1,4 @@
-package pl.jakubokrasa.bikeroutes.core.user.ui
+package pl.jakubokrasa.bikeroutes.core.user.presentation
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -13,49 +13,52 @@ import pl.jakubokrasa.bikeroutes.MainActivity
 import pl.jakubokrasa.bikeroutes.core.extensions.PreferenceHelper
 import pl.jakubokrasa.bikeroutes.core.extensions.PreferenceHelper.Companion.PREF_KEY_USER_EMAIL
 import pl.jakubokrasa.bikeroutes.core.extensions.PreferenceHelper.Companion.PREF_KEY_USER_PASSWORD
-import pl.jakubokrasa.bikeroutes.databinding.ActivitySignUpBinding
+import pl.jakubokrasa.bikeroutes.databinding.ActivityLoginBinding
 
-class SignUpActivity : AppCompatActivity() {
+class LoginActivity : AppCompatActivity() {
     private val auth: FirebaseAuth by inject()
-    private lateinit var binding: ActivitySignUpBinding
+    private lateinit var binding: ActivityLoginBinding
     private val preferenceHelper: PreferenceHelper by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivitySignUpBinding.inflate(layoutInflater)
+        binding = ActivityLoginBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
 
-        binding.signupBtn.setOnClickListener{
-            var email: String = binding.emailEt.text.toString()
-            var password: String = binding.passwordEt.text.toString()
-
+        binding.loginBtn.setOnClickListener{
+            val email: String = binding.emailEt.text.toString()
+            val password: String = binding.passwordEt.text.toString()
             if(TextUtils.isEmpty(email) || TextUtils.isEmpty(password)) {
-                Toast.makeText(this, "Please fill all the fields", Toast.LENGTH_LONG).show()
+                Toast.makeText(this@LoginActivity, "Please fill all the fields", Toast.LENGTH_LONG).show()
             } else{
-                auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(this, OnCompleteListener{ task ->
-                    if(task.isSuccessful){
+                auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(this, OnCompleteListener { task ->
+                    if(task.isSuccessful) {
                         preferenceHelper.preferences.edit {
                             putString(PREF_KEY_USER_EMAIL, email)
                             putString(PREF_KEY_USER_PASSWORD, password)
                         }
-                        Toast.makeText(this, "Successfully Registered", Toast.LENGTH_LONG).show()
+                        Toast.makeText(this, "Successfully Logged In", Toast.LENGTH_LONG).show()
                         val intent = Intent(this, MainActivity::class.java)
                         startActivity(intent)
                         finish()
                     }else {
-                        Toast.makeText(this, "Registration Failed. Possible cause: Password must have at least 6 characters", Toast.LENGTH_LONG).show()
+                        Toast.makeText(this, "Login Failed", Toast.LENGTH_LONG).show()
                     }
                 })
             }
         }
 
-        binding.loginBtn.setOnClickListener{
-            val intent = Intent(this, LoginActivity::class.java)
+        binding.signupBtn.setOnClickListener{
+            val intent = Intent(this, SignUpActivity::class.java)
             startActivity(intent)
             finish()
         }
-    }
 
+        binding.resetPassTv.setOnClickListener{
+            val intent = Intent(this, ForgotPasswordActivity::class.java)
+            startActivity(intent)
+        }
+    }
 
 }
