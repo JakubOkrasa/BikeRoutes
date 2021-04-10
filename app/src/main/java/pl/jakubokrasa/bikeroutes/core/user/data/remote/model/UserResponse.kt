@@ -6,6 +6,7 @@ import pl.jakubokrasa.bikeroutes.features.map.data.remote.model.RouteResponse
 @IgnoreExtraProperties
 data class UserResponse(
     val email: String? = "",
+    val password: String = "",
     val routes: List<RouteResponse>,
 //    val comments: List<CommentResponse>
 ) {

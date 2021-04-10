@@ -1,11 +1,23 @@
 package pl.jakubokrasa.bikeroutes.core.user.domain
 
+import android.content.Context
+import com.google.android.gms.common.UserRecoverableException
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import pl.jakubokrasa.bikeroutes.core.base.UseCase
+import pl.jakubokrasa.bikeroutes.core.user.data.remote.model.UserResponse
 
-class CreateUserUseCase(private val userRepository: UserRepository): UseCase<Unit, String>() {
-    override suspend fun action(params: String) {
-// TODO: 4/9/2021 read it https://proandroiddev.com/suspending-firebase-realtime-database-with-kotlin-coroutines-76b4651bc0e8 
-
-        userRepository.createUser(uid, params)
+class CreateUserUseCase(private val userRepository: UserRepository,
+                        private val auth: FirebaseAuth): UseCase<Unit, CreateUserData>() {
+    override suspend fun action(params: CreateUserData) {
+        auth.createUserWithEmailAndPassword(params.email, params.password)
+        //betterprogramming robi tu onCompleteListener. Czy to mogę robić w VM? Tam mam coroutinowe onSuccess i onFailure
+        userRepository.createUser(params)
     }
+}
+
+data class CreateUserData(
+    val email: String,
+    val password: String
+) {
 }
