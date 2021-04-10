@@ -15,8 +15,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.content.edit
 import androidx.core.content.res.ResourcesCompat
-import androidx.fragment.app.add
-import androidx.fragment.app.commit
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.preference.PreferenceManager.getDefaultSharedPreferences
 import com.google.android.gms.common.api.ApiException
@@ -42,7 +40,7 @@ import pl.jakubokrasa.bikeroutes.core.user.sharingType
 import pl.jakubokrasa.bikeroutes.core.util.LocationUtils
 import pl.jakubokrasa.bikeroutes.databinding.FragmentMapBinding
 import pl.jakubokrasa.bikeroutes.features.map.domain.LocationService
-import pl.jakubokrasa.bikeroutes.features.map.navigation.MapNavigator
+import pl.jakubokrasa.bikeroutes.features.map.navigation.MapFrgNavigator
 import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteWithPointsDisplayable
 
 
@@ -51,7 +49,7 @@ class MapFragment() : BaseFragment(R.layout.fragment_map), KoinComponent {
     private lateinit var mRotationGestureOverlay: Overlay
     private lateinit var mPreviousLocMarker: Marker
     private val mLocalBR: LocalBroadcastManager by inject()
-    private val mapNavigator: MapNavigator by inject()
+    private val mapFrgNavigator: MapFrgNavigator by inject()
     private val requestMultiplePermissions = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
         permissions.entries.forEach { Log.d(LOG_TAG, "permission: ${it.key} = ${it.value}") }
     }
@@ -212,12 +210,7 @@ class MapFragment() : BaseFragment(R.layout.fragment_map), KoinComponent {
     private val btStopRecordOnClick = View.OnClickListener()  {
         polyline.setPoints(ArrayList<GeoPoint>()) // strange behaviour: when you make it after stopLocationService(), it doesn't work
         binding.mapView.invalidate()
-//        childFragmentManager.commit {
-//            add<SaveRouteFragment>(binding.clFrgContainer.id)
-//            setReorderingAllowed(true)
-//            addToBackStack("Save a route") // name can be null
-//        }
-        mapNavigator.openSaveRouteFragment()
+        mapFrgNavigator.openSaveRouteFragment()
         binding.btStopRecord.makeGone()
         binding.btStartRecord.makeVisible()
 
