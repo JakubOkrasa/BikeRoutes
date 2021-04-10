@@ -5,13 +5,13 @@ import androidx.room.Room
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 import pl.jakubokrasa.bikeroutes.features.map.data.RouteRepositoryImpl
-import pl.jakubokrasa.bikeroutes.features.routerecording.data.local.RouteAndPointDatabase
+import pl.jakubokrasa.bikeroutes.features.map.data.local.RouteAndPointDatabase
 
 val localDbModule = module {
     single { createDatabase(androidContext()) }
     single { get<RouteAndPointDatabase>().routeDao() }
 
-    single { _root_ide_package_.pl.jakubokrasa.bikeroutes.features.map.data.RouteRepositoryImpl(get()) }
+    single {RouteRepositoryImpl(get()) }
 }
 
 private fun createDatabase(context: Context) =

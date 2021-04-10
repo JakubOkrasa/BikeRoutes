@@ -1,6 +1,6 @@
 package pl.jakubokrasa.bikeroutes.core.user.domain
 interface UserRepository {
 
-    fun getUsers()
+    fun createUser(uid: String, email: String)
 }
 
