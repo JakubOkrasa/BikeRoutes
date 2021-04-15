@@ -97,7 +97,8 @@ class LocationService : Service(), KoinComponent {
     override fun onDestroy() {
         Log.d(LOG_TAG, "onDestroy")
         mServiceHandler.removeCallbacksAndMessages(null)
-        removeLocationUpdates()
+        if(this::mLocationCallback.isInitialized)
+            removeLocationUpdates()
         super.onDestroy()
     }
 

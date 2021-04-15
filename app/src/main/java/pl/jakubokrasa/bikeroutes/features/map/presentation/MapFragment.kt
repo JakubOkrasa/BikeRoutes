@@ -15,6 +15,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.content.edit
 import androidx.core.content.res.ResourcesCompat
+import androidx.lifecycle.Observer
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.preference.PreferenceManager.getDefaultSharedPreferences
 import com.google.android.gms.common.api.ApiException
@@ -50,6 +51,7 @@ class MapFragment() : BaseFragment(R.layout.fragment_map), KoinComponent {
     private lateinit var mPreviousLocMarker: Marker
     private val mLocalBR: LocalBroadcastManager by inject()
     private val mapFrgNavigator: MapFrgNavigator by inject()
+//    private val currentRouteObserver: Observer<RouteWithPointsDisplayable!>
     private val requestMultiplePermissions = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
         permissions.entries.forEach { Log.d(LOG_TAG, "permission: ${it.key} = ${it.value}") }
     }
@@ -65,7 +67,6 @@ class MapFragment() : BaseFragment(R.layout.fragment_map), KoinComponent {
         requestPermissionsIfNecessary(OSM_PERMISSIONS)
         Configuration.getInstance().load(context, getDefaultSharedPreferences(context)) //osmdroid config
         LocationUtils(activity as Activity).enableGpsIfNecessary()
-        observeCurrentRoute()
 
         requireActivity().startService(Intent(context, LocationService::class.java))
 
@@ -154,10 +155,11 @@ class MapFragment() : BaseFragment(R.layout.fragment_map), KoinComponent {
     }
 
     private fun observeCurrentRoute() {
-        viewModel.route.observe(viewLifecycleOwner, {
-            val geoPoints = it.points.map { point -> point.geoPoint }
-            polyline.setPoints(geoPoints)
-        })
+        viewModel.route.observe(viewLifecycleOwner, currentRouteObserver)
+    }
+
+    private fun stopObserveCurrentRoute() {
+        viewModel.route.removeObserver(currentRouteObserver)
     }
 
     private fun setMapViewProperties() {
@@ -241,15 +243,22 @@ class MapFragment() : BaseFragment(R.layout.fragment_map), KoinComponent {
         preferenceHelper.preferences.edit {
             putBoolean(PREF_KEY_MAPFRAGMENT_MODE_RECORDING, true)
         }
+        observeCurrentRoute()
     }
 
     private fun disableRecordingMode() {
         preferenceHelper.preferences.edit {
             putBoolean(PREF_KEY_MAPFRAGMENT_MODE_RECORDING, false)
         }
+        stopObserveCurrentRoute()
     }
 
     private fun isRecordingMode() = preferenceHelper.preferences.getBoolean(PREF_KEY_MAPFRAGMENT_MODE_RECORDING, false)
+
+    private val currentRouteObserver = Observer<RouteWithPointsDisplayable> {
+        val geoPoints = it.points.map { point -> point.geoPoint }
+        polyline.setPoints(geoPoints)
+    }
 
     companion object {
         private val LOG_TAG: String? = MapFragment::class.simpleName
