@@ -10,6 +10,7 @@ import pl.jakubokrasa.bikeroutes.features.map.domain.*
 import pl.jakubokrasa.bikeroutes.features.map.navigation.MapFrgNavigator
 import pl.jakubokrasa.bikeroutes.features.map.presentation.RouteViewModel
 import pl.jakubokrasa.bikeroutes.features.map.presentation.RouteRepository
+import pl.jakubokrasa.bikeroutes.features.myroutes.navigation.MyRoutesNavigator
 
 val featuresModule = module {
     factory<RouteRepository> { RouteRepositoryImpl(get()) }
@@ -25,8 +26,6 @@ val featuresModule = module {
 
     viewModel { RouteViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
     factory { MyRoutesRecyclerAdapter() }
-
-    factory<MapFrgNavigator> { MapFrgNavigator(get()) }
 }
 
 

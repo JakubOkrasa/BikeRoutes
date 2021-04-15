@@ -189,4 +189,8 @@ class FollowRouteFragment : Fragment(R.layout.fragment_follow_route) {
     private fun stopLocationService() {
         requireActivity().stopService(Intent(requireContext(), LocationService::class.java))
     }
+
+    companion object {
+        const val ROUTE_TO_FOLLOW_KEY = "routeToFollowKey"
+    }
 }
