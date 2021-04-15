@@ -1,10 +1,13 @@
 package pl.jakubokrasa.bikeroutes.features.map.presentation.model
 
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
 import pl.jakubokrasa.bikeroutes.core.user.sharingType
 import pl.jakubokrasa.bikeroutes.features.map.domain.model.Point
 import pl.jakubokrasa.bikeroutes.features.map.domain.model.Route
 import java.io.Serializable
 
+@Parcelize
 data class RouteWithPointsDisplayable (
     val routeId: Long,
     val name: String,
@@ -13,7 +16,7 @@ data class RouteWithPointsDisplayable (
     val distance: Int,
     val sharingType: sharingType,
     var points: List<Point>
-): Serializable {
+): Parcelable {
 
     fun toRoute(): Route {
         return Route(

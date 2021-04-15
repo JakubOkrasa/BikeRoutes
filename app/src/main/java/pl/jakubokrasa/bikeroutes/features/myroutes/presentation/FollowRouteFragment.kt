@@ -75,18 +75,24 @@ class FollowRouteFragment : Fragment(R.layout.fragment_follow_route) {
     }
 
     private fun showRoute(view: View) {
-        view.post {
-            parentFragmentManager.setFragmentResultListener("requestKey",
-                viewLifecycleOwner,
-                { _, bundle ->
-                    route = bundle.getSerializable("route") as RouteWithPointsDisplayable
-                    updateRouteInfo()
+//        view.post {
+            setRoute()
+            updateRouteInfo()
+            setPolylineProperties()
+            setMapViewProperties(setZoom = false)
+            binding.mapView.invalidate()
 
-                    setPolylineProperties()
-                    setMapViewProperties(setZoom = false)
-                    binding.mapView.invalidate()
-                })
-        }
+//            parentFragmentManager.setFragmentResultListener("requestKey",
+//                viewLifecycleOwner,
+//                { _, bundle ->
+//                    route = bundle.getSerializable("route") as RouteWithPointsDisplayable
+//                    updateRouteInfo()
+//
+//                    setPolylineProperties()
+//                    setMapViewProperties(setZoom = false)
+//                    binding.mapView.invalidate()
+//                })
+//        }
     }
 
     private fun updateToolbar() {
@@ -188,6 +194,12 @@ class FollowRouteFragment : Fragment(R.layout.fragment_follow_route) {
 
     private fun stopLocationService() {
         requireActivity().stopService(Intent(requireContext(), LocationService::class.java))
+    }
+
+    private fun setRoute() {
+        arguments
+            ?.getParcelable<RouteWithPointsDisplayable>(ROUTE_TO_FOLLOW_KEY)
+            ?.let { route = it}
     }
 
     companion object {
