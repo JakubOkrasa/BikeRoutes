@@ -208,9 +208,9 @@ class MapFragment() : BaseFragment(R.layout.fragment_map), KoinComponent {
     }
 
     private val btStopRecordOnClick = View.OnClickListener()  {
-        polyline.setPoints(ArrayList<GeoPoint>()) // strange behaviour: when you make it after stopLocationService(), it doesn't work
+        disableRecordingMode()
+        polyline.setPoints(ArrayList<GeoPoint>())
         binding.mapView.invalidate()
-        stopLocationService()
         childFragmentManager.commit {
             add<SaveRouteFragment>(binding.clFrgContainer.id)
             setReorderingAllowed(true)
