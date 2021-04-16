@@ -29,7 +29,7 @@ class AccountFragment : BaseFragment(R.layout.fragment_account) {
                 putString(PREF_KEY_USER_EMAIL, "")
                 putString(PREF_KEY_USER_PASSWORD, "")
             }
-            startActivity(Intent(context, LoginActivity::class.java))
+            startActivity(Intent(context, SignUpActivity::class.java))
         }
     }
 }

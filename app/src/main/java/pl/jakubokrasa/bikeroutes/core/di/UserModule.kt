@@ -7,9 +7,9 @@ import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 import pl.jakubokrasa.bikeroutes.core.user.data.remote.UserRepositoryImpl
 import pl.jakubokrasa.bikeroutes.core.user.domain.CreateUserUseCase
+import pl.jakubokrasa.bikeroutes.core.user.domain.SaveUserToFirestoreUseCase
 import pl.jakubokrasa.bikeroutes.core.user.domain.UserRepository
 import pl.jakubokrasa.bikeroutes.core.user.presentation.UserViewModel
-import pl.jakubokrasa.bikeroutes.features.map.data.RouteRepositoryImpl
 
 val userModule = module {
     single { FirebaseAuth.getInstance() }
@@ -20,6 +20,7 @@ val userModule = module {
     single { FirebaseFirestore.getInstance() }
 
     factory { CreateUserUseCase(get(), get()) }
+    factory { SaveUserToFirestoreUseCase(get())}
 
-    viewModel { UserViewModel(get(), get()) }
+    viewModel { UserViewModel(get(), get(), get()) }
 }
