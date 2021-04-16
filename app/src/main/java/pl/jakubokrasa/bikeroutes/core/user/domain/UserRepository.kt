@@ -5,7 +5,8 @@ import com.google.firebase.firestore.DocumentReference
 
 interface UserRepository {
 
-//    suspend fun createUser(uid: String, params: CreateUserData)
     suspend fun createUser(uid: String)
+
+    suspend fun deleteUser(uid: String)
 }
 

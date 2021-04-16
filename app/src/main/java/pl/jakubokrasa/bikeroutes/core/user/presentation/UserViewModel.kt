@@ -9,7 +9,6 @@ import com.hadilq.liveevent.LiveEvent
 import pl.jakubokrasa.bikeroutes.core.extensions.PreferenceHelper
 import pl.jakubokrasa.bikeroutes.core.user.domain.CreateUserData
 import pl.jakubokrasa.bikeroutes.core.user.domain.CreateUserUseCase
-import pl.jakubokrasa.bikeroutes.core.user.domain.SaveUserToFirestoreUseCase
 
 class UserViewModel(
     private val preferenceHelper: PreferenceHelper,
@@ -29,7 +28,7 @@ class UserViewModel(
                     Log.d(LOG_TAG, "user created")
                     saveUserDataToSharedPreferences(email, password)
                     _message.value = Pair(true, "Successfully Registered")
-                    //goto main activity using nav component
+                    //todo goto main activity using nav component
                 }
                 result.onFailure {
                     Log.e(LOG_TAG, "user not created, " + it.message)

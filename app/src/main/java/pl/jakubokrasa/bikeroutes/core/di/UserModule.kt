@@ -7,7 +7,6 @@ import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 import pl.jakubokrasa.bikeroutes.core.user.data.remote.UserRepositoryImpl
 import pl.jakubokrasa.bikeroutes.core.user.domain.CreateUserUseCase
-import pl.jakubokrasa.bikeroutes.core.user.domain.SaveUserToFirestoreUseCase
 import pl.jakubokrasa.bikeroutes.core.user.domain.UserRepository
 import pl.jakubokrasa.bikeroutes.core.user.presentation.UserViewModel
 
