@@ -20,7 +20,6 @@ val userModule = module {
     single { FirebaseFirestore.getInstance() }
 
     factory { CreateUserUseCase(get(), get()) }
-    factory { SaveUserToFirestoreUseCase(get())}
 
-    viewModel { UserViewModel(get(), get(), get()) }
+    viewModel { UserViewModel(get(), get()) }
 }

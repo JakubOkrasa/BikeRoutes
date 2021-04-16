@@ -14,7 +14,6 @@ import pl.jakubokrasa.bikeroutes.core.user.domain.SaveUserToFirestoreUseCase
 class UserViewModel(
     private val preferenceHelper: PreferenceHelper,
     private val createUserUseCase: CreateUserUseCase,
-    private val saveUserToFirestoreUseCase: SaveUserToFirestoreUseCase
 ): ViewModel() {
 
     private val _message by lazy { LiveEvent<Pair<Boolean, String>>() }
@@ -28,7 +27,6 @@ class UserViewModel(
             result ->
                 result.onSuccess {
                     Log.d(LOG_TAG, "user created")
-                    saveUserToFirestore(it)
                     saveUserDataToSharedPreferences(email, password)
                     _message.value = Pair(true, "Successfully Registered")
                     //goto main activity using nav component
@@ -37,17 +35,6 @@ class UserViewModel(
                     Log.e(LOG_TAG, "user not created, " + it.message)
                     _message.value = Pair(false, "Registration Failed: " + it.message)
                 }
-        }
-    }
-
-    private fun saveUserToFirestore(uid: String) {
-        saveUserToFirestoreUseCase(
-            params = uid,
-            scope = viewModelScope
-        ) {
-            result ->
-                result.onSuccess {  }
-                result.onFailure {  }
         }
     }
 
