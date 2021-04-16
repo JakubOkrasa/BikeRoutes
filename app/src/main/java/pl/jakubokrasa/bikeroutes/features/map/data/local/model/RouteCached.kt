@@ -4,8 +4,8 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import org.osmdroid.util.GeoPoint
 import pl.jakubokrasa.bikeroutes.core.user.sharingType
-import pl.jakubokrasa.bikeroutes.features.routerecording.domain.model.Point
-import pl.jakubokrasa.bikeroutes.features.routerecording.domain.model.Route
+import pl.jakubokrasa.bikeroutes.features.map.domain.model.Point
+import pl.jakubokrasa.bikeroutes.features.map.domain.model.Route
 
 @Entity
 data class RouteCached(

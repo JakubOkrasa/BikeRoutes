@@ -12,5 +12,4 @@ val appModule = module {
     factory { DividerItemDecoration(androidContext(), DividerItemDecoration.VERTICAL) }
     single { androidContext().getSystemService(Context.LOCATION_SERVICE) as LocationManager }
     single { LocalBroadcastManager.getInstance(androidContext())}
-    single { PreferenceHelper(androidContext()) }
 }

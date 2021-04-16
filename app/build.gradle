@@ -61,6 +61,7 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0'
     implementation "androidx.lifecycle:lifecycle-common-java8:2.2.0"
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.2.0"
+    implementation 'com.github.hadilq.liveevent:liveevent:1.2.0'
 
     //OSMdroid
     implementation 'org.osmdroid:osmdroid-android:6.1.10'
@@ -89,7 +90,7 @@ dependencies {
 
     //Firebase
     implementation 'com.google.firebase:firebase-database-ktx:19.7.0'
-    implementation 'com.google.firebase:firebase-auth:20.0.2'
+    implementation 'com.google.firebase:firebase-auth:20.0.4'
 
     //Firestore
     implementation 'com.google.firebase:firebase-firestore:22.1.2'

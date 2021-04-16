@@ -7,7 +7,7 @@ import pl.jakubokrasa.bikeroutes.core.base.BaseFragment
 import pl.jakubokrasa.bikeroutes.core.extensions.hideKeyboard
 import pl.jakubokrasa.bikeroutes.core.extensions.PreferenceHelper.Companion.PREF_KEY_DISTANCE_SUM
 import pl.jakubokrasa.bikeroutes.databinding.FragmentSaveRouteBinding
-import pl.jakubokrasa.bikeroutes.features.routerecording.domain.DataRouteSave
+import pl.jakubokrasa.bikeroutes.features.map.domain.DataRouteSave
 
 class SaveRouteFragment : BaseFragment(R.layout.fragment_save_route) {
 

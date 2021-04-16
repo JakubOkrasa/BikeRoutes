@@ -21,9 +21,9 @@ import org.koin.core.inject
 import pl.jakubokrasa.bikeroutes.MainActivity
 import pl.jakubokrasa.bikeroutes.R
 import pl.jakubokrasa.bikeroutes.core.util.LocationUtils
-import pl.jakubokrasa.bikeroutes.features.routerecording.presentation.MapFragment
-import pl.jakubokrasa.bikeroutes.features.routerecording.presentation.MapFragment.Companion.SEND_LOCATION_ACTION
-import pl.jakubokrasa.bikeroutes.features.routerecording.presentation.RouteViewModel
+import pl.jakubokrasa.bikeroutes.features.map.presentation.MapFragment
+import pl.jakubokrasa.bikeroutes.features.map.presentation.MapFragment.Companion.SEND_LOCATION_ACTION
+import pl.jakubokrasa.bikeroutes.features.map.presentation.RouteViewModel
 
 class LocationService : Service(), KoinComponent {
     private val mLocationRequest: LocationRequest by inject()

@@ -24,10 +24,10 @@ import pl.jakubokrasa.bikeroutes.R
 import pl.jakubokrasa.bikeroutes.core.base.BaseFragment
 import pl.jakubokrasa.bikeroutes.core.util.LocationUtils
 import pl.jakubokrasa.bikeroutes.databinding.FragmentFollowRouteBinding
-import pl.jakubokrasa.bikeroutes.features.routerecording.domain.LocationService
-import pl.jakubokrasa.bikeroutes.features.routerecording.presentation.MapFragment.Companion.SEND_LOCATION_ACTION
-import pl.jakubokrasa.bikeroutes.features.routerecording.presentation.RouteViewModel
-import pl.jakubokrasa.bikeroutes.features.routerecording.presentation.model.RouteWithPointsDisplayable
+import pl.jakubokrasa.bikeroutes.features.map.domain.LocationService
+import pl.jakubokrasa.bikeroutes.features.map.presentation.MapFragment.Companion.SEND_LOCATION_ACTION
+import pl.jakubokrasa.bikeroutes.features.map.presentation.RouteViewModel
+import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteWithPointsDisplayable
 
 
 class FollowRouteFragment : BaseFragment(R.layout.fragment_follow_route) {

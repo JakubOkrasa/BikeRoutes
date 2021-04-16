@@ -4,8 +4,10 @@ import android.content.Intent
 import android.util.Log
 import android.widget.Toast
 import androidx.core.content.edit
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.hadilq.liveevent.LiveEvent
 import pl.jakubokrasa.bikeroutes.MainActivity
 import pl.jakubokrasa.bikeroutes.core.extensions.PreferenceHelper
 import pl.jakubokrasa.bikeroutes.core.user.domain.CreateUserData
@@ -16,6 +18,9 @@ class UserViewModel(
     private val createUserUseCase: CreateUserUseCase,
 ): ViewModel() {
 
+    private val _message by lazy { LiveEvent<Pair<Boolean, String>>() }
+    val message: LiveData<Pair<Boolean, String>> by lazy { _message }
+
     fun createUser(email: String, password: String) {
         createUserUseCase(
             params = CreateUserData(email, password),
@@ -24,19 +29,23 @@ class UserViewModel(
             result ->
                 result.onSuccess {
                     Log.d(LOG_TAG, "user created")
-                    preferenceHelper.preferences.edit {
-                        putString(PreferenceHelper.PREF_KEY_USER_EMAIL, email)
-                        putString(PreferenceHelper.PREF_KEY_USER_PASSWORD, password)
-                    }
-//                    Toast.makeText(this, "Successfully Registered", Toast.LENGTH_LONG).show()
-//                    val intent = Intent(this, MainActivity::class.java)
-//                    startActivity(intent)
-//                    finish()
+                    saveUserDataToSharedPreferences(email, password)
+                    _message.value = Pair(true, "Successfully Registered")
+                    //goto main activity using nav component
                 }
                 result.onFailure {
-                    Log.e(LOG_TAG, "user not created")
+                    Log.e(LOG_TAG, "user not created, " + it.message)
+                    _message.value = Pair(false, "Registration Failed: " + it.message)
+
 //                    Toast.makeText(this, "Registration Failed. Possible cause: Password must have at least 6 characters", Toast.LENGTH_LONG).show()
                 }
+        }
+    }
+
+    private fun saveUserDataToSharedPreferences(email: String, password: String) {
+        preferenceHelper.preferences.edit {
+            putString(PreferenceHelper.PREF_KEY_USER_EMAIL, email)
+            putString(PreferenceHelper.PREF_KEY_USER_PASSWORD, password)
         }
     }
 

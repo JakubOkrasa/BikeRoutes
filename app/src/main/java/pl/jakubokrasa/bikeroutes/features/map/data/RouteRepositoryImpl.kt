@@ -1,10 +1,10 @@
 package pl.jakubokrasa.bikeroutes.features.map.data
 
 import org.osmdroid.util.GeoPoint
-import pl.jakubokrasa.bikeroutes.features.routerecording.data.local.RouteAndPointDao
-import pl.jakubokrasa.bikeroutes.features.routerecording.data.local.model.RouteCached
-import pl.jakubokrasa.bikeroutes.features.routerecording.domain.model.Route
-import pl.jakubokrasa.bikeroutes.features.routerecording.presentation.RouteRepository
+import pl.jakubokrasa.bikeroutes.features.map.data.local.RouteAndPointDao
+import pl.jakubokrasa.bikeroutes.features.map.data.local.model.RouteCached
+import pl.jakubokrasa.bikeroutes.features.map.domain.model.Route
+import pl.jakubokrasa.bikeroutes.features.map.presentation.RouteRepository
 import java.util.*
 
 class RouteRepositoryImpl(private val routeAndPointDao: RouteAndPointDao): RouteRepository {

@@ -25,7 +25,7 @@
             android:name=".core.user.presentation.LoginActivity"
             android:label="@string/title_activity_login" />
         <service
-            android:name=".features.routerecording.domain.LocationService"
+            android:name=".features.map.domain.LocationService"
             android:enabled="true"
             android:exported="false"
             android:foregroundServiceType="location"/>

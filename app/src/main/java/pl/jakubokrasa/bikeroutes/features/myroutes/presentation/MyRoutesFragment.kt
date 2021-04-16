@@ -10,7 +10,7 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import pl.jakubokrasa.bikeroutes.R
 import pl.jakubokrasa.bikeroutes.core.base.BaseFragment
 import pl.jakubokrasa.bikeroutes.databinding.FragmentMyRoutesBinding
-import pl.jakubokrasa.bikeroutes.features.routerecording.presentation.RouteViewModel
+import pl.jakubokrasa.bikeroutes.features.map.presentation.RouteViewModel
 
 class MyRoutesFragment : BaseFragment(R.layout.fragment_my_routes){
     private var _binding: FragmentMyRoutesBinding? = null
