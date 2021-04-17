@@ -13,14 +13,17 @@ import android.view.View
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import androidx.preference.PreferenceManager
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.Polyline
 import pl.jakubokrasa.bikeroutes.R
 import pl.jakubokrasa.bikeroutes.core.util.LocationUtils
+import pl.jakubokrasa.bikeroutes.core.util.configureOsmDroid
 import pl.jakubokrasa.bikeroutes.databinding.FragmentFollowRouteBinding
 import pl.jakubokrasa.bikeroutes.features.map.domain.LocationService
 import pl.jakubokrasa.bikeroutes.features.map.presentation.MapFragment.Companion.SEND_LOCATION_ACTION
@@ -43,6 +46,7 @@ class FollowRouteFragment : Fragment(R.layout.fragment_follow_route) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentFollowRouteBinding.bind(view)
+        configureOsmDroid(requireContext())
         requireActivity().startService(Intent(context, LocationService::class.java))
         LocationUtils(activity as Activity).enableGpsIfNecessary()
 
@@ -75,24 +79,13 @@ class FollowRouteFragment : Fragment(R.layout.fragment_follow_route) {
     }
 
     private fun showRoute(view: View) {
-//        view.post {
+        view.post {
             setRoute()
             updateRouteInfo()
             setPolylineProperties()
             setMapViewProperties(setZoom = false)
             binding.mapView.invalidate()
-
-//            parentFragmentManager.setFragmentResultListener("requestKey",
-//                viewLifecycleOwner,
-//                { _, bundle ->
-//                    route = bundle.getSerializable("route") as RouteWithPointsDisplayable
-//                    updateRouteInfo()
-//
-//                    setPolylineProperties()
-//                    setMapViewProperties(setZoom = false)
-//                    binding.mapView.invalidate()
-//                })
-//        }
+        }
     }
 
     private fun updateToolbar() {
