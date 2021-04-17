@@ -56,6 +56,16 @@ class MyRoutesFragment : BaseFragment(R.layout.fragment_my_routes){
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        destroyRecycler() // needed for every Recycler View Adapter while using Navigation Component
+    }
+
+    private fun destroyRecycler() {
+        binding.recyclerView.layoutManager = null
+        binding.recyclerView.adapter = null
+    }
+
     companion object {
         val LOG_TAG = MyRoutesFragment::class.simpleName
     }
