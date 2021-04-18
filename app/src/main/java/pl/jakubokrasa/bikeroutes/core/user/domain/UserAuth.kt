@@ -4,6 +4,6 @@ import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthResult
 
 interface UserAuth {
-    suspend fun createUser(email: String, password: String)
+    suspend fun createUser(email: String, password: String): String?
 
 }
