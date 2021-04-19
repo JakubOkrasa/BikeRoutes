@@ -1,8 +1,7 @@
 package pl.jakubokrasa.bikeroutes.core.user.domain
 
-import com.google.firebase.auth.FirebaseAuth
-import kotlinx.coroutines.tasks.await
 import pl.jakubokrasa.bikeroutes.core.base.UseCase
+import pl.jakubokrasa.bikeroutes.core.user.auth.UserAuth
 
 class CreateUserUseCase(private val userAuth: UserAuth,
                         private val userRepository: UserRepository): UseCase<String?, CreateUserData>() {
