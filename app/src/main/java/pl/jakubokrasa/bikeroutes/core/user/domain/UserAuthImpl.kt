@@ -6,9 +6,14 @@ import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.tasks.await
 
 class UserAuthImpl(private val auth: FirebaseAuth): UserAuth {
-    override suspend fun createUser(email: String, password: String): String? {
-        return auth.createUserWithEmailAndPassword(email, password).await()
-            ?.let { it.user?.uid }
+    override suspend fun createUser(email: String, password: String): Pair<String?, String?> {
+        var exception: Exception?
+        val user = auth.createUserWithEmailAndPassword(email, password)
+            .also { exception = it.exception } // to chyba przypisze się zanim rejestracja się ukończy, a ja chcę przypisać po zakończeniu
+            .await()
+
+        return Pair(user?.let { it.user?.uid }, exception?.message)
+
 
     }
 

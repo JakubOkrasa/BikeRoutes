@@ -5,10 +5,15 @@ import kotlinx.coroutines.tasks.await
 import pl.jakubokrasa.bikeroutes.core.base.UseCase
 
 class CreateUserUseCase(private val userAuth: UserAuth,
-                        private val userRepository: UserRepository): UseCase<Unit, CreateUserData>() {
-    override suspend fun action(params: CreateUserData) {
-        val uid = userAuth.createUser(params.email, params.password)
-        uid?.let { userRepository.createUser(it) }
+                        private val userRepository: UserRepository): UseCase<String?, CreateUserData>() {
+    override suspend fun action(params: CreateUserData): String? {
+        val result = userAuth.createUser(params.email, params.password)
+        if (result.first != null) {
+            userRepository.createUser(result.first!!)
+        } else {
+            return result.second
+        }
+        return null
     }
 }
 
