@@ -30,7 +30,6 @@ class UserViewModel(
                     _message.value = Pair(true, "Successfully Registered")
                 }
                 result.onFailure {
-                    //todo skoro tu jest przekazywane it: Throwable, to w jaki sposób widziałem komunikat z Firebase Auth?
                     Log.e(LOG_TAG, "user not created, " + it.message)
                     _message.value = Pair(false, "Registration Failed: " + it.message)
                 }

@@ -4,17 +4,21 @@ import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.tasks.await
 import pl.jakubokrasa.bikeroutes.core.user.auth.UserAuth
 import pl.jakubokrasa.bikeroutes.core.user.auth.UserAuthResult
+import java.lang.Exception
 
 class UserAuthImpl(private val auth: FirebaseAuth): UserAuth {
     override suspend fun createUser(email: String, password: String): UserAuthResult {
         val userAuthResult = UserAuthResult()
-        auth.createUserWithEmailAndPassword(email, password)
-            .also {
-                userAuthResult.success = it.isSuccessful
-                userAuthResult.uid = it.result?.user?.uid
-                userAuthResult.message = it.exception?.message
-            }.await()
+        val exception: Exception?
+        val task = auth.createUserWithEmailAndPassword(email, password)
+            //Kotlin nie tworzy tu nowego obiektu klasy Exception, tylko przypisuje do
+            // referencji, dlatego przy sprawdzaniu czy == null ten obiekt będzie
+            // miał dane z czasu PO wykonaniu funkcji await()
+            .also { exception = it.exception }
+            .await()
 
+        userAuthResult.success = exception == null
+        userAuthResult.uid = task.user?.uid
         return userAuthResult
     }
 }
