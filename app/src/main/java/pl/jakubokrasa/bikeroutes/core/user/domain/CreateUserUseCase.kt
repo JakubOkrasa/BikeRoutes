@@ -7,10 +7,10 @@ class CreateUserUseCase(private val userAuth: UserAuth,
                         private val userRepository: UserRepository): UseCase<String?, CreateUserData>() {
     override suspend fun action(params: CreateUserData): String? {
         val result = userAuth.createUser(params.email, params.password)
-        if (result.first != null) {
-            userRepository.createUser(result.first!!)
+        if (result.success) {
+            userRepository.createUser(result.uid!!)
         } else {
-            return result.second
+            return result.message
         }
         return null
     }

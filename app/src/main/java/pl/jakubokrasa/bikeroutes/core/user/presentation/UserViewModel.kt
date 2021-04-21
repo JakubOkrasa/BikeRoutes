@@ -28,9 +28,9 @@ class UserViewModel(
                     Log.d(LOG_TAG, "user created")
                     saveUserDataToSharedPreferences(email, password)
                     _message.value = Pair(true, "Successfully Registered")
-                    //todo goto main activity using nav component
                 }
                 result.onFailure {
+                    //todo skoro tu jest przekazywane it: Throwable, to w jaki sposób widziałem komunikat z Firebase Auth?
                     Log.e(LOG_TAG, "user not created, " + it.message)
                     _message.value = Pair(false, "Registration Failed: " + it.message)
                 }
