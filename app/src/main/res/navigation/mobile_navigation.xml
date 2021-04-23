@@ -28,16 +28,15 @@
     </fragment>
 
     <fragment
-        android:id="@+id/navigation_notifications"
-        android:name="pl.jakubokrasa.bikeroutes.temporary.ui.settings.SettingsFragment"
-        android:label="notif"
-        tools:layout="@layout/fragment_notifications" >
-    </fragment>
+        android:id="@+id/nav_account"
+        android:name="pl.jakubokrasa.bikeroutes.core.user.presentation.AccountFragment"
+        android:label="@string/title_account"
+        tools:layout="@layout/fragment_account" />
 
     <fragment
         android:id="@+id/fragment_save_route"
         android:name="pl.jakubokrasa.bikeroutes.features.map.presentation.SaveRouteFragment"
-        android:label="@string/nav_title_saveroute"
+        android:label="@string/nav_title_explore"
         tools:layout="@layout/fragment_save_route" />
     <fragment
         android:id="@+id/followRouteFragment"

@@ -5,8 +5,8 @@ import android.view.View
 import org.koin.android.ext.android.inject
 import pl.jakubokrasa.bikeroutes.R
 import pl.jakubokrasa.bikeroutes.core.base.BaseFragment
-import pl.jakubokrasa.bikeroutes.core.extentions.hideKeyboard
-import pl.jakubokrasa.bikeroutes.core.extentions.PreferenceHelper.Companion.PREF_KEY_DISTANCE_SUM
+import pl.jakubokrasa.bikeroutes.core.extensions.PreferenceHelper.Companion.PREF_KEY_DISTANCE_SUM
+import pl.jakubokrasa.bikeroutes.core.extensions.hideKeyboard
 import pl.jakubokrasa.bikeroutes.databinding.FragmentSaveRouteBinding
 import pl.jakubokrasa.bikeroutes.features.map.domain.DataRouteSave
 import pl.jakubokrasa.bikeroutes.features.map.navigation.MapFrgNavigator
