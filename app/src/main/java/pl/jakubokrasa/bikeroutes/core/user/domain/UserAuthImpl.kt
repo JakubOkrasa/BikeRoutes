@@ -21,4 +21,23 @@ class UserAuthImpl(private val auth: FirebaseAuth): UserAuth {
         userAuthResult.uid = task.user?.uid
         return userAuthResult
     }
+
+    override suspend fun deleteCurrentUser(): UserAuthResult {
+        val userAuthResult = UserAuthResult()
+        val exception: Exception?
+        val user = auth.currentUser
+        if(user!=null) {
+            userAuthResult.uid = user.uid
+            auth.currentUser!!.delete()
+                .also { exception = it.exception }
+                .await()
+        } else {
+            exception = Exception("Error while deleting account: user is null")
+        }
+
+        userAuthResult.success = exception == null
+        return userAuthResult
+    }
+
+
 }

@@ -8,6 +8,7 @@ import org.koin.dsl.module
 import pl.jakubokrasa.bikeroutes.core.user.data.remote.UserRepositoryImpl
 import pl.jakubokrasa.bikeroutes.core.user.domain.CreateUserUseCase
 import pl.jakubokrasa.bikeroutes.core.user.auth.UserAuth
+import pl.jakubokrasa.bikeroutes.core.user.domain.DeleteCurrentUserUseCase
 import pl.jakubokrasa.bikeroutes.core.user.domain.UserAuthImpl
 import pl.jakubokrasa.bikeroutes.core.user.domain.UserRepository
 import pl.jakubokrasa.bikeroutes.core.user.presentation.UserViewModel
@@ -22,6 +23,7 @@ val userModule = module {
     single { FirebaseFirestore.getInstance() }
 
     factory { CreateUserUseCase(get(), get()) }
+    factory { DeleteCurrentUserUseCase(get(), get()) }
 
-    viewModel { UserViewModel(get(), get()) }
+    viewModel { UserViewModel(get(), get(), get()) }
 }
