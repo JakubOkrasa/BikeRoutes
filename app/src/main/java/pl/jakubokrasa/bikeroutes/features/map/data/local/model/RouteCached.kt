@@ -2,7 +2,9 @@ package pl.jakubokrasa.bikeroutes.features.map.data.local.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import org.osmdroid.util.GeoPoint
 import pl.jakubokrasa.bikeroutes.core.user.sharingType
+import pl.jakubokrasa.bikeroutes.features.map.domain.model.Point
 import pl.jakubokrasa.bikeroutes.features.map.domain.model.Route
 
 @Entity

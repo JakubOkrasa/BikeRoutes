@@ -7,7 +7,7 @@ import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import pl.jakubokrasa.bikeroutes.core.extentions.PreferenceHelper
+import pl.jakubokrasa.bikeroutes.core.extensions.PreferenceHelper
 import pl.jakubokrasa.bikeroutes.features.map.presentation.RouteViewModel
 
 open class BaseFragment(@LayoutRes layoutRes: Int): Fragment(layoutRes) {

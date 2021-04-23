@@ -11,7 +11,7 @@ val localDbModule = module {
     single { createDatabase(androidContext()) }
     single { get<RouteAndPointDatabase>().routeDao() }
 
-    single { RouteRepositoryImpl(get()) }
+    single {RouteRepositoryImpl(get()) }
 }
 
 private fun createDatabase(context: Context) =

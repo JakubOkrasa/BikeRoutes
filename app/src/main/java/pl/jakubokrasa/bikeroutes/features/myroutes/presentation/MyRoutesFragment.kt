@@ -2,12 +2,16 @@ package pl.jakubokrasa.bikeroutes.features.myroutes.presentation
 
 import android.os.Bundle
 import android.view.View
+import androidx.core.os.bundleOf
+import androidx.fragment.app.*
 import androidx.recyclerview.widget.DividerItemDecoration
 import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import pl.jakubokrasa.bikeroutes.R
 import pl.jakubokrasa.bikeroutes.core.base.BaseFragment
 import pl.jakubokrasa.bikeroutes.databinding.FragmentMyRoutesBinding
 import pl.jakubokrasa.bikeroutes.features.myroutes.navigation.MyRoutesNavigator
+import pl.jakubokrasa.bikeroutes.features.map.presentation.RouteViewModel
 
 class MyRoutesFragment : BaseFragment(R.layout.fragment_my_routes){
     private var _binding: FragmentMyRoutesBinding? = null
@@ -19,9 +23,9 @@ class MyRoutesFragment : BaseFragment(R.layout.fragment_my_routes){
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentMyRoutesBinding.bind(view)
-        initRecycler() // todo ten init powinien by� w initViews() ale wtedy jest java.lang.NullPointerException
+        initRecycler() // todo ten init powinien być w initViews() ale wtedy jest java.lang.NullPointerException
                         //at pl.jakubokrasa.bikeroutes.features.myroutes.presentation.MyRoutesFragment.getBinding(MyRoutesFragment.kt:17)
-                        //w AA to dzia��
+                        //w AA to działą
     }
 
     override fun onResume() {

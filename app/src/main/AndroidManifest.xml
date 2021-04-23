@@ -17,8 +17,13 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.BikeRoutes"
-        android:requestLegacyExternalStorage="true">
+        android:requestLegacyExternalStorage="true"
+		android:theme="@style/Theme.BikeRoutes">
+        <activity android:name=".core.user.presentation.ForgotPasswordActivity"></activity>
+        <activity android:name=".core.user.presentation.SignUpActivity" />
+        <activity
+            android:name=".core.user.presentation.LoginActivity"
+            android:label="@string/title_activity_login" />
         <service
             android:name=".features.map.domain.LocationService"
             android:enabled="true"

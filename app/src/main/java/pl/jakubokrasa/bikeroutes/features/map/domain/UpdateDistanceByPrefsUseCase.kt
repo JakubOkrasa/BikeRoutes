@@ -4,12 +4,12 @@ import android.location.Location
 import androidx.core.content.edit
 import org.osmdroid.util.GeoPoint
 import pl.jakubokrasa.bikeroutes.core.base.UseCase
-import pl.jakubokrasa.bikeroutes.core.extentions.PreferenceHelper
-import pl.jakubokrasa.bikeroutes.core.extentions.getDouble
-import pl.jakubokrasa.bikeroutes.core.extentions.putDouble
-import pl.jakubokrasa.bikeroutes.core.extentions.PreferenceHelper.Companion.PREF_KEY_DISTANCE_SUM
-import pl.jakubokrasa.bikeroutes.core.extentions.PreferenceHelper.Companion.PREF_KEY_LAST_LAT
-import pl.jakubokrasa.bikeroutes.core.extentions.PreferenceHelper.Companion.PREF_KEY_LAST_LNG
+import pl.jakubokrasa.bikeroutes.core.extensions.PreferenceHelper
+import pl.jakubokrasa.bikeroutes.core.extensions.getDouble
+import pl.jakubokrasa.bikeroutes.core.extensions.putDouble
+import pl.jakubokrasa.bikeroutes.core.extensions.PreferenceHelper.Companion.PREF_KEY_DISTANCE_SUM
+import pl.jakubokrasa.bikeroutes.core.extensions.PreferenceHelper.Companion.PREF_KEY_LAST_LAT
+import pl.jakubokrasa.bikeroutes.core.extensions.PreferenceHelper.Companion.PREF_KEY_LAST_LNG
 import kotlin.math.roundToInt
 
 class UpdateDistanceByPrefsUseCase(private val preferenceHelper: PreferenceHelper) :

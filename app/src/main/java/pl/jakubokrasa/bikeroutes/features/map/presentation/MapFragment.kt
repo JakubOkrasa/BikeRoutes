@@ -36,9 +36,9 @@ import org.osmdroid.views.overlay.Polyline
 import pl.jakubokrasa.bikeroutes.BuildConfig
 import pl.jakubokrasa.bikeroutes.R
 import pl.jakubokrasa.bikeroutes.core.base.BaseFragment
-import pl.jakubokrasa.bikeroutes.core.extentions.PreferenceHelper.Companion.PREF_KEY_MAPFRAGMENT_MODE_RECORDING
-import pl.jakubokrasa.bikeroutes.core.extentions.makeGone
-import pl.jakubokrasa.bikeroutes.core.extentions.makeVisible
+import pl.jakubokrasa.bikeroutes.core.extensions.PreferenceHelper.Companion.PREF_KEY_MAPFRAGMENT_MODE_RECORDING
+import pl.jakubokrasa.bikeroutes.core.extensions.makeGone
+import pl.jakubokrasa.bikeroutes.core.extensions.makeVisible
 import pl.jakubokrasa.bikeroutes.core.user.sharingType
 import pl.jakubokrasa.bikeroutes.core.util.LocationUtils
 import pl.jakubokrasa.bikeroutes.core.util.configureOsmDroid
@@ -70,6 +70,7 @@ class MapFragment() : BaseFragment(R.layout.fragment_map), KoinComponent {
         requestPermissionsIfNecessary(OSM_PERMISSIONS)
         configureOsmDroid(requireContext())
         LocationUtils(activity as Activity).enableGpsIfNecessary()
+        observeCurrentRoute()
 
         requireActivity().startService(Intent(context, LocationService::class.java))
 

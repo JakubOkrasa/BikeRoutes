@@ -9,4 +9,5 @@ val koinInjector: List<Module> = listOf(
     localDbModule,
     navigationModule,
     featuresModule,
+	userModule,
 )
