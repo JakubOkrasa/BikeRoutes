@@ -7,5 +7,6 @@ val koinInjector: List<Module> = listOf(
     locationModule,
     preferencesModule,
     localDbModule,
+    navigationModule,
     featuresModule,
 )

@@ -20,7 +20,7 @@
         android:theme="@style/Theme.BikeRoutes"
         android:requestLegacyExternalStorage="true">
         <service
-            android:name=".features.routerecording.domain.LocationService"
+            android:name=".features.map.domain.LocationService"
             android:enabled="true"
             android:exported="false"
             android:foregroundServiceType="location"/>

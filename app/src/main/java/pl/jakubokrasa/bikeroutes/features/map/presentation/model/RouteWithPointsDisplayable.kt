@@ -1,0 +1,40 @@
+package pl.jakubokrasa.bikeroutes.features.map.presentation.model
+
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
+import pl.jakubokrasa.bikeroutes.core.user.sharingType
+import pl.jakubokrasa.bikeroutes.features.map.domain.model.Point
+import pl.jakubokrasa.bikeroutes.features.map.domain.model.Route
+import java.io.Serializable
+
+@Parcelize
+data class RouteWithPointsDisplayable (
+    val routeId: Long,
+    val name: String,
+    val description: String,
+    val current: Boolean,
+    val distance: Int,
+    val sharingType: sharingType,
+    var points: List<Point>
+): Parcelable {
+
+    fun toRoute(): Route {
+        return Route(
+            routeId = routeId,
+            name = name,
+            description = description,
+            current = current,
+            distance = distance,
+            sharingType = sharingType,
+            points = points)
+    }
+
+    constructor(route: Route) : this (
+        routeId = route.routeId,
+        name = route.name,
+        description = route.description,
+        current = route.current,
+        distance = route.distance,
+        sharingType = route.sharingType,
+        points = route.points)
+}

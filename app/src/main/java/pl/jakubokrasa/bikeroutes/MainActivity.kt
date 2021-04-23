@@ -7,8 +7,6 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import org.koin.androidx.viewmodel.ext.android.viewModel
-import pl.jakubokrasa.bikeroutes.features.routerecording.presentation.RouteViewModel
 
 class MainActivity : AppCompatActivity() {
 
@@ -22,9 +20,9 @@ class MainActivity : AppCompatActivity() {
         // menu should be considered as top level destinations.
 
 //        val appBarConfiguration = AppBarConfiguration(setOf(
-//                R.id.nav_record_route, R.id.nav_my_routes, R.id.navigation_notifications))
+//                R.id.nav_map, R.id.nav_my_routes, R.id.navigation_notifications))
 //        setupActionBarWithNavController(navController, appBarConfiguration)
-
+//
         navView.setupWithNavController(navController)
 
     }
