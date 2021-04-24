@@ -18,8 +18,10 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.core.KoinComponent
 
 import org.koin.core.inject
+import org.osmdroid.util.GeoPoint
 import pl.jakubokrasa.bikeroutes.MainActivity
 import pl.jakubokrasa.bikeroutes.R
+import pl.jakubokrasa.bikeroutes.core.extensions.PreferenceHelper
 import pl.jakubokrasa.bikeroutes.core.util.LocationUtils
 import pl.jakubokrasa.bikeroutes.features.map.presentation.MapFragment
 import pl.jakubokrasa.bikeroutes.features.map.presentation.MapFragment.Companion.SEND_LOCATION_ACTION
@@ -35,6 +37,8 @@ class LocationService : Service(), KoinComponent {
     private lateinit var handlerThread: HandlerThread
     private lateinit var mNotificationManager: NotificationManager
     private lateinit var mLocation: Location
+    private val routeViewModel: RouteViewModel by inject()
+    private val preferenceHelper: PreferenceHelper by inject()
 
     override fun onBind(intent: Intent): IBinder? {
         return null
@@ -143,6 +147,10 @@ class LocationService : Service(), KoinComponent {
         mLocation = loc
         Log.i(LOG_TAG, "new location: lat: ${loc.latitude}, lng: ${loc.longitude}")
 
+        if(isRecordingMode()) {
+            routeViewModel.insertCurrentPoint(GeoPoint(loc))
+        }
+
         //send update UI broadcast
         val newLocIntent = Intent()
         newLocIntent.action = SEND_LOCATION_ACTION
@@ -150,6 +158,8 @@ class LocationService : Service(), KoinComponent {
         mLocalBR.sendBroadcast(newLocIntent)
 
     }
+
+    fun isRecordingMode() = preferenceHelper.preferences.getBoolean(PreferenceHelper.PREF_KEY_MAPFRAGMENT_MODE_RECORDING, false)
 
     private fun removeLocationUpdates() {
         Log.i(LOG_TAG, "Removing location updates")

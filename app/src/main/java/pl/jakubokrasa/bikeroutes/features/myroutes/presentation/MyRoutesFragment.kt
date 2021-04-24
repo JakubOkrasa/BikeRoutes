@@ -36,18 +36,18 @@ class MyRoutesFragment : BaseFragment(R.layout.fragment_my_routes){
 
     override fun initObservers() {
         super.initObservers()
-        observeMyRoutes()
+//        observeMyRoutes()
     }
 
     override fun initViews() {
         super.initViews()
     }
 
-    private fun observeMyRoutes() {
-        viewModel.myRoutes.observe(viewLifecycleOwner) {
-            myRoutesRecyclerAdapter.setItems(it)
-        }
-    }
+//    private fun observeMyRoutes() {
+//        viewModel.myRoutes.observe(viewLifecycleOwner) {
+//            myRoutesRecyclerAdapter.setItems(it)
+//        }
+//    }
 
     private fun initRecycler() {
         with(binding.recyclerView) {

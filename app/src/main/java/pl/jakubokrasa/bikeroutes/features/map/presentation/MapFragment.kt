@@ -132,7 +132,7 @@ class MapFragment() : BaseFragment(R.layout.fragment_map), KoinComponent {
 
     private fun newLocationUpdateUI(geoPoint: GeoPoint) {
         if(isRecordingMode()) {
-            viewModel.insertCurrentPoint(geoPoint)
+//            viewModel.insertCurrentPoint(geoPoint)
             binding.mapView.overlayManager.add(polyline)
             if (!polyline.isEnabled) polyline.isEnabled = true //we get the location for the first time
         }
