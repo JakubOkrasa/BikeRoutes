@@ -8,7 +8,6 @@ import org.osmdroid.util.GeoPoint
 data class PointCached(
     @PrimaryKey(autoGenerate = true)
     val pointId: Long,
-    val routeId: Long,
     val geoPoint: GeoPoint,
     val createdAt: Long
 ) {

@@ -1,51 +1,30 @@
 package pl.jakubokrasa.bikeroutes.features.map.data
 
+import androidx.lifecycle.LiveData
 import org.osmdroid.util.GeoPoint
-import pl.jakubokrasa.bikeroutes.features.map.data.local.RouteAndPointDao
-import pl.jakubokrasa.bikeroutes.features.map.data.local.model.RouteCached
+import pl.jakubokrasa.bikeroutes.features.map.data.local.PointDao
+import pl.jakubokrasa.bikeroutes.features.map.data.local.model.PointCached
 import pl.jakubokrasa.bikeroutes.features.map.domain.model.Route
 import pl.jakubokrasa.bikeroutes.features.map.presentation.RouteRepository
-import java.util.*
 
-class RouteRepositoryImpl(private val routeAndPointDao: RouteAndPointDao): RouteRepository {
-    override suspend fun getCurrentRoute(): Route {
-       return routeAndPointDao.getCurrentRoute().toRoute()
-    }
-    override suspend fun getCurrentRouteId(): Long {
-        return routeAndPointDao.getCurrentRouteId()
-    }
+class RouteRepositoryImpl(private val pointDao: PointDao): RouteRepository {
 
-    override suspend fun getMyRoutes(): List<Route> {
-        return routeAndPointDao.getMyRoutes().map { it.toRoute() }
-    }
 
-    override suspend fun insertRoute(route: Route) {
-        routeAndPointDao.insertRoute(RouteCached(0, route.name, route.description, route.current, route.distance,  route.sharingType)) //routeId=0 to be auto-generated
-    }
-
-    override suspend fun updateRouteName(routeId: Long, name: String) {
-        routeAndPointDao.updateRouteName(routeId, name)
-    }
-
-    override suspend fun updateRouteDescription(routeId: Long, description: String) {
-        routeAndPointDao.updateRouteDescription(routeId, description)
-    }
-
-    override suspend fun updateRouteDistance(routeId: Long, distance: Int) {
-        routeAndPointDao.updateRouteDistance(routeId, distance)
-    }
-
-    override suspend fun insertCurrentRoutePoint(geoPoint: GeoPoint) {
+    override suspend fun insertPoint(geoPoint: GeoPoint) {
         val createdAt = System.currentTimeMillis()
-        return routeAndPointDao.insertCurrentRoutePoint(geoPoint, createdAt)
+        return pointDao.insertPoint(geoPoint, createdAt)
     }
 
-    override suspend fun deleteRoute(route: Route) {
-        routeAndPointDao.deleteRoute(RouteCached(route))
+    override fun getPoints(): LiveData<List<PointCached>> {
+        return pointDao.getPoints()
     }
 
-    override suspend fun markRouteAsNotCurrent() {
-        routeAndPointDao.markRouteAsNotCurrent()
+    override suspend fun deletePoints() {
+        pointDao.deletePoints()
+    }
+
+    override suspend fun addRoute(route: Route) {
+        TODO("Not yet implemented")
     }
 
 }

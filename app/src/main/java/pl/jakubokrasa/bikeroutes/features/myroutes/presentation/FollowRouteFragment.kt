@@ -103,7 +103,8 @@ class FollowRouteFragment : BaseFragment(R.layout.fragment_follow_route) {
                                 true
                             }
                             R.id.action_followroute_remove -> {
-                                viewModel.deleteRoute(route.toRoute())
+                                TODO()
+//                                viewModel.deleteRoute(route.toRoute())
                                 true
                             }
                             else -> false

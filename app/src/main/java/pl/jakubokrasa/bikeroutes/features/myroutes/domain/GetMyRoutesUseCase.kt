@@ -7,5 +7,5 @@ import pl.jakubokrasa.bikeroutes.features.map.presentation.RouteRepository
 class GetMyRoutesUseCase(private val routeRepository: RouteRepository):
     UseCase<List<Route>, Unit>() {
 
-    override suspend fun action(params: Unit) = routeRepository.getMyRoutes()
+    override suspend fun action(params: Unit) = TODO()  // routeRepository.getMyRoutes()
 }
