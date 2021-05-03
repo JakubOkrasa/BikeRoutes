@@ -4,14 +4,14 @@ import android.content.Context
 import androidx.room.Room
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
-import pl.jakubokrasa.bikeroutes.features.map.data.RouteRepositoryImpl
+import pl.jakubokrasa.bikeroutes.features.map.data.local.PointRepositoryImpl
 import pl.jakubokrasa.bikeroutes.features.map.data.local.PointDatabase
 
 val localDbModule = module {
     single { createDatabase(androidContext()) }
     single { get<PointDatabase>().routeDao() }
 
-    single {RouteRepositoryImpl(get()) }
+    single { PointRepositoryImpl(get()) }
 }
 
 private fun createDatabase(context: Context) =

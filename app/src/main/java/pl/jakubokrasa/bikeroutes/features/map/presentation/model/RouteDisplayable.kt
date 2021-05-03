@@ -8,11 +8,10 @@ import pl.jakubokrasa.bikeroutes.features.map.domain.model.Route
 import java.io.Serializable
 
 @Parcelize
-data class RouteWithPointsDisplayable (
+data class RouteDisplayable (
     val routeId: Long,
     val name: String,
     val description: String,
-    val current: Boolean,
     val distance: Int,
     val sharingType: sharingType,
     var points: List<Point>
@@ -23,7 +22,6 @@ data class RouteWithPointsDisplayable (
             routeId = routeId,
             name = name,
             description = description,
-            current = current,
             distance = distance,
             sharingType = sharingType,
             points = points)
@@ -33,7 +31,6 @@ data class RouteWithPointsDisplayable (
         routeId = route.routeId,
         name = route.name,
         description = route.description,
-        current = route.current,
         distance = route.distance,
         sharingType = route.sharingType,
         points = route.points)

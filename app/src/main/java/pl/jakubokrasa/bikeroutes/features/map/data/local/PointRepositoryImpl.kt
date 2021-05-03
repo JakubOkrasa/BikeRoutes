@@ -1,13 +1,13 @@
-package pl.jakubokrasa.bikeroutes.features.map.data
+package pl.jakubokrasa.bikeroutes.features.map.data.local
 
 import androidx.lifecycle.LiveData
 import org.osmdroid.util.GeoPoint
 import pl.jakubokrasa.bikeroutes.features.map.data.local.PointDao
 import pl.jakubokrasa.bikeroutes.features.map.data.local.model.PointCached
 import pl.jakubokrasa.bikeroutes.features.map.domain.model.Route
-import pl.jakubokrasa.bikeroutes.features.map.presentation.RouteRepository
+import pl.jakubokrasa.bikeroutes.features.map.domain.PointRepository
 
-class RouteRepositoryImpl(private val pointDao: PointDao): RouteRepository {
+class PointRepositoryImpl(private val pointDao: PointDao): PointRepository {
 
 
     override suspend fun insertPoint(geoPoint: GeoPoint) {
@@ -22,9 +22,4 @@ class RouteRepositoryImpl(private val pointDao: PointDao): RouteRepository {
     override suspend fun deletePoints() {
         pointDao.deletePoints()
     }
-
-    override suspend fun addRoute(route: Route) {
-        TODO("Not yet implemented")
-    }
-
 }

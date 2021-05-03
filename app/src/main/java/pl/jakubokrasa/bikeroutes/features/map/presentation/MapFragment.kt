@@ -44,7 +44,7 @@ class MapFragment() : BaseFragment(R.layout.fragment_map), KoinComponent {
     private lateinit var mPreviousLocMarker: Marker
     private val mLocalBR: LocalBroadcastManager by inject()
     private val mapFrgNavigator: MapFrgNavigator by inject()
-//    private val currentRouteObserver: Observer<RouteWithPointsDisplayable!>
+//    private val currentRouteObserver: Observer<RouteDisplayable!>
     private val requestMultiplePermissions = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
         permissions.entries.forEach { Log.d(LOG_TAG, "permission: ${it.key} = ${it.value}") }
     }
@@ -70,8 +70,10 @@ class MapFragment() : BaseFragment(R.layout.fragment_map), KoinComponent {
         setMapViewProperties()
         setPolylineProperties()
 
-        if(!isRecordingMode())
+        if(!isRecordingMode()) {
             disableRecordingMode()
+            viewModel.deletePoints()
+        }
     }
 
    override fun onStart() {
@@ -216,7 +218,8 @@ class MapFragment() : BaseFragment(R.layout.fragment_map), KoinComponent {
     private fun isRecordingMode() = preferenceHelper.preferences.getBoolean(PREF_KEY_MAPFRAGMENT_MODE_RECORDING, false)
 
     private val pointsObserver = Observer<List<PointDisplayable>> {
-        polyline.setPoints(it.map { point -> point.geoPoint })
+        if(it.isNotEmpty())
+            polyline.setPoints(it.map { point -> point.geoPoint })
     }
 
     companion object {

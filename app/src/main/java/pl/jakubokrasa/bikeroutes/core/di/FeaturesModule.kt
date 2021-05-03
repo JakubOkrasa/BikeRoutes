@@ -2,27 +2,24 @@ package pl.jakubokrasa.bikeroutes.core.di
 
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
-import pl.jakubokrasa.bikeroutes.features.myroutes.domain.DeleteRouteUseCase
-import pl.jakubokrasa.bikeroutes.features.myroutes.domain.GetMyRoutesUseCase
 import pl.jakubokrasa.bikeroutes.features.myroutes.presentation.MyRoutesRecyclerAdapter
-import pl.jakubokrasa.bikeroutes.features.map.data.RouteRepositoryImpl
-import pl.jakubokrasa.bikeroutes.features.map.domain.*
+import pl.jakubokrasa.bikeroutes.features.map.data.local.PointRepositoryImpl
 import pl.jakubokrasa.bikeroutes.features.map.presentation.RouteViewModel
-import pl.jakubokrasa.bikeroutes.features.map.presentation.RouteRepository
+import pl.jakubokrasa.bikeroutes.features.map.domain.PointRepository
+import pl.jakubokrasa.bikeroutes.features.map.domain.usecase.*
 
 val featuresModule = module {
-    factory<RouteRepository> { RouteRepositoryImpl(get()) }
+    factory<PointRepository> { PointRepositoryImpl(get()) }
 
-    factory { InsertPointUseCase(get())}
-    factory { GetPointsUseCase(get())}
-//    factory { InsertRouteUseCase(get())}
-//    factory { MarkRouteAsNotCurrentUseCase(get())}
+    factory { InsertPointUseCase(get()) }
+    factory { GetPointsUseCase(get()) }
+    factory { SaveRouteUseCase(get(), get()) }
 //    factory { GetMyRoutesUseCase(get())}
 //    factory { PutRouteSaveDataUseCase(get(), get())}
-//    factory { DeleteRouteUseCase(get())}
-    factory { UpdateDistanceByPrefsUseCase(get())}
+    factory { DeletePointsUseCase(get()) }
+    factory { UpdateDistanceByPrefsUseCase(get()) }
 
-    viewModel { RouteViewModel(get(), get(), get()) }
+    viewModel { RouteViewModel(get(), get(), get(), get(), get()) }
     factory { MyRoutesRecyclerAdapter() }
 }
 

@@ -8,6 +8,7 @@ import pl.jakubokrasa.bikeroutes.core.base.BaseFragment
 import pl.jakubokrasa.bikeroutes.core.extensions.PreferenceHelper.Companion.PREF_KEY_DISTANCE_SUM
 import pl.jakubokrasa.bikeroutes.core.extensions.hideKeyboard
 import pl.jakubokrasa.bikeroutes.databinding.FragmentSaveRouteBinding
+import pl.jakubokrasa.bikeroutes.features.map.domain.usecase.DataSaveRoute
 import pl.jakubokrasa.bikeroutes.features.map.navigation.MapFrgNavigator
 
 class SaveRouteFragment : BaseFragment(R.layout.fragment_save_route) {
@@ -26,8 +27,10 @@ class SaveRouteFragment : BaseFragment(R.layout.fragment_save_route) {
         val name = binding.etName.text.toString()
         val description = binding.etDescription.text.toString()
         val distance = preferenceHelper.preferences.getInt(PREF_KEY_DISTANCE_SUM, 0)
-//        if(name.isEmpty()) showToast("Route must have a name")
-//        else viewModel.putRouteSaveData(DataRouteSave(name, description, distance)) todo
+        if(name.isEmpty()) showToast("Route must have a name")
+        else  {
+            viewModel.saveRoute(DataSaveRoute(name, description, distance))
+        }
         hideKeyboard()
         mapFrgNavigator.goBack()
     }

@@ -3,18 +3,14 @@ package pl.jakubokrasa.bikeroutes.features.map.presentation
 import android.util.Log
 import androidx.lifecycle.*
 import org.osmdroid.util.GeoPoint
-import pl.jakubokrasa.bikeroutes.features.map.data.local.model.PointCached
-import pl.jakubokrasa.bikeroutes.features.myroutes.domain.DeleteRouteUseCase
-import pl.jakubokrasa.bikeroutes.features.myroutes.domain.GetMyRoutesUseCase
-import pl.jakubokrasa.bikeroutes.features.map.domain.*
-import pl.jakubokrasa.bikeroutes.features.map.domain.model.Point
-import pl.jakubokrasa.bikeroutes.features.map.domain.model.Route
+import pl.jakubokrasa.bikeroutes.features.map.domain.usecase.*
 import pl.jakubokrasa.bikeroutes.features.map.presentation.model.PointDisplayable
-import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteWithPointsDisplayable
 
 class RouteViewModel(
     private val insertPointUseCase: InsertPointUseCase,
     private val getPointsUseCase: GetPointsUseCase,
+    private val deletePointsUseCase: DeletePointsUseCase,
+    private val saveRouteUseCase: SaveRouteUseCase,
 //    private val markRouteAsNotCurrentUseCase: MarkRouteAsNotCurrentUseCase,
 //    private val getMyRoutesUseCase: GetMyRoutesUseCase,
 //    private val putRouteSaveDataUseCase: PutRouteSaveDataUseCase,
@@ -41,6 +37,28 @@ class RouteViewModel(
         }
     }
 
+    fun saveRoute(dataSaveRoute: DataSaveRoute) {
+        saveRouteUseCase(
+            params = dataSaveRoute,
+            scope = viewModelScope
+        ) {
+                result ->
+            result.onSuccess { Log.d(LOG_TAG, "route save OK")}
+            result.onFailure { Log.e(LOG_TAG, "route saving error") }
+        }
+    }
+
+    fun deletePoints() {
+        deletePointsUseCase(
+            params = Unit,
+            scope = viewModelScope
+        ) {
+                result ->
+            result.onSuccess { Log.d(LOG_TAG, "points delete OK")}
+            result.onFailure { Log.e(LOG_TAG, "points deleting error") }
+        }
+    }
+
 //    private fun markRouteAsNotCurrent() {
 //        markRouteAsNotCurrentUseCase(
 //            params = Unit,
@@ -51,7 +69,7 @@ class RouteViewModel(
 //        }
 //    }
 //
-//    fun putRouteSaveData(data: DataRouteSave) {
+//    fun putRouteSaveData(data: DataSaveRoute) {
 //        putRouteSaveDataUseCase(
 //            params = data,
 //            scope = viewModelScope

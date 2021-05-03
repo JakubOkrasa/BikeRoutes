@@ -10,4 +10,5 @@ val koinInjector: List<Module> = listOf(
     navigationModule,
     featuresModule,
 	userModule,
+    remoteDbModule,
 )
