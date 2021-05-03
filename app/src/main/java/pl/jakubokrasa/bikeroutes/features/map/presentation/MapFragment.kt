@@ -35,6 +35,7 @@ import pl.jakubokrasa.bikeroutes.databinding.FragmentMapBinding
 import pl.jakubokrasa.bikeroutes.features.map.data.local.model.PointCached
 import pl.jakubokrasa.bikeroutes.features.map.domain.LocationService
 import pl.jakubokrasa.bikeroutes.features.map.navigation.MapFrgNavigator
+import pl.jakubokrasa.bikeroutes.features.map.presentation.model.PointDisplayable
 
 
 class MapFragment() : BaseFragment(R.layout.fragment_map), KoinComponent {
@@ -148,11 +149,11 @@ class MapFragment() : BaseFragment(R.layout.fragment_map), KoinComponent {
     }
 
     private fun observePoints() {
-        viewModel.points.observe(viewLifecycleOwner, pointsObserver)
+        viewModel.getPoints().observe(viewLifecycleOwner, pointsObserver)
     }
 
     private fun stopObservePoints() {
-        viewModel.points.removeObserver(pointsObserver)
+        viewModel.getPoints().removeObserver(pointsObserver)
     }
 
     private fun setMapViewProperties() {
@@ -214,9 +215,8 @@ class MapFragment() : BaseFragment(R.layout.fragment_map), KoinComponent {
 
     private fun isRecordingMode() = preferenceHelper.preferences.getBoolean(PREF_KEY_MAPFRAGMENT_MODE_RECORDING, false)
 
-    private val pointsObserver = Observer<List<PointCached>> {
-        if (it!= null)
-            polyline.setPoints(it.map { point -> point.geoPoint })
+    private val pointsObserver = Observer<List<PointDisplayable>> {
+        polyline.setPoints(it.map { point -> point.geoPoint })
     }
 
     companion object {

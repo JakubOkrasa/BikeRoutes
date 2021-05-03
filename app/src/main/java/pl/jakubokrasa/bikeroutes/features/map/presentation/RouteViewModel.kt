@@ -7,7 +7,9 @@ import pl.jakubokrasa.bikeroutes.features.map.data.local.model.PointCached
 import pl.jakubokrasa.bikeroutes.features.myroutes.domain.DeleteRouteUseCase
 import pl.jakubokrasa.bikeroutes.features.myroutes.domain.GetMyRoutesUseCase
 import pl.jakubokrasa.bikeroutes.features.map.domain.*
+import pl.jakubokrasa.bikeroutes.features.map.domain.model.Point
 import pl.jakubokrasa.bikeroutes.features.map.domain.model.Route
+import pl.jakubokrasa.bikeroutes.features.map.presentation.model.PointDisplayable
 import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteWithPointsDisplayable
 
 class RouteViewModel(
@@ -21,27 +23,9 @@ class RouteViewModel(
     private val updateDistanceByPrefsUseCase: UpdateDistanceByPrefsUseCase
 ) : ViewModel() {
 
-
-    val points by lazy {
-        MutableLiveData<List<PointCached>>()
-            .also { getPoints(it) }
+    fun getPoints(): LiveData<List<PointDisplayable>> {
+        return getPointsUseCase(params = Unit).map { list -> list.map { PointDisplayable(it) } }
     }
-
-
-    private fun getPoints(pointsLiveData: MutableLiveData<List<PointCached>>) {
-        getPointsUseCase(
-            params = Unit,
-            scope = viewModelScope
-        ) {
-            result -> result.onSuccess {
-                pointsLiveData.value = it.value
-        }
-            result.onFailure { Log.e(LOG_TAG, "getPoints FAILURE") }
-
-        }
-    }
-
-
 
     fun insertPoint(geoPoint: GeoPoint) {
         insertPointUseCase(
@@ -49,6 +33,7 @@ class RouteViewModel(
             scope = viewModelScope
         ) {
           result -> result.onSuccess {
+            getPointsUseCase(params = Unit) // LiveData is not so fast to show points immediately after insert
             Log.d(LOG_TAG, "point inserted")
         }
 
