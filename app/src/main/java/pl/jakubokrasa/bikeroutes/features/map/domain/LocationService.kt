@@ -6,22 +6,18 @@ import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
 import android.location.Location
-import android.location.LocationManager
 import android.os.*
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.google.android.gms.location.*
-import org.koin.androidx.viewmodel.compat.ScopeCompat.viewModel
-import org.koin.androidx.viewmodel.compat.SharedViewModelCompat.sharedViewModel
-import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.core.KoinComponent
 
 import org.koin.core.inject
+import org.osmdroid.util.GeoPoint
 import pl.jakubokrasa.bikeroutes.MainActivity
 import pl.jakubokrasa.bikeroutes.R
-import pl.jakubokrasa.bikeroutes.core.util.LocationUtils
-import pl.jakubokrasa.bikeroutes.features.map.presentation.MapFragment
+import pl.jakubokrasa.bikeroutes.core.extensions.PreferenceHelper
 import pl.jakubokrasa.bikeroutes.features.map.presentation.MapFragment.Companion.SEND_LOCATION_ACTION
 import pl.jakubokrasa.bikeroutes.features.map.presentation.RouteViewModel
 
@@ -35,6 +31,8 @@ class LocationService : Service(), KoinComponent {
     private lateinit var handlerThread: HandlerThread
     private lateinit var mNotificationManager: NotificationManager
     private lateinit var mLocation: Location
+    private val routeViewModel: RouteViewModel by inject()
+    private val preferenceHelper: PreferenceHelper by inject()
 
     override fun onBind(intent: Intent): IBinder? {
         return null
@@ -112,14 +110,12 @@ class LocationService : Service(), KoinComponent {
     private fun requestLocationUpdates() {
         Log.i(LOG_TAG, "Requesting location updates")
         Log.d(LOG_TAG, "service request updates Thread: ${Thread.currentThread().name}")
-//        locUtils.setRequestingLocationUpdates(this, true)
         locationCallbackInit()
         try {
             mFusedLocationClient.requestLocationUpdates(mLocationRequest,
                 mLocationCallback,
                 handlerThread.looper)
         } catch (unlikely: SecurityException) {
-//            locUtils.setRequestingLocationUpdates(this, false)
             Log.e(LOG_TAG, "Lost location permission. Could not request updates. $unlikely")
         }
     }
@@ -143,6 +139,10 @@ class LocationService : Service(), KoinComponent {
         mLocation = loc
         Log.i(LOG_TAG, "new location: lat: ${loc.latitude}, lng: ${loc.longitude}")
 
+        if(isRecordingMode()) {
+            routeViewModel.insertPoint(GeoPoint(loc))
+        }
+
         //send update UI broadcast
         val newLocIntent = Intent()
         newLocIntent.action = SEND_LOCATION_ACTION
@@ -151,15 +151,15 @@ class LocationService : Service(), KoinComponent {
 
     }
 
+    fun isRecordingMode() = preferenceHelper.preferences.getBoolean(PreferenceHelper.PREF_KEY_MAPFRAGMENT_MODE_RECORDING, false)
+
     private fun removeLocationUpdates() {
         Log.i(LOG_TAG, "Removing location updates")
         try {
             mFusedLocationClient.removeLocationUpdates(mLocationCallback)
-//            locUtils.setRequestingLocationUpdates(this, false)
             handlerThread.quit()
             stopSelf()
         } catch (unlikely: SecurityException) {
-//            locUtils.setRequestingLocationUpdates(this, true)
             Log.e(LOG_TAG, "Lost location permission. Could not remove updates. $unlikely")
         }
     }

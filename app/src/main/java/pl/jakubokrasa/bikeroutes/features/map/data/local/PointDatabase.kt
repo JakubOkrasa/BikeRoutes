@@ -6,10 +6,9 @@ import androidx.room.TypeConverters
 import pl.jakubokrasa.bikeroutes.core.util.converter.EnumConverter
 import pl.jakubokrasa.bikeroutes.core.util.converter.GeoPointConverter
 import pl.jakubokrasa.bikeroutes.features.map.data.local.model.PointCached
-import pl.jakubokrasa.bikeroutes.features.map.data.local.model.RouteCached
 
-@Database(entities = [RouteCached::class, PointCached::class], version = 6, exportSchema = false)
+@Database(entities = [PointCached::class], version = 8, exportSchema = false)
 @TypeConverters(GeoPointConverter::class, EnumConverter::class)
-abstract class RouteAndPointDatabase : RoomDatabase() {
-    abstract fun routeDao(): RouteAndPointDao
+abstract class PointDatabase : RoomDatabase() {
+    abstract fun routeDao(): PointDao
 }

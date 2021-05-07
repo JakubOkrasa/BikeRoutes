@@ -10,24 +10,14 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.WindowManager
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.content.edit
 import androidx.core.content.res.ResourcesCompat
-import androidx.fragment.app.add
-import androidx.fragment.app.commit
 import androidx.lifecycle.Observer
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import androidx.preference.PreferenceManager.getDefaultSharedPreferences
-import com.google.android.gms.common.api.ApiException
-import com.google.android.gms.common.api.ResolvableApiException
-import com.google.android.gms.location.LocationSettingsRequest
-import com.google.android.gms.location.LocationSettingsStatusCodes
-import com.google.android.gms.location.SettingsClient
 import org.koin.core.KoinComponent
 import org.koin.core.inject
-import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.overlay.Marker
@@ -39,22 +29,22 @@ import pl.jakubokrasa.bikeroutes.core.base.BaseFragment
 import pl.jakubokrasa.bikeroutes.core.extensions.PreferenceHelper.Companion.PREF_KEY_MAPFRAGMENT_MODE_RECORDING
 import pl.jakubokrasa.bikeroutes.core.extensions.makeGone
 import pl.jakubokrasa.bikeroutes.core.extensions.makeVisible
-import pl.jakubokrasa.bikeroutes.core.user.sharingType
 import pl.jakubokrasa.bikeroutes.core.util.LocationUtils
 import pl.jakubokrasa.bikeroutes.core.util.configureOsmDroid
 import pl.jakubokrasa.bikeroutes.databinding.FragmentMapBinding
+import pl.jakubokrasa.bikeroutes.features.map.data.local.model.PointCached
 import pl.jakubokrasa.bikeroutes.features.map.domain.LocationService
 import pl.jakubokrasa.bikeroutes.features.map.navigation.MapFrgNavigator
-import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteWithPointsDisplayable
+import pl.jakubokrasa.bikeroutes.features.map.presentation.model.PointDisplayable
 
 
 class MapFragment() : BaseFragment(R.layout.fragment_map), KoinComponent {
-    private var polyline: Polyline = Polyline()
+    private lateinit var polyline: Polyline
     private lateinit var mRotationGestureOverlay: Overlay
     private lateinit var mPreviousLocMarker: Marker
     private val mLocalBR: LocalBroadcastManager by inject()
     private val mapFrgNavigator: MapFrgNavigator by inject()
-//    private val currentRouteObserver: Observer<RouteWithPointsDisplayable!>
+//    private val currentRouteObserver: Observer<RouteDisplayable!>
     private val requestMultiplePermissions = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
         permissions.entries.forEach { Log.d(LOG_TAG, "permission: ${it.key} = ${it.value}") }
     }
@@ -70,7 +60,8 @@ class MapFragment() : BaseFragment(R.layout.fragment_map), KoinComponent {
         requestPermissionsIfNecessary(OSM_PERMISSIONS)
         configureOsmDroid(requireContext())
         LocationUtils(activity as Activity).enableGpsIfNecessary()
-        observeCurrentRoute()
+        polyline = Polyline(binding.mapView)
+        observePoints()
 
         requireActivity().startService(Intent(context, LocationService::class.java))
 
@@ -80,8 +71,10 @@ class MapFragment() : BaseFragment(R.layout.fragment_map), KoinComponent {
         setMapViewProperties()
         setPolylineProperties()
 
-        if(!isRecordingMode())
+        if(!isRecordingMode()) {
             disableRecordingMode()
+            viewModel.deletePoints()
+        }
     }
 
    override fun onStart() {
@@ -132,7 +125,6 @@ class MapFragment() : BaseFragment(R.layout.fragment_map), KoinComponent {
 
     private fun newLocationUpdateUI(geoPoint: GeoPoint) {
         if(isRecordingMode()) {
-            viewModel.insertCurrentPoint(geoPoint)
             binding.mapView.overlayManager.add(polyline)
             if (!polyline.isEnabled) polyline.isEnabled = true //we get the location for the first time
         }
@@ -158,12 +150,12 @@ class MapFragment() : BaseFragment(R.layout.fragment_map), KoinComponent {
         requireActivity().stopService(Intent(requireContext(), LocationService::class.java))
     }
 
-    private fun observeCurrentRoute() {
-        viewModel.route.observe(viewLifecycleOwner, currentRouteObserver)
+    private fun observePoints() {
+        viewModel.getPoints().observe(viewLifecycleOwner, pointsObserver)
     }
 
-    private fun stopObserveCurrentRoute() {
-        viewModel.route.removeObserver(currentRouteObserver)
+    private fun stopObservePoints() {
+        viewModel.getPoints().removeObserver(pointsObserver)
     }
 
     private fun setMapViewProperties() {
@@ -204,15 +196,6 @@ class MapFragment() : BaseFragment(R.layout.fragment_map), KoinComponent {
 
     private val btRecordRouteOnClick = View.OnClickListener() {
         enableRecordingMode()
-        viewModel.insertNewRoute(RouteWithPointsDisplayable(
-            routeId = 0,
-            name = "",
-            description = "",
-            distance = 0,
-            current = true,
-            sharingType = sharingType.PRIVATE,
-            points = ArrayList()
-        ).toRoute())
 
         binding.btStartRecord.makeGone()
         binding.btStopRecord.makeVisible()
@@ -222,21 +205,21 @@ class MapFragment() : BaseFragment(R.layout.fragment_map), KoinComponent {
         preferenceHelper.preferences.edit {
             putBoolean(PREF_KEY_MAPFRAGMENT_MODE_RECORDING, true)
         }
-        observeCurrentRoute()
+        observePoints()
     }
 
     private fun disableRecordingMode() {
         preferenceHelper.preferences.edit {
             putBoolean(PREF_KEY_MAPFRAGMENT_MODE_RECORDING, false)
         }
-        stopObserveCurrentRoute()
+        stopObservePoints()
     }
 
     private fun isRecordingMode() = preferenceHelper.preferences.getBoolean(PREF_KEY_MAPFRAGMENT_MODE_RECORDING, false)
 
-    private val currentRouteObserver = Observer<RouteWithPointsDisplayable> {
-        val geoPoints = it.points.map { point -> point.geoPoint }
-        polyline.setPoints(geoPoints)
+    private val pointsObserver = Observer<List<PointDisplayable>> {
+        if(it.isNotEmpty())
+            polyline.setPoints(it.map { point -> point.geoPoint })
     }
 
     companion object {

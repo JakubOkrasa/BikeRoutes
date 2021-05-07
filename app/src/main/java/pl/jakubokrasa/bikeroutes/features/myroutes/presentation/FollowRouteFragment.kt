@@ -11,12 +11,8 @@ import android.location.Location
 import android.os.Bundle
 import android.view.View
 import androidx.core.content.res.ResourcesCompat
-import androidx.fragment.app.Fragment
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import androidx.preference.PreferenceManager
 import org.koin.android.ext.android.inject
-import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.overlay.Marker
@@ -28,15 +24,14 @@ import pl.jakubokrasa.bikeroutes.core.util.configureOsmDroid
 import pl.jakubokrasa.bikeroutes.databinding.FragmentFollowRouteBinding
 import pl.jakubokrasa.bikeroutes.features.map.domain.LocationService
 import pl.jakubokrasa.bikeroutes.features.map.presentation.MapFragment.Companion.SEND_LOCATION_ACTION
-import pl.jakubokrasa.bikeroutes.features.map.presentation.RouteViewModel
-import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteWithPointsDisplayable
+import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteDisplayable
 
 
 class FollowRouteFragment : BaseFragment(R.layout.fragment_follow_route) {
 
     private var _binding: FragmentFollowRouteBinding? = null
     private val binding get() = _binding!!
-    private lateinit var route: RouteWithPointsDisplayable
+    private lateinit var route: RouteDisplayable
     private val polyline = Polyline()
     private val mLocalBR: LocalBroadcastManager by inject()
     private lateinit var mPreviousLocMarker: Marker
@@ -103,7 +98,8 @@ class FollowRouteFragment : BaseFragment(R.layout.fragment_follow_route) {
                                 true
                             }
                             R.id.action_followroute_remove -> {
-                                viewModel.deleteRoute(route.toRoute())
+                                TODO()
+//                                viewModel.deleteRoute(route.toRoute())
                                 true
                             }
                             else -> false
@@ -191,7 +187,7 @@ class FollowRouteFragment : BaseFragment(R.layout.fragment_follow_route) {
 
     private fun setRoute() {
         arguments
-            ?.getParcelable<RouteWithPointsDisplayable>(ROUTE_TO_FOLLOW_KEY)
+            ?.getParcelable<RouteDisplayable>(ROUTE_TO_FOLLOW_KEY)
             ?.let { route = it}
     }
 
