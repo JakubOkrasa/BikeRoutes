@@ -110,14 +110,12 @@ class LocationService : Service(), KoinComponent {
     private fun requestLocationUpdates() {
         Log.i(LOG_TAG, "Requesting location updates")
         Log.d(LOG_TAG, "service request updates Thread: ${Thread.currentThread().name}")
-//        locUtils.setRequestingLocationUpdates(this, true)
         locationCallbackInit()
         try {
             mFusedLocationClient.requestLocationUpdates(mLocationRequest,
                 mLocationCallback,
                 handlerThread.looper)
         } catch (unlikely: SecurityException) {
-//            locUtils.setRequestingLocationUpdates(this, false)
             Log.e(LOG_TAG, "Lost location permission. Could not request updates. $unlikely")
         }
     }
@@ -141,9 +139,9 @@ class LocationService : Service(), KoinComponent {
         mLocation = loc
         Log.i(LOG_TAG, "new location: lat: ${loc.latitude}, lng: ${loc.longitude}")
 
-//        if(isRecordingMode()) {
-//            routeViewModel.insertPoint(GeoPoint(loc))
-//        }
+        if(isRecordingMode()) {
+            routeViewModel.insertPoint(GeoPoint(loc))
+        }
 
         //send update UI broadcast
         val newLocIntent = Intent()
@@ -159,11 +157,9 @@ class LocationService : Service(), KoinComponent {
         Log.i(LOG_TAG, "Removing location updates")
         try {
             mFusedLocationClient.removeLocationUpdates(mLocationCallback)
-//            locUtils.setRequestingLocationUpdates(this, false)
             handlerThread.quit()
             stopSelf()
         } catch (unlikely: SecurityException) {
-//            locUtils.setRequestingLocationUpdates(this, true)
             Log.e(LOG_TAG, "Lost location permission. Could not remove updates. $unlikely")
         }
     }

@@ -15,7 +15,6 @@ class SaveRouteUseCase(
     private val routeRepository: RouteRepository,
     private val userAuth: UserAuth): UseCase<Unit, DataSaveRoute>() {
     override suspend fun action(params: DataSaveRoute) {
-        Log.e("LOG TAG", "SAVE ROUTE USE CASE===========")
         val points = pointRepository.getPoints2()
         val route = Route(
             userAuth.getCurrentUserId(),
@@ -23,7 +22,7 @@ class SaveRouteUseCase(
             params.description,
             params.distance,
             sharingType.PRIVATE,
-            points?.map { it.toPoint() } ?: throw Exception("SaveRouteUseCase: points are null")
+            points.map { it.toPoint() }
         )
         routeRepository.addRoute(route)
         pointRepository.deletePoints()
