@@ -39,7 +39,7 @@ import pl.jakubokrasa.bikeroutes.features.map.presentation.model.PointDisplayabl
 
 
 class MapFragment() : BaseFragment(R.layout.fragment_map), KoinComponent {
-    private var polyline: Polyline = Polyline()
+    private lateinit var polyline: Polyline
     private lateinit var mRotationGestureOverlay: Overlay
     private lateinit var mPreviousLocMarker: Marker
     private val mLocalBR: LocalBroadcastManager by inject()
@@ -60,6 +60,7 @@ class MapFragment() : BaseFragment(R.layout.fragment_map), KoinComponent {
         requestPermissionsIfNecessary(OSM_PERMISSIONS)
         configureOsmDroid(requireContext())
         LocationUtils(activity as Activity).enableGpsIfNecessary()
+        polyline = Polyline(binding.mapView)
         observePoints()
 
         requireActivity().startService(Intent(context, LocationService::class.java))

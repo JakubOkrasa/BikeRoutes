@@ -19,6 +19,10 @@ class PointRepositoryImpl(private val pointDao: PointDao): PointRepository {
         return pointDao.getPoints()
     }
 
+    override suspend fun getPoints2(): List<PointCached> {
+        return pointDao.getPoints2()
+    }
+
     override suspend fun deletePoints() {
         pointDao.deletePoints()
     }

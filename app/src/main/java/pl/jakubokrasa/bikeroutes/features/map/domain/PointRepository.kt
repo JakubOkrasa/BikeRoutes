@@ -9,6 +9,7 @@ interface PointRepository {
     suspend fun insertPoint(geoPoint: GeoPoint)
 
     fun getPoints(): LiveData<List<PointCached>>
+    suspend fun getPoints2(): List<PointCached>
 
     suspend fun deletePoints()
 }

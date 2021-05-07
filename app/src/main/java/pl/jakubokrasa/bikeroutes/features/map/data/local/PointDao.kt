@@ -16,6 +16,9 @@ interface PointDao {
     @Query("SELECT * FROM PointCached ORDER BY createdAt")
     fun getPoints(): LiveData<List<PointCached>>
 
+    @Query("SELECT * FROM PointCached ORDER BY createdAt")
+    suspend fun getPoints2(): List<PointCached>
+
     @Query("DELETE FROM PointCached")
     suspend fun deletePoints()
 

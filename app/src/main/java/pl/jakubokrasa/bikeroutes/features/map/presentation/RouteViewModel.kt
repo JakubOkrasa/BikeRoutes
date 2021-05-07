@@ -44,7 +44,7 @@ class RouteViewModel(
         ) {
                 result ->
             result.onSuccess { Log.d(LOG_TAG, "route save OK")}
-            result.onFailure { Log.e(LOG_TAG, "route saving error") }
+            result.onFailure { Log.e(LOG_TAG, "route saving error: ${it.message}") }
         }
     }
 

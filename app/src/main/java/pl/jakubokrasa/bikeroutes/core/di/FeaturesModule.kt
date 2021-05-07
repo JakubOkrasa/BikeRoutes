@@ -13,7 +13,7 @@ val featuresModule = module {
 
     factory { InsertPointUseCase(get()) }
     factory { GetPointsUseCase(get()) }
-    factory { SaveRouteUseCase(get(), get()) }
+    factory { SaveRouteUseCase(get(), get(), get()) }
 //    factory { GetMyRoutesUseCase(get())}
 //    factory { PutRouteSaveDataUseCase(get(), get())}
     factory { DeletePointsUseCase(get()) }
