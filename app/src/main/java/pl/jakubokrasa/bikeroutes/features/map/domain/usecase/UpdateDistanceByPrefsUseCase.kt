@@ -1,4 +1,4 @@
-package pl.jakubokrasa.bikeroutes.features.map.domain
+package pl.jakubokrasa.bikeroutes.features.map.domain.usecase
 
 import android.location.Location
 import androidx.core.content.edit

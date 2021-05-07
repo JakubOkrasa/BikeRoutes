@@ -39,5 +39,13 @@ class UserAuthImpl(private val auth: FirebaseAuth): UserAuth {
         return userAuthResult
     }
 
+    override suspend fun getCurrentUserId(): String {
+        val user = auth.currentUser
+        user?.let {
+            return it.uid
+        }
+        throw Exception("UserAuth: no current user" )
+    }
+
 
 }
