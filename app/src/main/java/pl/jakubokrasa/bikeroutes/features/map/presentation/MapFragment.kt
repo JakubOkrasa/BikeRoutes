@@ -228,17 +228,13 @@ class MapFragment() : BaseFragment(R.layout.fragment_map), KoinComponent {
 
     override fun onPendingState() {
         super.onPendingState()
-        binding.progressbar.visibility = View.VISIBLE
+        binding.progressLayout.visibility = View.VISIBLE
     }
 
     override fun onIdleState() {
         super.onIdleState()
-        binding.progressbar.visibility = View.GONE
+        binding.progressLayout.visibility = View.GONE
     }
-
-//    val btTestOnClick = binding.btTest.setOnClickListener {
-//        viewModel.testPendingState()
-//    }
 
     companion object {
         private val LOG_TAG: String? = MapFragment::class.simpleName

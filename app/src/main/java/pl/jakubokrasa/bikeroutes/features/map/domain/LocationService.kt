@@ -86,12 +86,11 @@ class LocationService : Service(), KoinComponent {
             }
 
         val notification = NotificationCompat.Builder(this, CHANNEL_DEFAULT_IMPORTANCE)
-            .setContentTitle("Location Service")
-            .setContentText("is running")
+            .setContentTitle("Bike Routes")
             .setSmallIcon(R.drawable.ic_loc_service)
             .setContentIntent(pendingIntent)
             .setSound(null)
-            .setTicker("Route recording started").build()
+            .build()
 
             startForeground(SERVICE_NOTIFICATION_ID, notification) //todo w przykladzie to jest w onUnBind (wtedy notifikacja jest widoczna tylko gdy aplikacja jest zminimalizowana
             requestLocationUpdates()
@@ -109,7 +108,6 @@ class LocationService : Service(), KoinComponent {
 
     private fun requestLocationUpdates() {
         Log.i(LOG_TAG, "Requesting location updates")
-        Log.d(LOG_TAG, "service request updates Thread: ${Thread.currentThread().name}")
         locationCallbackInit()
         try {
             mFusedLocationClient.requestLocationUpdates(mLocationRequest,
@@ -135,9 +133,7 @@ class LocationService : Service(), KoinComponent {
     }
 
     private fun onNewLocation(loc: Location) {
-        Log.d(LOG_TAG, "service Thread: ${Thread.currentThread().name}")
         mLocation = loc
-        Log.i(LOG_TAG, "new location: lat: ${loc.latitude}, lng: ${loc.longitude}")
 
         if(isRecordingMode()) {
             routeViewModel.insertPoint(GeoPoint(loc))
