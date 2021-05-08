@@ -7,7 +7,7 @@ import androidx.core.content.edit
 import com.google.firebase.auth.FirebaseAuth
 import org.koin.android.ext.android.inject
 import pl.jakubokrasa.bikeroutes.R
-import pl.jakubokrasa.bikeroutes.core.base.BaseFragment
+import pl.jakubokrasa.bikeroutes.core.base.platform.BaseFragment
 import pl.jakubokrasa.bikeroutes.core.extensions.PreferenceHelper.Companion.PREF_KEY_USER_EMAIL
 import pl.jakubokrasa.bikeroutes.core.extensions.PreferenceHelper.Companion.PREF_KEY_USER_PASSWORD
 import pl.jakubokrasa.bikeroutes.databinding.FragmentAccountBinding

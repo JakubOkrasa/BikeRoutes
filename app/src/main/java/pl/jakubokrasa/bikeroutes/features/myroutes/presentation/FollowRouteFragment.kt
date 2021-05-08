@@ -18,7 +18,7 @@ import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.Polyline
 import pl.jakubokrasa.bikeroutes.R
-import pl.jakubokrasa.bikeroutes.core.base.BaseFragment
+import pl.jakubokrasa.bikeroutes.core.base.platform.BaseFragment
 import pl.jakubokrasa.bikeroutes.core.util.LocationUtils
 import pl.jakubokrasa.bikeroutes.core.util.configureOsmDroid
 import pl.jakubokrasa.bikeroutes.databinding.FragmentFollowRouteBinding

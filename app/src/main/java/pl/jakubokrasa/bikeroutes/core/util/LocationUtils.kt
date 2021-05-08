@@ -22,16 +22,6 @@ class LocationUtils(private val activity: Activity): KoinComponent {
     private val settingsClient: SettingsClient by inject()
     private val locationSettingsRequest: LocationSettingsRequest by inject()
 
-    fun requestingLocationUpdates(context: Context?): Boolean {
-        return preferenceHelper.preferences.getBoolean(PREF_KEY_REQUESTING_LOCATION_UPDATES, false)
-    }
-
-    fun setRequestingLocationUpdates(context: Context?, requestingLocationUpdates: Boolean) {
-        preferenceHelper.preferences.edit {
-            putBoolean(PREF_KEY_REQUESTING_LOCATION_UPDATES, requestingLocationUpdates).apply()
-        }
-    }
-
     fun enableGpsIfNecessary() {
         val locationManager = activity.getSystemService(Service.LOCATION_SERVICE) as LocationManager
         if (!isGpsEnabled(locationManager)) {

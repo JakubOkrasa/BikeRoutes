@@ -1,4 +1,4 @@
-package pl.jakubokrasa.bikeroutes.core.base
+package pl.jakubokrasa.bikeroutes.core.base.domain
 
 abstract class UseCaseLiveData<out Type, in Params> {
     abstract fun action(params: Params): Type

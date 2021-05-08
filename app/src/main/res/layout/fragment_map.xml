@@ -5,8 +5,23 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".features.map.presentation.MapFragment">
+    tools:context=".features.map.presentation.MapFragment"
+    android:orientation="vertical">
 
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="4dp">
+
+        <ProgressBar
+            android:id="@+id/progressbar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="32dp"
+            android:indeterminate="true"
+            android:layout_gravity="center"
+            android:visibility="gone"/>
+
+    </FrameLayout>
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -44,6 +59,7 @@
                 android:text="stop service"
                 android:visibility="gone"
                 />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </FrameLayout>
 </LinearLayout>

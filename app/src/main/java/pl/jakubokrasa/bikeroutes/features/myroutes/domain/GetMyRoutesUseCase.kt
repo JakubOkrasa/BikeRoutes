@@ -1,6 +1,6 @@
 package pl.jakubokrasa.bikeroutes.features.myroutes.domain
 
-import pl.jakubokrasa.bikeroutes.core.base.UseCase
+import pl.jakubokrasa.bikeroutes.core.base.domain.UseCase
 import pl.jakubokrasa.bikeroutes.features.map.domain.model.Route
 import pl.jakubokrasa.bikeroutes.features.map.domain.PointRepository
 

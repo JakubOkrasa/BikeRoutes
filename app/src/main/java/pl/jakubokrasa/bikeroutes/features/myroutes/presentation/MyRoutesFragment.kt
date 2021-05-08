@@ -2,18 +2,14 @@
 
 import android.os.Bundle
 import android.view.View
-import androidx.core.os.bundleOf
-import androidx.fragment.app.*
 import androidx.recyclerview.widget.DividerItemDecoration
 import org.koin.android.ext.android.inject
-import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import pl.jakubokrasa.bikeroutes.R
-import pl.jakubokrasa.bikeroutes.core.base.BaseFragment
+import pl.jakubokrasa.bikeroutes.core.base.platform.BaseFragment
 import pl.jakubokrasa.bikeroutes.databinding.FragmentMyRoutesBinding
 import pl.jakubokrasa.bikeroutes.features.myroutes.navigation.MyRoutesNavigator
-import pl.jakubokrasa.bikeroutes.features.map.presentation.RouteViewModel
 
-class MyRoutesFragment : BaseFragment(R.layout.fragment_my_routes){
+ class MyRoutesFragment : BaseFragment(R.layout.fragment_my_routes){
     private var _binding: FragmentMyRoutesBinding? = null
     private val binding get() = _binding!!
     private val myRoutesRecyclerAdapter: MyRoutesRecyclerAdapter by inject()

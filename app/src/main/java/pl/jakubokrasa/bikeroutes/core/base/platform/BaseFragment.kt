@@ -1,4 +1,4 @@
-package pl.jakubokrasa.bikeroutes.core.base
+package pl.jakubokrasa.bikeroutes.core.base.platform
 
 import android.os.Bundle
 import android.view.View
@@ -22,7 +22,29 @@ open class BaseFragment(@LayoutRes layoutRes: Int): Fragment(layoutRes) {
 
     open fun initViews() {}
 
-    open fun initObservers() {}
+    open fun initObservers() {
+        observeUiState()
+        observeMessage()
+    }
+
+    fun observeUiState() {
+        viewModel.uiState.observe(viewLifecycleOwner, {
+            when(it) {
+                UiState.Idle -> onIdleState()
+                UiState.Pending -> onPendingState()
+            }
+        })
+    }
+
+    fun observeMessage() {
+        viewModel.message.observe(viewLifecycleOwner, {
+            showToast(it)
+        })
+    }
+
+    protected open fun onPendingState() {}
+
+    protected open fun onIdleState() {}
 
     protected fun showToast(msg: String?) {
         Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()

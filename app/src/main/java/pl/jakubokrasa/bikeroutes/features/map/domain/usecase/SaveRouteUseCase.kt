@@ -1,11 +1,8 @@
 package pl.jakubokrasa.bikeroutes.features.map.domain.usecase
 
-import android.util.Log
-import androidx.lifecycle.LiveData
-import pl.jakubokrasa.bikeroutes.core.base.UseCase
+import pl.jakubokrasa.bikeroutes.core.base.domain.UseCase
 import pl.jakubokrasa.bikeroutes.core.user.auth.UserAuth
 import pl.jakubokrasa.bikeroutes.core.user.sharingType
-import pl.jakubokrasa.bikeroutes.features.map.data.local.model.PointCached
 import pl.jakubokrasa.bikeroutes.features.map.domain.PointRepository
 import pl.jakubokrasa.bikeroutes.features.map.domain.RouteRepository
 import pl.jakubokrasa.bikeroutes.features.map.domain.model.Route

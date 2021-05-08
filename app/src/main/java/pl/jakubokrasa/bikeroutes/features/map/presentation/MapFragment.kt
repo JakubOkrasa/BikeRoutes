@@ -25,14 +25,13 @@ import org.osmdroid.views.overlay.Overlay
 import org.osmdroid.views.overlay.Polyline
 import pl.jakubokrasa.bikeroutes.BuildConfig
 import pl.jakubokrasa.bikeroutes.R
-import pl.jakubokrasa.bikeroutes.core.base.BaseFragment
+import pl.jakubokrasa.bikeroutes.core.base.platform.BaseFragment
 import pl.jakubokrasa.bikeroutes.core.extensions.PreferenceHelper.Companion.PREF_KEY_MAPFRAGMENT_MODE_RECORDING
 import pl.jakubokrasa.bikeroutes.core.extensions.makeGone
 import pl.jakubokrasa.bikeroutes.core.extensions.makeVisible
 import pl.jakubokrasa.bikeroutes.core.util.LocationUtils
 import pl.jakubokrasa.bikeroutes.core.util.configureOsmDroid
 import pl.jakubokrasa.bikeroutes.databinding.FragmentMapBinding
-import pl.jakubokrasa.bikeroutes.features.map.data.local.model.PointCached
 import pl.jakubokrasa.bikeroutes.features.map.domain.LocationService
 import pl.jakubokrasa.bikeroutes.features.map.navigation.MapFrgNavigator
 import pl.jakubokrasa.bikeroutes.features.map.presentation.model.PointDisplayable
@@ -61,7 +60,7 @@ class MapFragment() : BaseFragment(R.layout.fragment_map), KoinComponent {
         configureOsmDroid(requireContext())
         LocationUtils(activity as Activity).enableGpsIfNecessary()
         polyline = Polyline(binding.mapView)
-        observePoints()
+        initObservers()
 
         requireActivity().startService(Intent(context, LocationService::class.java))
 
@@ -106,6 +105,11 @@ class MapFragment() : BaseFragment(R.layout.fragment_map), KoinComponent {
         //SharedPreferences prefs = PreferenceHelper.getDefaultSharedPreferences(this);
         //Configuration.getInstance().save(this, prefs);
         binding.mapView.onPause() //needed for compass, my location overlays, v6.0.0 and up
+    }
+
+    override fun initObservers() {
+        super.initObservers()
+        observePoints()
     }
 
     private fun requestPermissionsIfNecessary(permissions: Array<String>) {
@@ -221,6 +225,20 @@ class MapFragment() : BaseFragment(R.layout.fragment_map), KoinComponent {
         if(it.isNotEmpty())
             polyline.setPoints(it.map { point -> point.geoPoint })
     }
+
+    override fun onPendingState() {
+        super.onPendingState()
+        binding.progressbar.visibility = View.VISIBLE
+    }
+
+    override fun onIdleState() {
+        super.onIdleState()
+        binding.progressbar.visibility = View.GONE
+    }
+
+//    val btTestOnClick = binding.btTest.setOnClickListener {
+//        viewModel.testPendingState()
+//    }
 
     companion object {
         private val LOG_TAG: String? = MapFragment::class.simpleName
