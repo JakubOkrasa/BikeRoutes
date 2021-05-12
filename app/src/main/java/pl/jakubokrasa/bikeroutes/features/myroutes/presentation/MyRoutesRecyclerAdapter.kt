@@ -4,17 +4,15 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import pl.jakubokrasa.bikeroutes.databinding.RvMyroutesItemBinding
+import pl.jakubokrasa.bikeroutes.features.map.data.remote.model.RouteResponse
 import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteDisplayable
 
 class MyRoutesRecyclerAdapter() : RecyclerView.Adapter<MyRoutesRecyclerAdapter.MyRoutesViewHolder>() {
 
-    var onItemClick: ((RouteDisplayable) -> Unit)? = null
-    private var routes = mutableListOf<RouteDisplayable>();
-//    constructor(routes: MutableList<RouteDisplayable>) : this() {
-//        this.routes = routes
-//    }
+    var onItemClick: ((RouteResponse) -> Unit)? = null
+    private var routes = mutableListOf<RouteResponse>();
 
-    fun setItems(routes: List<RouteDisplayable>) {
+    fun setItems(routes: List<RouteResponse>) {
         if (routes.isNotEmpty()) this.routes.clear()
         this.routes.addAll(routes)
         notifyDataSetChanged()
@@ -35,13 +33,10 @@ class MyRoutesRecyclerAdapter() : RecyclerView.Adapter<MyRoutesRecyclerAdapter.M
         return routes.size
     }
 
-
-
     inner class MyRoutesViewHolder(private val binding: RvMyroutesItemBinding) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(route: RouteDisplayable) {
+        fun bind(route: RouteResponse) {
             with(binding) {
-                tvPointcount.text = String.format("%d", route.points.size)
                 tvName.text = String.format("%s", route.name)
                 tvDescription.text = String.format("%s", route.description)
 

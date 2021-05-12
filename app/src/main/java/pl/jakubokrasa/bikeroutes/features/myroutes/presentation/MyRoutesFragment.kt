@@ -22,6 +22,8 @@ import pl.jakubokrasa.bikeroutes.features.myroutes.navigation.MyRoutesNavigator
         initRecycler() // todo ten init powinien być w initViews() ale wtedy jest java.lang.NullPointerException
                         //at pl.jakubokrasa.bikeroutes.features.myroutes.presentation.MyRoutesFragment.getBinding(MyRoutesFragment.kt:17)
                         //w AA to działą
+        viewModel.getMyRoutes()
+        viewModel.getPointsFromRemote("Y6L5QSWZGKGPFephkwLa")
     }
 
     override fun onResume() {
@@ -32,27 +34,32 @@ import pl.jakubokrasa.bikeroutes.features.myroutes.navigation.MyRoutesNavigator
 
     override fun initObservers() {
         super.initObservers()
-//        observeMyRoutes()
+        observeMyRoutes()
     }
 
     override fun initViews() {
         super.initViews()
     }
 
-//    private fun observeMyRoutes() {
-//        viewModel.myRoutes.observe(viewLifecycleOwner) {
-//            myRoutesRecyclerAdapter.setItems(it)
-//        }
-//    }
+    private fun observeMyRoutes() {
+        viewModel.myRoutes.observe(viewLifecycleOwner) {
+            myRoutesRecyclerAdapter.setItems(it)
+        }
+    }
 
     private fun initRecycler() {
         with(binding.recyclerView) {
             addItemDecoration(divider)
             setHasFixedSize(true)
-            myRoutesRecyclerAdapter.onItemClick = { route ->
+            myRoutesRecyclerAdapter.onItemClick = {
+                route ->
+//                val routeId = route.routeId
+//                viewModel.getPointsFromRemote(routeId)
+//                route.points =
                 myRoutesNavigator.openFollowRouteFragment(route)
             }
             adapter = myRoutesRecyclerAdapter
+//            myRoutesRecyclerAdapter.setItems(viewModel.getMyRoutes()
         }
     }
 
@@ -65,6 +72,16 @@ import pl.jakubokrasa.bikeroutes.features.myroutes.navigation.MyRoutesNavigator
         binding.recyclerView.layoutManager = null
         binding.recyclerView.adapter = null
     }
+
+     override fun onPendingState() {
+         super.onPendingState()
+         binding.progressLayout.visibility = View.VISIBLE
+     }
+
+     override fun onIdleState() {
+         super.onIdleState()
+         binding.progressLayout.visibility = View.GONE
+     }
 
     companion object {
         val LOG_TAG = MyRoutesFragment::class.simpleName

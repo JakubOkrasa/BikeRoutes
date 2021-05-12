@@ -4,19 +4,29 @@ import android.util.Log
 import androidx.lifecycle.*
 import org.osmdroid.util.GeoPoint
 import pl.jakubokrasa.bikeroutes.core.base.platform.BaseViewModel
+import pl.jakubokrasa.bikeroutes.features.map.data.remote.model.PointResponse
+import pl.jakubokrasa.bikeroutes.features.map.data.remote.model.RouteResponse
 import pl.jakubokrasa.bikeroutes.features.map.domain.usecase.*
 import pl.jakubokrasa.bikeroutes.features.map.presentation.model.PointDisplayable
+import pl.jakubokrasa.bikeroutes.features.myroutes.domain.GetMyRoutesUseCase
+import pl.jakubokrasa.bikeroutes.features.myroutes.domain.GetPointsFromRemoteUseCase
 
 class RouteViewModel(
     private val insertPointUseCase: InsertPointUseCase,
     private val getPointsUseCase: GetPointsUseCase,
     private val deletePointsUseCase: DeletePointsUseCase,
     private val saveRouteUseCase: SaveRouteUseCase,
+    private val getMyRoutesUseCase: GetMyRoutesUseCase,
 //    private val deleteRouteUseCase: DeleteRouteUseCase,
-    private val updateDistanceByPrefsUseCase: UpdateDistanceByPrefsUseCase
+    private val updateDistanceByPrefsUseCase: UpdateDistanceByPrefsUseCase,
+    private val getPointsFromRemoteUseCase: GetPointsFromRemoteUseCase,
 ) : BaseViewModel() {
 
+    private val _myRoutes by lazy { MutableLiveData<List<RouteResponse>>() }
+    private val _pointsFromRemote by lazy { MutableLiveData<List<PointResponse>>() }
 
+    val myRoutes: LiveData<List<RouteResponse>> by lazy { _myRoutes }
+    val pointsFromRemote: LiveData<List<PointResponse>> by lazy { _pointsFromRemote }
 
     fun getPoints(): LiveData<List<PointDisplayable>> {
         return getPointsUseCase(params = Unit)
@@ -82,14 +92,47 @@ class RouteViewModel(
         }
     }
 
+    fun getMyRoutes() {
+        setPendingState()
+        getMyRoutesUseCase(
+            scope = viewModelScope
+        ) {
+            result ->
+            setIdleState()
+                result.onSuccess {
+                    _myRoutes.value = it
+                    handleSuccess("getMyRoutes")
+                }
+                result.onFailure {
+                    handleFailure("getMyRoutes", errLog = it.message)
+                }
+        }
+    }
+
+    fun getPointsFromRemote(routeId: String) {
+        setPendingState()
+        getPointsFromRemoteUseCase(
+            routeId = routeId,
+            scope = viewModelScope
+        ) {
+            result ->
+            setIdleState()
+            result.onSuccess {
+                _pointsFromRemote.value = it
+                handleSuccess("getPointsFromRemote")
+            }
+            result.onFailure { handleFailure("getPointsFromRemote", errLog = it.message) }
+        }
+    }
+
     private fun handleSuccess(methodName: String, msg: String = "") {
         Log.d(LOG_TAG, "onSuccess $methodName")
         if (msg.isNotEmpty())
             showMessage(msg)
     }
 
-    private fun handleFailure(methodName: String, msg: String = "") {
-        Log.e(LOG_TAG, "onFailure $methodName")
+    private fun handleFailure(methodName: String, msg: String = "", errLog: String?="") {
+        Log.e(LOG_TAG, "onFailure $methodName $errLog")
         if (msg.isNotEmpty())
             showMessage("Error: $msg")
     }
