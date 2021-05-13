@@ -9,10 +9,10 @@ import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteDisplayabl
 
 class MyRoutesRecyclerAdapter() : RecyclerView.Adapter<MyRoutesRecyclerAdapter.MyRoutesViewHolder>() {
 
-    var onItemClick: ((RouteResponse) -> Unit)? = null
-    private var routes = mutableListOf<RouteResponse>();
+    var onItemClick: ((RouteDisplayable) -> Unit)? = null
+    private var routes = mutableListOf<RouteDisplayable>()
 
-    fun setItems(routes: List<RouteResponse>) {
+    fun setItems(routes: List<RouteDisplayable>) {
         if (routes.isNotEmpty()) this.routes.clear()
         this.routes.addAll(routes)
         notifyDataSetChanged()
@@ -35,7 +35,7 @@ class MyRoutesRecyclerAdapter() : RecyclerView.Adapter<MyRoutesRecyclerAdapter.M
 
     inner class MyRoutesViewHolder(private val binding: RvMyroutesItemBinding) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(route: RouteResponse) {
+        fun bind(route: RouteDisplayable) {
             with(binding) {
                 tvName.text = String.format("%s", route.name)
                 tvDescription.text = String.format("%s", route.description)

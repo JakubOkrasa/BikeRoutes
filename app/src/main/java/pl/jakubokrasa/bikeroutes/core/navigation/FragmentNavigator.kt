@@ -14,6 +14,13 @@ interface FragmentNavigator {
         fragmentTransition: FragmentTransition? = null
     )
 
+    fun <T> navigateTo(
+        @IdRes destinationId: Int,
+        param1: Pair<String, T>,
+        param2: Pair<String, T>,
+        fragmentTransition: FragmentTransition? = null
+    )
+
     fun goBack(
         @IdRes destinationId: Int? = null,
         inclusive: Boolean = false

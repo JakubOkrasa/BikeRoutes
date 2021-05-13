@@ -7,6 +7,7 @@ import org.koin.android.ext.android.inject
 import pl.jakubokrasa.bikeroutes.R
 import pl.jakubokrasa.bikeroutes.core.base.platform.BaseFragment
 import pl.jakubokrasa.bikeroutes.databinding.FragmentMyRoutesBinding
+import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteDisplayable
 import pl.jakubokrasa.bikeroutes.features.myroutes.navigation.MyRoutesNavigator
 
  class MyRoutesFragment : BaseFragment(R.layout.fragment_my_routes){
@@ -15,6 +16,8 @@ import pl.jakubokrasa.bikeroutes.features.myroutes.navigation.MyRoutesNavigator
     private val myRoutesRecyclerAdapter: MyRoutesRecyclerAdapter by inject()
     private val divider: DividerItemDecoration by inject()
     private val myRoutesNavigator: MyRoutesNavigator by inject()
+    private var observePointsMode = ObservePointsMode.getPointsToFollow
+    private lateinit var selectedRoute: RouteDisplayable
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -23,18 +26,18 @@ import pl.jakubokrasa.bikeroutes.features.myroutes.navigation.MyRoutesNavigator
                         //at pl.jakubokrasa.bikeroutes.features.myroutes.presentation.MyRoutesFragment.getBinding(MyRoutesFragment.kt:17)
                         //w AA to działą
         viewModel.getMyRoutes()
-        viewModel.getPointsFromRemote("Y6L5QSWZGKGPFephkwLa")
     }
 
     override fun onResume() {
         super.onResume()
-        initObservers()
         initRecycler()
+        initObservers()
     }
 
     override fun initObservers() {
         super.initObservers()
         observeMyRoutes()
+        observePoints()
     }
 
     override fun initViews() {
@@ -47,16 +50,23 @@ import pl.jakubokrasa.bikeroutes.features.myroutes.navigation.MyRoutesNavigator
         }
     }
 
+     private fun observePoints() {
+         viewModel.pointsFromRemote.observe(viewLifecycleOwner) {
+             if (observePointsMode == ObservePointsMode.getPointsToFollow && this::selectedRoute.isInitialized)
+                myRoutesNavigator.openFollowRouteFragment(selectedRoute, ArrayList(it))
+
+         }
+     }
+
     private fun initRecycler() {
         with(binding.recyclerView) {
             addItemDecoration(divider)
             setHasFixedSize(true)
             myRoutesRecyclerAdapter.onItemClick = {
                 route ->
-//                val routeId = route.routeId
-//                viewModel.getPointsFromRemote(routeId)
-//                route.points =
-                myRoutesNavigator.openFollowRouteFragment(route)
+                observePointsMode = ObservePointsMode.getPointsToFollow
+                selectedRoute = route
+                viewModel.getPointsFromRemote(route.routeId)
             }
             adapter = myRoutesRecyclerAdapter
 //            myRoutesRecyclerAdapter.setItems(viewModel.getMyRoutes()
@@ -86,4 +96,8 @@ import pl.jakubokrasa.bikeroutes.features.myroutes.navigation.MyRoutesNavigator
     companion object {
         val LOG_TAG = MyRoutesFragment::class.simpleName
     }
+
+     enum class ObservePointsMode {
+         getPointsToFollow,
+     }
 }

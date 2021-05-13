@@ -2,12 +2,10 @@ package pl.jakubokrasa.bikeroutes.features.map.data.local
 
 import androidx.lifecycle.LiveData
 import org.osmdroid.util.GeoPoint
-import pl.jakubokrasa.bikeroutes.features.map.data.local.PointDao
 import pl.jakubokrasa.bikeroutes.features.map.data.local.model.PointCached
-import pl.jakubokrasa.bikeroutes.features.map.domain.model.Route
-import pl.jakubokrasa.bikeroutes.features.map.domain.PointRepository
+import pl.jakubokrasa.bikeroutes.features.map.domain.LocalRepository
 
-class PointRepositoryImpl(private val pointDao: PointDao): PointRepository {
+class LocalRepositoryImpl(private val pointDao: PointDao): LocalRepository {
 
 
     override suspend fun insertPoint(geoPoint: GeoPoint) {
