@@ -2,14 +2,15 @@ package pl.jakubokrasa.bikeroutes.features.map.presentation
 
 import android.util.Log
 import androidx.lifecycle.*
+import com.hadilq.liveevent.LiveEvent
 import org.osmdroid.util.GeoPoint
 import pl.jakubokrasa.bikeroutes.core.base.platform.BaseViewModel
-import pl.jakubokrasa.bikeroutes.features.map.data.remote.model.PointResponse
-import pl.jakubokrasa.bikeroutes.features.map.data.remote.model.RouteResponse
 import pl.jakubokrasa.bikeroutes.features.map.domain.usecase.*
 import pl.jakubokrasa.bikeroutes.features.map.presentation.model.PointDisplayable
+import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteDisplayable
 import pl.jakubokrasa.bikeroutes.features.myroutes.domain.GetMyRoutesUseCase
 import pl.jakubokrasa.bikeroutes.features.myroutes.domain.GetPointsFromRemoteUseCase
+import pl.jakubokrasa.bikeroutes.features.myroutes.navigation.MyRoutesNavigator
 
 class RouteViewModel(
     private val insertPointUseCase: InsertPointUseCase,
@@ -20,13 +21,15 @@ class RouteViewModel(
 //    private val deleteRouteUseCase: DeleteRouteUseCase,
     private val updateDistanceByPrefsUseCase: UpdateDistanceByPrefsUseCase,
     private val getPointsFromRemoteUseCase: GetPointsFromRemoteUseCase,
+
+    private val myRoutesNavigator: MyRoutesNavigator,
 ) : BaseViewModel() {
 
-    private val _myRoutes by lazy { MutableLiveData<List<RouteResponse>>() }
-    private val _pointsFromRemote by lazy { MutableLiveData<List<PointResponse>>() }
+    private val _myRoutes by lazy { MutableLiveData<List<RouteDisplayable>>() }
+    private val _pointsFromRemote by lazy { MutableLiveData<List<PointDisplayable>>() } //liveEvent could be better here todo (but points can be set too early)
 
-    val myRoutes: LiveData<List<RouteResponse>> by lazy { _myRoutes }
-    val pointsFromRemote: LiveData<List<PointResponse>> by lazy { _pointsFromRemote }
+    val myRoutes: LiveData<List<RouteDisplayable>> by lazy { _myRoutes }
+    val pointsFromRemote: LiveData<List<PointDisplayable>> by lazy { _pointsFromRemote }
 
     fun getPoints(): LiveData<List<PointDisplayable>> {
         return getPointsUseCase(params = Unit)
@@ -100,7 +103,7 @@ class RouteViewModel(
             result ->
             setIdleState()
                 result.onSuccess {
-                    _myRoutes.value = it
+                    _myRoutes.value = it.map { route ->  RouteDisplayable(route)}
                     handleSuccess("getMyRoutes")
                 }
                 result.onFailure {
@@ -109,17 +112,17 @@ class RouteViewModel(
         }
     }
 
-    fun getPointsFromRemote(routeId: String) {
+    fun getPointsFromRemoteAndOpenFollowRouteFrg(route: RouteDisplayable) {
         setPendingState()
         getPointsFromRemoteUseCase(
-            routeId = routeId,
+            routeId = route.routeId,
             scope = viewModelScope
         ) {
             result ->
             setIdleState()
             result.onSuccess {
-                _pointsFromRemote.value = it
                 handleSuccess("getPointsFromRemote")
+                myRoutesNavigator.openFollowRouteFragment(route, it.map { point -> PointDisplayable(point)})
             }
             result.onFailure { handleFailure("getPointsFromRemote", errLog = it.message) }
         }

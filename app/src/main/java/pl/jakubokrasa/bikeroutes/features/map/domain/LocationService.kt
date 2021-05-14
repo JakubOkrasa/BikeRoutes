@@ -24,7 +24,6 @@ import pl.jakubokrasa.bikeroutes.features.map.presentation.RouteViewModel
 class LocationService : Service(), KoinComponent {
     private val mLocationRequest: LocationRequest by inject()
     private val mFusedLocationClient: FusedLocationProviderClient by inject()
-//    private val locUtils: LocationUtils by inject()
     private val mLocalBR: LocalBroadcastManager by inject()
     private lateinit var mLocationCallback: LocationCallback
     private lateinit var mServiceHandler: Handler

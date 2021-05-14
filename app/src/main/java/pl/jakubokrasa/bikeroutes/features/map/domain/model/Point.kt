@@ -6,5 +6,7 @@ import java.io.Serializable
 class Point(
     val pointId: Long,
     val geoPoint: GeoPoint,
-    val createdAt: Long
+    val createdAt: Long,
+    val difficultTerrainStart: Boolean,
+    val difficultTerrainEnd: Boolean,
 ): Serializable {}

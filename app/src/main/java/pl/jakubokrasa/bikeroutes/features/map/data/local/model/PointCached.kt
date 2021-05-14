@@ -12,5 +12,11 @@ data class PointCached(
     val geoPoint: GeoPoint,
     val createdAt: Long
 ) {
-    fun toPoint() = Point(pointId, geoPoint, createdAt)
+    fun toPoint() = Point(
+        this.pointId,
+        this.geoPoint,
+        this.createdAt,
+        difficultTerrainStart = false,
+        difficultTerrainEnd = false,
+        )
 }
