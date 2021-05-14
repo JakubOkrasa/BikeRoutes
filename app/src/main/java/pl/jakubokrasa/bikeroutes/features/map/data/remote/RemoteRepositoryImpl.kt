@@ -1,5 +1,6 @@
 package pl.jakubokrasa.bikeroutes.features.map.data.remote
 
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
@@ -15,8 +16,7 @@ class RemoteRepositoryImpl(
     private val firestore: FirebaseFirestore): RemoteRepository {
     override suspend fun addRoute(route: Route, points: List<Point>) {
 
-
-        val routeResponse = RouteResponse(route.routeId, route.userId, route.name, route.description, route.sharingType, route.distance, route.rideTimeMinutes)
+        val routeResponse = RouteResponse(route.routeId, route.createdAt, route.userId, route.name, route.description, route.sharingType, route.distance, route.rideTimeMinutes)
         val routeDoc = firestore.collection("routes").document()
         val pointsMap = mapOf("pointsArray" to points.map {PointResponse(it)})
         val pointsDoc = firestore.collection("points").document(routeDoc.id)

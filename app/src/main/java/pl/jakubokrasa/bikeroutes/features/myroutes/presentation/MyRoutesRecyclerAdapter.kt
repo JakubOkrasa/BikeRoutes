@@ -15,7 +15,7 @@ class MyRoutesRecyclerAdapter() : RecyclerView.Adapter<MyRoutesRecyclerAdapter.M
 
     fun setItems(routes: List<RouteDisplayable>) {
         if (routes.isNotEmpty()) this.routes.clear()
-        this.routes.addAll(routes)
+        this.routes.addAll(routes.sortedByDescending { it.createdAt })
         notifyDataSetChanged()
     }
 

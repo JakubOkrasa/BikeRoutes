@@ -4,6 +4,7 @@ import pl.jakubokrasa.bikeroutes.core.user.sharingType
 
 data class Route(
     val routeId: String,
+    val createdAt: Long,
     val userId: String,
     val name: String,
     val description: String,
