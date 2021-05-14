@@ -16,7 +16,7 @@ class GetPointsFromRemoteUseCase(private val remoteRepository: RemoteRepository)
     ) {
         scope.launch {
             val result = withContext(Dispatchers.IO) {
-                runCatching { remoteRepository.getPoints(routeId).sortedBy { it.createdAt } }
+                runCatching { remoteRepository.getPoints(routeId) }
             }
             onResult(result)
         }
