@@ -10,10 +10,10 @@ class RouteResponse(
     val description: String,
     val sharingType: sharingType,
     val distance: Int,
-    //val thumbnail image
+    val rideTimeMinutes: Int,
 ) {
 
-    constructor() : this("","", "", "", pl.jakubokrasa.bikeroutes.core.user.sharingType.PRIVATE, 0)
+    constructor() : this("","", "", "", pl.jakubokrasa.bikeroutes.core.user.sharingType.PRIVATE, 0, 0)
 
     fun toRoute(): Route {
         return Route(
@@ -23,6 +23,7 @@ class RouteResponse(
             description = this.description,
             distance = this.distance,
             sharingType = this.sharingType,
+            rideTimeMinutes = this.rideTimeMinutes
         )
     }
 }

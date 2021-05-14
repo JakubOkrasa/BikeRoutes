@@ -5,7 +5,9 @@ import pl.jakubokrasa.bikeroutes.core.user.auth.UserAuth
 import pl.jakubokrasa.bikeroutes.core.user.sharingType
 import pl.jakubokrasa.bikeroutes.features.map.domain.LocalRepository
 import pl.jakubokrasa.bikeroutes.features.map.domain.RemoteRepository
+import pl.jakubokrasa.bikeroutes.features.map.domain.model.Point
 import pl.jakubokrasa.bikeroutes.features.map.domain.model.Route
+import java.util.concurrent.TimeUnit
 
 class SaveRouteUseCase(
     private val localRepository: LocalRepository,
@@ -20,9 +22,15 @@ class SaveRouteUseCase(
             params.description,
             params.distance,
             sharingType.PRIVATE,
+            getRideTimeMinutes(points),
         )
         remoteRepository.addRoute(route, points)
         localRepository.deletePoints()
+    }
+
+    private fun getRideTimeMinutes(points: List<Point>): Int {
+        val rideTime = points[points.size - 1].createdAt - points[0].createdAt
+        return TimeUnit.MILLISECONDS.toMinutes(rideTime).toInt()
     }
 
 }

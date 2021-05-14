@@ -3,8 +3,9 @@ package pl.jakubokrasa.bikeroutes.features.myroutes.presentation
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import pl.jakubokrasa.bikeroutes.core.util.getFormattedDistance
+import pl.jakubokrasa.bikeroutes.core.util.getFormattedRideTime
 import pl.jakubokrasa.bikeroutes.databinding.RvMyroutesItemBinding
-import pl.jakubokrasa.bikeroutes.features.map.data.remote.model.RouteResponse
 import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteDisplayable
 
 class MyRoutesRecyclerAdapter() : RecyclerView.Adapter<MyRoutesRecyclerAdapter.MyRoutesViewHolder>() {
@@ -39,9 +40,8 @@ class MyRoutesRecyclerAdapter() : RecyclerView.Adapter<MyRoutesRecyclerAdapter.M
             with(binding) {
                 tvName.text = String.format("%s", route.name)
                 tvDescription.text = String.format("%s", route.description)
-
-                if (route.distance < 1_000) tvDistance.text = String.format("%dm", route.distance)
-                else tvDistance.text = String.format("%.1fkm", (route.distance / 1_000.0).toFloat())
+                tvDistance.text = getFormattedDistance(route.distance)
+                tvRidetime.text = getFormattedRideTime(route.rideTimeMinutes)
             }
         }
         init {

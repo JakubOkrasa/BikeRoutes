@@ -16,7 +16,7 @@ class RemoteRepositoryImpl(
     override suspend fun addRoute(route: Route, points: List<Point>) {
 
 
-        val routeResponse = RouteResponse(route.routeId, route.userId, route.name, route.description, route.sharingType, route.distance)
+        val routeResponse = RouteResponse(route.routeId, route.userId, route.name, route.description, route.sharingType, route.distance, route.rideTimeMinutes)
         val routeDoc = firestore.collection("routes").document()
         val pointsMap = mapOf("pointsArray" to points.map {PointResponse(it)})
         val pointsDoc = firestore.collection("points").document(routeDoc.id)

@@ -19,9 +19,7 @@ import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.Polyline
 import pl.jakubokrasa.bikeroutes.R
 import pl.jakubokrasa.bikeroutes.core.base.platform.BaseFragment
-import pl.jakubokrasa.bikeroutes.core.util.LocationUtils
-import pl.jakubokrasa.bikeroutes.core.util.configureOsmDroid
-import pl.jakubokrasa.bikeroutes.core.util.routeColor
+import pl.jakubokrasa.bikeroutes.core.util.*
 import pl.jakubokrasa.bikeroutes.databinding.FragmentFollowRouteBinding
 import pl.jakubokrasa.bikeroutes.features.map.domain.LocationService
 import pl.jakubokrasa.bikeroutes.features.map.presentation.MapFragment.Companion.SEND_LOCATION_ACTION
@@ -120,7 +118,7 @@ class FollowRouteFragment : BaseFragment(R.layout.fragment_follow_route) {
         binding.tvRouteName.text = route.name
         binding.tvRouteDescription.text = route.description
         binding.tvRouteDistance.text = getFormattedDistance(route.distance)
-        binding.tvRouteRideTime.text = "todo ridetime"
+        binding.tvRouteRideTime.text = getFormattedRideTime(route.rideTimeMinutes)
     }
 
     private fun setMapViewProperties(setZoom: Boolean = true) {
@@ -136,11 +134,6 @@ class FollowRouteFragment : BaseFragment(R.layout.fragment_follow_route) {
         if (!polyline.isEnabled) polyline.isEnabled = true //we get the location for the first time
         polyline.outlinePaint.strokeWidth = 7F
         polyline.outlinePaint.color = routeColor
-    }
-
-    private fun getFormattedDistance(distance: Int): String {
-        return if (distance < 1_000) String.format("%dm", route.distance)
-        else String.format("%.1fkm", (route.distance / 1_000.0).toFloat())
     }
 
     fun clearToolbarMenu() {

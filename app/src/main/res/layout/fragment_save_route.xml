@@ -70,7 +70,8 @@
                     android:layout_height="wrap_content"
                     android:textSize="15sp"
                     app:layout_constraintStart_toStartOf="parent"
-                    android:textColor="#222" />
+                    android:textColor="#222"
+                    android:maxLength="600"/>
         </LinearLayout>
         </LinearLayout>
 

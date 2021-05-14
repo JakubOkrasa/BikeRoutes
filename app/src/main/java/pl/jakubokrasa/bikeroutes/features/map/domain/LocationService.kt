@@ -39,7 +39,7 @@ class LocationService : Service(), KoinComponent {
 
     override fun onCreate() {
         Log.i(LOG_TAG, "onCreate")
-        getLastLocation()
+       // getLastLocation()  //todo probably not necessary
         handlerThread = HandlerThread(LOG_TAG)
         handlerThread.start()
         mServiceHandler = Handler(handlerThread.looper)

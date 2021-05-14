@@ -15,7 +15,8 @@ data class RouteDisplayable (
     val description: String,
     val distance: Int,
     val sharingType: sharingType,
-): Parcelable {
+    val rideTimeMinutes: Int,
+    ): Parcelable {
 
     fun toRoute(): Route {
         return Route(
@@ -24,7 +25,8 @@ data class RouteDisplayable (
             name = name,
             description = description,
             distance = distance,
-            sharingType = sharingType)
+            sharingType = sharingType,
+            rideTimeMinutes = rideTimeMinutes,)
     }
 
     constructor(route: Route) : this (
@@ -34,5 +36,6 @@ data class RouteDisplayable (
         description = route.description,
         distance = route.distance,
         sharingType = route.sharingType,
+        rideTimeMinutes = route.rideTimeMinutes,
     )
 }

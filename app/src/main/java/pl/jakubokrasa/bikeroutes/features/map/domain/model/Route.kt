@@ -9,4 +9,5 @@ data class Route(
     val description: String,
     val distance: Int,
     val sharingType: sharingType,
+    val rideTimeMinutes: Int,
 ) {}
