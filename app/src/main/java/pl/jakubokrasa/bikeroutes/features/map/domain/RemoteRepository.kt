@@ -8,7 +8,7 @@ import pl.jakubokrasa.bikeroutes.features.map.domain.model.Route
 interface RemoteRepository {
     suspend fun addRoute(route: Route, points: List<Point>)
 
-    suspend fun getMyRoutes(uid: String): List<Route>
+    suspend fun getMyRoutes(uid: String, minDistance: Int?=null, maxDistance: Int?=null): List<Route>
 
     suspend fun getPoints(routeId: String): List<Point>
 }

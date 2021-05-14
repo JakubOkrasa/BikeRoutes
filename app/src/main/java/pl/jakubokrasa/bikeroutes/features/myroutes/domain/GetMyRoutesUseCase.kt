@@ -13,16 +13,18 @@ class GetMyRoutesUseCase(
     private val remoteRepository: RemoteRepository,
     private val auth: UserAuth
 ) {
-    suspend fun action() =
-        remoteRepository.getMyRoutes(auth.getCurrentUserId())
+    suspend fun action(minDistance: Int?, maxDistance: Int?) =
+        remoteRepository.getMyRoutes(auth.getCurrentUserId(), minDistance, maxDistance)
 
     operator fun invoke(
+        minDistance: Int?=1000,
+        maxDistance: Int?=10000,
         scope: CoroutineScope,
         onResult: (Result<List<Route>>) -> Unit = {}
         ) {
             scope.launch {
                 val result = withContext(Dispatchers.IO) {
-                    runCatching { return@runCatching action() }
+                    runCatching { return@runCatching action(minDistance, maxDistance) }
                 }
                 onResult(result)
             }

@@ -1,6 +1,7 @@
 package pl.jakubokrasa.bikeroutes.features.map.data.remote
 
 import com.google.firebase.Timestamp
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
@@ -11,6 +12,7 @@ import pl.jakubokrasa.bikeroutes.features.map.domain.model.Point
 import pl.jakubokrasa.bikeroutes.features.map.domain.model.Route
 import pl.jakubokrasa.bikeroutes.features.myroutes.data.model.PointDocument
 import java.lang.RuntimeException
+import kotlin.math.min
 
 class RemoteRepositoryImpl(
     private val firestore: FirebaseFirestore): RemoteRepository {
@@ -39,9 +41,23 @@ class RemoteRepositoryImpl(
 
     }
 
-    override suspend fun getMyRoutes(uid: String): List<Route> {
+    override suspend fun getMyRoutes(uid: String, minDistance: Int?, maxDistance: Int?): List<Route> {
         val routeResponseList = ArrayList<RouteResponse>()
-        val documents = firestore.collection("routes").whereEqualTo("userId", uid).get().await().documents
+        val documents: List<DocumentSnapshot>
+        if(minDistance==null || maxDistance==null) {
+            documents = firestore
+                .collection("routes")
+                .whereEqualTo("userId", uid)
+                .get().await().documents
+        } else {
+            documents = firestore
+                .collection("routes")
+                .whereEqualTo("userId", uid)
+                .whereGreaterThanOrEqualTo("distance", minDistance)
+                .whereLessThanOrEqualTo("distance", maxDistance)
+                .get().await().documents
+        }
+
         for (doc in documents) doc.toObject(RouteResponse::class.java)?.let { routeResponseList.add(it) }
         return routeResponseList.map { it.toRoute()}
     }
