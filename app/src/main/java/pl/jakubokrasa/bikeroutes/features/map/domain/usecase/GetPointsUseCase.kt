@@ -8,8 +8,6 @@ import pl.jakubokrasa.bikeroutes.features.map.domain.model.Point
 
 class GetPointsUseCase(private val localRepository: LocalRepository): UseCaseLiveData<LiveData<List<Point>>, Unit>() {
     override fun action(params: Unit): LiveData<List<Point>> {
-        return localRepository.getPoints().map { list -> list.map {
-            it.toPoint()
-        }}
+        return localRepository.getPoints()
     }
 }

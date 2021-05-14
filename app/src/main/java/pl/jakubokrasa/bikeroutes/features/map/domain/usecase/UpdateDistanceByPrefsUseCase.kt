@@ -40,16 +40,15 @@ class UpdateDistanceByPrefsUseCase(private val preferenceHelper: PreferenceHelpe
 
     }
 
-    private fun getDistanceInMeters(
-        p1: GeoPoint, p2: GeoPoint
-    ): Int { // not the original function, original in npp
-        val lat1 = p1.latitude
-        val lng1 = p1.longitude
-        val lat2 = p2.latitude
-        val lng2 = p2.longitude
-        val dist = FloatArray(1)
-        Location.distanceBetween(lat1, lng1, lat2, lng2, dist)
-        return dist[0].roundToInt()
+    private fun getDistanceInMeters(p1: GeoPoint, p2: GeoPoint): Int {
+        val output = FloatArray(1)
+        Location.distanceBetween(
+            p1.latitude,
+            p1.longitude,
+            p2.latitude,
+            p2.longitude,
+            output)
+        return output[0].roundToInt()
     }
 
 }

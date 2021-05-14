@@ -5,8 +5,6 @@ import androidx.lifecycle.*
 import com.hadilq.liveevent.LiveEvent
 import org.osmdroid.util.GeoPoint
 import pl.jakubokrasa.bikeroutes.core.base.platform.BaseViewModel
-import pl.jakubokrasa.bikeroutes.features.map.data.remote.model.PointResponse
-import pl.jakubokrasa.bikeroutes.features.map.data.remote.model.RouteResponse
 import pl.jakubokrasa.bikeroutes.features.map.domain.usecase.*
 import pl.jakubokrasa.bikeroutes.features.map.presentation.model.PointDisplayable
 import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteDisplayable

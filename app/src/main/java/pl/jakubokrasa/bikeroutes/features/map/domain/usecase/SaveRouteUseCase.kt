@@ -12,7 +12,7 @@ class SaveRouteUseCase(
     private val remoteRepository: RemoteRepository,
     private val userAuth: UserAuth): UseCase<Unit, DataSaveRoute>() {
     override suspend fun action(params: DataSaveRoute) {
-        val points = localRepository.getPoints2().map { it.toPoint() }
+        val points = localRepository.getPoints2()
         val route = Route(
             "",
             userAuth.getCurrentUserId(),
