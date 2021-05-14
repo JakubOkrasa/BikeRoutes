@@ -44,6 +44,22 @@ class FragmentNavigatorImpl(
         getNavController()?.navigate(destinationId, bundle, navOptions)
     }
 
+    override fun <T> navigateTo(
+        destinationId: Int, param1: Pair<String, T>, param2: Pair<String, T>, fragmentTransition: FragmentTransition?
+    ) {
+        val bundle = bundleOf(param1, param2)
+        val navOptions = fragmentTransition?.let {
+            navOptions {
+                anim { enter = it.enterAnim }
+                anim { exit = it.exitAnim }
+                anim { popEnter = it.popEnterAnim }
+                anim { popExit = it.popExitAnim }
+            }
+        } ?: defaultNavOptions
+
+        getNavController()?.navigate(destinationId, bundle, navOptions)
+    }
+
     override fun goBack(destinationId: Int?, inclusive: Boolean) {
         if(destinationId == null) getNavController()?.popBackStack()
         else getNavController()?.popBackStack(destinationId, inclusive)

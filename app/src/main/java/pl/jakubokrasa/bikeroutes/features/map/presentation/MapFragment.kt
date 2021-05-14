@@ -31,6 +31,7 @@ import pl.jakubokrasa.bikeroutes.core.extensions.makeGone
 import pl.jakubokrasa.bikeroutes.core.extensions.makeVisible
 import pl.jakubokrasa.bikeroutes.core.util.LocationUtils
 import pl.jakubokrasa.bikeroutes.core.util.configureOsmDroid
+import pl.jakubokrasa.bikeroutes.core.util.routeColor
 import pl.jakubokrasa.bikeroutes.databinding.FragmentMapBinding
 import pl.jakubokrasa.bikeroutes.features.map.domain.LocationService
 import pl.jakubokrasa.bikeroutes.features.map.navigation.MapFrgNavigator
@@ -170,7 +171,7 @@ class MapFragment() : BaseFragment(R.layout.fragment_map), KoinComponent {
 
     private fun setPolylineProperties() {
         polyline.outlinePaint.strokeWidth = 7F
-        polyline.outlinePaint.color = Color.MAGENTA
+        polyline.outlinePaint.color = routeColor
     }
 
     private val locationServiceReceiver: BroadcastReceiver = object : BroadcastReceiver() {

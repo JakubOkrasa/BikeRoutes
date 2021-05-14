@@ -1,11 +1,30 @@
 package pl.jakubokrasa.bikeroutes.features.myroutes.domain
 
-import pl.jakubokrasa.bikeroutes.core.base.domain.UseCase
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import pl.jakubokrasa.bikeroutes.core.user.auth.UserAuth
+import pl.jakubokrasa.bikeroutes.features.map.data.remote.model.RouteResponse
+import pl.jakubokrasa.bikeroutes.features.map.domain.RemoteRepository
 import pl.jakubokrasa.bikeroutes.features.map.domain.model.Route
-import pl.jakubokrasa.bikeroutes.features.map.domain.PointRepository
 
-class GetMyRoutesUseCase(private val pointRepository: PointRepository):
-    UseCase<List<Route>, Unit>() {
+class GetMyRoutesUseCase(
+    private val remoteRepository: RemoteRepository,
+    private val auth: UserAuth
+) {
+    suspend fun action() =
+        remoteRepository.getMyRoutes(auth.getCurrentUserId())
 
-    override suspend fun action(params: Unit) = TODO()  // pointRepository.getMyRoutes()
+    operator fun invoke(
+        scope: CoroutineScope,
+        onResult: (Result<List<Route>>) -> Unit = {}
+        ) {
+            scope.launch {
+                val result = withContext(Dispatchers.IO) {
+                    runCatching { return@runCatching action() }
+                }
+                onResult(result)
+            }
+        }
 }

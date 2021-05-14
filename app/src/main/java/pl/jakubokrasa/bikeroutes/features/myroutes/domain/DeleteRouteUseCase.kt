@@ -2,9 +2,9 @@ package pl.jakubokrasa.bikeroutes.features.myroutes.domain
 
 import pl.jakubokrasa.bikeroutes.core.base.domain.UseCase
 import pl.jakubokrasa.bikeroutes.features.map.domain.model.Route
-import pl.jakubokrasa.bikeroutes.features.map.domain.PointRepository
+import pl.jakubokrasa.bikeroutes.features.map.domain.LocalRepository
 
-class DeleteRouteUseCase(private val repository: PointRepository): UseCase<Unit, Route>() {
+class DeleteRouteUseCase(private val repository: LocalRepository): UseCase<Unit, Route>() {
     override suspend fun action(params: Route) {
 //        repository.deleteRoute(params)
     }

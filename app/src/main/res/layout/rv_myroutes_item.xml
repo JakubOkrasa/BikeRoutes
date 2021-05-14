@@ -24,16 +24,11 @@
             android:layout_height="wrap_content"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            android:textColor="#222"/>
-
-        <ImageButton
-            android:id="@+id/bt_menu"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_baseline_more_vert_24"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:contentDescription="@string/contentdescription_route_menu_button" />
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:textColor="#222"
+            android:paddingBottom="5dp"
+            android:text="ttytuł nazwa trasy mojej"/>
 
         <TextView
             android:id="@+id/tv_description"
@@ -41,7 +36,11 @@
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@id/tv_name"
             app:layout_constraintStart_toStartOf="parent"
-            android:textColor="#222"/>
+            android:textColor="#222"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:textSize="17sp"
+            android:text="opoinsoin miojej trasy opinset  dskfljf fjslkfjs kljfal jsdklfjsfklj fsklfjsf lskdfjslaf fjsldfjslkfj fslfj fsklf sl f slfk s fklsf sff ksf s flksf s flks"/>
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -52,12 +51,12 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="point count: "/>
-
+                android:text="ride time: "/>
             <TextView
-                android:id="@+id/tv_pointcount"
+                android:id="@+id/tv_ridetime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

@@ -21,9 +21,11 @@ import pl.jakubokrasa.bikeroutes.R
 import pl.jakubokrasa.bikeroutes.core.base.platform.BaseFragment
 import pl.jakubokrasa.bikeroutes.core.util.LocationUtils
 import pl.jakubokrasa.bikeroutes.core.util.configureOsmDroid
+import pl.jakubokrasa.bikeroutes.core.util.routeColor
 import pl.jakubokrasa.bikeroutes.databinding.FragmentFollowRouteBinding
 import pl.jakubokrasa.bikeroutes.features.map.domain.LocationService
 import pl.jakubokrasa.bikeroutes.features.map.presentation.MapFragment.Companion.SEND_LOCATION_ACTION
+import pl.jakubokrasa.bikeroutes.features.map.presentation.model.PointDisplayable
 import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteDisplayable
 
 
@@ -32,6 +34,7 @@ class FollowRouteFragment : BaseFragment(R.layout.fragment_follow_route) {
     private var _binding: FragmentFollowRouteBinding? = null
     private val binding get() = _binding!!
     private lateinit var route: RouteDisplayable
+    private lateinit var points: List<PointDisplayable>
     private val polyline = Polyline()
     private val mLocalBR: LocalBroadcastManager by inject()
     private lateinit var mPreviousLocMarker: Marker
@@ -76,6 +79,7 @@ class FollowRouteFragment : BaseFragment(R.layout.fragment_follow_route) {
     private fun showRoute(view: View) {
         view.post {
             setRoute()
+            setPoints()
             updateRouteInfo()
             setPolylineProperties()
             setMapViewProperties(setZoom = false)
@@ -98,7 +102,7 @@ class FollowRouteFragment : BaseFragment(R.layout.fragment_follow_route) {
                                 true
                             }
                             R.id.action_followroute_remove -> {
-                                TODO()
+                                showToast("Feature not yet implemented")
 //                                viewModel.deleteRoute(route.toRoute())
                                 true
                             }
@@ -128,10 +132,10 @@ class FollowRouteFragment : BaseFragment(R.layout.fragment_follow_route) {
     }
 
     private fun setPolylineProperties() {
-        polyline.setPoints(route.points.map { p -> p.geoPoint })
+        polyline.setPoints(points.map { p -> p.geoPoint })
         if (!polyline.isEnabled) polyline.isEnabled = true //we get the location for the first time
         polyline.outlinePaint.strokeWidth = 7F
-        polyline.outlinePaint.color = Color.MAGENTA
+        polyline.outlinePaint.color = routeColor
     }
 
     private fun getFormattedDistance(distance: Int): String {
@@ -191,7 +195,18 @@ class FollowRouteFragment : BaseFragment(R.layout.fragment_follow_route) {
             ?.let { route = it}
     }
 
+    private fun setPoints() {
+        val serializable = arguments
+            ?.getSerializable(POINTS_TO_FOLLOW_KEY) //I use Serializable instead of Parcelable because I didn't find any simple solution to pass a List through Parcelable
+                if(serializable is List<*>?) {
+                    serializable.let {
+                        points = serializable as List<PointDisplayable>
+                    }
+                }
+    }
+
     companion object {
         const val ROUTE_TO_FOLLOW_KEY = "routeToFollowKey"
+        const val POINTS_TO_FOLLOW_KEY = "pointsToFollowKey"
     }
 }
