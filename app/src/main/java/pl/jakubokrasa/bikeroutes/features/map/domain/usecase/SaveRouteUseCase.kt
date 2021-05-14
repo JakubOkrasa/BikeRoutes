@@ -7,6 +7,7 @@ import pl.jakubokrasa.bikeroutes.features.map.domain.LocalRepository
 import pl.jakubokrasa.bikeroutes.features.map.domain.RemoteRepository
 import pl.jakubokrasa.bikeroutes.features.map.domain.model.Point
 import pl.jakubokrasa.bikeroutes.features.map.domain.model.Route
+import java.sql.Timestamp
 import java.util.concurrent.TimeUnit
 
 class SaveRouteUseCase(
@@ -17,6 +18,7 @@ class SaveRouteUseCase(
         val points = localRepository.getPoints2()
         val route = Route(
             "",
+            System.currentTimeMillis(),
             userAuth.getCurrentUserId(),
             params.name,
             params.description,

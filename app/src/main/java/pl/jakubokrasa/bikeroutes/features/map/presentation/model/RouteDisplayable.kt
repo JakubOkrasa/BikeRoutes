@@ -10,6 +10,7 @@ import java.io.Serializable
 @Parcelize
 data class RouteDisplayable (
     val routeId: String,
+    val createdAt: Long,
     val userId: String,
     val name: String,
     val description: String,
@@ -21,6 +22,7 @@ data class RouteDisplayable (
     fun toRoute(): Route {
         return Route(
             routeId = routeId,
+            createdAt = createdAt,
             userId = userId,
             name = name,
             description = description,
@@ -31,6 +33,7 @@ data class RouteDisplayable (
 
     constructor(route: Route) : this (
         routeId = route.routeId,
+        createdAt = route.createdAt,
         userId = route.userId,
         name = route.name,
         description = route.description,
