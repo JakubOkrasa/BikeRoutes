@@ -63,8 +63,6 @@ class MapFragment() : BaseFragment(R.layout.fragment_map), KoinComponent {
         polyline = Polyline(binding.mapView)
         initObservers()
 
-        requireActivity().startService(Intent(context, LocationService::class.java))
-
         binding.btStartRecord.setOnClickListener(btRecordRouteOnClick)
         binding.btStopRecord.setOnClickListener(btStopRecordOnClick)
 
@@ -97,6 +95,8 @@ class MapFragment() : BaseFragment(R.layout.fragment_map), KoinComponent {
         //SharedPreferences prefs = PreferenceHelper.getDefaultSharedPreferences(this);
         //Configuration.getInstance().load(this, PreferenceHelper.getDefaultSharedPreferences(this));
         binding.mapView.onResume() //needed for compass, my location overlays, v6.0.0 and up
+        requireActivity().startService(Intent(context, LocationService::class.java))
+
     }
 
     override fun onPause() {
