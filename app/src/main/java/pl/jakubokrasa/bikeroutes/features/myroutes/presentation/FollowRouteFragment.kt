@@ -116,7 +116,10 @@ class FollowRouteFragment : BaseFragment(R.layout.fragment_follow_route) {
 
     private fun updateRouteInfo() {
         binding.tvRouteName.text = route.name
-        binding.tvRouteDescription.text = route.description
+
+        if(route.description.isBlank()) binding.tvRouteDescription.visibility = View.GONE
+        else binding.tvRouteDescription.text = route.description
+
         binding.tvRouteDistance.text = getFormattedDistance(route.distance)
         binding.tvRouteRideTime.text = getFormattedRideTime(route.rideTimeMinutes)
     }
@@ -125,7 +128,7 @@ class FollowRouteFragment : BaseFragment(R.layout.fragment_follow_route) {
         binding.mapView.setTileSource(TileSourceFactory.HIKEBIKEMAP)
         binding.mapView.setMultiTouchControls(true)
         binding.mapView.overlayManager.add(polyline)
-        binding.mapView.zoomToBoundingBox(polyline.bounds, false, 18, 25.0, 0)
+        binding.mapView.zoomToBoundingBox(polyline.bounds, false, 18, 18.0, 0)
         if(setZoom) binding.mapView.controller.setZoom(18.0)
     }
 
