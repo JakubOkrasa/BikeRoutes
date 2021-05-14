@@ -21,6 +21,7 @@ import pl.jakubokrasa.bikeroutes.R
 import pl.jakubokrasa.bikeroutes.core.base.platform.BaseFragment
 import pl.jakubokrasa.bikeroutes.core.util.LocationUtils
 import pl.jakubokrasa.bikeroutes.core.util.configureOsmDroid
+import pl.jakubokrasa.bikeroutes.core.util.routeColor
 import pl.jakubokrasa.bikeroutes.databinding.FragmentFollowRouteBinding
 import pl.jakubokrasa.bikeroutes.features.map.domain.LocationService
 import pl.jakubokrasa.bikeroutes.features.map.presentation.MapFragment.Companion.SEND_LOCATION_ACTION
@@ -101,7 +102,7 @@ class FollowRouteFragment : BaseFragment(R.layout.fragment_follow_route) {
                                 true
                             }
                             R.id.action_followroute_remove -> {
-                                TODO()
+                                showToast("Feature not yet implemented")
 //                                viewModel.deleteRoute(route.toRoute())
                                 true
                             }
@@ -134,7 +135,7 @@ class FollowRouteFragment : BaseFragment(R.layout.fragment_follow_route) {
         polyline.setPoints(points.map { p -> p.geoPoint })
         if (!polyline.isEnabled) polyline.isEnabled = true //we get the location for the first time
         polyline.outlinePaint.strokeWidth = 7F
-        polyline.outlinePaint.color = Color.MAGENTA
+        polyline.outlinePaint.color = routeColor
     }
 
     private fun getFormattedDistance(distance: Int): String {
