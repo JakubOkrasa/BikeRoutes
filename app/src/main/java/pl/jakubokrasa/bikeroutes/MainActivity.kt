@@ -53,7 +53,6 @@ class MainActivity : AppCompatActivity() {
             else auth.signInWithEmailAndPassword(userEmail!!, userPassword!!).addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         initViews()
-                        Toast.makeText(this@MainActivity, "successfully logged in as $userEmail", Toast.LENGTH_SHORT).show()
                     }
                     else {
                         Toast.makeText(this@MainActivity, "sign in error!", Toast.LENGTH_SHORT).show()

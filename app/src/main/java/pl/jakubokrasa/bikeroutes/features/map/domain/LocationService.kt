@@ -121,7 +121,7 @@ class LocationService : Service(), KoinComponent {
         try {
             mFusedLocationClient.lastLocation.addOnCompleteListener { task ->
                 if (task.isSuccessful && task.result != null) {
-                    mLocation = task.result
+                    onNewLocation(task.result)
                 } else {
                     Log.w(LOG_TAG, "Failed to get location.")
                 }
