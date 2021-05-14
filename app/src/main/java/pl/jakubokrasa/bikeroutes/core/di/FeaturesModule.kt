@@ -21,7 +21,7 @@ val featuresModule = module {
 
     factory { pl.jakubokrasa.bikeroutes.features.myroutes.domain.GetPointsFromRemoteUseCase(get()) }
 
-    viewModel { RouteViewModel(get(), get(), get(), get(), get(), get(), get()) }
+    viewModel { RouteViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
     factory { MyRoutesRecyclerAdapter() }
 }
 

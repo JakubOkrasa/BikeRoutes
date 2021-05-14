@@ -28,7 +28,7 @@ class RemoteRepositoryImpl(
             batch.set(routeDoc, routeResponse)
 
             //save Points
-            batch.set(pointsDoc, pointsMap) // nie wiem czy mogę wziąć id z poprzedniej linii ( .id ), skoro to będzie się wykonywać współbieżnie
+            batch.set(pointsDoc, pointsMap)
 
             //assign route to a user
             batch.update(userDoc, "routes", FieldValue.arrayUnion(routeDoc.id))

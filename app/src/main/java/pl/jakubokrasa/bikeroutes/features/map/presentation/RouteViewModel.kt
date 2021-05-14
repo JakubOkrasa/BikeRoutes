@@ -12,6 +12,7 @@ import pl.jakubokrasa.bikeroutes.features.map.presentation.model.PointDisplayabl
 import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteDisplayable
 import pl.jakubokrasa.bikeroutes.features.myroutes.domain.GetMyRoutesUseCase
 import pl.jakubokrasa.bikeroutes.features.myroutes.domain.GetPointsFromRemoteUseCase
+import pl.jakubokrasa.bikeroutes.features.myroutes.navigation.MyRoutesNavigator
 
 class RouteViewModel(
     private val insertPointUseCase: InsertPointUseCase,
@@ -22,6 +23,8 @@ class RouteViewModel(
 //    private val deleteRouteUseCase: DeleteRouteUseCase,
     private val updateDistanceByPrefsUseCase: UpdateDistanceByPrefsUseCase,
     private val getPointsFromRemoteUseCase: GetPointsFromRemoteUseCase,
+
+    private val myRoutesNavigator: MyRoutesNavigator,
 ) : BaseViewModel() {
 
     private val _myRoutes by lazy { MutableLiveData<List<RouteDisplayable>>() }
@@ -111,17 +114,17 @@ class RouteViewModel(
         }
     }
 
-    fun getPointsFromRemote(routeId: String) {
+    fun getPointsFromRemoteAndOpenFollowRouteFrg(route: RouteDisplayable) {
         setPendingState()
         getPointsFromRemoteUseCase(
-            routeId = routeId,
+            routeId = route.routeId,
             scope = viewModelScope
         ) {
             result ->
             setIdleState()
             result.onSuccess {
-                _pointsFromRemote.value = it.map { point -> PointDisplayable(point)}
                 handleSuccess("getPointsFromRemote")
+                myRoutesNavigator.openFollowRouteFragment(route, it.map { point -> PointDisplayable(point)})
             }
             result.onFailure { handleFailure("getPointsFromRemote", errLog = it.message) }
         }

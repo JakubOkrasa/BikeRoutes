@@ -16,8 +16,6 @@ import pl.jakubokrasa.bikeroutes.features.myroutes.navigation.MyRoutesNavigator
     private val myRoutesRecyclerAdapter: MyRoutesRecyclerAdapter by inject()
     private val divider: DividerItemDecoration by inject()
     private val myRoutesNavigator: MyRoutesNavigator by inject()
-    private var observePointsMode = ObservePointsMode.getPointsToFollow
-    private lateinit var selectedRoute: RouteDisplayable
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -37,7 +35,6 @@ import pl.jakubokrasa.bikeroutes.features.myroutes.navigation.MyRoutesNavigator
     override fun initObservers() {
         super.initObservers()
         observeMyRoutes()
-        observePoints()
     }
 
     override fun initViews() {
@@ -52,9 +49,7 @@ import pl.jakubokrasa.bikeroutes.features.myroutes.navigation.MyRoutesNavigator
 
      private fun observePoints() {
          viewModel.pointsFromRemote.observe(viewLifecycleOwner) {
-             if (observePointsMode == ObservePointsMode.getPointsToFollow && this::selectedRoute.isInitialized)
-                myRoutesNavigator.openFollowRouteFragment(selectedRoute, ArrayList(it))
-
+             // not needed right now, points are taken from remote onClick item by viewModel
          }
      }
 
@@ -64,12 +59,9 @@ import pl.jakubokrasa.bikeroutes.features.myroutes.navigation.MyRoutesNavigator
             setHasFixedSize(true)
             myRoutesRecyclerAdapter.onItemClick = {
                 route ->
-                observePointsMode = ObservePointsMode.getPointsToFollow
-                selectedRoute = route
-                viewModel.getPointsFromRemote(route.routeId)
+                viewModel.getPointsFromRemoteAndOpenFollowRouteFrg(route)
             }
             adapter = myRoutesRecyclerAdapter
-//            myRoutesRecyclerAdapter.setItems(viewModel.getMyRoutes()
         }
     }
 
@@ -96,8 +88,4 @@ import pl.jakubokrasa.bikeroutes.features.myroutes.navigation.MyRoutesNavigator
     companion object {
         val LOG_TAG = MyRoutesFragment::class.simpleName
     }
-
-     enum class ObservePointsMode {
-         getPointsToFollow,
-     }
 }
