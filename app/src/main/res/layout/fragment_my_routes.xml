@@ -26,6 +26,18 @@
         android:layout_height="match_parent"
         android:id="@+id/frg_container">
 
+        <TextView
+            android:id="@+id/tv_no_data"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="It seems that you don't have any route at the moment."
+            android:textColor="#444"
+            android:textSize="30dp"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"

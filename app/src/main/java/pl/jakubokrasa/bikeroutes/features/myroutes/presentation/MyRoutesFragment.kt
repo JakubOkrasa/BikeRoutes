@@ -43,7 +43,11 @@ import pl.jakubokrasa.bikeroutes.features.myroutes.navigation.MyRoutesNavigator
 
     private fun observeMyRoutes() {
         viewModel.myRoutes.observe(viewLifecycleOwner) {
-            myRoutesRecyclerAdapter.setItems(it)
+            if(it.isNotEmpty()) {
+                binding.tvNoData.visibility = View.GONE
+                myRoutesRecyclerAdapter.setItems(it)
+            } else
+                binding.tvNoData.visibility = View.VISIBLE
         }
     }
 
