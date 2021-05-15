@@ -2,6 +2,7 @@ package pl.jakubokrasa.bikeroutes.features.map.presentation
 
 import android.os.Bundle
 import android.view.View
+import androidx.core.content.edit
 import org.koin.android.ext.android.inject
 import pl.jakubokrasa.bikeroutes.R
 import pl.jakubokrasa.bikeroutes.core.base.platform.BaseFragment
@@ -27,6 +28,7 @@ class SaveRouteFragment : BaseFragment(R.layout.fragment_save_route) {
         val name = binding.etName.text.toString()
         val description = binding.etDescription.text.toString()
         val distance = preferenceHelper.preferences.getInt(PREF_KEY_DISTANCE_SUM, 0)
+        preferenceHelper.preferences.edit { putInt(PREF_KEY_DISTANCE_SUM, 0)}
         if(name.isEmpty()) showToast("Route must have a name")
         else  {
             viewModel.saveRoute(DataSaveRoute(name, description, distance))
