@@ -1,14 +1,17 @@
 package pl.jakubokrasa.bikeroutes.core.util
 
-import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteDisplayable
-
 fun getFormattedRideTime(rideTimeMinutes: Int): String {
     val rideTimeRemainedMinutes = rideTimeMinutes%60
     val rideTimeHours = (rideTimeMinutes - rideTimeRemainedMinutes) / 60
     if(rideTimeHours>0)
-        return String.format("%dh %dm", rideTimeHours, rideTimeRemainedMinutes)
-    else
-        return String.format("%dm", rideTimeRemainedMinutes)
+        return String.format("%dh %dmin", rideTimeHours, rideTimeRemainedMinutes)
+    else {
+        if(rideTimeMinutes>0)
+            return String.format("%dmin", rideTimeRemainedMinutes)
+        else
+            return String.format("1min", rideTimeRemainedMinutes)
+
+    }
 }
 
 fun getFormattedDistance(distanceMeters: Int): String {
