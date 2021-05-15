@@ -32,10 +32,10 @@ android {
     flavorDimensions "version"
     productFlavors {
         dev {
-
+            resValue "string", "version", '"dev"'
         }
         prod {
-
+            resValue "string", "version", '"v.0.4 prod"'
         }
     }
     compileOptions {
