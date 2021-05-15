@@ -175,9 +175,12 @@ class MapFragment() : BaseFragment(R.layout.fragment_map), KoinComponent {
     }
 
     private fun setMapViewProperties() {
-        binding.mapView.setTileSource(TileSourceFactory.HIKEBIKEMAP)
-        binding.mapView.setMultiTouchControls(true)
-        binding.mapView.controller.setZoom(18.0)
+        with(binding.mapView) {
+            setTileSource(TileSourceFactory.WIKIMEDIA)
+            isTilesScaledToDpi = true
+            setMultiTouchControls(true)
+            controller.setZoom(18.0)
+        }
     }
 
     private fun setPolylineProperties() {

@@ -125,12 +125,15 @@ class FollowRouteFragment : BaseFragment(R.layout.fragment_follow_route) {
     }
 
     private fun setMapViewProperties() {
-        binding.mapView.setTileSource(TileSourceFactory.HIKEBIKEMAP)
-        binding.mapView.setMultiTouchControls(true)
-        binding.mapView.overlayManager.add(polyline)
-        binding.mapView.zoomToBoundingBox(polyline.bounds, false, 18, 18.0, 0)
-        val currentZoom = binding.mapView.zoomLevelDouble
-        binding.mapView.controller.zoomTo(currentZoom-0.5)
+        with(binding.mapView) {
+            setTileSource(TileSourceFactory.WIKIMEDIA)
+            isTilesScaledToDpi = true
+            setMultiTouchControls(true)
+            overlayManager.add(polyline)
+            zoomToBoundingBox(polyline.bounds, false, 18, 18.0, 0)
+            val currentZoom = zoomLevelDouble
+            controller.zoomTo(currentZoom-0.5)
+        }
     }
 
     private fun setPolylineProperties() {
