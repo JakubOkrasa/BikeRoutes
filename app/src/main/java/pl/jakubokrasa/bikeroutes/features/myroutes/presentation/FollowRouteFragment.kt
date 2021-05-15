@@ -37,7 +37,7 @@ class FollowRouteFragment : BaseFragment(R.layout.fragment_follow_route) {
     private val mLocalBR: LocalBroadcastManager by inject()
     private lateinit var mPreviousLocMarker: Marker
 
-    private var followLocationMode = false
+    private var mapMode = MapMode.moveFreely
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -140,13 +140,13 @@ class FollowRouteFragment : BaseFragment(R.layout.fragment_follow_route) {
         polyline.outlinePaint.color = routeColor
     }
 
-    fun clearToolbarMenu() {
+    private fun clearToolbarMenu() {
         binding.toolbar.menu.clear()
     }
 
     private fun newLocationUpdateUI(geoPoint: GeoPoint) {
         showCurrentLocationMarker(geoPoint)
-        if(followLocationMode) binding.mapView.controller.animateTo(geoPoint)
+        if(mapMode == MapMode.followLocation) binding.mapView.controller.animateTo(geoPoint)
         binding.mapView.invalidate()
     }
 
@@ -175,9 +175,9 @@ class FollowRouteFragment : BaseFragment(R.layout.fragment_follow_route) {
     @SuppressLint("ClickableViewAccessibility")
     private val btShowLocationOnClick = View.OnClickListener {
         binding.mapView.controller.animateTo(mPreviousLocMarker.position)
-        followLocationMode = true
+        mapMode = MapMode.followLocation
         binding.mapView.setOnTouchListener { _, _ ->
-            followLocationMode = false //todo to się wykonuje za każdym dotknięciem. Można spróbować tego uniknąć https://stackoverflow.com/a/6619160/9343040
+            mapMode = MapMode.moveFreely //todo to się wykonuje za każdym dotknięciem. Można spróbować tego uniknąć https://stackoverflow.com/a/6619160/9343040
             false // todo co tu oznacza false?
         }
     }

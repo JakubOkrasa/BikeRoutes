@@ -1,6 +1,7 @@
 package pl.jakubokrasa.bikeroutes.features.map.presentation
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.*
 import android.content.pm.PackageManager
@@ -31,6 +32,7 @@ import pl.jakubokrasa.bikeroutes.core.extensions.PreferenceHelper.Companion.PREF
 import pl.jakubokrasa.bikeroutes.core.extensions.makeGone
 import pl.jakubokrasa.bikeroutes.core.extensions.makeVisible
 import pl.jakubokrasa.bikeroutes.core.util.LocationUtils
+import pl.jakubokrasa.bikeroutes.core.util.MapMode
 import pl.jakubokrasa.bikeroutes.core.util.configureOsmDroid
 import pl.jakubokrasa.bikeroutes.core.util.routeColor
 import pl.jakubokrasa.bikeroutes.databinding.FragmentMapBinding
@@ -54,6 +56,9 @@ class MapFragment() : BaseFragment(R.layout.fragment_map), KoinComponent {
     private var _binding: FragmentMapBinding? = null
     private val binding get() = _binding!! // This property is only valid between onCreateView and onDestroyView.
 
+    private var mapMode = MapMode.followLocation
+
+    @SuppressLint("ClickableViewAccessibility")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentMapBinding.bind(view)
@@ -66,6 +71,7 @@ class MapFragment() : BaseFragment(R.layout.fragment_map), KoinComponent {
 
         binding.btStartRecord.setOnClickListener(btRecordRouteOnClick)
         binding.btStopRecord.setOnClickListener(btStopRecordOnClick)
+        binding.btShowLocation.setOnClickListener(btShowLocationOnClick)
 
         setMapViewProperties()
         setPolylineProperties()
@@ -74,7 +80,11 @@ class MapFragment() : BaseFragment(R.layout.fragment_map), KoinComponent {
             disableRecordingMode()
             viewModel.deletePoints()
         }
+
+        binding.mapView.setOnTouchListener(mapModeTouchListener)
     }
+
+
 
    override fun onStart() {
         super.onStart()
@@ -134,8 +144,8 @@ class MapFragment() : BaseFragment(R.layout.fragment_map), KoinComponent {
             binding.mapView.overlayManager.add(polyline)
             if (!polyline.isEnabled) polyline.isEnabled = true //we get the location for the first time
         }
-        binding.mapView.controller.animateTo(geoPoint)
         showCurrentLocationMarker(geoPoint)
+        if(mapMode == MapMode.followLocation) binding.mapView.controller.animateTo(geoPoint)
         binding.mapView.invalidate()
     }
 
@@ -185,6 +195,11 @@ class MapFragment() : BaseFragment(R.layout.fragment_map), KoinComponent {
         }
     }
 
+    private val btShowLocationOnClick = View.OnClickListener {
+        binding.mapView.controller.animateTo(mPreviousLocMarker.position)
+        mapMode = MapMode.followLocation
+    }
+
     private val btStopRecordOnClick = View.OnClickListener()  {
         disableRecordingMode()
         polyline.setPoints(ArrayList<GeoPoint>()) // strange behaviour: when you make it after stopLocationService(), it doesn't work
@@ -196,11 +211,15 @@ class MapFragment() : BaseFragment(R.layout.fragment_map), KoinComponent {
         }
     }
 
-
-
     private val btRecordRouteOnClick = View.OnClickListener() {
         preferenceHelper.preferences.edit { putInt(PreferenceHelper.PREF_KEY_DISTANCE_SUM, 0)}
         enableRecordingMode()
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private val mapModeTouchListener = View.OnTouchListener { _, _ ->
+        mapMode = MapMode.moveFreely
+        false //
     }
 
     private fun enableRecordingMode() { //todo not a clean practice (public to use it in ViewModel)
