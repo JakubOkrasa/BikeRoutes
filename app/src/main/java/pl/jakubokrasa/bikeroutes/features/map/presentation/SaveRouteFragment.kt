@@ -28,7 +28,6 @@ class SaveRouteFragment : BaseFragment(R.layout.fragment_save_route) {
         val name = binding.etName.text.toString()
         val description = binding.etDescription.text.toString()
         val distance = preferenceHelper.preferences.getInt(PREF_KEY_DISTANCE_SUM, 0)
-        preferenceHelper.preferences.edit { putInt(PREF_KEY_DISTANCE_SUM, 0)}
         if(name.isEmpty()) showToast("Route must have a name")
         else  {
             viewModel.saveRoute(DataSaveRoute(name, description, distance))

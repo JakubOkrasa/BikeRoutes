@@ -26,6 +26,7 @@ import org.osmdroid.views.overlay.Polyline
 import pl.jakubokrasa.bikeroutes.BuildConfig
 import pl.jakubokrasa.bikeroutes.R
 import pl.jakubokrasa.bikeroutes.core.base.platform.BaseFragment
+import pl.jakubokrasa.bikeroutes.core.extensions.PreferenceHelper
 import pl.jakubokrasa.bikeroutes.core.extensions.PreferenceHelper.Companion.PREF_KEY_MAPFRAGMENT_MODE_RECORDING
 import pl.jakubokrasa.bikeroutes.core.extensions.makeGone
 import pl.jakubokrasa.bikeroutes.core.extensions.makeVisible
@@ -189,8 +190,6 @@ class MapFragment() : BaseFragment(R.layout.fragment_map), KoinComponent {
         polyline.setPoints(ArrayList<GeoPoint>()) // strange behaviour: when you make it after stopLocationService(), it doesn't work
         binding.mapView.invalidate()
         mapFrgNavigator.openSaveRouteFragment()
-        binding.btStopRecord.makeGone()
-        binding.btStartRecord.makeVisible()
 
         preferenceHelper.preferences.edit {
             remove(PREF_KEY_MAPFRAGMENT_MODE_RECORDING)
@@ -200,10 +199,8 @@ class MapFragment() : BaseFragment(R.layout.fragment_map), KoinComponent {
 
 
     private val btRecordRouteOnClick = View.OnClickListener() {
+        preferenceHelper.preferences.edit { putInt(PreferenceHelper.PREF_KEY_DISTANCE_SUM, 0)}
         enableRecordingMode()
-
-        binding.btStartRecord.makeGone()
-        binding.btStopRecord.makeVisible()
     }
 
     private fun enableRecordingMode() { //todo not a clean practice (public to use it in ViewModel)
@@ -211,6 +208,8 @@ class MapFragment() : BaseFragment(R.layout.fragment_map), KoinComponent {
             putBoolean(PREF_KEY_MAPFRAGMENT_MODE_RECORDING, true)
         }
         observePoints()
+        binding.btStartRecord.makeGone()
+        binding.btStopRecord.makeVisible()
     }
 
     private fun disableRecordingMode() {
@@ -218,6 +217,8 @@ class MapFragment() : BaseFragment(R.layout.fragment_map), KoinComponent {
             putBoolean(PREF_KEY_MAPFRAGMENT_MODE_RECORDING, false)
         }
         stopObservePoints()
+        binding.btStopRecord.makeGone()
+        binding.btStartRecord.makeVisible()
     }
 
     private fun isRecordingMode() = preferenceHelper.preferences.getBoolean(PREF_KEY_MAPFRAGMENT_MODE_RECORDING, false)

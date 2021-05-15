@@ -80,7 +80,7 @@ class FollowRouteFragment : BaseFragment(R.layout.fragment_follow_route) {
             setPoints()
             updateRouteInfo()
             setPolylineProperties()
-            setMapViewProperties(setZoom = false)
+            setMapViewProperties()
             binding.mapView.invalidate()
         }
     }
@@ -124,12 +124,13 @@ class FollowRouteFragment : BaseFragment(R.layout.fragment_follow_route) {
         binding.tvRouteRideTime.text = getFormattedRideTime(route.rideTimeMinutes)
     }
 
-    private fun setMapViewProperties(setZoom: Boolean = true) {
+    private fun setMapViewProperties() {
         binding.mapView.setTileSource(TileSourceFactory.HIKEBIKEMAP)
         binding.mapView.setMultiTouchControls(true)
         binding.mapView.overlayManager.add(polyline)
         binding.mapView.zoomToBoundingBox(polyline.bounds, false, 18, 18.0, 0)
-        if(setZoom) binding.mapView.controller.setZoom(18.0)
+        val currentZoom = binding.mapView.zoomLevelDouble
+        binding.mapView.controller.zoomTo(currentZoom-0.5)
     }
 
     private fun setPolylineProperties() {
