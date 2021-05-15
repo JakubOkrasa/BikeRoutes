@@ -1,8 +1,10 @@
 package pl.jakubokrasa.bikeroutes.core.user.presentation
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.core.content.edit
 import com.google.firebase.auth.FirebaseAuth
 import org.koin.android.ext.android.inject
@@ -31,5 +33,26 @@ class AccountFragment : BaseFragment(R.layout.fragment_account) {
             }
             startActivity(Intent(context, SignUpActivity::class.java))
         }
+
+        binding.btSuggestion.setOnClickListener {
+            openWebsite("https://forms.gle/aaFoxM1aMCfGVAEM7")
+        }
+
+        binding.btReport.setOnClickListener {
+            openWebsite("https://forms.gle/YuA8XH6Rewk4bEir6")
+        }
+    }
+
+    private fun openWebsite(url: String) {
+        var url = url
+        try{
+            if (!url.startsWith("http://") && !url.startsWith("https://")) url = "http://$url";
+            val intent = Intent(Intent.ACTION_VIEW)
+            intent.data = Uri.parse(url)
+            startActivity(intent)
+        } catch(e: Exception) {
+            Toast.makeText(context, "An error occrured", Toast.LENGTH_SHORT).show()
+        }
+
     }
 }
