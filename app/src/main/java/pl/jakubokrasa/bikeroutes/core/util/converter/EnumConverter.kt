@@ -1,7 +1,7 @@
 package pl.jakubokrasa.bikeroutes.core.util.converter
 
 import androidx.room.TypeConverter
-import pl.jakubokrasa.bikeroutes.core.user.sharingType
+import pl.jakubokrasa.bikeroutes.core.util.enums.sharingType
 
 class EnumConverter {
 

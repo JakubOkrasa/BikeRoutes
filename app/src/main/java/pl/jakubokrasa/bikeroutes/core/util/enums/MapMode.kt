@@ -1,4 +1,4 @@
-package pl.jakubokrasa.bikeroutes.core.util
+package pl.jakubokrasa.bikeroutes.core.util.enums
 
 enum class MapMode {
     moveFreely,

@@ -1,4 +1,4 @@
-package pl.jakubokrasa.bikeroutes.core.user
+package pl.jakubokrasa.bikeroutes.core.util.enums
 
 enum class sharingType {
     PRIVATE,

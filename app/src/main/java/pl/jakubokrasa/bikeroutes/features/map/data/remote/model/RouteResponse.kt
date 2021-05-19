@@ -1,7 +1,6 @@
 package pl.jakubokrasa.bikeroutes.features.map.data.remote.model
 
-import com.google.firebase.Timestamp
-import pl.jakubokrasa.bikeroutes.core.user.sharingType
+import pl.jakubokrasa.bikeroutes.core.util.enums.sharingType
 import pl.jakubokrasa.bikeroutes.features.map.domain.model.Route
 
 class RouteResponse(
@@ -15,7 +14,7 @@ class RouteResponse(
     val rideTimeMinutes: Int,
 ) {
 
-    constructor() : this("", 0,"", "", "", pl.jakubokrasa.bikeroutes.core.user.sharingType.PRIVATE, 0, 0)
+    constructor() : this("", 0,"", "", "", pl.jakubokrasa.bikeroutes.core.util.enums.sharingType.PRIVATE, 0, 0)
 
     fun toRoute(): Route {
         return Route(
