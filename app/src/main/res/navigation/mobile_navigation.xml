@@ -28,10 +28,43 @@
     </fragment>
 
     <fragment
+        android:id="@+id/signInFragment"
+        android:name="pl.jakubokrasa.bikeroutes.core.user.presentation.SignInFragment"
+        android:label="fragment_sign_in"
+        tools:layout="@layout/fragment_sign_in" >
+        <action
+            android:id="@+id/action_signInFragment_to_nav_map"
+            app:destination="@id/nav_map"/>
+        <action
+            android:id="@+id/action_signInFragment_to_signUpFragment"
+            app:destination="@id/signUpFragment" />
+        <action
+            android:id="@+id/action_signInFragment_to_forgotPasswordFragment"
+            app:destination="@id/forgotPasswordFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/signUpFragment"
+        android:name="pl.jakubokrasa.bikeroutes.core.user.presentation.SignUpFragment"
+        android:label="fragment_sign_up"
+        tools:layout="@layout/fragment_sign_up" >
+        <action
+            android:id="@+id/action_signUpFragment_to_signInFragment"
+            app:destination="@id/signInFragment" />
+        <action
+            android:id="@+id/action_signUpFragment_to_nav_map"
+            app:destination="@id/nav_map" />
+    </fragment>
+
+    <fragment
         android:id="@+id/nav_account"
         android:name="pl.jakubokrasa.bikeroutes.core.user.presentation.AccountFragment"
         android:label="@string/title_account"
-        tools:layout="@layout/fragment_account" />
+        tools:layout="@layout/fragment_account" >
+        <action
+            android:id="@+id/action_nav_account_to_signInFragment"
+            app:destination="@id/signInFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/fragment_save_route"
@@ -43,4 +76,15 @@
         android:name="pl.jakubokrasa.bikeroutes.features.myroutes.presentation.FollowRouteFragment"
         android:label="fragment_follow_route"
         tools:layout="@layout/fragment_follow_route" />
+    <fragment
+        android:id="@+id/forgotPasswordFragment"
+        android:name="pl.jakubokrasa.bikeroutes.core.user.presentation.ForgotPasswordFragment"
+        android:label="fragment_forgot_password"
+        tools:layout="@layout/fragment_forgot_password" >
+        <action
+            android:id="@+id/action_forgotPasswordFragment_to_signInFragment"
+            app:destination="@id/signInFragment" />
+    </fragment>
+
+
 </navigation>

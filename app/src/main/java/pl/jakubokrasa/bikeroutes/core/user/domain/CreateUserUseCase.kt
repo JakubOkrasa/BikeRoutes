@@ -1,7 +1,6 @@
 package pl.jakubokrasa.bikeroutes.core.user.domain
 
 import pl.jakubokrasa.bikeroutes.core.base.domain.UseCase
-import pl.jakubokrasa.bikeroutes.core.user.auth.UserAuth
 
 class CreateUserUseCase(private val userAuth: UserAuth,
                         private val userRepository: UserRepository)
