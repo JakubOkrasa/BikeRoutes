@@ -1,5 +1,7 @@
 package pl.jakubokrasa.bikeroutes.core.di
 
+import android.content.Context
+import android.location.LocationManager
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.LocationSettingsRequest
@@ -9,11 +11,11 @@ import pl.jakubokrasa.bikeroutes.core.util.LocationUtils
 
 
 val locationModule = module {
+    single { androidContext().getSystemService(Context.LOCATION_SERVICE) as LocationManager }
     single { LocationServices.getFusedLocationProviderClient(androidContext());}
     single { createLocationRequest() }
     single { LocationServices.getSettingsClient(androidContext()) }
     single { LocationSettingsRequest.Builder().addLocationRequest(get()).build() }
-//    single { LocationUtils(get(), get(), get()) }
 }
 
 private fun createLocationRequest() =

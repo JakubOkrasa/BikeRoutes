@@ -6,18 +6,24 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.core.content.edit
+import androidx.fragment.app.Fragment
 import com.google.firebase.auth.FirebaseAuth
 import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import pl.jakubokrasa.bikeroutes.R
 import pl.jakubokrasa.bikeroutes.core.base.platform.BaseFragment
+import pl.jakubokrasa.bikeroutes.core.extensions.PreferenceHelper
 import pl.jakubokrasa.bikeroutes.core.extensions.PreferenceHelper.Companion.PREF_KEY_USER_EMAIL
 import pl.jakubokrasa.bikeroutes.core.extensions.PreferenceHelper.Companion.PREF_KEY_USER_PASSWORD
 import pl.jakubokrasa.bikeroutes.databinding.FragmentAccountBinding
+import pl.jakubokrasa.bikeroutes.features.myroutes.presentation.MyRoutesViewModel
 
-class AccountFragment : BaseFragment(R.layout.fragment_account) {
+class AccountFragment(): Fragment(R.layout.fragment_account) {
     private val auth: FirebaseAuth by inject()
     private var _binding: FragmentAccountBinding? = null
     private val binding get() = _binding!!
+    private val preferenceHelper: PreferenceHelper by inject()
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

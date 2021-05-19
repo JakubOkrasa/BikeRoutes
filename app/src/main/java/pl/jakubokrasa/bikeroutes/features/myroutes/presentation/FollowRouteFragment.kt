@@ -13,6 +13,8 @@ import android.view.View
 import androidx.core.content.res.ResourcesCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.compat.SharedViewModelCompat.sharedViewModel
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.overlay.Marker
@@ -27,8 +29,9 @@ import pl.jakubokrasa.bikeroutes.features.map.presentation.model.PointDisplayabl
 import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteDisplayable
 
 
-class FollowRouteFragment : BaseFragment(R.layout.fragment_follow_route) {
+class FollowRouteFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_follow_route) {
 
+    override val viewModel: MyRoutesViewModel by sharedViewModel()
     private var _binding: FragmentFollowRouteBinding? = null
     private val binding get() = _binding!!
     private lateinit var route: RouteDisplayable

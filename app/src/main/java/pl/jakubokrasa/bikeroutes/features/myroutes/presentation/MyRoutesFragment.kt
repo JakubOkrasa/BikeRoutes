@@ -4,18 +4,19 @@ import android.os.Bundle
 import android.view.View
 import androidx.recyclerview.widget.DividerItemDecoration
 import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import pl.jakubokrasa.bikeroutes.R
 import pl.jakubokrasa.bikeroutes.core.base.platform.BaseFragment
 import pl.jakubokrasa.bikeroutes.databinding.FragmentMyRoutesBinding
 import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteDisplayable
 import pl.jakubokrasa.bikeroutes.features.myroutes.navigation.MyRoutesNavigator
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
- class MyRoutesFragment : BaseFragment(R.layout.fragment_my_routes){
+ class MyRoutesFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_my_routes){
     private var _binding: FragmentMyRoutesBinding? = null
     private val binding get() = _binding!!
     private val myRoutesRecyclerAdapter: MyRoutesRecyclerAdapter by inject()
-    private val divider: DividerItemDecoration by inject()
-    private val myRoutesNavigator: MyRoutesNavigator by inject()
+    override val viewModel: MyRoutesViewModel by sharedViewModel()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -59,10 +60,14 @@ import pl.jakubokrasa.bikeroutes.features.myroutes.navigation.MyRoutesNavigator
 
     private fun initRecycler() {
         with(binding.recyclerView) {
-            addItemDecoration(divider)
             setHasFixedSize(true)
             myRoutesRecyclerAdapter.onItemClick = {
-                route ->
+                route -> //todo może od razu przejść do FollowRouteFrg (bez czekania
+                        // todo i wtedy user od razu widzi szczegóły trasy)
+                        // todo a wynik można przekazać w LiveData
+                        // todo ale jeśli potem będzie przechodzenie do odczielnego frg
+                        // todo żeby po itemOnclick było widać szczegóły trasy i obrazek (bez follow)
+                        // todo to wtedy chcę żeby points się załadowały wcześniej, a potem przechodziło do frg
                 viewModel.getPointsFromRemoteAndOpenFollowRouteFrg(route)
             }
             adapter = myRoutesRecyclerAdapter

@@ -5,7 +5,6 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.*
 import android.content.pm.PackageManager
-import android.graphics.Color
 import android.location.Location
 import android.os.Bundle
 import android.util.Log
@@ -17,6 +16,7 @@ import androidx.core.content.edit
 import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.Observer
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
@@ -39,14 +39,16 @@ import pl.jakubokrasa.bikeroutes.databinding.FragmentMapBinding
 import pl.jakubokrasa.bikeroutes.features.map.domain.LocationService
 import pl.jakubokrasa.bikeroutes.features.map.navigation.MapFrgNavigator
 import pl.jakubokrasa.bikeroutes.features.map.presentation.model.PointDisplayable
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
-class MapFragment() : BaseFragment(R.layout.fragment_map), KoinComponent {
+class MapFragment() : BaseFragment<MapViewModel>(R.layout.fragment_map), KoinComponent {
     private lateinit var polyline: Polyline
     private lateinit var mRotationGestureOverlay: Overlay
     private lateinit var mPreviousLocMarker: Marker
     private val mLocalBR: LocalBroadcastManager by inject()
     private val mapFrgNavigator: MapFrgNavigator by inject()
+    override val viewModel: MapViewModel by sharedViewModel()
 //    private val currentRouteObserver: Observer<RouteDisplayable!>
     private val requestMultiplePermissions = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
         permissions.entries.forEach { Log.d(LOG_TAG, "permission: ${it.key} = ${it.value}") }
