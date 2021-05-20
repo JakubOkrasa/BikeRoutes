@@ -41,13 +41,25 @@ class RemoteRepositoryImpl(
 
     }
 
-    override suspend fun getMyRoutes(uid: String, minDistance: Int?, maxDistance: Int?): List<Route> {
+    override suspend fun getMyRoutes(uid: String, minDistance: Int, maxDistance: Int): List<Route> {
         val routeResponseList = ArrayList<RouteResponse>()
         val documents: List<DocumentSnapshot>
-        if(minDistance==null || maxDistance==null) {
+        if(minDistance==-1 && maxDistance==-1) {
             documents = firestore
                 .collection("routes")
                 .whereEqualTo("userId", uid)
+                .get().await().documents
+        } else if(minDistance == -1 && maxDistance != -1) {
+            documents = firestore
+                .collection("routes")
+                .whereEqualTo("userId", uid)
+                .whereLessThanOrEqualTo("distance", maxDistance)
+                .get().await().documents
+        } else if(minDistance != -1 && maxDistance == -1){
+            documents = firestore
+                .collection("routes")
+                .whereEqualTo("userId", uid)
+                .whereGreaterThanOrEqualTo("distance", minDistance)
                 .get().await().documents
         } else {
             documents = firestore
@@ -63,12 +75,8 @@ class RemoteRepositoryImpl(
     }
 
     override suspend fun getPoints(routeId: String): List<Point> {
-//        val pointResponseList = ArrayList<PointResponse>()
-//        val doc = firestore.document("points/$routeId")
-//        val doc = firestore.collection("points").document(routeId).get("pointsArray").await()
         val doc = firestore.collection("points").document(routeId).get().await()
         return doc.toObject(PointDocument::class.java)?.pointsArray?.map { it.toPoint() } ?: throw RuntimeException("no points in the route")
-//        doc.toObject(ArrayList<Poi>)
     }
 
     companion object {

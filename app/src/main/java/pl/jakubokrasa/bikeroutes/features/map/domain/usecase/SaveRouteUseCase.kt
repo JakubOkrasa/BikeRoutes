@@ -16,18 +16,20 @@ class SaveRouteUseCase(
     private val userAuth: UserAuth): UseCase<Unit, DataSaveRoute>() {
     override suspend fun action(params: DataSaveRoute) {
         val points = localRepository.getPoints2()
-        val route = Route(
-            "",
-            System.currentTimeMillis(),
-            userAuth.getCurrentUserId(),
-            params.name,
-            params.description,
-            params.distance,
-            sharingType.PRIVATE,
-            getRideTimeMinutes(points),
-        )
-        remoteRepository.addRoute(route, points)
-        localRepository.deletePoints()
+        if(points.isNotEmpty()) {
+            val route = Route(
+                "",
+                System.currentTimeMillis(),
+                userAuth.getCurrentUserId(),
+                params.name,
+                params.description,
+                params.distance,
+                sharingType.PRIVATE,
+                getRideTimeMinutes(points),
+            )
+            remoteRepository.addRoute(route, points)
+            localRepository.deletePoints()
+        }
     }
 
     private fun getRideTimeMinutes(points: List<Point>): Int {
