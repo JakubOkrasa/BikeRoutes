@@ -8,6 +8,7 @@ import pl.jakubokrasa.bikeroutes.core.base.platform.BaseViewModel
 import pl.jakubokrasa.bikeroutes.features.map.domain.usecase.*
 import pl.jakubokrasa.bikeroutes.features.map.presentation.model.PointDisplayable
 import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteDisplayable
+import pl.jakubokrasa.bikeroutes.features.myroutes.domain.DataFilterParams
 import pl.jakubokrasa.bikeroutes.features.myroutes.domain.GetMyRoutesUseCase
 import pl.jakubokrasa.bikeroutes.features.myroutes.domain.GetPointsFromRemoteUseCase
 import pl.jakubokrasa.bikeroutes.features.myroutes.navigation.MyRoutesNavigator
@@ -57,7 +58,7 @@ class RouteViewModel(
         ) {
                 result ->
             setIdleState()
-            result.onSuccess { handleSuccess("saveRoute", "Route saved") }
+            result.onSuccess { handleSuccess("saveRoute", "Route saved") } //todo przy points.size = 0 będzie tu onsuccess
             result.onFailure { handleFailure("saveRoute", "Route not saved") }
         }
     }
@@ -95,9 +96,10 @@ class RouteViewModel(
         }
     }
 
-    fun getMyRoutes() {
+    fun getMyRoutes(dataFilterParams: DataFilterParams) {
         setPendingState()
         getMyRoutesUseCase(
+            dataFilterParams = dataFilterParams,
             scope = viewModelScope
         ) {
             result ->

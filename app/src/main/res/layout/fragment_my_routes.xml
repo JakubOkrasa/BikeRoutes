@@ -21,6 +21,15 @@
             android:indeterminate="true"
             android:layout_gravity="center"/>
     </FrameLayout>
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/bt_filter"
+        android:layout_width="90dp"
+        android:layout_height="wrap_content"
+        app:cornerRadius="18dp"
+        android:backgroundTint="@color/blurred_white"
+        android:textColor="@color/black"
+        android:text="filter"
+        />
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
