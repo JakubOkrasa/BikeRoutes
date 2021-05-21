@@ -6,16 +6,13 @@ import android.view.View
 import android.view.Window
 import android.widget.Button
 import android.widget.TextView
-import androidx.fragment.app.DialogFragment
-import androidx.preference.DialogPreference
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.google.android.material.slider.RangeSlider
 import org.koin.android.ext.android.inject
 import pl.jakubokrasa.bikeroutes.R
 import pl.jakubokrasa.bikeroutes.core.base.platform.BaseFragment
 import pl.jakubokrasa.bikeroutes.databinding.FragmentMyRoutesBinding
-import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteDisplayable
-import pl.jakubokrasa.bikeroutes.features.myroutes.domain.DataFilterParams
+import pl.jakubokrasa.bikeroutes.features.myroutes.domain.FilterData
 import pl.jakubokrasa.bikeroutes.features.myroutes.navigation.MyRoutesNavigator
 
  class MyRoutesFragment : BaseFragment(R.layout.fragment_my_routes){
@@ -31,7 +28,7 @@ import pl.jakubokrasa.bikeroutes.features.myroutes.navigation.MyRoutesNavigator
         initRecycler() // todo ten init powinien być w initViews() ale wtedy jest java.lang.NullPointerException
                         //at pl.jakubokrasa.bikeroutes.features.myroutes.presentation.MyRoutesFragment.getBinding(MyRoutesFragment.kt:17)
                         //w AA to działą
-        viewModel.getMyRoutes(DataFilterParams())
+        viewModel.getMyRoutes(FilterData())
 
         binding.btFilter.setOnClickListener(btFilterOnClick)
     }
@@ -54,10 +51,13 @@ import pl.jakubokrasa.bikeroutes.features.myroutes.navigation.MyRoutesNavigator
     private fun observeMyRoutes() {
         viewModel.myRoutes.observe(viewLifecycleOwner) {
             if(it.isNotEmpty()) {
+                binding.recyclerView.visibility = View.VISIBLE
                 binding.tvNoData.visibility = View.GONE
                 myRoutesRecyclerAdapter.setItems(it)
-            } else
+            } else {
                 binding.tvNoData.visibility = View.VISIBLE
+                binding.recyclerView.visibility = View.GONE
+            }
         }
     }
 
@@ -96,9 +96,19 @@ import pl.jakubokrasa.bikeroutes.features.myroutes.navigation.MyRoutesNavigator
          dialog.setContentView(R.layout.dialog_myroutes_filter)
          val btSave = dialog.findViewById<Button>(R.id.bt_save)
          val btCancel = dialog.findViewById<TextView>(R.id.bt_cancel)
+
+         val slider = dialog.findViewById<RangeSlider>(R.id.slider_distance)
+         slider.setValues(0.0f, DISTANCE_SLIDER_VALUE_TO)
+         slider.valueTo = DISTANCE_SLIDER_VALUE_TO
+         slider.setLabelFormatter { value: Float ->
+             if(value == slider.valueTo)
+                 return@setLabelFormatter ">${value}km"
+             return@setLabelFormatter "${value}km"
+         }
          btSave.setOnClickListener {
-             val slider = dialog.findViewById<RangeSlider>(R.id.slider_distance)
-             viewModel.getMyRoutes(DataFilterParams(slider.valueFrom.toInt(), slider.valueTo.toInt()))
+             viewModel.getMyRoutes(FilterData(slider.values[0].toInt(), slider.values[1].toInt()))
+             if(viewModel.myRoutes.value?.size == 0)
+                 binding.tvNoData.text = "No route meets these requirements"
              dialog.dismiss()
          }
          btCancel.setOnClickListener { dialog.dismiss() }
@@ -117,5 +127,6 @@ import pl.jakubokrasa.bikeroutes.features.myroutes.navigation.MyRoutesNavigator
 
     companion object {
         val LOG_TAG = MyRoutesFragment::class.simpleName
+        const val DISTANCE_SLIDER_VALUE_TO = 500.0f
     }
 }

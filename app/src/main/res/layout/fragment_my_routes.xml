@@ -28,8 +28,7 @@
         app:cornerRadius="18dp"
         android:backgroundTint="@color/blurred_white"
         android:textColor="@color/black"
-        android:text="filter"
-        />
+        android:text="filter"/>
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"

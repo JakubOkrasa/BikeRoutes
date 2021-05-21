@@ -2,13 +2,12 @@ package pl.jakubokrasa.bikeroutes.features.map.presentation
 
 import android.util.Log
 import androidx.lifecycle.*
-import com.hadilq.liveevent.LiveEvent
 import org.osmdroid.util.GeoPoint
 import pl.jakubokrasa.bikeroutes.core.base.platform.BaseViewModel
 import pl.jakubokrasa.bikeroutes.features.map.domain.usecase.*
 import pl.jakubokrasa.bikeroutes.features.map.presentation.model.PointDisplayable
 import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteDisplayable
-import pl.jakubokrasa.bikeroutes.features.myroutes.domain.DataFilterParams
+import pl.jakubokrasa.bikeroutes.features.myroutes.domain.FilterData
 import pl.jakubokrasa.bikeroutes.features.myroutes.domain.GetMyRoutesUseCase
 import pl.jakubokrasa.bikeroutes.features.myroutes.domain.GetPointsFromRemoteUseCase
 import pl.jakubokrasa.bikeroutes.features.myroutes.navigation.MyRoutesNavigator
@@ -96,10 +95,10 @@ class RouteViewModel(
         }
     }
 
-    fun getMyRoutes(dataFilterParams: DataFilterParams) {
+    fun getMyRoutes(filterData: FilterData) {
         setPendingState()
         getMyRoutesUseCase(
-            dataFilterParams = dataFilterParams,
+            filterData = filterData,
             scope = viewModelScope
         ) {
             result ->
