@@ -8,22 +8,28 @@ import pl.jakubokrasa.bikeroutes.core.user.auth.UserAuth
 import pl.jakubokrasa.bikeroutes.features.map.domain.RemoteRepository
 import pl.jakubokrasa.bikeroutes.features.map.domain.model.Route
 
-class GetMyRoutesUseCase (
+class GetMyRoutesWithFilterUseCase(
     private val remoteRepository: RemoteRepository,
     private val auth: UserAuth
-    ) {
-        suspend fun action() =
-            remoteRepository.getMyRoutes(auth.getCurrentUserId())
+) {
+    suspend fun action(filterData: FilterData) =
+        remoteRepository.getMyRoutesWithFilter(auth.getCurrentUserId(), filterData)
 
-        operator fun invoke(
-            scope: CoroutineScope,
-            onResult: (Result<List<Route>>) -> Unit = {}
+    operator fun invoke(
+        filterData: FilterData,
+        scope: CoroutineScope,
+        onResult: (Result<List<Route>>) -> Unit = {}
         ) {
             scope.launch {
                 val result = withContext(Dispatchers.IO) {
-                    runCatching { return@runCatching action() }
+                    runCatching { return@runCatching action(filterData) }
                 }
                 onResult(result)
             }
         }
-    }
+}
+
+data class FilterData(
+    val minDistanceKm: Int? = null,
+    val maxDistanceKm: Int? = null
+)

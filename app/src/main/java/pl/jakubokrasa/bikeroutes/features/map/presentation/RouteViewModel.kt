@@ -9,6 +9,7 @@ import pl.jakubokrasa.bikeroutes.features.map.presentation.model.PointDisplayabl
 import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteDisplayable
 import pl.jakubokrasa.bikeroutes.features.myroutes.domain.FilterData
 import pl.jakubokrasa.bikeroutes.features.myroutes.domain.GetMyRoutesUseCase
+import pl.jakubokrasa.bikeroutes.features.myroutes.domain.GetMyRoutesWithFilterUseCase
 import pl.jakubokrasa.bikeroutes.features.myroutes.domain.GetPointsFromRemoteUseCase
 import pl.jakubokrasa.bikeroutes.features.myroutes.navigation.MyRoutesNavigator
 
@@ -18,6 +19,7 @@ class RouteViewModel(
     private val deletePointsUseCase: DeletePointsUseCase,
     private val saveRouteUseCase: SaveRouteUseCase,
     private val getMyRoutesUseCase: GetMyRoutesUseCase,
+    private val getMyRoutesWithFilterUseCase: GetMyRoutesWithFilterUseCase,
 //    private val deleteRouteUseCase: DeleteRouteUseCase,
     private val updateDistanceByPrefsUseCase: UpdateDistanceByPrefsUseCase,
     private val getPointsFromRemoteUseCase: GetPointsFromRemoteUseCase,
@@ -27,9 +29,11 @@ class RouteViewModel(
 
     private val _myRoutes by lazy { MutableLiveData<List<RouteDisplayable>>() }
     private val _pointsFromRemote by lazy { MutableLiveData<List<PointDisplayable>>() } //liveEvent could be better here todo (but points can be set too early)
+    private val _isFilter by lazy { MutableLiveData<Boolean>() }
 
     val myRoutes: LiveData<List<RouteDisplayable>> by lazy { _myRoutes }
     val pointsFromRemote: LiveData<List<PointDisplayable>> by lazy { _pointsFromRemote }
+    val isFilter: LiveData<Boolean> by lazy { _isFilter }
 
     fun getPoints(): LiveData<List<PointDisplayable>> {
         return getPointsUseCase(params = Unit)
@@ -95,9 +99,9 @@ class RouteViewModel(
         }
     }
 
-    fun getMyRoutes(filterData: FilterData) {
+    fun getMyRoutesWithFilter(filterData: FilterData) {
         setPendingState()
-        getMyRoutesUseCase(
+        getMyRoutesWithFilterUseCase(
             filterData = filterData,
             scope = viewModelScope
         ) {
@@ -105,11 +109,30 @@ class RouteViewModel(
             setIdleState()
                 result.onSuccess {
                     _myRoutes.value = it.map { route ->  RouteDisplayable(route)}
-                    handleSuccess("getMyRoutes")
+                    _isFilter.value = true
+                    handleSuccess("getMyRoutesWithFilter")
                 }
                 result.onFailure {
-                    handleFailure("getMyRoutes", errLog = it.message)
+                    handleFailure("getMyRoutesWithFilter", errLog = it.message)
                 }
+        }
+    }
+
+    fun getMyRoutes() {
+        setPendingState()
+        getMyRoutesUseCase(
+            scope = viewModelScope
+        ) {
+                result ->
+            setIdleState()
+            result.onSuccess {
+                _myRoutes.value = it.map { route ->  RouteDisplayable(route)}
+                _isFilter.value = false
+                handleSuccess("getMyRoutes")
+            }
+            result.onFailure {
+                handleFailure("getMyRoutes", errLog = it.message)
+            }
         }
     }
 

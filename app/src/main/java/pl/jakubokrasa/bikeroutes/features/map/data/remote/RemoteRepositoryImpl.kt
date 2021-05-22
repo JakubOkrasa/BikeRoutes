@@ -46,7 +46,20 @@ class RemoteRepositoryImpl(
 
     }
 
-    override suspend fun getMyRoutes(uid: String, filterData: FilterData): List<Route> {
+    override suspend fun getMyRoutes(uid: String): List<Route> {
+        val routeResponseList = ArrayList<RouteResponse>()
+        val documents =
+            firestore
+            .collection("routes")
+            .whereEqualTo("userId", uid)
+            .get().await().documents
+
+        for (doc in documents)
+            doc.toObject(RouteResponse::class.java)?.let { routeResponseList.add(it) }
+        return routeResponseList.map { it.toRoute()}
+    }
+
+    override suspend fun getMyRoutesWithFilter(uid: String, filterData: FilterData): List<Route> {
         val routeResponseList = ArrayList<RouteResponse>()
         val documents: List<DocumentSnapshot>
 
@@ -65,10 +78,8 @@ class RemoteRepositoryImpl(
         }
 
         if(minDistanceMeters==null && maxDistanceMeters==null) {
-            documents = firestore
-                .collection("routes")
-                .whereEqualTo("userId", uid)
-                .get().await().documents
+            return getMyRoutes(uid)
+
         } else if(minDistanceMeters == null && maxDistanceMeters != null) {
             documents = firestore
                 .collection("routes")

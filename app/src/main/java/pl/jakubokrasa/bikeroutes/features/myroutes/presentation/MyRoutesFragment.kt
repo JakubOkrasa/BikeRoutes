@@ -19,6 +19,7 @@ import pl.jakubokrasa.bikeroutes.core.util.getFormattedFilterDistance
 import pl.jakubokrasa.bikeroutes.core.util.getFormattedFilterDistanceGreaterThan
 import pl.jakubokrasa.bikeroutes.core.util.getFormattedFilterDistanceLessThan
 import pl.jakubokrasa.bikeroutes.databinding.FragmentMyRoutesBinding
+import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteDisplayable
 import pl.jakubokrasa.bikeroutes.features.myroutes.domain.FilterData
 import pl.jakubokrasa.bikeroutes.features.myroutes.navigation.MyRoutesNavigator
 
@@ -30,6 +31,7 @@ import pl.jakubokrasa.bikeroutes.features.myroutes.navigation.MyRoutesNavigator
     private val divider: DividerItemDecoration by inject()
     private val myRoutesNavigator: MyRoutesNavigator by inject()
     private lateinit var dialogFilter: Dialog
+    private var isFilter = false
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -37,7 +39,7 @@ import pl.jakubokrasa.bikeroutes.features.myroutes.navigation.MyRoutesNavigator
         initRecycler() // todo ten init powinien być w initViews() ale wtedy jest java.lang.NullPointerException
                         //at pl.jakubokrasa.bikeroutes.features.myroutes.presentation.MyRoutesFragment.getBinding(MyRoutesFragment.kt:17)
                         //w AA to działą
-        viewModel.getMyRoutes(FilterData())
+        viewModel.getMyRoutes()
 
         binding.btFilter.setOnClickListener(btFilterOnClick)
         dialogFilter = Dialog(requireContext())
@@ -52,6 +54,7 @@ import pl.jakubokrasa.bikeroutes.features.myroutes.navigation.MyRoutesNavigator
 
     override fun initObservers() {
         super.initObservers()
+        observeIsFilter()
         observeMyRoutes()
     }
 
@@ -62,19 +65,35 @@ import pl.jakubokrasa.bikeroutes.features.myroutes.navigation.MyRoutesNavigator
     private fun observeMyRoutes() {
         viewModel.myRoutes.observe(viewLifecycleOwner) {
             if(it.isNotEmpty()) {
-                binding.recyclerView.visibility = View.VISIBLE
-                binding.tvNoData.visibility = View.GONE
-                myRoutesRecyclerAdapter.setItems(it)
+                showRecyclerWithItems(it)
             } else {
-                binding.tvNoData.visibility = View.VISIBLE
-                binding.recyclerView.visibility = View.GONE
+                showNoDataMessage()
             }
         }
     }
 
+     private fun showNoDataMessage() {
+         if (isFilter) binding.tvNoData.text = String.format(getString(R.string.fragment_myroutes_no_data_filter))
+         else binding.tvNoData.text = getString(R.string.fragment_myroutes_no_data)
+         binding.tvNoData.visibility = View.VISIBLE
+         binding.recyclerView.visibility = View.GONE
+     }
+
+     private fun showRecyclerWithItems(it: List<RouteDisplayable>) {
+         binding.recyclerView.visibility = View.VISIBLE
+         binding.tvNoData.visibility = View.GONE
+         myRoutesRecyclerAdapter.setItems(it)
+     }
+
      private fun observePoints() {
          viewModel.pointsFromRemote.observe(viewLifecycleOwner) {
              // not needed right now, points are taken from remote onClick item by viewModel
+         }
+     }
+
+     private fun observeIsFilter() {
+         viewModel.isFilter.observe(viewLifecycleOwner) {
+             isFilter = it
          }
      }
 
@@ -114,7 +133,7 @@ import pl.jakubokrasa.bikeroutes.features.myroutes.navigation.MyRoutesNavigator
          val dialogBinder = DialogBinder(slider, btSave, btCancel, tvResult)
          initializeDistanceSlider(dialogBinder)
          dialogBinder.btSave.setOnClickListener {
-             viewModel.getMyRoutes(FilterData(dialogBinder.slider.values[0].toInt(), dialogBinder.slider.values[1].toInt()))
+             viewModel.getMyRoutesWithFilter(FilterData(dialogBinder.slider.values[0].toInt(), dialogBinder.slider.values[1].toInt()))
 //             if(viewModel.myRoutes.value?.size == 0) //todo do it onSuccess, ealier split getMyRoutes into normal and "with filter"
 //                 binding.tvNoData.text = String.format("No route meets these requirements")
 
