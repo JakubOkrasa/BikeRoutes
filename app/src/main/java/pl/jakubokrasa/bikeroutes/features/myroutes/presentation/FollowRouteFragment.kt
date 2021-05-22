@@ -2,13 +2,16 @@ package pl.jakubokrasa.bikeroutes.features.myroutes.presentation
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.Dialog
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.location.Location
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.Window
 import android.view.WindowManager
 import androidx.core.content.res.ResourcesCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
@@ -22,6 +25,7 @@ import pl.jakubokrasa.bikeroutes.R
 import pl.jakubokrasa.bikeroutes.core.base.platform.BaseFragment
 import pl.jakubokrasa.bikeroutes.core.util.*
 import pl.jakubokrasa.bikeroutes.core.util.enums.MapMode
+import pl.jakubokrasa.bikeroutes.databinding.DialogConfirmBinding
 import pl.jakubokrasa.bikeroutes.databinding.FragmentFollowRouteBinding
 import pl.jakubokrasa.bikeroutes.features.map.domain.LocationService
 import pl.jakubokrasa.bikeroutes.features.map.presentation.MapFragment.Companion.SEND_LOCATION_ACTION
@@ -39,6 +43,7 @@ class FollowRouteFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_fo
     private val polyline = Polyline()
     private val mLocalBR: LocalBroadcastManager by inject()
     private lateinit var mPreviousLocMarker: Marker
+    private lateinit var dialogConfirmRemove: Dialog
 
     private var mapMode = MapMode.moveFreely
 
@@ -53,6 +58,7 @@ class FollowRouteFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_fo
         showRoute(view)
 
         binding.btShowLocation.setOnClickListener(btShowLocationOnClick)
+        dialogConfirmRemove = initializeDialogConfirmRemove()
     }
 
     override fun onStart() {
@@ -90,20 +96,20 @@ class FollowRouteFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_fo
 
     private fun updateToolbar() {
         binding.toolbar.inflateMenu(R.menu.menu_followroute_home)
-        binding.toolbar.setOnMenuItemClickListener {
-            when (it.itemId) {
+        binding.toolbar.setOnMenuItemClickListener { menuItem ->
+            when (menuItem.itemId) {
                 R.id.action_followroute_edit -> {
                     clearToolbarMenu()
                     binding.toolbar.inflateMenu(R.menu.menu_followroute_edit)
-                    binding.toolbar.setOnMenuItemClickListener {
-                        when (it.itemId) {
+                    binding.toolbar.setOnMenuItemClickListener { insideMenuItem ->
+                        when (insideMenuItem.itemId) {
                             R.id.action_followroute_done -> {
                                 clearToolbarMenu()
                                 updateToolbar()
                                 true
                             }
                             R.id.action_followroute_remove -> {
-                                viewModel.deleteRoute(route)
+                                dialogConfirmRemove.show()
                                 true
                             }
                             else -> false
@@ -114,6 +120,23 @@ class FollowRouteFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_fo
                 else -> false
             }
         }
+    }
+
+    private fun initializeDialogConfirmRemove(): Dialog {
+        val dialogConfirm = Dialog(requireContext())
+        dialogConfirm.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialogConfirm.setCancelable(true)
+        dialogConfirm.setContentView(R.layout.dialog_confirm)
+        val dlgBinding = DialogConfirmBinding.inflate(LayoutInflater.from(context))
+        dialogConfirm.setContentView(dlgBinding.root)
+        dlgBinding.btConfirm.setOnClickListener(btDialogConfirmOnClick)
+        dlgBinding.btCancel.setOnClickListener { dialogConfirm.dismiss() }
+        return dialogConfirm
+    }
+
+    private val btDialogConfirmOnClick = View.OnClickListener {
+        viewModel.removeRouteAndNavBack(route)
+        dialogConfirmRemove.dismiss()
     }
 
     private fun updateRouteInfo() {
@@ -219,12 +242,12 @@ class FollowRouteFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_fo
 
     override fun onPendingState() {
         super.onPendingState()
-//        binding.progressLayout.visibility = View.VISIBLE
+        binding.progressLayout.visibility = View.VISIBLE
     }
 
     override fun onIdleState() {
         super.onIdleState()
-//        binding.progressLayout.visibility = View.GONE
+        binding.progressLayout.visibility = View.GONE
     }
 
     companion object {

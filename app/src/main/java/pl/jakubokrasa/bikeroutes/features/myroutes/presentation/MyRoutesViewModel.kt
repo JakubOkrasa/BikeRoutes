@@ -14,7 +14,7 @@ class MyRoutesViewModel(
     private val getMyRoutesUseCase: GetMyRoutesUseCase,
     private val getMyRoutesWithFilterUseCase: GetMyRoutesWithFilterUseCase,
     private val getPointsFromRemoteUseCase: GetPointsFromRemoteUseCase,
-    private val deleteRouteUseCase: DeleteRouteUseCase,
+    private val removeRouteUseCase: RemoveRouteUseCase,
     private val myRoutesNavigator: MyRoutesNavigator,
 ): BaseViewModel() {
 
@@ -28,16 +28,19 @@ class MyRoutesViewModel(
     val isFilter: LiveData<Boolean> by lazy { _isFilter }
 
 
-    fun deleteRoute(route: RouteDisplayable) {
+    fun removeRouteAndNavBack(route: RouteDisplayable) {
         setPendingState()
-        deleteRouteUseCase(
+        removeRouteUseCase(
             params = route.toRoute(),
             scope = viewModelScope
         ){
                 result ->
             setIdleState()
-            result.onSuccess { handleSuccess("deleteRoute", "Route was removed")}
-            result.onFailure { handleFailure("deleteRoute", "Route wasn't removed") }
+            result.onSuccess {
+                myRoutesNavigator.goBack()
+                handleSuccess("removeRouteAndNavBack", "Route was removed")
+            }
+            result.onFailure { handleFailure("removeRouteAndNavBack", "Route wasn't removed") }
         }
     }
 

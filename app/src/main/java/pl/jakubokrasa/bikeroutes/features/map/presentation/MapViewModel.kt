@@ -12,7 +12,7 @@ class MapViewModel(
     private val getPointsUseCase: GetPointsUseCase,
     private val deletePointsUseCase: DeletePointsUseCase,
     private val saveRouteUseCase: SaveRouteUseCase,
-//    private val deleteRouteUseCase: DeleteRouteUseCase,
+//    private val deleteRouteUseCase: RemoveRouteUseCase,
     private val updateDistanceByPrefsUseCase: UpdateDistanceByPrefsUseCase,
 
 ) : BaseViewModel() {
