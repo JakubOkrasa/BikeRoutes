@@ -20,7 +20,7 @@ package pl.jakubokrasa.bikeroutes.features.map.presentation
 //    private val saveRouteUseCase: SaveRouteUseCase,
 //    private val getMyRoutesUseCase: GetMyRoutesUseCase,
 //    private val getMyRoutesWithFilterUseCase: GetMyRoutesWithFilterUseCase,
-////    private val deleteRouteUseCase: DeleteRouteUseCase,
+////    private val deleteRouteUseCase: RemoveRouteUseCase,
 //    private val updateDistanceByPrefsUseCase: UpdateDistanceByPrefsUseCase,
 //    private val getPointsFromRemoteUseCase: GetPointsFromRemoteUseCase,
 //

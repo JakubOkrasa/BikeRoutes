@@ -129,18 +129,16 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
      private fun initializeFilterDialog(dialog: Dialog): DialogBinder {
          dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-         dialog.setCancelable(false)
+         dialog.setCancelable(true)
          dialog.setContentView(R.layout.dialog_myroutes_filter)
-         val btSave = dialog.findViewById<Button>(R.id.dialog_myroutesfilter_bt_save)
+         val btSave = dialog.findViewById<Button>(R.id.dialog_myroutesfilter_bt_save) //todo view binding like in DialogConfirm
          val btCancel = dialog.findViewById<Button>(R.id.dialog_myroutesfilter_bt_cancel)
          val slider = dialog.findViewById<RangeSlider>(R.id.dialog_myroutesfilter_slider_distance)
          val tvResult = dialog.findViewById<TextView>(R.id.dialog_myroutesfilter_tv_distance_result)
          val dialogBinder = DialogBinder(slider, btSave, btCancel, tvResult)
          initializeDistanceSlider(dialogBinder)
          dialogBinder.btSave.setOnClickListener {
-             viewModel.getMyRoutesWithFilter(FilterData(dialogBinder.slider.values[0].toInt(), dialogBinder.slider.values[1].toInt()))
-//             if(viewModel.myRoutes.value?.size == 0) //todo do it onSuccess, ealier split getMyRoutes into normal and "with filter"
-//                 binding.tvNoData.text = String.format("No route meets these requirements")
+             viewModel.getMyRoutesWithFilter(FilterData(dialogBinder.slider.getValFrom(), dialogBinder.slider.getValTo()))
 
              if(dialogBinder.slider.getValFrom() > 0.0f) {
                  binding.btFilterDistgreaterthan.text =

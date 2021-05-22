@@ -106,6 +106,18 @@ class RemoteRepositoryImpl(
         return routeResponseList.map { it.toRoute()}
     }
 
+    override suspend fun deleteRoute(route: Route) {
+        val routeDoc = firestore.collection("routes").document(route.routeId)
+        val pointsDoc = firestore.collection("points").document(route.routeId)
+        val userDoc = firestore.collection("users").document(route.userId)
+
+        firestore.runBatch { batch ->
+            batch.delete(routeDoc)
+            batch.delete(pointsDoc)
+            batch.update(userDoc, "routes", FieldValue.arrayRemove(route.routeId))
+        }.await()
+    }
+
     override suspend fun getPoints(routeId: String): List<Point> {
         val doc = firestore.collection("points").document(routeId).get().await()
         return doc.toObject(PointDocument::class.java)?.pointsArray?.map { it.toPoint() } ?: throw RuntimeException(
