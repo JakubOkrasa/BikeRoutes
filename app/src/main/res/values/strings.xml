@@ -17,4 +17,6 @@
     <string name="back">BACK</string>
     <string name="get_password_link">get password link</string>
     <string name="title_account">Account</string>
+    <string name="fragment_myroutes_no_data">It seems that you don\'t have any route at the moment.</string>
+    <string name="fragment_myroutes_no_data_filter">No route meets your filters.</string>
 </resources>

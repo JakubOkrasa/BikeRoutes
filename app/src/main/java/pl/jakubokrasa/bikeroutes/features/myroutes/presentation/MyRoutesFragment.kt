@@ -11,9 +11,18 @@ import com.google.android.material.slider.RangeSlider
 import org.koin.android.ext.android.inject
 import pl.jakubokrasa.bikeroutes.R
 import pl.jakubokrasa.bikeroutes.core.base.platform.BaseFragment
+import pl.jakubokrasa.bikeroutes.core.extensions.getValFrom
+import pl.jakubokrasa.bikeroutes.core.extensions.getValTo
+import pl.jakubokrasa.bikeroutes.core.extensions.makeGone
+import pl.jakubokrasa.bikeroutes.core.extensions.makeVisible
+import pl.jakubokrasa.bikeroutes.core.util.getFormattedFilterDistance
+import pl.jakubokrasa.bikeroutes.core.util.getFormattedFilterDistanceGreaterThan
+import pl.jakubokrasa.bikeroutes.core.util.getFormattedFilterDistanceLessThan
 import pl.jakubokrasa.bikeroutes.databinding.FragmentMyRoutesBinding
+import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteDisplayable
 import pl.jakubokrasa.bikeroutes.features.myroutes.domain.FilterData
 import pl.jakubokrasa.bikeroutes.features.myroutes.navigation.MyRoutesNavigator
+
 
  class MyRoutesFragment : BaseFragment(R.layout.fragment_my_routes){
     private var _binding: FragmentMyRoutesBinding? = null
@@ -21,6 +30,8 @@ import pl.jakubokrasa.bikeroutes.features.myroutes.navigation.MyRoutesNavigator
     private val myRoutesRecyclerAdapter: MyRoutesRecyclerAdapter by inject()
     private val divider: DividerItemDecoration by inject()
     private val myRoutesNavigator: MyRoutesNavigator by inject()
+    private lateinit var dialogFilter: Dialog
+    private var isFilter = false
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -28,9 +39,11 @@ import pl.jakubokrasa.bikeroutes.features.myroutes.navigation.MyRoutesNavigator
         initRecycler() // todo ten init powinien być w initViews() ale wtedy jest java.lang.NullPointerException
                         //at pl.jakubokrasa.bikeroutes.features.myroutes.presentation.MyRoutesFragment.getBinding(MyRoutesFragment.kt:17)
                         //w AA to działą
-        viewModel.getMyRoutes(FilterData())
+        viewModel.getMyRoutes()
 
         binding.btFilter.setOnClickListener(btFilterOnClick)
+        dialogFilter = Dialog(requireContext())
+        initializeFilterDialog(dialogFilter)
     }
 
     override fun onResume() {
@@ -41,6 +54,7 @@ import pl.jakubokrasa.bikeroutes.features.myroutes.navigation.MyRoutesNavigator
 
     override fun initObservers() {
         super.initObservers()
+        observeIsFilter()
         observeMyRoutes()
     }
 
@@ -51,15 +65,25 @@ import pl.jakubokrasa.bikeroutes.features.myroutes.navigation.MyRoutesNavigator
     private fun observeMyRoutes() {
         viewModel.myRoutes.observe(viewLifecycleOwner) {
             if(it.isNotEmpty()) {
-                binding.recyclerView.visibility = View.VISIBLE
-                binding.tvNoData.visibility = View.GONE
-                myRoutesRecyclerAdapter.setItems(it)
+                showRecyclerWithItems(it)
             } else {
-                binding.tvNoData.visibility = View.VISIBLE
-                binding.recyclerView.visibility = View.GONE
+                showNoDataMessage()
             }
         }
     }
+
+     private fun showNoDataMessage() {
+         if (isFilter) binding.tvNoData.text = String.format(getString(R.string.fragment_myroutes_no_data_filter))
+         else binding.tvNoData.text = getString(R.string.fragment_myroutes_no_data)
+         binding.tvNoData.visibility = View.VISIBLE
+         binding.recyclerView.visibility = View.GONE
+     }
+
+     private fun showRecyclerWithItems(it: List<RouteDisplayable>) {
+         binding.recyclerView.visibility = View.VISIBLE
+         binding.tvNoData.visibility = View.GONE
+         myRoutesRecyclerAdapter.setItems(it)
+     }
 
      private fun observePoints() {
          viewModel.pointsFromRemote.observe(viewLifecycleOwner) {
@@ -67,12 +91,17 @@ import pl.jakubokrasa.bikeroutes.features.myroutes.navigation.MyRoutesNavigator
          }
      }
 
+     private fun observeIsFilter() {
+         viewModel.isFilter.observe(viewLifecycleOwner) {
+             isFilter = it
+         }
+     }
+
     private fun initRecycler() {
         with(binding.recyclerView) {
             addItemDecoration(divider)
             setHasFixedSize(true)
-            myRoutesRecyclerAdapter.onItemClick = {
-                route ->
+            myRoutesRecyclerAdapter.onItemClick = { route ->
                 viewModel.getPointsFromRemoteAndOpenFollowRouteFrg(route)
             }
             adapter = myRoutesRecyclerAdapter
@@ -90,29 +119,55 @@ import pl.jakubokrasa.bikeroutes.features.myroutes.navigation.MyRoutesNavigator
     }
 
      private val btFilterOnClick = View.OnClickListener {
-         val dialog = Dialog(requireContext())
+         dialogFilter.show()
+     }
+
+     private fun initializeFilterDialog(dialog: Dialog): DialogBinder {
          dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
          dialog.setCancelable(false)
          dialog.setContentView(R.layout.dialog_myroutes_filter)
-         val btSave = dialog.findViewById<Button>(R.id.bt_save)
-         val btCancel = dialog.findViewById<TextView>(R.id.bt_cancel)
+         val btSave = dialog.findViewById<Button>(R.id.dialog_myroutesfilter_bt_save)
+         val btCancel = dialog.findViewById<Button>(R.id.dialog_myroutesfilter_bt_cancel)
+         val slider = dialog.findViewById<RangeSlider>(R.id.dialog_myroutesfilter_slider_distance)
+         val tvResult = dialog.findViewById<TextView>(R.id.dialog_myroutesfilter_tv_distance_result)
+         val dialogBinder = DialogBinder(slider, btSave, btCancel, tvResult)
+         initializeDistanceSlider(dialogBinder)
+         dialogBinder.btSave.setOnClickListener {
+             viewModel.getMyRoutesWithFilter(FilterData(dialogBinder.slider.values[0].toInt(), dialogBinder.slider.values[1].toInt()))
+//             if(viewModel.myRoutes.value?.size == 0) //todo do it onSuccess, ealier split getMyRoutes into normal and "with filter"
+//                 binding.tvNoData.text = String.format("No route meets these requirements")
 
-         val slider = dialog.findViewById<RangeSlider>(R.id.slider_distance)
-         slider.setValues(0.0f, DISTANCE_SLIDER_VALUE_TO)
-         slider.valueTo = DISTANCE_SLIDER_VALUE_TO
-         slider.setLabelFormatter { value: Float ->
-             if(value == slider.valueTo)
-                 return@setLabelFormatter ">${value}km"
-             return@setLabelFormatter "${value}km"
-         }
-         btSave.setOnClickListener {
-             viewModel.getMyRoutes(FilterData(slider.values[0].toInt(), slider.values[1].toInt()))
-             if(viewModel.myRoutes.value?.size == 0)
-                 binding.tvNoData.text = "No route meets these requirements"
+             if(dialogBinder.slider.getValFrom() > 0.0f) {
+                 binding.btFilterDistgreaterthan.text =
+                     getFormattedFilterDistanceGreaterThan(dialogBinder.slider.getValFrom())
+                 binding.btFilterDistgreaterthan.makeVisible()
+             } else {
+                 binding.btFilterDistgreaterthan.makeGone()
+             }
+             if(dialogBinder.slider.getValTo() < DISTANCE_SLIDER_VALUE_TO) {
+                 binding.btFilterDistlessthan.text =
+                     getFormattedFilterDistanceLessThan(dialogBinder.slider.getValTo())
+                 binding.btFilterDistlessthan.makeVisible()
+             } else {
+                 binding.btFilterDistlessthan.makeGone()
+             }
+
              dialog.dismiss()
          }
-         btCancel.setOnClickListener { dialog.dismiss() }
-         dialog.show()
+         dialogBinder.btCancel.setOnClickListener { dialog.dismiss() }
+         return dialogBinder
+     }
+
+     private fun initializeDistanceSlider(dialogBinder: DialogBinder) {
+         with(dialogBinder.slider) {
+             valueFrom = 0.0f
+             valueTo = DISTANCE_SLIDER_VALUE_TO
+             setValues(0.0f, DISTANCE_SLIDER_VALUE_TO)
+             addOnChangeListener(RangeSlider.OnChangeListener { _, _, _ ->
+                 dialogBinder.tvResult.text = getFormattedFilterDistance(getValFrom(), getValTo())
+             })
+         }
+
      }
 
      override fun onPendingState() {
@@ -129,4 +184,11 @@ import pl.jakubokrasa.bikeroutes.features.myroutes.navigation.MyRoutesNavigator
         val LOG_TAG = MyRoutesFragment::class.simpleName
         const val DISTANCE_SLIDER_VALUE_TO = 500.0f
     }
+
+     data class DialogBinder(
+         val slider: RangeSlider,
+         val btSave: Button,
+         val btCancel: Button,
+         val tvResult: TextView
+     )
 }

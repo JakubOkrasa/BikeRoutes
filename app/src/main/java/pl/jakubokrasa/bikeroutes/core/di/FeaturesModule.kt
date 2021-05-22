@@ -8,6 +8,7 @@ import pl.jakubokrasa.bikeroutes.features.map.presentation.RouteViewModel
 import pl.jakubokrasa.bikeroutes.features.map.domain.LocalRepository
 import pl.jakubokrasa.bikeroutes.features.map.domain.usecase.*
 import pl.jakubokrasa.bikeroutes.features.myroutes.domain.GetMyRoutesUseCase
+import pl.jakubokrasa.bikeroutes.features.myroutes.domain.GetMyRoutesWithFilterUseCase
 
 val featuresModule = module {
     factory<LocalRepository> { LocalRepositoryImpl(get()) }
@@ -16,12 +17,13 @@ val featuresModule = module {
     factory { GetPointsUseCase(get()) }
     factory { SaveRouteUseCase(get(), get(), get()) }
     factory { GetMyRoutesUseCase(get(), get()) }
+    factory { GetMyRoutesWithFilterUseCase(get(), get()) }
     factory { DeletePointsUseCase(get()) }
     factory { UpdateDistanceByPrefsUseCase(get()) }
 
     factory { pl.jakubokrasa.bikeroutes.features.myroutes.domain.GetPointsFromRemoteUseCase(get()) }
 
-    viewModel { RouteViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
+    viewModel { RouteViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
     factory { MyRoutesRecyclerAdapter() }
 }
 
