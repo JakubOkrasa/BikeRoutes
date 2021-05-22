@@ -7,7 +7,7 @@
     android:paddingVertical="10dp">
 
     <TextView
-        android:id="@+id/tv_title"
+        android:id="@+id/dialog_myroutesfilter_tv_title"
         style="@style/tv_medium"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -15,32 +15,44 @@
         android:layout_height="wrap_content"
         android:text="Distance range"/>
 
+    <TextView
+        android:id="@+id/dialog_myroutesfilter_tv_distance_result"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toBottomOf="@id/dialog_myroutesfilter_tv_title"
+        app:layout_constraintLeft_toRightOf="@id/dialog_myroutesfilter_tv_title"
+        app:layout_constraintRight_toRightOf="parent"
+        android:background="#ddd"
+        android:padding="3dp"
+        android:textColor="#333"
+        android:text="0 km - 500km"/>
+
     <com.google.android.material.slider.RangeSlider
-        android:id="@+id/slider_distance"
-        app:layout_constraintTop_toBottomOf="@id/tv_title"
+        android:id="@+id/dialog_myroutesfilter_slider_distance"
+        app:layout_constraintTop_toBottomOf="@id/dialog_myroutesfilter_tv_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:valueFrom="0.0"
-        android:valueTo="500.0"
-        android:stepSize="5.0"/>
+        app:labelBehavior="gone"
+        android:stepSize="1.0" />
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/slider_distance"
+        app:layout_constraintTop_toBottomOf="@id/dialog_myroutesfilter_slider_distance"
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginTop="10dp"
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/bt_cancel"
+            android:id="@+id/dialog_myroutesfilter_bt_cancel"
             android:backgroundTint="#ccc"
             android:textColor="@color/black"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="CANCEL"/>
         <Button
-            android:id="@+id/bt_save"
+            android:id="@+id/dialog_myroutesfilter_bt_save"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="save"

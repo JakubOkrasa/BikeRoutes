@@ -9,5 +9,6 @@
     <color name="white">#FFFFFFFF</color>
     <color name="blurred_white">#EEE</color>
     <color name="black_default">#222</color>
+    <color name="light_green">#69AE6C</color>
 
 </resources>
