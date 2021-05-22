@@ -61,8 +61,6 @@ class RemoteRepositoryImpl(
 
     override suspend fun getMyRoutesWithFilter(uid: String, filterData: FilterData): List<Route> {
         val routeResponseList = ArrayList<RouteResponse>()
-        val documents: List<DocumentSnapshot>
-
         var minDistanceMeters: Int? = null
         var maxDistanceMeters: Int? = null
 
@@ -77,32 +75,15 @@ class RemoteRepositoryImpl(
                 else it * 1000
         }
 
-        if(minDistanceMeters==null && maxDistanceMeters==null) {
-            return getMyRoutes(uid)
-
-        } else if(minDistanceMeters == null && maxDistanceMeters != null) {
-            documents = firestore
-                .collection("routes")
-                .whereEqualTo("userId", uid)
-                .whereLessThanOrEqualTo("distance", maxDistanceMeters!!)
-                .get().await().documents
-        } else if(minDistanceMeters != null && maxDistanceMeters == null){
-            documents = firestore
-                .collection("routes")
-                .whereEqualTo("userId", uid)
-                .whereGreaterThanOrEqualTo("distance", minDistanceMeters!!)
-                .get().await().documents
-        } else {
-            documents = firestore
-                .collection("routes")
-                .whereEqualTo("userId", uid)
-                .whereGreaterThanOrEqualTo("distance", minDistanceMeters!!)
-                .whereLessThanOrEqualTo("distance", maxDistanceMeters!!)
-                .get().await().documents
-        }
+        var query = firestore.collection("routes")
+            .whereEqualTo("userId", uid)
+        maxDistanceMeters?.let { query = query.whereLessThanOrEqualTo("distance", it) }
+        minDistanceMeters?.let { query = query.whereGreaterThanOrEqualTo("distance", it) }
+        val documents = query.get().await()
 
         for (doc in documents)
-            doc.toObject(RouteResponse::class.java)?.let { routeResponseList.add(it) }
+            doc.toObject(RouteResponse::class.java)
+                .let { routeResponseList.add(it) }
         return routeResponseList.map { it.toRoute()}
     }
 
