@@ -6,21 +6,21 @@ fun getFormattedRideTime(rideTimeMinutes: Int): String {
     val rideTimeRemainedMinutes = rideTimeMinutes%60
     val rideTimeHours = (rideTimeMinutes - rideTimeRemainedMinutes) / 60
     if(rideTimeHours>0)
-        return String.format("%dh %dmin", rideTimeHours, rideTimeRemainedMinutes)
+        return String.format("%d h %d min", rideTimeHours, rideTimeRemainedMinutes)
     else {
         if(rideTimeMinutes>0)
-            return String.format("%dmin", rideTimeRemainedMinutes)
+            return String.format("%d min", rideTimeRemainedMinutes)
         else
-            return String.format("1min", rideTimeRemainedMinutes)
+            return String.format("1 min", rideTimeRemainedMinutes)
 
     }
 }
 
 fun getFormattedDistance(distanceMeters: Int): String {
     if (distanceMeters < 1_000)
-        return String.format("%dm", distanceMeters)
+        return String.format("%d m", distanceMeters)
     else
-        return String.format("%.1fkm", (distanceMeters / 1_000.0).toFloat())
+        return String.format("%.1f km", (distanceMeters / 1_000.0).toFloat())
 }
 
 fun getFormattedFilterDistance(valueFrom: Int, valueTo: Int): String {

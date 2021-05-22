@@ -64,7 +64,6 @@ class MapFragment() : BaseFragment<MapViewModel>(R.layout.fragment_map), KoinCom
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentMapBinding.bind(view)
-        requireActivity().window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         requestPermissionsIfNecessary(OSM_PERMISSIONS)
         configureOsmDroid(requireContext())
         LocationUtils(activity as Activity).enableGpsIfNecessary()
@@ -234,6 +233,7 @@ class MapFragment() : BaseFragment<MapViewModel>(R.layout.fragment_map), KoinCom
         observePoints()
         binding.btStartRecord.makeGone()
         binding.btStopRecord.makeVisible()
+        requireActivity().window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
 
     private fun disableRecordingMode() {
@@ -243,6 +243,7 @@ class MapFragment() : BaseFragment<MapViewModel>(R.layout.fragment_map), KoinCom
         stopObservePoints()
         binding.btStopRecord.makeGone()
         binding.btStartRecord.makeVisible()
+        requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
 
     private fun isRecordingMode() = preferenceHelper.preferences.getBoolean(PREF_KEY_MAPFRAGMENT_MODE_RECORDING, false)

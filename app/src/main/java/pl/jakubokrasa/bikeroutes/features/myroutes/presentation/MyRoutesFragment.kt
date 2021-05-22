@@ -30,8 +30,6 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
     private val binding get() = _binding!!
     private val myRoutesRecyclerAdapter: MyRoutesRecyclerAdapter by inject()
 	override val viewModel: MyRoutesViewModel by sharedViewModel()
-    private val divider: DividerItemDecoration by inject()
-    private val myRoutesNavigator: MyRoutesNavigator by inject()
     private lateinit var dialogFilter: Dialog
     private var isFilter = false
 

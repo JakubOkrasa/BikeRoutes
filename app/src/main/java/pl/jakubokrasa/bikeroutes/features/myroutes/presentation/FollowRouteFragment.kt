@@ -9,6 +9,7 @@ import android.content.IntentFilter
 import android.location.Location
 import android.os.Bundle
 import android.view.View
+import android.view.WindowManager
 import androidx.core.content.res.ResourcesCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import org.koin.android.ext.android.inject
@@ -180,11 +181,21 @@ class FollowRouteFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_fo
     @SuppressLint("ClickableViewAccessibility")
     private val btShowLocationOnClick = View.OnClickListener {
         binding.mapView.controller.animateTo(mPreviousLocMarker.position)
-        mapMode = MapMode.followLocation
+        enableFollowingLocation()
         binding.mapView.setOnTouchListener { _, _ ->
-            mapMode = MapMode.moveFreely //todo to się wykonuje za każdym dotknięciem. Można spróbować tego uniknąć https://stackoverflow.com/a/6619160/9343040
+            disableFollowingLocation() //todo to się wykonuje za każdym dotknięciem. Można spróbować tego uniknąć https://stackoverflow.com/a/6619160/9343040
             false // todo co tu oznacza false?
         }
+    }
+
+    private fun disableFollowingLocation() {
+        mapMode = MapMode.moveFreely
+        requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+    }
+
+    private fun enableFollowingLocation() {
+        mapMode = MapMode.followLocation
+        requireActivity().window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
 
     private fun stopLocationService() {
