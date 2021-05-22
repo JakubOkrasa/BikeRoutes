@@ -10,5 +10,7 @@ interface RemoteRepository {
     suspend fun getMyRoutes(uid: String): List<Route>
     suspend fun getMyRoutesWithFilter(uid: String, filterData: FilterData): List<Route>
 
+    suspend fun deleteRoute(route: Route)
+
     suspend fun getPoints(routeId: String): List<Point>
 }

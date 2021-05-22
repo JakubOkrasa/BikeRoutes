@@ -103,8 +103,7 @@ class FollowRouteFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_fo
                                 true
                             }
                             R.id.action_followroute_remove -> {
-                                showToast("Feature not yet implemented")
-//                                viewModel.deleteRoute(route.toRoute())
+                                viewModel.deleteRoute(route)
                                 true
                             }
                             else -> false
@@ -216,6 +215,16 @@ class FollowRouteFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_fo
                         points = serializable as List<PointDisplayable>
                     }
                 }
+    }
+
+    override fun onPendingState() {
+        super.onPendingState()
+//        binding.progressLayout.visibility = View.VISIBLE
+    }
+
+    override fun onIdleState() {
+        super.onIdleState()
+//        binding.progressLayout.visibility = View.GONE
     }
 
     companion object {

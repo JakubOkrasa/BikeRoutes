@@ -7,16 +7,14 @@ import androidx.lifecycle.viewModelScope
 import pl.jakubokrasa.bikeroutes.core.base.platform.BaseViewModel
 import pl.jakubokrasa.bikeroutes.features.map.presentation.model.PointDisplayable
 import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteDisplayable
-import pl.jakubokrasa.bikeroutes.features.myroutes.domain.FilterData
-import pl.jakubokrasa.bikeroutes.features.myroutes.domain.GetMyRoutesUseCase
-import pl.jakubokrasa.bikeroutes.features.myroutes.domain.GetMyRoutesWithFilterUseCase
-import pl.jakubokrasa.bikeroutes.features.myroutes.domain.GetPointsFromRemoteUseCase
+import pl.jakubokrasa.bikeroutes.features.myroutes.domain.*
 import pl.jakubokrasa.bikeroutes.features.myroutes.navigation.MyRoutesNavigator
 
 class MyRoutesViewModel(
     private val getMyRoutesUseCase: GetMyRoutesUseCase,
     private val getMyRoutesWithFilterUseCase: GetMyRoutesWithFilterUseCase,
     private val getPointsFromRemoteUseCase: GetPointsFromRemoteUseCase,
+    private val deleteRouteUseCase: DeleteRouteUseCase,
     private val myRoutesNavigator: MyRoutesNavigator,
 ): BaseViewModel() {
 
@@ -29,17 +27,20 @@ class MyRoutesViewModel(
     val myRoutes: LiveData<List<RouteDisplayable>> by lazy { _myRoutes }
     val isFilter: LiveData<Boolean> by lazy { _isFilter }
 
-//
-//    fun deleteRoute(route: Route) {
-//        deleteRouteUseCase(
-//            params = route,
-//            scope = viewModelScope
-//        ){
-//                result -> result.onSuccess { Log.d(LOG_TAG, "route removed")}
-//            result.onFailure { Log.e(LOG_TAG, "route removing error") }
-//        }
-//    }
-//
+
+    fun deleteRoute(route: RouteDisplayable) {
+        setPendingState()
+        deleteRouteUseCase(
+            params = route.toRoute(),
+            scope = viewModelScope
+        ){
+                result ->
+            setIdleState()
+            result.onSuccess { handleSuccess("deleteRoute", "Route was removed")}
+            result.onFailure { handleFailure("deleteRoute", "Route wasn't removed") }
+        }
+    }
+
 
 
     fun getMyRoutesWithFilter(filterData: FilterData) {
