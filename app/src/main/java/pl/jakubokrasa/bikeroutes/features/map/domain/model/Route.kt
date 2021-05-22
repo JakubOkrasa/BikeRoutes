@@ -1,6 +1,6 @@
 package pl.jakubokrasa.bikeroutes.features.map.domain.model
 
-import pl.jakubokrasa.bikeroutes.core.user.sharingType
+import pl.jakubokrasa.bikeroutes.core.util.enums.sharingType
 
 data class Route(
     val routeId: String,

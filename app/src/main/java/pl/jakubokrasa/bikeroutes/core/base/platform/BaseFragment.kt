@@ -6,12 +6,10 @@ import android.widget.Toast
 import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
 import org.koin.android.ext.android.inject
-import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import pl.jakubokrasa.bikeroutes.core.extensions.PreferenceHelper
-import pl.jakubokrasa.bikeroutes.features.map.presentation.RouteViewModel
 
-open class BaseFragment(@LayoutRes layoutRes: Int): Fragment(layoutRes) {
-    protected val viewModel: RouteViewModel by sharedViewModel()
+abstract class BaseFragment<T: BaseViewModel>(@LayoutRes layoutRes: Int): Fragment(layoutRes) {
+    abstract val viewModel: T
     protected val preferenceHelper: PreferenceHelper by inject()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

@@ -1,9 +1,8 @@
-package pl.jakubokrasa.bikeroutes.core.user.domain
+package pl.jakubokrasa.bikeroutes.core.user.auth
 
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.tasks.await
-import pl.jakubokrasa.bikeroutes.core.user.auth.UserAuth
-import pl.jakubokrasa.bikeroutes.core.user.auth.UserAuthResult
+import pl.jakubokrasa.bikeroutes.core.user.domain.UserAuth
 import java.lang.Exception
 
 class UserAuthImpl(private val auth: FirebaseAuth): UserAuth {
@@ -47,5 +46,23 @@ class UserAuthImpl(private val auth: FirebaseAuth): UserAuth {
         throw Exception("UserAuth: no current user" )
     }
 
+    override suspend fun isUserSignedIn(): Boolean {
+        auth.currentUser?.let {
+            return true
+        }
+        return false
+    }
+
+    override suspend fun resetPassword(email: String) {
+        auth.sendPasswordResetEmail(email).await()
+    }
+
+    override suspend fun signIn(email: String, password: String) {
+        auth.signInWithEmailAndPassword(email, password).await()
+    }
+
+    override suspend fun logOut() {
+        auth.signOut()
+    }
 
 }

@@ -6,32 +6,31 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.core.content.edit
+import androidx.fragment.app.Fragment
 import com.google.firebase.auth.FirebaseAuth
 import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import pl.jakubokrasa.bikeroutes.R
 import pl.jakubokrasa.bikeroutes.core.base.platform.BaseFragment
+import pl.jakubokrasa.bikeroutes.core.extensions.PreferenceHelper
 import pl.jakubokrasa.bikeroutes.core.extensions.PreferenceHelper.Companion.PREF_KEY_USER_EMAIL
 import pl.jakubokrasa.bikeroutes.core.extensions.PreferenceHelper.Companion.PREF_KEY_USER_PASSWORD
 import pl.jakubokrasa.bikeroutes.databinding.FragmentAccountBinding
 
-class AccountFragment : BaseFragment(R.layout.fragment_account) {
+class AccountFragment(): BaseFragment<UserViewModel>(R.layout.fragment_account) {
     private val auth: FirebaseAuth by inject()
     private var _binding: FragmentAccountBinding? = null
     private val binding get() = _binding!!
+    override val viewModel: UserViewModel by sharedViewModel()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentAccountBinding.bind(view)
 
-        binding.tvLoggedAs.text = "you are logged as " + auth.currentUser?.email.toString()
+        binding.tvLoggedAs.text = String.format("you are logged as %s", auth.currentUser?.email)
 
         binding.btLogout.setOnClickListener {
-            auth.signOut()
-            preferenceHelper.preferences.edit {
-                putString(PREF_KEY_USER_EMAIL, "")
-                putString(PREF_KEY_USER_PASSWORD, "")
-            }
-            startActivity(Intent(context, SignUpActivity::class.java))
+            viewModel.logOut()
         }
 
         binding.btSuggestion.setOnClickListener {

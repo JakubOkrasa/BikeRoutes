@@ -4,7 +4,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import pl.jakubokrasa.bikeroutes.core.user.auth.UserAuth
+import pl.jakubokrasa.bikeroutes.core.user.domain.UserAuth
 import pl.jakubokrasa.bikeroutes.features.map.domain.RemoteRepository
 import pl.jakubokrasa.bikeroutes.features.map.domain.model.Route
 

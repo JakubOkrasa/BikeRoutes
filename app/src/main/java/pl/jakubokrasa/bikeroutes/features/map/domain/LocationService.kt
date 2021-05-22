@@ -15,11 +15,11 @@ import org.koin.core.KoinComponent
 
 import org.koin.core.inject
 import org.osmdroid.util.GeoPoint
-import pl.jakubokrasa.bikeroutes.MainActivity
+import pl.jakubokrasa.bikeroutes.core.app.presentation.MainActivity
 import pl.jakubokrasa.bikeroutes.R
 import pl.jakubokrasa.bikeroutes.core.extensions.PreferenceHelper
 import pl.jakubokrasa.bikeroutes.features.map.presentation.MapFragment.Companion.SEND_LOCATION_ACTION
-import pl.jakubokrasa.bikeroutes.features.map.presentation.RouteViewModel
+import pl.jakubokrasa.bikeroutes.features.map.presentation.MapViewModel
 
 class LocationService : Service(), KoinComponent {
     private val mLocationRequest: LocationRequest by inject()
@@ -30,7 +30,7 @@ class LocationService : Service(), KoinComponent {
     private lateinit var handlerThread: HandlerThread
     private lateinit var mNotificationManager: NotificationManager
     private lateinit var mLocation: Location
-    private val routeViewModel: RouteViewModel by inject()
+    private val mapViewModel: MapViewModel by inject()
     private val preferenceHelper: PreferenceHelper by inject()
 
     override fun onBind(intent: Intent): IBinder? {
@@ -135,7 +135,7 @@ class LocationService : Service(), KoinComponent {
         mLocation = loc
 
         if(isRecordingMode()) {
-            routeViewModel.insertPoint(GeoPoint(loc))
+            mapViewModel.insertPoint(GeoPoint(loc))
         }
 
         //send update UI broadcast

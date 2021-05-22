@@ -1,19 +1,19 @@
 package pl.jakubokrasa.bikeroutes.features.map.domain.usecase
 
 import pl.jakubokrasa.bikeroutes.core.base.domain.UseCase
-import pl.jakubokrasa.bikeroutes.core.user.auth.UserAuth
-import pl.jakubokrasa.bikeroutes.core.user.sharingType
+import pl.jakubokrasa.bikeroutes.core.user.domain.UserAuth
+import pl.jakubokrasa.bikeroutes.core.util.enums.sharingType
 import pl.jakubokrasa.bikeroutes.features.map.domain.LocalRepository
 import pl.jakubokrasa.bikeroutes.features.map.domain.RemoteRepository
 import pl.jakubokrasa.bikeroutes.features.map.domain.model.Point
 import pl.jakubokrasa.bikeroutes.features.map.domain.model.Route
-import java.sql.Timestamp
 import java.util.concurrent.TimeUnit
 
 class SaveRouteUseCase(
     private val localRepository: LocalRepository,
     private val remoteRepository: RemoteRepository,
-    private val userAuth: UserAuth): UseCase<Unit, DataSaveRoute>() {
+    private val userAuth: UserAuth
+): UseCase<Unit, DataSaveRoute>() {
     override suspend fun action(params: DataSaveRoute) {
         val points = localRepository.getPoints2()
         if(points.isNotEmpty()) {
