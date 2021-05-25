@@ -1,10 +1,12 @@
 package pl.jakubokrasa.bikeroutes.core.user.presentation
 
 import android.util.Log
+import android.widget.Toast
 import androidx.core.content.edit
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import com.hadilq.liveevent.LiveEvent
+import pl.jakubokrasa.bikeroutes.R
 import pl.jakubokrasa.bikeroutes.core.base.platform.BaseViewModel
 import pl.jakubokrasa.bikeroutes.core.extensions.PreferenceHelper
 import pl.jakubokrasa.bikeroutes.core.user.domain.*
@@ -22,9 +24,6 @@ class UserViewModel(
     private val userNavigator: UserNavigator,
 ): BaseViewModel() {
 
-    private val _typedMessage by lazy { LiveEvent<Pair<Boolean, String>>() }
-    val typedMessage: LiveData<Pair<Boolean, String>> by lazy { _typedMessage }
-
     fun createUser(email: String, password: String) {
         createUserUseCase(
             params = CreateUserData(email, password),
@@ -33,7 +32,7 @@ class UserViewModel(
             result ->
                 result.onSuccess {
                     Log.d(LOG_TAG, "user created")
-                    saveUserDataToSharedPreferences(email, password)
+                    preferenceHelper.saveUserDataToSharedPreferences(email, password)
                     userNavigator.signUpToMap()
                     handleSuccess("createUser")
                 }
@@ -51,12 +50,12 @@ class UserViewModel(
             result ->
                 result.onSuccess {
                     Log.d(LOG_TAG, "user deleted")
-                    deleteUserDataFromSharedPreferences()
-                    showMessage(true, "Successfully Registered")
+                    preferenceHelper.deleteUserDataFromSharedPreferences()
+                    showMessage("Successfully Registered")
                 }
                 result.onFailure {
                     Log.e(LOG_TAG, "user not deleted, " + it.message)
-                    showMessage(false, "An error occured while deleting account")
+                    showMessage("An error occured while deleting account")
                 }
         }
     }
@@ -82,7 +81,7 @@ class UserViewModel(
             setPendingState()
             result.onSuccess {
                 handleSuccess("logOut")
-                deleteUserDataFromSharedPreferences()
+                preferenceHelper.deleteUserDataFromSharedPreferences()
                 userNavigator.accountToSignIn()
             }
             result.onFailure { handleFailure("logOut", it.message ?: "You weren't logged out") }
@@ -97,30 +96,14 @@ class UserViewModel(
                 result ->
             setPendingState()
             result.onSuccess {
-                saveUserDataToSharedPreferences(email, password)
+                preferenceHelper.saveUserDataToSharedPreferences(email, password)
                 userNavigator.signInToMap()
                 handleSuccess("signIn")
             }
-            result.onFailure { handleFailure("signIn", it.message ?: "Sign in failed") }
-        }
-    }
-
-    private fun showMessage(isSuccess: Boolean, msg: String) {
-        _typedMessage.value = Pair(isSuccess, msg)
-    }
-
-    private fun saveUserDataToSharedPreferences(email: String, password: String) {
-        preferenceHelper.preferences.edit {
-            putString(PreferenceHelper.PREF_KEY_USER_EMAIL, email)
-            putString(PreferenceHelper.PREF_KEY_USER_PASSWORD, password)
-        }
-    }
-
-    private fun deleteUserDataFromSharedPreferences() {
-        preferenceHelper.preferences.edit {
-                remove(PreferenceHelper.PREF_KEY_USER_EMAIL)
-                remove(PreferenceHelper.PREF_KEY_USER_PASSWORD)
+            result.onFailure {
+                handleFailure("signIn", it.message ?: "Sign in failed")
             }
+        }
     }
 
     fun navBack() {

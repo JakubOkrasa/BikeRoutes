@@ -16,5 +16,5 @@ val appModule = module {
 
     factory { IsUserSignedInUseCase(get()) }
 
-    viewModel {MainViewModel(get())}
+    viewModel { MainViewModel(get(), get(), get(), get()) }
 }
