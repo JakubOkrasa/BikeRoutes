@@ -1,8 +1,9 @@
 package pl.jakubokrasa.bikeroutes.core.di
 
 import org.koin.core.module.Module
-import pl.jakubokrasa.bikeroutes.core.di.features.mapModule
-import pl.jakubokrasa.bikeroutes.core.di.features.myRoutesModule
+import pl.jakubokrasa.bikeroutes.core.di.modules.features.mapModule
+import pl.jakubokrasa.bikeroutes.core.di.modules.features.myRoutesModule
+import pl.jakubokrasa.bikeroutes.core.di.modules.features.sharedRoutesModule
 
 val koinInjector: List<Module> = listOf(
     appModule,
@@ -10,10 +11,10 @@ val koinInjector: List<Module> = listOf(
     preferencesModule,
     localDbModule,
     navigationModule,
-    featuresModule,
 	userModule,
     remoteDbModule,
 
     mapModule,
     myRoutesModule,
+    sharedRoutesModule,
 )

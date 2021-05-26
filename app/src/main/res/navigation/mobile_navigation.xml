@@ -28,6 +28,12 @@
     </fragment>
 
     <fragment
+        android:id="@+id/nav_shared_routes"
+        android:name="pl.jakubokrasa.bikeroutes.features.sharedroutes.presentation.SharedRoutesFragment"
+        android:label="@string/nav_title_shared_routes"
+        tools:layout="@layout/fragment_shared_routes" />
+
+    <fragment
         android:id="@+id/signInFragment"
         android:name="pl.jakubokrasa.bikeroutes.core.user.presentation.SignInFragment"
         android:label="fragment_sign_in"

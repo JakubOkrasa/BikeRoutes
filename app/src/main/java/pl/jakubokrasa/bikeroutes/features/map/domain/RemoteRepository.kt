@@ -13,4 +13,8 @@ interface RemoteRepository {
     suspend fun deleteRoute(route: Route)
 
     suspend fun getPoints(routeId: String): List<Point>
+
+
+    //SHARED ROUTES
+    suspend fun getSharedRoutes(uid: String): List<Route>
 }

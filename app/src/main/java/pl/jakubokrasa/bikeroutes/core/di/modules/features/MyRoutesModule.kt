@@ -1,4 +1,4 @@
-package pl.jakubokrasa.bikeroutes.core.di.features
+package pl.jakubokrasa.bikeroutes.core.di.modules.features
 
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
