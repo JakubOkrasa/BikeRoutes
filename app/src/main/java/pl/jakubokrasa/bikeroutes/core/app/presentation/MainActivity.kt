@@ -26,25 +26,25 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
-        initViews()
         signInIfAnonymous()
         observeIsSignedIn()
     }
 
     private fun initViews() {
-        setContentView(R.layout.activity_main)
+        setContentView(binding.root)
         val navView: BottomNavigationView = findViewById(R.id.nav_view)
 
-        val navController = findNavController(R.id.nav_host_fragment_container)
+        val navController = findNavController(R.id.nav_host_fragment)
         navView.setupWithNavController(navController)
     }
 
     private fun observeIsSignedIn() {
         viewModel.isSignedIn.observe(this, {
             if(it) {
-                binding.imageWelcome.makeGone()
-                binding.navView.makeVisible()
-                binding.navHostFragment.makeVisible()
+                initViews()
+//                binding.imageWelcome.makeGone()
+//                binding.navView.makeVisible()
+//                binding.navHostFragment.makeVisible()
             }
         })
     }
@@ -57,9 +57,10 @@ class MainActivity : AppCompatActivity() {
             val email = preferenceHelper.preferences.getString(PREF_KEY_USER_EMAIL, "")
             val password = preferenceHelper.preferences.getString(PREF_KEY_USER_PASSWORD, "")
             if (TextUtils.isEmpty(email) || TextUtils.isEmpty(password)) {
-                binding.imageWelcome.makeGone()
-                binding.navHostFragment.makeVisible()
-                mainNavigator.navigateTo(R.layout.fragment_sign_up)
+//                binding.imageWelcome.makeGone()
+//                binding.navHostFragment.makeVisible()
+//                mainNavigator.navigateTo(R.layout.fragment_sign_up)
+                viewModel.signIn("kubao.fb@gmail.com", "111111")
             }
             else
                 viewModel.signIn(email!!, password!!)

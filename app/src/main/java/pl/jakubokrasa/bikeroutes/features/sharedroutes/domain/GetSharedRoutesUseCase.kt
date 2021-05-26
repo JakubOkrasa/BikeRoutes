@@ -13,7 +13,7 @@ class GetSharedRoutesUseCase(
     private val auth: UserAuth
 ) {
     suspend fun action() =
-        remoteRepository.getMyRoutes(auth.getCurrentUserId())
+        remoteRepository.getSharedRoutes(auth.getCurrentUserId())
 
     operator fun invoke(
         scope: CoroutineScope,
