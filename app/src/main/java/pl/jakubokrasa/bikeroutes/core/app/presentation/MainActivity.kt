@@ -2,6 +2,7 @@ package pl.jakubokrasa.bikeroutes.core.app.presentation
 
 import android.os.Bundle
 import android.text.TextUtils
+import android.view.KeyEvent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
@@ -13,7 +14,6 @@ import pl.jakubokrasa.bikeroutes.core.extensions.PreferenceHelper
 import pl.jakubokrasa.bikeroutes.core.extensions.PreferenceHelper.Companion.PREF_KEY_USER_EMAIL
 import pl.jakubokrasa.bikeroutes.core.extensions.PreferenceHelper.Companion.PREF_KEY_USER_PASSWORD
 import pl.jakubokrasa.bikeroutes.core.extensions.makeGone
-import pl.jakubokrasa.bikeroutes.core.extensions.makeVisible
 import pl.jakubokrasa.bikeroutes.databinding.ActivityMainBinding
 
 
@@ -30,7 +30,7 @@ class MainActivity : AppCompatActivity() {
         observeIsSignedIn()
     }
 
-    private fun initViews() {
+    private fun initNavigation() {
         setContentView(binding.root)
         val navView: BottomNavigationView = findViewById(R.id.nav_view)
 
@@ -41,17 +41,28 @@ class MainActivity : AppCompatActivity() {
     private fun observeIsSignedIn() {
         viewModel.isSignedIn.observe(this, {
             if(it) {
-                initViews()
+                homeDestination = R.id.nav_map
+                initNavigation()
 //                binding.imageWelcome.makeGone()
 //                binding.navView.makeVisible()
 //                binding.navHostFragment.makeVisible()
+            } else {
+                homeDestination = R.id.signUpFragment
             }
         })
     }
 
+    override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean
+    {
+        if ((keyCode == KeyEvent.KEYCODE_VOLUME_DOWN)) {
+            mainNavigator.navigateTo(R.id.action_nav_map_to_signUpFragment)
+        }
+        return true
+    }
+
     private fun signInIfAnonymous() {
         if (viewModel.isUserSignedIn()) {
-            initViews()
+            initNavigation()
         }
         else {
             val email = preferenceHelper.preferences.getString(PREF_KEY_USER_EMAIL, "")
@@ -59,12 +70,17 @@ class MainActivity : AppCompatActivity() {
             if (TextUtils.isEmpty(email) || TextUtils.isEmpty(password)) {
 //                binding.imageWelcome.makeGone()
 //                binding.navHostFragment.makeVisible()
-//                mainNavigator.navigateTo(R.layout.fragment_sign_up)
-                viewModel.signIn("kubao.fb@gmail.com", "111111")
+                initNavigation()
+                mainNavigator.navigateTo(R.id.action_nav_map_to_signUpFragment)
+//                viewModel.signIn("kubao.fb@gmail.com", "111111")
             }
             else
                 viewModel.signIn(email!!, password!!)
             }
         }
+
+    companion object {
+        var homeDestination = R.id.signUpFragment
+    }
 
 }
