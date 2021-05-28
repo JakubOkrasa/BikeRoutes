@@ -9,6 +9,7 @@ import pl.jakubokrasa.bikeroutes.core.user.data.remote.UserRepositoryImpl
 import pl.jakubokrasa.bikeroutes.core.user.domain.UserAuth
 import pl.jakubokrasa.bikeroutes.core.user.auth.UserAuthImpl
 import pl.jakubokrasa.bikeroutes.core.user.domain.*
+import pl.jakubokrasa.bikeroutes.core.user.presentation.ForgotPasswordViewModel
 import pl.jakubokrasa.bikeroutes.core.user.presentation.SignInViewModel
 import pl.jakubokrasa.bikeroutes.core.user.presentation.SignUpViewModel
 import pl.jakubokrasa.bikeroutes.core.user.presentation.UserViewModel
@@ -35,4 +36,5 @@ val userModule = module {
 
     viewModel { SignInViewModel(get(), get()) }
     viewModel { SignUpViewModel(get(), get()) }
+    viewModel { ForgotPasswordViewModel(get()) }
 }

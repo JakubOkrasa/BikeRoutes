@@ -19,7 +19,7 @@
         android:supportsRtl="true"
         android:requestLegacyExternalStorage="true"
 		android:theme="@style/Theme.BikeRoutes">
-        <activity android:name=".core.user.presentation.ForgotPasswordFragment"></activity>
+        <activity android:name=".core.user.presentation.ForgotPasswordActivity"></activity>
         <activity android:name=".core.user.presentation.SignUpActivity" />
         <activity
             android:name=".core.user.presentation.SignInActivity"

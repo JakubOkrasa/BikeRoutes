@@ -86,9 +86,9 @@
         tools:layout="@layout/fragment_follow_route" />
     <fragment
         android:id="@+id/forgotPasswordFragment"
-        android:name="pl.jakubokrasa.bikeroutes.core.user.presentation.ForgotPasswordFragment"
+        android:name="pl.jakubokrasa.bikeroutes.core.user.presentation.ForgotPasswordActivity"
         android:label="fragment_forgot_password"
-        tools:layout="@layout/fragment_forgot_password" >
+        tools:layout="@layout/activity_forgot_password" >
         <action
             android:id="@+id/action_forgotPasswordFragment_to_signInFragment"
             app:destination="@id/signInFragment" />
