@@ -4,15 +4,12 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.hadilq.liveevent.LiveEvent
 import pl.jakubokrasa.bikeroutes.R
 import pl.jakubokrasa.bikeroutes.core.app.domain.IsUserSignedInUseCase
 import pl.jakubokrasa.bikeroutes.core.base.platform.BaseViewModel
 import pl.jakubokrasa.bikeroutes.core.extensions.PreferenceHelper
 import pl.jakubokrasa.bikeroutes.core.user.domain.DataSignIn
-import pl.jakubokrasa.bikeroutes.core.user.domain.LogOutUseCase
 import pl.jakubokrasa.bikeroutes.core.user.domain.SignInUseCase
-import pl.jakubokrasa.bikeroutes.core.user.navigation.UserNavigator
 import pl.jakubokrasa.bikeroutes.features.myroutes.presentation.MyRoutesViewModel
 
 class MainViewModel(
@@ -56,7 +53,7 @@ class MainViewModel(
             }
             result.onFailure {
                 handleFailure("signIn", it.message ?: "Sign in failed")
-                mainNavigator.navigateTo(R.layout.fragment_sign_in)
+                mainNavigator.navigateTo(R.layout.activity_sign_in)
 
             }
         }
