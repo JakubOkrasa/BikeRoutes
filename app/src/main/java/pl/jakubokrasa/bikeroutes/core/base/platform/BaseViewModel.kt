@@ -3,7 +3,10 @@ package pl.jakubokrasa.bikeroutes.core.base.platform
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.hadilq.liveevent.LiveEvent
+import org.koin.java.KoinJavaComponent.inject
+import pl.jakubokrasa.bikeroutes.core.app.domain.IsUserSignedInUseCase
 
 open class BaseViewModel: ViewModel() {
 

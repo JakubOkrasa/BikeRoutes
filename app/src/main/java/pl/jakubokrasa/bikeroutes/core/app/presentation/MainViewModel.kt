@@ -2,6 +2,7 @@ package pl.jakubokrasa.bikeroutes.core.app.presentation
 
 import android.util.Log
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.hadilq.liveevent.LiveEvent
 import pl.jakubokrasa.bikeroutes.R
@@ -19,13 +20,15 @@ class MainViewModel(
     private val isUserEmailSignedInUseCase: IsUserSignedInUseCase,
     private val signInUseCase: SignInUseCase,
     private val mainNavigator: MainNavigator,
-): BaseViewModel() {
+): BaseViewModel() { //todo isUserSignedIN in BaseVM
 
-    private val _isSignedIn by lazy { LiveEvent<Boolean>() }
+    private val _isSignedIn by lazy { MutableLiveData<Boolean>()
+        .also {
+            isUserSignedIn(it)
+        }}
     val isSignedIn: LiveData<Boolean> by lazy { _isSignedIn }
 
-    fun isUserSignedIn(): Boolean {
-        var isSignedIn = false
+    private fun isUserSignedIn(isSignedInLiveData: MutableLiveData<Boolean>) {
         isUserEmailSignedInUseCase(
             params = Unit,
             scope = viewModelScope
@@ -33,11 +36,10 @@ class MainViewModel(
             result ->
             result.onSuccess {
                 handleSuccess("isUserSignedIn")
-                isSignedIn = it
+                isSignedInLiveData.value = it
             }
             result.onFailure { handleFailure("isUserSignedIn") }
         }
-        return isSignedIn
     }
 
     fun signIn(email: String, password: String) {

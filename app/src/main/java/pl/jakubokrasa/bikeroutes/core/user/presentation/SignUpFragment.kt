@@ -7,6 +7,7 @@ import android.view.View
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import pl.jakubokrasa.bikeroutes.R
+import pl.jakubokrasa.bikeroutes.core.app.presentation.MainActivity
 import pl.jakubokrasa.bikeroutes.core.base.platform.BaseFragment
 import pl.jakubokrasa.bikeroutes.databinding.FragmentSignUpBinding
 
@@ -17,6 +18,7 @@ class SignUpFragment : BaseFragment<UserViewModel>(R.layout.fragment_sign_up) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         _binding = FragmentSignUpBinding.bind(view)
 
         binding.btSignUp.setOnClickListener(btSignUpOnClick)
