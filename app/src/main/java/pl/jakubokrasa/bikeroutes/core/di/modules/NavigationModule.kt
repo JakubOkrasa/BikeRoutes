@@ -18,7 +18,7 @@ val navigationModule = module {
     factory<FragmentNavigator> { FragmentNavigatorImpl(
         get(),
         navHostFragmentRes = R.id.nav_host_fragment,
-        homeDestinationRes = get<AppUtil>().getHomeDestination(),
+        homeDestinationRes = R.id.nav_map,
         defaultNavOptions = get()
     ) }
 

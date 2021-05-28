@@ -24,6 +24,9 @@ class UserViewModel(
     private val userNavigator: UserNavigator,
 ): BaseViewModel() {
 
+    private val _startActivity by lazy { LiveEvent<Boolean>() }
+    val startActivity by lazy { _startActivity }
+
     fun createUser(email: String, password: String) {
         createUserUseCase(
             params = CreateUserData(email, password),
@@ -82,7 +85,7 @@ class UserViewModel(
             result.onSuccess {
                 handleSuccess("logOut")
                 preferenceHelper.deleteUserDataFromSharedPreferences()
-                userNavigator.accountToSignIn()
+                _startActivity.value = true
             }
             result.onFailure { handleFailure("logOut", it.message ?: "You weren't logged out") }
         }

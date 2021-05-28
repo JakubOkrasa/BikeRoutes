@@ -11,6 +11,7 @@ import com.google.firebase.auth.FirebaseAuth
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import pl.jakubokrasa.bikeroutes.R
+import pl.jakubokrasa.bikeroutes.core.app.presentation.MainActivity
 import pl.jakubokrasa.bikeroutes.core.base.platform.BaseFragment
 import pl.jakubokrasa.bikeroutes.core.extensions.PreferenceHelper
 import pl.jakubokrasa.bikeroutes.core.extensions.PreferenceHelper.Companion.PREF_KEY_USER_EMAIL
@@ -26,6 +27,10 @@ class AccountFragment(): BaseFragment<UserViewModel>(R.layout.fragment_account) 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentAccountBinding.bind(view)
+
+        viewModel.startActivity.observe(this, {
+            if(it) startActivity(Intent(context, SignInActivity::class.java))
+        })
 
         binding.tvLoggedAs.text = String.format("you are logged as %s", auth.currentUser?.email)
 

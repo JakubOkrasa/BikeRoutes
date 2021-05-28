@@ -23,38 +23,30 @@ import pl.jakubokrasa.bikeroutes.databinding.ActivityMainBinding
 class MainActivity : AppCompatActivity() {
     private val preferenceHelper: PreferenceHelper by inject()
     private val viewModel: MainViewModel by viewModel()
-    private val appUtil: AppUtil by inject()
     private lateinit var binding: ActivityMainBinding
-    private var signedIn = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+//        setContentView(binding.root)
 
         viewModel.isSignedIn.observe(this, {
-            signedIn = it
+            if(it) initViews()
         })
+
 
         signInIfAnonymous()
     }
 
     private fun initViews() {
-        setContentView(R.layout.activity_main)
+        setContentView(binding.root)
         val navView: BottomNavigationView = findViewById(R.id.nav_view)
-
         val navController = findNavController(R.id.nav_host_fragment)
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
-
-        //        val appBarConfiguration = AppBarConfiguration(setOf(
-        //                R.id.nav_record_route, R.id.nav_my_routes, R.id.navigation_notifications))
-        //        setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
     }
 
     private fun signInIfAnonymous() {
-        if (signedIn) {
+        if (viewModel.isUserSignedIn()) {
             initViews()
         } else {
             val userEmail = preferenceHelper.preferences.getString(PREF_KEY_USER_EMAIL, "")

@@ -21,11 +21,12 @@ class MainViewModel(
 
     private val _isSignedIn by lazy { MutableLiveData<Boolean>()
         .also {
-            isUserSignedIn(it)
+            it.value = isUserSignedIn()
         }}
     val isSignedIn: LiveData<Boolean> by lazy { _isSignedIn }
 
-    private fun isUserSignedIn(isSignedInLiveData: MutableLiveData<Boolean>) {
+    fun isUserSignedIn(): Boolean {
+        var signedIn = false
         isUserEmailSignedInUseCase(
             params = Unit,
             scope = viewModelScope
@@ -33,10 +34,11 @@ class MainViewModel(
             result ->
             result.onSuccess {
                 handleSuccess("isUserSignedIn")
-                isSignedInLiveData.value = it
+                signedIn = it
             }
             result.onFailure { handleFailure("isUserSignedIn") }
         }
+        return signedIn
     }
 
     fun signIn(email: String, password: String) {
