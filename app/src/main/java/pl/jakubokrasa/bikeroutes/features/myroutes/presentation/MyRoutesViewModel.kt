@@ -15,6 +15,7 @@ class MyRoutesViewModel(
     private val getMyRoutesWithFilterUseCase: GetMyRoutesWithFilterUseCase,
     private val getPointsFromRemoteUseCase: GetPointsFromRemoteUseCase,
     private val removeRouteUseCase: RemoveRouteUseCase,
+    private val updateRouteUseCase: UpdateRouteUseCase,
     private val myRoutesNavigator: MyRoutesNavigator,
 ): BaseViewModel() {
 
@@ -41,6 +42,21 @@ class MyRoutesViewModel(
                 handleSuccess("removeRouteAndNavBack", "Route was removed")
             }
             result.onFailure { handleFailure("removeRouteAndNavBack", "Route wasn't removed") }
+        }
+    }
+
+    fun updateRoute(route: RouteDisplayable) {
+        setPendingState()
+        updateRouteUseCase(
+            params = route.toRoute(),
+            scope = viewModelScope
+        ){
+                result ->
+            setIdleState()
+            result.onSuccess {
+                handleSuccess("updateRoute", "Route was updated")
+            }
+            result.onFailure { handleFailure("updateRoute", "Route wasn't updated") }
         }
     }
 

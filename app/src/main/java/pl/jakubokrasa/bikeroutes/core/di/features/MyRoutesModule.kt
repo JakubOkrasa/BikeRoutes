@@ -5,6 +5,7 @@ import org.koin.dsl.module
 import pl.jakubokrasa.bikeroutes.features.myroutes.domain.RemoveRouteUseCase
 import pl.jakubokrasa.bikeroutes.features.myroutes.domain.GetMyRoutesUseCase
 import pl.jakubokrasa.bikeroutes.features.myroutes.domain.GetMyRoutesWithFilterUseCase
+import pl.jakubokrasa.bikeroutes.features.myroutes.domain.UpdateRouteUseCase
 import pl.jakubokrasa.bikeroutes.features.myroutes.presentation.MyRoutesRecyclerAdapter
 import pl.jakubokrasa.bikeroutes.features.myroutes.presentation.MyRoutesViewModel
 
@@ -13,9 +14,10 @@ val myRoutesModule = module {
     factory { GetMyRoutesWithFilterUseCase(get(), get()) }
     factory { pl.jakubokrasa.bikeroutes.features.myroutes.domain.GetPointsFromRemoteUseCase(get()) }
     factory { RemoveRouteUseCase(get()) }
+    factory { UpdateRouteUseCase(get()) }
 
     factory { MyRoutesRecyclerAdapter() }
 
-    viewModel { MyRoutesViewModel(get(), get(), get(), get(), get()) }
+    viewModel { MyRoutesViewModel(get(), get(), get(), get(), get(), get()) }
 
 }

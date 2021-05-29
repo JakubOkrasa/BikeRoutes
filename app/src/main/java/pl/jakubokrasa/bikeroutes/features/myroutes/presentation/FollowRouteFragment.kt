@@ -24,6 +24,7 @@ import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.Polyline
 import pl.jakubokrasa.bikeroutes.R
 import pl.jakubokrasa.bikeroutes.core.base.platform.BaseFragment
+import pl.jakubokrasa.bikeroutes.core.extensions.hideKeyboard
 import pl.jakubokrasa.bikeroutes.core.extensions.makeGone
 import pl.jakubokrasa.bikeroutes.core.extensions.makeVisible
 import pl.jakubokrasa.bikeroutes.core.util.*
@@ -91,8 +92,8 @@ class FollowRouteFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_fo
         view.post {
             setRoute()
             setPoints()
-            updateRouteInfo()
-            updateRouteEdit()
+            updateRouteInfoLayout()
+            updateRouteEditLayout()
             setPolylineProperties()
             setMapViewProperties()
             binding.mapView.invalidate()
@@ -108,6 +109,7 @@ class FollowRouteFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_fo
                     binding.toolbar.inflateMenu(R.menu.menu_followroute_edit)
                     binding.toolbar.setOnMenuItemClickListener(toolbarIconsEditModeOnClick)
                     binding.llRouteInfo.makeGone()
+                    binding.llVisibilityIcon.makeGone()
                     binding.llRouteEdit.makeVisible()
                     true
                 }
@@ -121,9 +123,12 @@ class FollowRouteFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_fo
         when (insideMenuItem.itemId) {
             R.id.action_followroute_done -> {
                 updateRouteDisplayableModel()
-                viewModel.updateRoute
+                viewModel.updateRoute(route)
+                updateRouteInfoLayout()
+                hideKeyboard()
                 binding.llRouteEdit.makeGone()
-                binding.llRouteEdit.makeVisible()
+                binding.llRouteInfo.makeVisible()
+                binding.llVisibilityIcon.makeVisible()
                 clearToolbarMenu()
                 updateToolbar()
                 true
@@ -159,21 +164,31 @@ class FollowRouteFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_fo
         dialogConfirmRemove.dismiss()
     }
 
-    private fun updateRouteInfo() {
-        binding.tvRouteName.text = route.name
+    private fun updateRouteInfoLayout() {
+        with(binding) {
+            tvRouteName.text = route.name
 
-        if(route.description.isBlank()) binding.tvRouteDescription.visibility = View.GONE
-        else binding.tvRouteDescription.text = route.description
+            if(route.description.isBlank()) tvRouteDescription.makeGone()
+            else {
+                tvRouteDescription.makeVisible()
+                tvRouteDescription.text = route.description
+            }
 
-        binding.tvRouteDistance.text = getFormattedDistance(route.distance)
-        binding.tvRouteRideTime.text = getFormattedRideTime(route.rideTimeMinutes)
+            if(route.sharingType == sharingType.PUBLIC)
+                tvVisibility.text = "public"
+            else if(route.sharingType == sharingType.PRIVATE)
+                tvVisibility.text = "only me"
+
+
+            tvRouteDistance.text = getFormattedDistance(route.distance)
+            tvRouteRideTime.text = getFormattedRideTime(route.rideTimeMinutes)
+        }
     }
 
-    private fun updateRouteEdit() {
+    private fun updateRouteEditLayout() {
         binding.etRouteName.setText(route.name)
-
-        if(route.description.isBlank()) binding.etRouteDescription.visibility = View.GONE
-        else binding.etRouteDescription.setText(route.description)
+        if(route.description.isNotBlank()) binding.etRouteDescription.setText(route.description)
+        binding.swPrivate.isChecked = run { route.sharingType == sharingType.PRIVATE }
     }
 
     private fun setMapViewProperties() {

@@ -66,16 +66,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
-            <TextView
-                android:id="@+id/tv_visibility"
-                style="@style/tv_medium"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="7dp"
-                android:text="Visible only for me (hardcoded)"
-                android:textColor="#222"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
         </LinearLayout>
 
         <LinearLayout
@@ -86,14 +76,14 @@
             android:visibility="gone"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/toolbar"
-            tools:visibility="visible">
+            tools:visibility="gone">
 
             <EditText
                 android:id="@+id/et_route_name"
                 style="@style/tv_medium"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="test name"
+                android:hint="Name"
                 android:textStyle="bold" />
 
             <EditText
@@ -101,7 +91,7 @@
                 style="@style/tv_small"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="test desc"/>
+                android:hint="Description" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/ll_sharing"
@@ -134,45 +124,64 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
-                <TextView
+                <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingEnd="4dp"
-                    android:text="distance:"
-                    style="@style/tv_small" />
-
+                    android:background="@drawable/ic_distance"/>
                 <TextView
                     android:id="@+id/tv_route_distance"
+                    android:layout_marginStart="3dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     style="@style/tv_small" />
             </LinearLayout>
 
             <LinearLayout
+                android:layout_marginStart="10dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
-                <TextView
+                <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingEnd="4dp"
-                    android:text="ride time:"
-                    style="@style/tv_small" />
+                    android:background="@drawable/ic_time"/>
 
                 <TextView
                     android:id="@+id/tv_route_ride_time"
+                    android:layout_marginStart="3dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     style="@style/tv_small" />
             </LinearLayout>
+            <LinearLayout
+                android:id="@+id/ll_visibility_icon"
+                android:layout_marginStart="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/ic_visibility_public"/>
+
+                <TextView
+                    android:id="@+id/tv_visibility"
+                    android:layout_marginStart="3dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    style="@style/tv_small" />
+            </LinearLayout>
+
         </LinearLayout>
 
 

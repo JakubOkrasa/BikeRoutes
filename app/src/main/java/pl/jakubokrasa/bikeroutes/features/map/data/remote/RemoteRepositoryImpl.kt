@@ -16,14 +16,7 @@ class RemoteRepositoryImpl(
 ): RemoteRepository {
     override suspend fun addRoute(route: Route, points: List<Point>) {
 
-        val routeResponse = RouteResponse(route.routeId,
-            route.createdAt,
-            route.userId,
-            route.name,
-            route.description,
-            route.sharingType,
-            route.distance,
-            route.rideTimeMinutes)
+        val routeResponse = RouteResponse(route)
         val routeDoc = firestore.collection("routes").document()
         val pointsMap = mapOf("pointsArray" to points.map { PointResponse(it) })
         val pointsDoc = firestore.collection("points").document(routeDoc.id)
@@ -85,6 +78,14 @@ class RemoteRepositoryImpl(
             doc.toObject(RouteResponse::class.java)
                 .let { routeResponseList.add(it) }
         return routeResponseList.map { it.toRoute()}
+    }
+
+    override suspend fun updateRoute(route: Route) {
+        val routeResponse = RouteResponse(route)
+        firestore
+            .collection("routes")
+            .document(route.routeId)
+            .set(routeResponse)
     }
 
     override suspend fun deleteRoute(route: Route) {
