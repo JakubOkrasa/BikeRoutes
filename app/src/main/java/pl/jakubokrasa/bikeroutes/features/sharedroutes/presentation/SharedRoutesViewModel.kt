@@ -16,11 +16,10 @@ class SharedRoutesViewModel(
 //    private val removeRouteUseCase: RemoveRouteUseCase,
 //    private val sharedRoutesNavigator: SharedRoutesNavigator,
 ): BaseViewModel() {
-
     private val _sharedRoutes by lazy { MutableLiveData<List<RouteDisplayable>>() }
     private val _pointsFromRemote by lazy { MutableLiveData<List<PointDisplayable>>() } //liveEvent could be better here todo (but points can be set too early)
     private val _isFilter by lazy { MutableLiveData<Boolean>() }
-
+    override val LOG_TAG: String = SharedRoutesViewModel::class.simpleName?: "unknown"
 
     val pointsFromRemote: LiveData<List<PointDisplayable>> by lazy { _pointsFromRemote }
     val sharedRoutes: LiveData<List<RouteDisplayable>> by lazy { _sharedRoutes }
@@ -80,18 +79,6 @@ class SharedRoutesViewModel(
 //            result.onFailure { handleFailure("getPointsFromRemote", errLog = it.message) }
 //        }
 //    }
-
-    private fun handleSuccess(methodName: String, msg: String = "") {
-        Log.d(LOG_TAG, "onSuccess $methodName")
-        if (msg.isNotEmpty())
-            showMessage(msg)
-    }
-
-    private fun handleFailure(methodName: String, msg: String = "", errLog: String?="") {
-        Log.e(LOG_TAG, "onFailure $methodName $errLog")
-        if (msg.isNotEmpty())
-            showMessage("Error: $msg")
-    }
 
     companion object {
         val LOG_TAG = SharedRoutesViewModel::class.simpleName

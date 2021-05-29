@@ -4,14 +4,14 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import org.koin.android.ext.android.inject
 import pl.jakubokrasa.bikeroutes.core.app.presentation.MainActivity
+import pl.jakubokrasa.bikeroutes.core.base.platform.BaseActivity
 import pl.jakubokrasa.bikeroutes.databinding.ActivitySignInBinding
 
-class SignInActivity: AppCompatActivity() {
+class SignInActivity: BaseActivity<SignInViewModel>() {
     private lateinit var binding: ActivitySignInBinding
-    private val viewModel: SignInViewModel by inject()
+    override val viewModel: SignInViewModel by inject()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {

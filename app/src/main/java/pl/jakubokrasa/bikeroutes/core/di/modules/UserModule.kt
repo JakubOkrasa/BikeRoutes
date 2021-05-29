@@ -1,4 +1,4 @@
-package pl.jakubokrasa.bikeroutes.core.di
+package pl.jakubokrasa.bikeroutes.core.di.modules
 
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
@@ -29,11 +29,7 @@ val userModule = module {
     factory { SignInUseCase(get()) }
     factory { LogOutUseCase(get()) }
 
-
-
-    viewModel { UserViewModel(get(), get(), get(), get(), get(), get(), get()) }
-
-
+    viewModel { UserViewModel(get(), get(), get(), get()) }
     viewModel { SignInViewModel(get(), get()) }
     viewModel { SignUpViewModel(get(), get()) }
     viewModel { ForgotPasswordViewModel(get()) }

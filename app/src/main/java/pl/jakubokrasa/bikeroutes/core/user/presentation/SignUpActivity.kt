@@ -9,11 +9,12 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import pl.jakubokrasa.bikeroutes.core.app.presentation.MainActivity
+import pl.jakubokrasa.bikeroutes.core.base.platform.BaseActivity
 import pl.jakubokrasa.bikeroutes.databinding.ActivitySignUpBinding
 
-class SignUpActivity : AppCompatActivity() {
+class SignUpActivity : BaseActivity<SignUpViewModel>() {
     private lateinit var binding: ActivitySignUpBinding
-    private val viewModel: SignUpViewModel by viewModel()
+    override val viewModel: SignUpViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,24 +25,20 @@ class SignUpActivity : AppCompatActivity() {
         binding.btSignUp.setOnClickListener(btSignUpOnClick)
         binding.btSignIn.setOnClickListener(btLogInOnClick)
 
-//        observeMessage()
+        observeMessage()
+        observeStartActivity()
+    }
 
+    private fun observeStartActivity() {
         viewModel.startActivity.observe(this, {
-            if(it) startActivity(Intent(this, MainActivity::class.java))
+            if (it) startActivity(Intent(this, MainActivity::class.java))
         })
     }
 
-//    private fun observeMessage() {
-//        viewModel.message.observe(this, {
-//
-//            showToast(it)
-//        })
-//    }
-
-//    if(it.first) startActivity(Intent(this, MainActivity::class.java))
-
-    private fun showToast(message: String?) {
-        message?.let { Toast.makeText(this, message, Toast.LENGTH_SHORT).show() }
+    private fun observeMessage() {
+        viewModel.message.observe(this, {
+            showToast(it)
+        })
     }
 
     private val btSignUpOnClick = View.OnClickListener {

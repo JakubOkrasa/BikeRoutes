@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.hadilq.liveevent.LiveEvent
 import pl.jakubokrasa.bikeroutes.R
 import pl.jakubokrasa.bikeroutes.core.app.domain.IsUserSignedInUseCase
 import pl.jakubokrasa.bikeroutes.core.base.platform.BaseViewModel
@@ -18,12 +19,15 @@ class MainViewModel(
     private val signInUseCase: SignInUseCase,
     private val mainNavigator: MainNavigator,
 ): BaseViewModel() { //todo isUserSignedIN in BaseVM
-
+    override val LOG_TAG: String = MainViewModel::class.simpleName ?: "unknown"
     private val _isSignedIn by lazy { MutableLiveData<Boolean>()
         .also {
             it.value = isUserSignedIn()
         }}
     val isSignedIn: LiveData<Boolean> by lazy { _isSignedIn }
+
+    private val _startActivity by lazy { LiveEvent<Boolean>() }
+    val startActivity by lazy { _startActivity }
 
     fun isUserSignedIn(): Boolean {
         var signedIn = false
@@ -55,21 +59,9 @@ class MainViewModel(
             }
             result.onFailure {
                 handleFailure("signIn", it.message ?: "Sign in failed")
-                mainNavigator.navigateTo(R.layout.activity_sign_in)
+                _startActivity.value = true
 
             }
         }
-    }
-
-    private fun handleSuccess(methodName: String, msg: String = "") {
-        Log.d(MyRoutesViewModel.LOG_TAG, "onSuccess $methodName")
-        if (msg.isNotEmpty())
-            showMessage(msg)
-    }
-
-    private fun handleFailure(methodName: String, msg: String = "", errLog: String?="") {
-        Log.e(MyRoutesViewModel.LOG_TAG, "onFailure $methodName $errLog")
-        if (msg.isNotEmpty())
-            showMessage("Error: $msg")
     }
 }
