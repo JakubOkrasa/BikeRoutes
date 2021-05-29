@@ -1,10 +1,10 @@
 package pl.jakubokrasa.bikeroutes.features.myroutes.presentation
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import pl.jakubokrasa.bikeroutes.core.base.platform.BaseViewModel
+import pl.jakubokrasa.bikeroutes.core.user.presentation.SignUpViewModel
 import pl.jakubokrasa.bikeroutes.features.map.presentation.model.PointDisplayable
 import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteDisplayable
 import pl.jakubokrasa.bikeroutes.features.myroutes.domain.*
@@ -21,7 +21,7 @@ class MyRoutesViewModel(
     private val _myRoutes by lazy { MutableLiveData<List<RouteDisplayable>>() }
     private val _pointsFromRemote by lazy { MutableLiveData<List<PointDisplayable>>() } //liveEvent could be better here todo (but points can be set too early)
     private val _isFilter by lazy { MutableLiveData<Boolean>() }
-
+    override val LOG_TAG: String = MyRoutesViewModel::class.simpleName?: "unknown"
 
     val pointsFromRemote: LiveData<List<PointDisplayable>> by lazy { _pointsFromRemote }
     val myRoutes: LiveData<List<RouteDisplayable>> by lazy { _myRoutes }
@@ -43,8 +43,6 @@ class MyRoutesViewModel(
             result.onFailure { handleFailure("removeRouteAndNavBack", "Route wasn't removed") }
         }
     }
-
-
 
     fun getMyRoutesWithFilter(filterData: FilterData) {
         setPendingState()
@@ -97,21 +95,5 @@ class MyRoutesViewModel(
             }
             result.onFailure { handleFailure("getPointsFromRemote", errLog = it.message) }
         }
-    }
-
-    private fun handleSuccess(methodName: String, msg: String = "") {
-        Log.d(LOG_TAG, "onSuccess $methodName")
-        if (msg.isNotEmpty())
-            showMessage(msg)
-    }
-
-    private fun handleFailure(methodName: String, msg: String = "", errLog: String?="") {
-        Log.e(LOG_TAG, "onFailure $methodName $errLog")
-        if (msg.isNotEmpty())
-            showMessage("Error: $msg")
-    }
-
-    companion object {
-        val LOG_TAG = MyRoutesViewModel::class.simpleName
     }
 }

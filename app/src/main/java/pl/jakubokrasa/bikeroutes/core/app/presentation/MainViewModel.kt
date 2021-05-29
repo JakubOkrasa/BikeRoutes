@@ -10,9 +10,7 @@ import pl.jakubokrasa.bikeroutes.core.app.domain.IsUserSignedInUseCase
 import pl.jakubokrasa.bikeroutes.core.base.platform.BaseViewModel
 import pl.jakubokrasa.bikeroutes.core.extensions.PreferenceHelper
 import pl.jakubokrasa.bikeroutes.core.user.domain.DataSignIn
-import pl.jakubokrasa.bikeroutes.core.user.domain.LogOutUseCase
 import pl.jakubokrasa.bikeroutes.core.user.domain.SignInUseCase
-import pl.jakubokrasa.bikeroutes.core.user.navigation.UserNavigator
 import pl.jakubokrasa.bikeroutes.features.myroutes.presentation.MyRoutesViewModel
 
 class MainViewModel(
@@ -21,14 +19,18 @@ class MainViewModel(
     private val signInUseCase: SignInUseCase,
     private val mainNavigator: MainNavigator,
 ): BaseViewModel() { //todo isUserSignedIN in BaseVM
-
+    override val LOG_TAG: String = MainViewModel::class.simpleName ?: "unknown"
     private val _isSignedIn by lazy { MutableLiveData<Boolean>()
         .also {
-            isUserSignedIn(it)
+            it.value = isUserSignedIn()
         }}
     val isSignedIn: LiveData<Boolean> by lazy { _isSignedIn }
 
-    private fun isUserSignedIn(isSignedInLiveData: MutableLiveData<Boolean>) {
+    private val _startActivity by lazy { LiveEvent<Boolean>() }
+    val startActivity by lazy { _startActivity }
+
+    fun isUserSignedIn(): Boolean {
+        var signedIn = false
         isUserEmailSignedInUseCase(
             params = Unit,
             scope = viewModelScope
@@ -36,10 +38,11 @@ class MainViewModel(
             result ->
             result.onSuccess {
                 handleSuccess("isUserSignedIn")
-                isSignedInLiveData.value = it
+                signedIn = it
             }
             result.onFailure { handleFailure("isUserSignedIn") }
         }
+        return signedIn
     }
 
     fun signIn(email: String, password: String) {
@@ -56,21 +59,9 @@ class MainViewModel(
             }
             result.onFailure {
                 handleFailure("signIn", it.message ?: "Sign in failed")
-                mainNavigator.navigateTo(R.layout.fragment_sign_in)
+                _startActivity.value = true
 
             }
         }
-    }
-
-    private fun handleSuccess(methodName: String, msg: String = "") {
-        Log.d(MyRoutesViewModel.LOG_TAG, "onSuccess $methodName")
-        if (msg.isNotEmpty())
-            showMessage(msg)
-    }
-
-    private fun handleFailure(methodName: String, msg: String = "", errLog: String?="") {
-        Log.e(MyRoutesViewModel.LOG_TAG, "onFailure $methodName $errLog")
-        if (msg.isNotEmpty())
-            showMessage("Error: $msg")
     }
 }

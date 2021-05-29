@@ -2,7 +2,8 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/mobile_navigation">
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@id/nav_map">
 
     <fragment
         android:id="@+id/nav_map"
@@ -37,9 +38,9 @@
 
     <fragment
         android:id="@+id/signInFragment"
-        android:name="pl.jakubokrasa.bikeroutes.core.user.presentation.SignInFragment"
+        android:name="pl.jakubokrasa.bikeroutes.core.user.presentation.SignInActivity"
         android:label="fragment_sign_in"
-        tools:layout="@layout/fragment_sign_in" >
+        tools:layout="@layout/activity_sign_in" >
         <action
             android:id="@+id/action_signInFragment_to_nav_map"
             app:destination="@id/nav_map"/>
@@ -53,9 +54,9 @@
 
     <fragment
         android:id="@+id/signUpFragment"
-        android:name="pl.jakubokrasa.bikeroutes.core.user.presentation.SignUpFragment"
+        android:name="pl.jakubokrasa.bikeroutes.core.user.presentation.SignUpActivity"
         android:label="fragment_sign_up"
-        tools:layout="@layout/fragment_sign_up" >
+        tools:layout="@layout/activity_sign_up" >
         <action
             android:id="@+id/action_signUpFragment_to_signInFragment"
             app:destination="@id/signInFragment" />
@@ -86,9 +87,9 @@
         tools:layout="@layout/fragment_follow_route" />
     <fragment
         android:id="@+id/forgotPasswordFragment"
-        android:name="pl.jakubokrasa.bikeroutes.core.user.presentation.ForgotPasswordFragment"
+        android:name="pl.jakubokrasa.bikeroutes.core.user.presentation.ForgotPasswordActivity"
         android:label="fragment_forgot_password"
-        tools:layout="@layout/fragment_forgot_password" >
+        tools:layout="@layout/activity_forgot_password" >
         <action
             android:id="@+id/action_forgotPasswordFragment_to_signInFragment"
             app:destination="@id/signInFragment" />

@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".core.user.presentation.SignUpFragment">
-
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".core.user.presentation.SignInActivity">
     <LinearLayout
+        android:id="@+id/ll_login"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -38,17 +38,25 @@
                 android:id="@+id/et_password"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:hint="@string/password_hint"
-                android:inputType="textPassword"/>
+                android:inputType="textPassword"
+                android:hint="@string/password_hint"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 
         <Button
-            android:id="@+id/bt_sign_up"
+            android:id="@+id/bt_sign_in"
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:layout_marginTop="32dp"
-            android:text="@string/signup_btn"/>
+            android:text="@string/login_btn"/>
+
+        <TextView
+            android:id="@+id/tv_forgot_password"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Forgot password?"
+            android:layout_gravity="center"
+            android:clickable="true"/>
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -85,12 +93,13 @@
         </RelativeLayout>
 
         <Button
-            android:id="@+id/bt_sign_in"
+            android:id="@+id/bt_sign_up"
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:layout_marginTop="16dp"
-            android:text="@string/login_btn" />
+            android:text="@string/signup_btn" />
 
     </LinearLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,8 +1,8 @@
 package pl.jakubokrasa.bikeroutes.core.app.presentation
 
+import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
-import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -12,59 +12,49 @@ import pl.jakubokrasa.bikeroutes.R
 import pl.jakubokrasa.bikeroutes.core.extensions.PreferenceHelper
 import pl.jakubokrasa.bikeroutes.core.extensions.PreferenceHelper.Companion.PREF_KEY_USER_EMAIL
 import pl.jakubokrasa.bikeroutes.core.extensions.PreferenceHelper.Companion.PREF_KEY_USER_PASSWORD
-import pl.jakubokrasa.bikeroutes.core.extensions.makeGone
-import pl.jakubokrasa.bikeroutes.core.extensions.makeVisible
-import pl.jakubokrasa.bikeroutes.core.util.AppUtil
+import pl.jakubokrasa.bikeroutes.core.user.presentation.SignInActivity
+import pl.jakubokrasa.bikeroutes.core.user.presentation.SignUpActivity
+import pl.jakubokrasa.bikeroutes.core.base.platform.BaseActivity
 import pl.jakubokrasa.bikeroutes.databinding.ActivityMainBinding
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : BaseActivity<MainViewModel>() {
     private val preferenceHelper: PreferenceHelper by inject()
-    private val viewModel: MainViewModel by viewModel()
-    private val appUtil: AppUtil by inject()
+    override val viewModel: MainViewModel by viewModel()
     private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-        initNavigation()
 
-        observeIsSignedIn()
-        autoSignInIfPossible()
+        viewModel.isSignedIn.observe(this, {
+            if(it) initViews()
+        })
+
+        viewModel.startActivity.observe(this, {
+            if(it) startActivity(Intent(this, SignInActivity::class.java))
+        })
+
+        signInIfAnonymous()
     }
 
-    private fun initNavigation() {
-        val navController = findNavController(R.id.nav_host_fragment)
-        val navInflater = navController.navInflater
-        val graph = navInflater.inflate(R.navigation.mobile_navigation)
-        graph.startDestination = appUtil.getHomeDestination()
-
-        navController.graph = graph
-
+    private fun initViews() {
+        setContentView(binding.root)
         val navView: BottomNavigationView = findViewById(R.id.nav_view)
+        val navController = findNavController(R.id.nav_host_fragment)
         navView.setupWithNavController(navController)
     }
 
-    fun observeIsSignedIn() {
-        viewModel.isSignedIn.observe(this, {
-            if (it) {
-//                binding.imageWelcome.makeGone()
-                binding.navView.makeVisible()
-//                binding.hostFragmentContainer.makeVisible()
-            } else {
-//                binding.imageWelcome.makeVisible()
-                binding.navView.makeGone()
-//                binding.hostFragmentContainer.makeGone()
-            }
-        })
-    }
-
-    private fun autoSignInIfPossible() {
-        val email = preferenceHelper.preferences.getString(PREF_KEY_USER_EMAIL, "")
-        val password = preferenceHelper.preferences.getString(PREF_KEY_USER_PASSWORD, "")
-        if (!TextUtils.isEmpty(email) && !TextUtils.isEmpty(password)) {
-            viewModel.signIn(email!!, password!!)
+    private fun signInIfAnonymous() {
+        if (viewModel.isUserSignedIn()) {
+            initViews()
+        } else {
+            val userEmail = preferenceHelper.preferences.getString(PREF_KEY_USER_EMAIL, "")
+            val userPassword = preferenceHelper.preferences.getString(PREF_KEY_USER_PASSWORD, "")
+            if (TextUtils.isEmpty(userEmail) || TextUtils.isEmpty(userPassword)) startActivity(
+                Intent(this, SignUpActivity::class.java))
+            else
+                viewModel.signIn(userEmail!!, userPassword!!)
         }
     }
 }
