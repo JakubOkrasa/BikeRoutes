@@ -13,6 +13,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
+import androidx.appcompat.widget.Toolbar
 import androidx.core.content.res.ResourcesCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import org.koin.android.ext.android.inject
@@ -23,8 +24,11 @@ import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.Polyline
 import pl.jakubokrasa.bikeroutes.R
 import pl.jakubokrasa.bikeroutes.core.base.platform.BaseFragment
+import pl.jakubokrasa.bikeroutes.core.extensions.makeGone
+import pl.jakubokrasa.bikeroutes.core.extensions.makeVisible
 import pl.jakubokrasa.bikeroutes.core.util.*
 import pl.jakubokrasa.bikeroutes.core.util.enums.MapMode
+import pl.jakubokrasa.bikeroutes.core.util.enums.sharingType
 import pl.jakubokrasa.bikeroutes.databinding.DialogConfirmBinding
 import pl.jakubokrasa.bikeroutes.databinding.FragmentFollowRouteBinding
 import pl.jakubokrasa.bikeroutes.features.map.domain.LocationService
@@ -88,6 +92,7 @@ class FollowRouteFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_fo
             setRoute()
             setPoints()
             updateRouteInfo()
+            updateRouteEdit()
             setPolylineProperties()
             setMapViewProperties()
             binding.mapView.invalidate()
@@ -101,25 +106,40 @@ class FollowRouteFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_fo
                 R.id.action_followroute_edit -> {
                     clearToolbarMenu()
                     binding.toolbar.inflateMenu(R.menu.menu_followroute_edit)
-                    binding.toolbar.setOnMenuItemClickListener { insideMenuItem ->
-                        when (insideMenuItem.itemId) {
-                            R.id.action_followroute_done -> {
-                                clearToolbarMenu()
-                                updateToolbar()
-                                true
-                            }
-                            R.id.action_followroute_remove -> {
-                                dialogConfirmRemove.show()
-                                true
-                            }
-                            else -> false
-                        }
-                    }
+                    binding.toolbar.setOnMenuItemClickListener(toolbarIconsEditModeOnClick)
+                    binding.llRouteInfo.makeGone()
+                    binding.llRouteEdit.makeVisible()
                     true
                 }
                 else -> false
             }
         }
+    }
+
+    private val toolbarIconsEditModeOnClick = Toolbar.OnMenuItemClickListener {
+            insideMenuItem ->
+        when (insideMenuItem.itemId) {
+            R.id.action_followroute_done -> {
+                updateRouteDisplayableModel()
+                viewModel.updateRoute
+                binding.llRouteEdit.makeGone()
+                binding.llRouteEdit.makeVisible()
+                clearToolbarMenu()
+                updateToolbar()
+                true
+            }
+            R.id.action_followroute_remove -> {
+                dialogConfirmRemove.show()
+                true
+            }
+            else -> false
+        }
+    }
+
+    private fun updateRouteDisplayableModel() {
+        route.name = binding.etRouteName.text.toString()
+        route.description = binding.etRouteDescription.text.toString()
+        if (binding.swPrivate.isChecked) route.sharingType = sharingType.PRIVATE else route.sharingType = sharingType.PUBLIC
     }
 
     private fun initializeDialogConfirmRemove(): Dialog {
@@ -147,6 +167,13 @@ class FollowRouteFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_fo
 
         binding.tvRouteDistance.text = getFormattedDistance(route.distance)
         binding.tvRouteRideTime.text = getFormattedRideTime(route.rideTimeMinutes)
+    }
+
+    private fun updateRouteEdit() {
+        binding.etRouteName.setText(route.name)
+
+        if(route.description.isBlank()) binding.etRouteDescription.visibility = View.GONE
+        else binding.etRouteDescription.setText(route.description)
     }
 
     private fun setMapViewProperties() {
