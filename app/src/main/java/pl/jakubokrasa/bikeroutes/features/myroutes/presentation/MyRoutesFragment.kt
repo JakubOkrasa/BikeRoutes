@@ -6,7 +6,6 @@ import android.view.View
 import android.view.Window
 import android.widget.Button
 import android.widget.TextView
-import androidx.recyclerview.widget.DividerItemDecoration
 import com.google.android.material.slider.RangeSlider
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
@@ -20,10 +19,8 @@ import pl.jakubokrasa.bikeroutes.core.util.getFormattedFilterDistance
 import pl.jakubokrasa.bikeroutes.core.util.getFormattedFilterDistanceGreaterThan
 import pl.jakubokrasa.bikeroutes.core.util.getFormattedFilterDistanceLessThan
 import pl.jakubokrasa.bikeroutes.databinding.FragmentMyRoutesBinding
+import pl.jakubokrasa.bikeroutes.features.common.domain.FilterData
 import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteDisplayable
-import pl.jakubokrasa.bikeroutes.features.myroutes.domain.FilterData
-import pl.jakubokrasa.bikeroutes.features.myroutes.navigation.MyRoutesNavigator
-import org.koin.androidx.viewmodel.ext.android.viewModel
 
  class MyRoutesFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_my_routes){
     private var _binding: FragmentMyRoutesBinding? = null
@@ -73,7 +70,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
     }
 
      private fun showNoDataMessage() {
-         if (isFilter) binding.tvNoData.text = String.format(getString(R.string.fragment_myroutes_no_data_filter))
+         if (isFilter) binding.tvNoData.text = String.format(getString(R.string.fragment_common_no_data_filter))
          else binding.tvNoData.text = getString(R.string.fragment_myroutes_no_data)
          binding.tvNoData.visibility = View.VISIBLE
          binding.recyclerView.visibility = View.GONE

@@ -1,11 +1,5 @@
 package pl.jakubokrasa.bikeroutes.core.base.platform
 
-import androidx.lifecycle.viewModelScope
-import pl.jakubokrasa.bikeroutes.features.map.presentation.model.PointDisplayable
-import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteDisplayable
-import pl.jakubokrasa.bikeroutes.features.myroutes.domain.FilterData
-import pl.jakubokrasa.bikeroutes.features.myroutes.domain.GetPointsFromRemoteUseCase
-
 //abstract class RoutesBaseViewModel<T: Any>(
 //    private val getPointsFromRemoteUseCase: GetPointsFromRemoteUseCase,
 //): BaseViewModel() {

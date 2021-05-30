@@ -1,8 +1,8 @@
 package pl.jakubokrasa.bikeroutes.features.map.domain
 
+import pl.jakubokrasa.bikeroutes.features.common.domain.FilterData
 import pl.jakubokrasa.bikeroutes.features.map.domain.model.Point
 import pl.jakubokrasa.bikeroutes.features.map.domain.model.Route
-import pl.jakubokrasa.bikeroutes.features.myroutes.domain.FilterData
 
 interface RemoteRepository {
     suspend fun addRoute(route: Route, points: List<Point>)
@@ -17,4 +17,5 @@ interface RemoteRepository {
 
     //SHARED ROUTES
     suspend fun getSharedRoutes(uid: String): List<Route>
+    suspend fun getSharedRoutesWithFilter(uid: String, filterData: FilterData): List<Route>
 }

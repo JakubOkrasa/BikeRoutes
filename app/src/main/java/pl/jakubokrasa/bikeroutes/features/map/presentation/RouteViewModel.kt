@@ -10,7 +10,7 @@ package pl.jakubokrasa.bikeroutes.features.map.presentation
 //import pl.jakubokrasa.bikeroutes.features.myroutes.domain.FilterData
 //import pl.jakubokrasa.bikeroutes.features.myroutes.domain.GetMyRoutesUseCase
 //import pl.jakubokrasa.bikeroutes.features.myroutes.domain.GetMyRoutesWithFilterUseCase
-//import pl.jakubokrasa.bikeroutes.features.myroutes.domain.GetPointsFromRemoteUseCase
+//import pl.jakubokrasa.bikeroutes.features.common.domain.GetPointsFromRemoteUseCase
 //import pl.jakubokrasa.bikeroutes.features.myroutes.navigation.MyRoutesNavigator
 //
 //class RouteViewModel(

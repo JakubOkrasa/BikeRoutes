@@ -126,7 +126,6 @@ class FollowRouteFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_fo
         val dialogConfirm = Dialog(requireContext())
         dialogConfirm.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialogConfirm.setCancelable(true)
-        dialogConfirm.setContentView(R.layout.dialog_confirm)
         val dlgBinding = DialogConfirmBinding.inflate(LayoutInflater.from(context))
         dialogConfirm.setContentView(dlgBinding.root)
         dlgBinding.btConfirm.setOnClickListener(btDialogConfirmOnClick)

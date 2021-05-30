@@ -3,44 +3,34 @@
 import android.app.Dialog
 import android.os.Bundle
 import android.view.View
-import android.view.Window
-import android.widget.Button
-import android.widget.TextView
-import com.google.android.material.slider.RangeSlider
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import pl.jakubokrasa.bikeroutes.R
 import pl.jakubokrasa.bikeroutes.core.base.platform.BaseFragment
-import pl.jakubokrasa.bikeroutes.core.extensions.getValFrom
-import pl.jakubokrasa.bikeroutes.core.extensions.getValTo
 import pl.jakubokrasa.bikeroutes.core.extensions.makeGone
 import pl.jakubokrasa.bikeroutes.core.extensions.makeVisible
-import pl.jakubokrasa.bikeroutes.core.util.getFormattedFilterDistance
-import pl.jakubokrasa.bikeroutes.core.util.getFormattedFilterDistanceGreaterThan
-import pl.jakubokrasa.bikeroutes.core.util.getFormattedFilterDistanceLessThan
-import pl.jakubokrasa.bikeroutes.databinding.FragmentMyRoutesBinding
+import pl.jakubokrasa.bikeroutes.databinding.FragmentSharedRoutesBinding
+import pl.jakubokrasa.bikeroutes.features.common.presentation.DialogFilter
 import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteDisplayable
-import pl.jakubokrasa.bikeroutes.features.myroutes.domain.FilterData
 
  class SharedRoutesFragment : BaseFragment<SharedRoutesViewModel>(R.layout.fragment_shared_routes){
-    private var _binding: FragmentMyRoutesBinding? = null
+    private var _binding: FragmentSharedRoutesBinding? = null
     private val binding get() = _binding!!
-    private val myRoutesRecyclerAdapter: SharedRoutesRecyclerAdapter by inject()
+    private val sharedRoutesRecyclerAdapter: SharedRoutesRecyclerAdapter by inject()
 	override val viewModel: SharedRoutesViewModel by sharedViewModel()
     private lateinit var dialogFilter: Dialog
     private var isFilter = false
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        _binding = FragmentMyRoutesBinding.bind(view)
+        _binding = FragmentSharedRoutesBinding.bind(view)
         initRecycler() // todo ten init powinien być w initViews() ale wtedy jest java.lang.NullPointerException
-                        //at pl.jakubokrasa.bikeroutes.features.myroutes.presentation.MyRoutesFragment.getBinding(MyRoutesFragment.kt:17)
+                        //at pl.jakubokrasa.bikeroutes.features.myroutes.presentation.SharedRoutesFragment.getBinding(SharedRoutesFragment.kt:17)
                         //w AA to działą
         viewModel.getSharedRoutes()
 
         binding.btFilter.setOnClickListener(btFilterOnClick)
-        dialogFilter = Dialog(requireContext())
-        initializeFilterDialog(dialogFilter)
+        initializeFilterDialog()
     }
 
     override fun onResume() {
@@ -52,14 +42,14 @@ import pl.jakubokrasa.bikeroutes.features.myroutes.domain.FilterData
     override fun initObservers() {
         super.initObservers()
         observeIsFilter()
-        observeMyRoutes()
+        observeSharedRoutes()
     }
 
     override fun initViews() {
         super.initViews()
     }
 
-    private fun observeMyRoutes() {
+    private fun observeSharedRoutes() {
         viewModel.sharedRoutes.observe(viewLifecycleOwner) {
             if(it.isNotEmpty()) {
                 showRecyclerWithItems(it)
@@ -70,7 +60,7 @@ import pl.jakubokrasa.bikeroutes.features.myroutes.domain.FilterData
     }
 
      private fun showNoDataMessage() {
-         if (isFilter) binding.tvNoData.text = String.format(getString(R.string.fragment_myroutes_no_data_filter))
+         if (isFilter) binding.tvNoData.text = String.format(getString(R.string.fragment_common_no_data_filter))
          else binding.tvNoData.text = getString(R.string.fragment_sharedroutes_no_data)
          binding.tvNoData.visibility = View.VISIBLE
          binding.recyclerView.visibility = View.GONE
@@ -79,15 +69,9 @@ import pl.jakubokrasa.bikeroutes.features.myroutes.domain.FilterData
      private fun showRecyclerWithItems(it: List<RouteDisplayable>) {
          binding.recyclerView.visibility = View.VISIBLE
          binding.tvNoData.visibility = View.GONE
-         myRoutesRecyclerAdapter.setItems(it)
+         sharedRoutesRecyclerAdapter.setItems(it)
      }
-
-     private fun observePoints() {
-         viewModel.pointsFromRemote.observe(viewLifecycleOwner) {
-             // not needed right now, points are taken from remote onClick item by viewModel
-         }
-     }
-
+     
      private fun observeIsFilter() {
          viewModel.isFilter.observe(viewLifecycleOwner) {
              isFilter = it
@@ -97,11 +81,11 @@ import pl.jakubokrasa.bikeroutes.features.myroutes.domain.FilterData
     private fun initRecycler() {
         with(binding.recyclerView) {
             setHasFixedSize(true)
-            myRoutesRecyclerAdapter.onItemClick = {
+            sharedRoutesRecyclerAdapter.onItemClick = {
                 route ->
                 viewModel.getPointsFromRemoteAndOpenFollowRouteFrg(route)
             }
-            adapter = myRoutesRecyclerAdapter
+            adapter = sharedRoutesRecyclerAdapter
         }
     }
 
@@ -119,71 +103,21 @@ import pl.jakubokrasa.bikeroutes.features.myroutes.domain.FilterData
          dialogFilter.show()
      }
 
-     private fun initializeFilterDialog(dialog: Dialog): DialogBinder {
-         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-         dialog.setCancelable(true)
-         dialog.setContentView(R.layout.dialog_myroutes_filter)
-         val btSave = dialog.findViewById<Button>(R.id.dialog_myroutesfilter_bt_save) //todo view binding like in DialogConfirm
-         val btCancel = dialog.findViewById<Button>(R.id.dialog_myroutesfilter_bt_cancel)
-         val slider = dialog.findViewById<RangeSlider>(R.id.dialog_myroutesfilter_slider_distance)
-         val tvResult = dialog.findViewById<TextView>(R.id.dialog_myroutesfilter_tv_distance_result)
-         val dialogBinder = DialogBinder(slider, btSave, btCancel, tvResult)
-         initializeDistanceSlider(dialogBinder)
-         dialogBinder.btSave.setOnClickListener {
-//             viewModel.getMyRoutesWithFilter(FilterData(dialogBinder.slider.getValFrom(), dialogBinder.slider.getValTo())) //todo
-
-             if(dialogBinder.slider.getValFrom() > 0.0f) {
-                 binding.btFilterDistgreaterthan.text =
-                     getFormattedFilterDistanceGreaterThan(dialogBinder.slider.getValFrom())
-                 binding.btFilterDistgreaterthan.makeVisible()
-             } else {
-                 binding.btFilterDistgreaterthan.makeGone()
-             }
-             if(dialogBinder.slider.getValTo() < DISTANCE_SLIDER_VALUE_TO) {
-                 binding.btFilterDistlessthan.text =
-                     getFormattedFilterDistanceLessThan(dialogBinder.slider.getValTo())
-                 binding.btFilterDistlessthan.makeVisible()
-             } else {
-                 binding.btFilterDistlessthan.makeGone()
-             }
-
-             dialog.dismiss()
-         }
-         dialogBinder.btCancel.setOnClickListener { dialog.dismiss() }
-         return dialogBinder
-     }
-
-     private fun initializeDistanceSlider(dialogBinder: DialogBinder) {
-         with(dialogBinder.slider) {
-             valueFrom = 0.0f
-             valueTo = DISTANCE_SLIDER_VALUE_TO
-             setValues(0.0f, DISTANCE_SLIDER_VALUE_TO)
-             addOnChangeListener(RangeSlider.OnChangeListener { _, _, _ ->
-                 dialogBinder.tvResult.text = getFormattedFilterDistance(getValFrom(), getValTo())
-             })
-         }
-
+     private fun initializeFilterDialog() {
+         dialogFilter = DialogFilter(requireContext(), binding, viewModel)
      }
 
      override fun onPendingState() {
          super.onPendingState()
-         binding.progressLayout.visibility = View.VISIBLE
+         binding.progressLayout.makeVisible()
      }
 
      override fun onIdleState() {
          super.onIdleState()
-         binding.progressLayout.visibility = View.GONE
+         binding.progressLayout.makeGone()
      }
 
     companion object {
         val LOG_TAG = SharedRoutesFragment::class.simpleName
-        const val DISTANCE_SLIDER_VALUE_TO = 500.0f
     }
-
-     data class DialogBinder(
-         val slider: RangeSlider,
-         val btSave: Button,
-         val btCancel: Button,
-         val tvResult: TextView
-     )
 }
