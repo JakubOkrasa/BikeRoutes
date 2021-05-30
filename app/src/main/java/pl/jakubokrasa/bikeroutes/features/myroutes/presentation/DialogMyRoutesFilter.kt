@@ -1,4 +1,4 @@
-package pl.jakubokrasa.bikeroutes.features.common.presentation
+package pl.jakubokrasa.bikeroutes.features.myroutes.presentation
 
 import android.app.Dialog
 import android.content.Context
@@ -14,15 +14,16 @@ import pl.jakubokrasa.bikeroutes.core.util.getFormattedFilterDistance
 import pl.jakubokrasa.bikeroutes.core.util.getFormattedFilterDistanceGreaterThan
 import pl.jakubokrasa.bikeroutes.core.util.getFormattedFilterDistanceLessThan
 import pl.jakubokrasa.bikeroutes.databinding.DialogFilterBinding
+import pl.jakubokrasa.bikeroutes.databinding.FragmentMyRoutesBinding
 import pl.jakubokrasa.bikeroutes.databinding.FragmentSharedRoutesBinding
 import pl.jakubokrasa.bikeroutes.features.common.domain.FilterData
 import pl.jakubokrasa.bikeroutes.features.myroutes.presentation.MyRoutesFragment.Companion.DISTANCE_SLIDER_VALUE_TO
 import pl.jakubokrasa.bikeroutes.features.sharedroutes.presentation.SharedRoutesViewModel
 
-class DialogFilter(
+class DialogMyRoutesFilter(
     ctx: Context,
-    private val frgBinding: FragmentSharedRoutesBinding,
-    private val viewModel: SharedRoutesViewModel
+    private val frgBinding: FragmentMyRoutesBinding,
+    private val viewModel: MyRoutesViewModel
 ): Dialog(ctx) {
     private lateinit var dlgBinding: DialogFilterBinding
 
@@ -34,7 +35,7 @@ class DialogFilter(
         setContentView(dlgBinding.root)
         initializeDistanceSlider()
         dlgBinding.btSave.setOnClickListener {
-            viewModel.getSharedRoutesWithFilter(FilterData(dlgBinding.sliderDistance.getValFrom(), dlgBinding.sliderDistance.getValTo()))
+            viewModel.getMyRoutesWithFilter(FilterData(dlgBinding.sliderDistance.getValFrom(), dlgBinding.sliderDistance.getValTo()))
 
             if(dlgBinding.sliderDistance.getValFrom() > 0.0f) {
                 frgBinding.btFilterDistgreaterthan.text =

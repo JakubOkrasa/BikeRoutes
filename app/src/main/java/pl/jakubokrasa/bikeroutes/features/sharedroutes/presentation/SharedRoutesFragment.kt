@@ -10,7 +10,6 @@ import pl.jakubokrasa.bikeroutes.core.base.platform.BaseFragment
 import pl.jakubokrasa.bikeroutes.core.extensions.makeGone
 import pl.jakubokrasa.bikeroutes.core.extensions.makeVisible
 import pl.jakubokrasa.bikeroutes.databinding.FragmentSharedRoutesBinding
-import pl.jakubokrasa.bikeroutes.features.common.presentation.DialogFilter
 import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteDisplayable
 
  class SharedRoutesFragment : BaseFragment<SharedRoutesViewModel>(R.layout.fragment_shared_routes){
@@ -104,7 +103,7 @@ import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteDisplayabl
      }
 
      private fun initializeFilterDialog() {
-         dialogFilter = DialogFilter(requireContext(), binding, viewModel)
+         dialogFilter = DialogSharedRoutesFilter(requireContext(), binding, viewModel)
      }
 
      override fun onPendingState() {

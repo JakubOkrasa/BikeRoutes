@@ -3,7 +3,6 @@
 import android.app.Dialog
 import android.os.Bundle
 import android.view.View
-import android.view.Window
 import android.widget.Button
 import android.widget.TextView
 import com.google.android.material.slider.RangeSlider
@@ -11,15 +10,7 @@ import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import pl.jakubokrasa.bikeroutes.R
 import pl.jakubokrasa.bikeroutes.core.base.platform.BaseFragment
-import pl.jakubokrasa.bikeroutes.core.extensions.getValFrom
-import pl.jakubokrasa.bikeroutes.core.extensions.getValTo
-import pl.jakubokrasa.bikeroutes.core.extensions.makeGone
-import pl.jakubokrasa.bikeroutes.core.extensions.makeVisible
-import pl.jakubokrasa.bikeroutes.core.util.getFormattedFilterDistance
-import pl.jakubokrasa.bikeroutes.core.util.getFormattedFilterDistanceGreaterThan
-import pl.jakubokrasa.bikeroutes.core.util.getFormattedFilterDistanceLessThan
 import pl.jakubokrasa.bikeroutes.databinding.FragmentMyRoutesBinding
-import pl.jakubokrasa.bikeroutes.features.common.domain.FilterData
 import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteDisplayable
 
  class MyRoutesFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_my_routes){
@@ -39,8 +30,7 @@ import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteDisplayabl
         viewModel.getMyRoutes()
 
         binding.btFilter.setOnClickListener(btFilterOnClick)
-        dialogFilter = Dialog(requireContext())
-        initializeFilterDialog(dialogFilter)
+        initializeFilterDialog()
     }
 
     override fun onResume() {
@@ -124,50 +114,8 @@ import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteDisplayabl
          dialogFilter.show()
      }
 
-     private fun initializeFilterDialog(dialog: Dialog): DialogBinder {
-         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-         dialog.setCancelable(true)
-         dialog.setContentView(R.layout.dialog_myroutes_filter)
-         val btSave = dialog.findViewById<Button>(R.id.dialog_myroutesfilter_bt_save) //todo view binding like in DialogConfirm
-         val btCancel = dialog.findViewById<Button>(R.id.dialog_myroutesfilter_bt_cancel)
-         val slider = dialog.findViewById<RangeSlider>(R.id.dialog_myroutesfilter_slider_distance)
-         val tvResult = dialog.findViewById<TextView>(R.id.dialog_myroutesfilter_tv_distance_result)
-         val dialogBinder = DialogBinder(slider, btSave, btCancel, tvResult)
-         initializeDistanceSlider(dialogBinder)
-         dialogBinder.btSave.setOnClickListener {
-             viewModel.getMyRoutesWithFilter(FilterData(dialogBinder.slider.getValFrom(), dialogBinder.slider.getValTo()))
-
-             if(dialogBinder.slider.getValFrom() > 0.0f) {
-                 binding.btFilterDistgreaterthan.text =
-                     getFormattedFilterDistanceGreaterThan(dialogBinder.slider.getValFrom())
-                 binding.btFilterDistgreaterthan.makeVisible()
-             } else {
-                 binding.btFilterDistgreaterthan.makeGone()
-             }
-             if(dialogBinder.slider.getValTo() < DISTANCE_SLIDER_VALUE_TO) {
-                 binding.btFilterDistlessthan.text =
-                     getFormattedFilterDistanceLessThan(dialogBinder.slider.getValTo())
-                 binding.btFilterDistlessthan.makeVisible()
-             } else {
-                 binding.btFilterDistlessthan.makeGone()
-             }
-
-             dialog.dismiss()
-         }
-         dialogBinder.btCancel.setOnClickListener { dialog.dismiss() }
-         return dialogBinder
-     }
-
-     private fun initializeDistanceSlider(dialogBinder: DialogBinder) {
-         with(dialogBinder.slider) {
-             valueFrom = 0.0f
-             valueTo = DISTANCE_SLIDER_VALUE_TO
-             setValues(0.0f, DISTANCE_SLIDER_VALUE_TO)
-             addOnChangeListener(RangeSlider.OnChangeListener { _, _, _ ->
-                 dialogBinder.tvResult.text = getFormattedFilterDistance(getValFrom(), getValTo())
-             })
-         }
-
+     private fun initializeFilterDialog() {
+         dialogFilter = DialogMyRoutesFilter(requireContext(), binding, viewModel)
      }
 
      override fun onPendingState() {
@@ -184,11 +132,4 @@ import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteDisplayabl
         val LOG_TAG = MyRoutesFragment::class.simpleName
         const val DISTANCE_SLIDER_VALUE_TO = 500.0f
     }
-
-     data class DialogBinder(
-         val slider: RangeSlider,
-         val btSave: Button,
-         val btCancel: Button,
-         val tvResult: TextView
-     )
 }
