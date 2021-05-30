@@ -58,7 +58,7 @@ class FollowRouteFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_fo
         showRoute(view)
 
         binding.btShowLocation.setOnClickListener(btShowLocationOnClick)
-        dialogConfirmRemove = initializeDialogConfirmRemove()
+        dialogConfirmRemove = DialogConfirm(requireContext(), "Are you sure to remove this route?", "remove")
     }
 
     override fun onStart() {
@@ -120,17 +120,6 @@ class FollowRouteFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_fo
                 else -> false
             }
         }
-    }
-
-    private fun initializeDialogConfirmRemove(): Dialog {
-        val dialogConfirm = Dialog(requireContext())
-        dialogConfirm.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        dialogConfirm.setCancelable(true)
-        val dlgBinding = DialogConfirmBinding.inflate(LayoutInflater.from(context))
-        dialogConfirm.setContentView(dlgBinding.root)
-        dlgBinding.btConfirm.setOnClickListener(btDialogConfirmOnClick)
-        dlgBinding.btCancel.setOnClickListener { dialogConfirm.dismiss() }
-        return dialogConfirm
     }
 
     private val btDialogConfirmOnClick = View.OnClickListener {
