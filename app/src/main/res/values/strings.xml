@@ -19,6 +19,6 @@
     <string name="get_password_link">get password link</string>
     <string name="title_account">Account</string>
     <string name="fragment_myroutes_no_data">It seems that you don\'t have any route at the moment.</string>
-    <string name="fragment_sharedroutes_no_data">It seems than no route is shared. Check your Internet connection.</string>
+    <string name="fragment_sharedroutes_no_data">It seems that no route is shared. Check your Internet connection.</string>
     <string name="fragment_myroutes_no_data_filter">No route meets your filters.</string>
 </resources>

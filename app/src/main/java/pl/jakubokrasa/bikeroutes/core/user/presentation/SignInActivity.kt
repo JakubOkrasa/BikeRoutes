@@ -24,6 +24,10 @@ class SignInActivity: BaseActivity<SignInViewModel>() {
             if(it) startActivity(Intent(this, MainActivity::class.java))
         })
 
+        viewModel.message.observe(this, {
+            showToast(it)
+        })
+
         binding.btSignIn.setOnClickListener{
             val email: String = binding.etEmail.text.toString()
             val password: String = binding.etPassword.text.toString()

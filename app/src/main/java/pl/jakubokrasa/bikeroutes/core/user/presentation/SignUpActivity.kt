@@ -25,19 +25,16 @@ class SignUpActivity : BaseActivity<SignUpViewModel>() {
         binding.btSignUp.setOnClickListener(btSignUpOnClick)
         binding.btSignIn.setOnClickListener(btLogInOnClick)
 
-        observeMessage()
+        viewModel.message.observe(this, {
+            showToast(it)
+        })
+
         observeStartActivity()
     }
 
     private fun observeStartActivity() {
         viewModel.startActivity.observe(this, {
             if (it) startActivity(Intent(this, MainActivity::class.java))
-        })
-    }
-
-    private fun observeMessage() {
-        viewModel.message.observe(this, {
-            showToast(it)
         })
     }
 

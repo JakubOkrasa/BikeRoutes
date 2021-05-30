@@ -113,6 +113,7 @@ class RemoteRepositoryImpl(
         val documents =
             firestore
                 .collection("routes")
+                .whereNotEqualTo("userId", uid)
                 .whereEqualTo("sharingType", sharingType.PUBLIC.name)
                 .get().await().documents
 

@@ -35,6 +35,10 @@ class MainActivity : BaseActivity<MainViewModel>() {
             if(it) startActivity(Intent(this, SignInActivity::class.java))
         })
 
+        viewModel.message.observe(this, {
+            showToast(it)
+        })
+
         signInIfAnonymous()
     }
 

@@ -34,7 +34,11 @@
         android:id="@+id/nav_shared_routes"
         android:name="pl.jakubokrasa.bikeroutes.features.sharedroutes.presentation.SharedRoutesFragment"
         android:label="@string/nav_title_shared_routes"
-        tools:layout="@layout/fragment_shared_routes" />
+        tools:layout="@layout/fragment_shared_routes" >
+        <action
+            android:id="@+id/action_shared_routes_to_followRouteFragment"
+            app:destination="@id/followRouteFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/signInFragment"
