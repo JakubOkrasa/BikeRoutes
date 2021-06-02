@@ -1,6 +1,5 @@
 package pl.jakubokrasa.bikeroutes.features.myroutes.presentation
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -101,7 +100,7 @@ class MyRoutesViewModel(
         }
     }
 
-    fun getPointsFromRemoteAndOpenFollowRouteFrg(route: RouteDisplayable) {
+    fun getPointsFromRemoteAndOpenRouteDetailsFrg(route: RouteDisplayable) {
         setPendingState()
         getPointsFromRemoteUseCase(
             routeId = route.routeId,
@@ -111,7 +110,7 @@ class MyRoutesViewModel(
             setIdleState()
             result.onSuccess {
                 handleSuccess("getPointsFromRemote")
-                myRoutesNavigator.openFollowRouteFragment(route, it.map { point -> PointDisplayable(point) })
+                myRoutesNavigator.openRouteDetailsFragment(route, it.map { point -> PointDisplayable(point) })
             }
             result.onFailure { handleFailure("getPointsFromRemote", errLog = it.message) }
         }

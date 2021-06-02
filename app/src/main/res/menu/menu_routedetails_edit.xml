@@ -2,13 +2,13 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/action_followroute_done"
+        android:id="@+id/action_routedetails_done"
         android:icon="@drawable/ic_done_24"
         android:title="Done"
         app:showAsAction="always"/>
 
     <item
-        android:id="@+id/action_followroute_remove"
+        android:id="@+id/action_routedetails_remove"
         android:icon="@drawable/ic_remove_24"
         android:title="Remove"
         app:showAsAction="always"/>

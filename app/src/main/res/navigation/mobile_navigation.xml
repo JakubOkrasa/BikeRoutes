@@ -25,8 +25,8 @@
         android:label="@string/nav_title_my_routes"
         tools:layout="@layout/fragment_my_routes" >
         <action
-            android:id="@+id/action_my_routes_to_followRouteFragment"
-            app:destination="@id/followRouteFragment"
+            android:id="@+id/action_my_routes_to_routeDetailsFragment"
+            app:destination="@id/routeDetailsFragment"
             app:popUpTo="@id/nav_my_routes"/>
     </fragment>
 
@@ -36,8 +36,8 @@
         android:label="@string/nav_title_shared_routes"
         tools:layout="@layout/fragment_shared_routes" >
         <action
-            android:id="@+id/action_shared_routes_to_followRouteFragment"
-            app:destination="@id/followRouteFragment"
+            android:id="@+id/action_shared_routes_to_routeDetailsFragment"
+            app:destination="@id/routeDetailsFragment"
             app:popUpTo="@id/nav_shared_routes"/>
     </fragment>
 
@@ -86,10 +86,15 @@
         android:label="@string/nav_title_explore"
         tools:layout="@layout/fragment_save_route" />
     <fragment
-        android:id="@+id/followRouteFragment"
-        android:name="pl.jakubokrasa.bikeroutes.features.myroutes.presentation.FollowRouteFragment"
+        android:id="@+id/routeDetailsFragment"
+        android:name="pl.jakubokrasa.bikeroutes.features.myroutes.presentation.RouteDetailsFragment"
         android:label="fragment_follow_route"
-        tools:layout="@layout/fragment_follow_route" />
+        tools:layout="@layout/fragment_route_details" >
+        <action
+            android:id="@+id/action_RouteDetailsFragment_to_followRouteFragment"
+            app:destination="@id/followRouteFragment"
+            app:popUpTo="@id/routeDetailsFragment"/>
+    </fragment>
     <fragment
         android:id="@+id/forgotPasswordFragment"
         android:name="pl.jakubokrasa.bikeroutes.core.user.presentation.ForgotPasswordActivity"
@@ -103,6 +108,11 @@
         android:id="@+id/mainActivity"
         android:name="pl.jakubokrasa.bikeroutes.core.app.presentation.MainActivity"
         android:label="MainActivity" />
+    <fragment
+        android:id="@+id/followRouteFragment"
+        android:name="pl.jakubokrasa.bikeroutes.features.myroutes.presentation.FollowRouteFragment"
+        android:label="fragment_follow_route"
+        tools:layout="@layout/fragment_followroute" />
 
 
 </navigation>

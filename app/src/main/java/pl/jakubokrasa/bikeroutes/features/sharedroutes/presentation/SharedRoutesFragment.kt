@@ -82,7 +82,7 @@ import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteDisplayabl
             setHasFixedSize(true)
             sharedRoutesRecyclerAdapter.onItemClick = {
                 route ->
-                viewModel.getPointsFromRemoteAndOpenFollowRouteFrg(route)
+                viewModel.getPointsFromRemoteAndOpenRouteDetailsFrg(route)
             }
             adapter = sharedRoutesRecyclerAdapter
         }
