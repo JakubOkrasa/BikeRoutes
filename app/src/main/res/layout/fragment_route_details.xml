@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        tools:context=".features.myroutes.presentation.RouteDetailsFragment">
+
+        <FrameLayout
+            android:id="@+id/progress_layout"
+            android:layout_width="match_parent"
+            android:layout_height="4dp"
+            app:layout_constraintTop_toTopOf="parent"
+            android:visibility="gone">
+            <ProgressBar
+                android:id="@+id/progressbar"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:layout_height="32dp"
+                android:indeterminate="true"
+                android:layout_gravity="center"/>
+        </FrameLayout>
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:background="#AA13AA00"
+            app:layout_constraintTop_toBottomOf="@id/progress_layout">
+
+            <TextView
+                style="@style/BR_ToolbarTv"
+                android:text="Route details" />
+        </androidx.appcompat.widget.Toolbar>
+
+        <org.osmdroid.views.MapView
+            android:id="@+id/map_view"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:backgroundTint="@color/light_green"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/toolbar"/>
+
+        <LinearLayout
+            android:id="@+id/ll_main"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintTop_toBottomOf="@id/map_view"
+            android:layout_marginHorizontal="10dp"
+            android:layout_marginTop="10dp">
+
+            <LinearLayout
+                android:id="@+id/ll_route_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/toolbar">
+
+                <TextView
+                    android:id="@+id/tv_route_name"
+                    style="@style/tv_medium"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="test name"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tv_route_description"
+                    style="@style/tv_small"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_route_edit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/toolbar"
+                tools:visibility="gone">
+
+                <EditText
+                    android:id="@+id/et_route_name"
+                    style="@style/tv_medium"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Name"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/et_route_description"
+                    style="@style/tv_small"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Description" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/ll_sharing"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    app:layout_constraintTop_toBottomOf="@id/ll_name">
+
+                    <TextView
+                        style="@style/tv_medium"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="7dp"
+                        android:text="Visible only for me"
+                        android:textColor="#222"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/sw_private"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="20dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/ic_distance"/>
+                    <TextView
+                        android:id="@+id/tv_route_distance"
+                        android:layout_marginStart="3dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        style="@style/tv_small" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_marginStart="10dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/ic_time"/>
+
+                    <TextView
+                        android:id="@+id/tv_route_ride_time"
+                        android:layout_marginStart="3dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        style="@style/tv_small" />
+                </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/ll_visibility"
+                    android:layout_marginStart="10dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/ic_visibility_public"/>
+
+                    <TextView
+                        android:id="@+id/tv_visibility"
+                        android:layout_marginStart="3dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        style="@style/tv_small" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/bt_follow"
+                android:layout_marginTop="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Follow route"/>
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
+
+

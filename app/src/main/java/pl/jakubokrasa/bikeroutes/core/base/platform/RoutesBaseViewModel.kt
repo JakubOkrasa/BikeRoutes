@@ -5,7 +5,7 @@ package pl.jakubokrasa.bikeroutes.core.base.platform
 //): BaseViewModel() {
 //    abstract val navigator: T
 //
-//    fun getPointsFromRemoteAndOpenFollowRouteFrg(route: RouteDisplayable) {
+//    fun getPointsFromRemoteAndOpenRouteDetailsFrg(route: RouteDisplayable) {
 //        setPendingState()
 //        getPointsFromRemoteUseCase(
 //            routeId = route.routeId,
@@ -15,7 +15,7 @@ package pl.jakubokrasa.bikeroutes.core.base.platform
 //            setIdleState()
 //            result.onSuccess {
 //                handleSuccess("getPointsFromRemote")
-//                navigator.openFollowRouteFragment(route, it.map { point -> PointDisplayable(point) })
+//                navigator.openRouteDetailsFragment(route, it.map { point -> PointDisplayable(point) })
 //            }
 //            result.onFailure { handleFailure("getPointsFromRemote", errLog = it.message) }
 //        }

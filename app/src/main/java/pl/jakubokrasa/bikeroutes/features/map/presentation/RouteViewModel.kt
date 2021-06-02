@@ -136,7 +136,7 @@ package pl.jakubokrasa.bikeroutes.features.map.presentation
 //        }
 //    }
 //
-//    fun getPointsFromRemoteAndOpenFollowRouteFrg(route: RouteDisplayable) {
+//    fun getPointsFromRemoteAndOpenRouteDetailsFrg(route: RouteDisplayable) {
 //        setPendingState()
 //        getPointsFromRemoteUseCase(
 //            routeId = route.routeId,
@@ -146,7 +146,7 @@ package pl.jakubokrasa.bikeroutes.features.map.presentation
 //            setIdleState()
 //            result.onSuccess {
 //                handleSuccess("getPointsFromRemote")
-//                myRoutesNavigator.openFollowRouteFragment(route, it.map { point -> PointDisplayable(point)})
+//                myRoutesNavigator.openRouteDetailsFragment(route, it.map { point -> PointDisplayable(point)})
 //            }
 //            result.onFailure { handleFailure("getPointsFromRemote", errLog = it.message) }
 //        }

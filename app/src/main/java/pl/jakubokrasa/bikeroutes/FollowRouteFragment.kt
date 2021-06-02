@@ -2,7 +2,6 @@ package pl.jakubokrasa.bikeroutes.features.myroutes.presentation
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.app.Dialog
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -11,56 +10,50 @@ import android.location.Location
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
-import androidx.appcompat.widget.Toolbar
 import androidx.core.content.res.ResourcesCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
+import org.osmdroid.views.CustomZoomButtonsController
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.Polyline
 import pl.jakubokrasa.bikeroutes.R
 import pl.jakubokrasa.bikeroutes.core.base.platform.BaseFragment
-import pl.jakubokrasa.bikeroutes.core.extensions.hideKeyboard
-import pl.jakubokrasa.bikeroutes.core.extensions.makeGone
-import pl.jakubokrasa.bikeroutes.core.extensions.makeVisible
 import pl.jakubokrasa.bikeroutes.core.util.*
 import pl.jakubokrasa.bikeroutes.core.util.enums.MapMode
-import pl.jakubokrasa.bikeroutes.core.util.enums.sharingType
-import pl.jakubokrasa.bikeroutes.databinding.FragmentFollowRouteBinding
+import pl.jakubokrasa.bikeroutes.databinding.FragmentFollowrouteBinding
+import pl.jakubokrasa.bikeroutes.features.common.presentation.CommonRoutesNavigator
 import pl.jakubokrasa.bikeroutes.features.map.domain.LocationService
 import pl.jakubokrasa.bikeroutes.features.map.presentation.MapFragment.Companion.SEND_LOCATION_ACTION
 import pl.jakubokrasa.bikeroutes.features.map.presentation.model.PointDisplayable
 import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteDisplayable
 
 
-class FollowRouteFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_follow_route) {
+class FollowRouteFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_followroute) {
 
     override val viewModel: MyRoutesViewModel by sharedViewModel()
-    private var _binding: FragmentFollowRouteBinding? = null
+    private var _binding: FragmentFollowrouteBinding? = null
     private val binding get() = _binding!!
     private lateinit var route: RouteDisplayable
     private lateinit var points: List<PointDisplayable>
     private val polyline = Polyline()
     private val mLocalBR: LocalBroadcastManager by inject()
     private lateinit var mPreviousLocMarker: Marker
-    private lateinit var dialogConfirmRemove: Dialog
 
     private var mapMode = MapMode.moveFreely
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        _binding = FragmentFollowRouteBinding.bind(view)
+        _binding = FragmentFollowrouteBinding.bind(view)
         configureOsmDroid(requireContext())
         requireActivity().startService(Intent(context, LocationService::class.java))
         LocationUtils(activity as Activity).enableGpsIfNecessary()
 
-        updateToolbar()
         showRoute(view)
 
         binding.btShowLocation.setOnClickListener(btShowLocationOnClick)
-        if(isMyRoute()) dialogConfirmRemove = DialogConfirm(requireContext(), "Are you sure to remove this route?", "remove")
     }
 
     override fun onStart() {
@@ -89,105 +82,16 @@ class FollowRouteFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_fo
         view.post {
             setRoute()
             setPoints()
-            updateRouteInfoLayout()
-            updateRouteEditLayout()
             setPolylineProperties()
             setMapViewProperties()
             binding.mapView.invalidate()
         }
     }
 
-    private fun updateToolbar() {
-        if (isMyRoute()) {
-            binding.toolbar.inflateMenu(R.menu.menu_followroute_home)
-            binding.toolbar.setOnMenuItemClickListener { menuItem ->
-                when (menuItem.itemId) {
-                    R.id.action_followroute_edit -> {
-                        clearToolbarMenu()
-                        binding.toolbar.inflateMenu(R.menu.menu_followroute_edit)
-                        binding.toolbar.setOnMenuItemClickListener(toolbarIconsEditModeOnClick)
-                        binding.llRouteInfo.makeGone()
-                        binding.llVisibility.makeGone()
-                        binding.llRouteEdit.makeVisible()
-                        true
-                    }
-                    else -> false
-                }
-            }
-        }
-    }
-
-    private fun isMyRoute() = arguments?.getBoolean(IS_MY_ROUTE_KEY) ?: false
-
-	private val toolbarIconsEditModeOnClick = Toolbar.OnMenuItemClickListener {
-            insideMenuItem ->
-        when (insideMenuItem.itemId) {
-            R.id.action_followroute_done -> {
-                updateRouteDisplayableModel()
-                viewModel.updateRoute(route)
-                updateRouteInfoLayout()
-                hideKeyboard()
-                binding.llRouteEdit.makeGone()
-                binding.llRouteInfo.makeVisible()
-                binding.llVisibility.makeVisible()
-                clearToolbarMenu()
-                updateToolbar()
-                true
-            }
-            R.id.action_followroute_remove -> {
-                dialogConfirmRemove.show()
-                true
-            }
-            else -> false
-        }
-    }
-
-    private fun updateRouteDisplayableModel() {
-        route.name = binding.etRouteName.text.toString()
-        route.description = binding.etRouteDescription.text.toString()
-        if (binding.swPrivate.isChecked) route.sharingType = sharingType.PRIVATE else route.sharingType = sharingType.PUBLIC
-    }
-
-    private val btDialogConfirmOnClick = View.OnClickListener {
-        viewModel.removeRouteAndNavBack(route)
-        dialogConfirmRemove.dismiss()
-    }
-
-    private fun updateRouteInfoLayout() {
-        with(binding) {
-            tvRouteName.text = route.name
-
-            if(route.description.isBlank()) tvRouteDescription.makeGone()
-            else {
-                tvRouteDescription.makeVisible()
-                tvRouteDescription.text = route.description
-            }
-
-            if(route.sharingType == sharingType.PUBLIC)
-                tvVisibility.text = "public"
-            else if(route.sharingType == sharingType.PRIVATE)
-                tvVisibility.text = "only me"
-
-
-            tvRouteDistance.text = getFormattedDistance(route.distance)
-            tvRouteRideTime.text = getFormattedRideTime(route.rideTimeMinutes)
-
-            if(isMyRoute())
-                binding.llVisibility.makeVisible()
-            else
-                binding.llVisibility.makeGone()
-        }
-    }
-
-    private fun updateRouteEditLayout() {
-        binding.etRouteName.setText(route.name)
-        if(route.description.isNotBlank()) binding.etRouteDescription.setText(route.description)
-        binding.swPrivate.isChecked = run { route.sharingType == sharingType.PRIVATE }
-    }
-
     private fun setMapViewProperties() {
         with(binding.mapView) {
             setTileSource(TileSourceFactory.WIKIMEDIA)
+            zoomController.setVisibility(CustomZoomButtonsController.Visibility.NEVER)
             isTilesScaledToDpi = true
             setMultiTouchControls(true)
             overlayManager.add(polyline)
@@ -202,10 +106,6 @@ class FollowRouteFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_fo
         if (!polyline.isEnabled) polyline.isEnabled = true //we get the location for the first time
         polyline.outlinePaint.strokeWidth = routeWidth
         polyline.outlinePaint.color = routeColor
-    }
-
-    private fun clearToolbarMenu() {
-        binding.toolbar.menu.clear()
     }
 
     private fun newLocationUpdateUI(geoPoint: GeoPoint) {
@@ -241,8 +141,8 @@ class FollowRouteFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_fo
         binding.mapView.controller.animateTo(mPreviousLocMarker.position)
         enableFollowingLocation()
         binding.mapView.setOnTouchListener { _, _ ->
-            disableFollowingLocation() //todo to się wykonuje za każdym dotknięciem. Można spróbować tego uniknąć https://stackoverflow.com/a/6619160/9343040
-            false // todo co tu oznacza false?
+            disableFollowingLocation()
+            false
         }
     }
 
@@ -269,26 +169,15 @@ class FollowRouteFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_fo
     private fun setPoints() {
         val serializable = arguments
             ?.getSerializable(POINTS_TO_FOLLOW_KEY) //I use Serializable instead of Parcelable because I didn't find any simple solution to pass a List through Parcelable
-                if(serializable is List<*>?) {
-                    serializable.let {
-                        points = serializable as List<PointDisplayable>
-                    }
-                }
-    }
-
-    override fun onPendingState() {
-        super.onPendingState()
-        binding.progressLayout.visibility = View.VISIBLE
-    }
-
-    override fun onIdleState() {
-        super.onIdleState()
-        binding.progressLayout.visibility = View.GONE
+        if(serializable is List<*>?) {
+            serializable.let {
+                points = serializable as List<PointDisplayable>
+            }
+        }
     }
 
     companion object {
         const val ROUTE_TO_FOLLOW_KEY = "routeToFollowKey"
         const val POINTS_TO_FOLLOW_KEY = "pointsToFollowKey"
-        const val IS_MY_ROUTE_KEY = "isMyRoutesSourceKey"
     }
 }

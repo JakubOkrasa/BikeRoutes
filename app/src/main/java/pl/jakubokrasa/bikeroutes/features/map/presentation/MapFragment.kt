@@ -21,6 +21,7 @@ import org.koin.core.KoinComponent
 import org.koin.core.inject
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
+import org.osmdroid.views.CustomZoomButtonsController
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.Overlay
 import org.osmdroid.views.overlay.Polyline
@@ -180,6 +181,7 @@ class MapFragment() : BaseFragment<MapViewModel>(R.layout.fragment_map), KoinCom
     private fun setMapViewProperties() {
         with(binding.mapView) {
             setTileSource(TileSourceFactory.WIKIMEDIA)
+            zoomController.setVisibility(CustomZoomButtonsController.Visibility.NEVER)
             isTilesScaledToDpi = true
             setMultiTouchControls(true)
             controller.setZoom(18.0)

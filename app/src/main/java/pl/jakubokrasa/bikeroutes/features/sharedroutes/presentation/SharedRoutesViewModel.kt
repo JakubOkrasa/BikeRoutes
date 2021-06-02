@@ -65,7 +65,7 @@ class SharedRoutesViewModel(
         }
     }
 
-    fun getPointsFromRemoteAndOpenFollowRouteFrg(route: RouteDisplayable) {
+    fun getPointsFromRemoteAndOpenRouteDetailsFrg(route: RouteDisplayable) {
         setPendingState()
         getPointsFromRemoteUseCase(
             routeId = route.routeId,
@@ -75,7 +75,7 @@ class SharedRoutesViewModel(
             setIdleState()
             result.onSuccess {
                 handleSuccess("getPointsFromRemote")
-                sharedRoutesNavigator.openFollowRouteFragment(route, it.map { point -> PointDisplayable(point) })
+                sharedRoutesNavigator.openRouteDetailsFragment(route, it.map { point -> PointDisplayable(point) })
             }
             result.onFailure { handleFailure("getPointsFromRemote", errLog = it.message) }
         }
