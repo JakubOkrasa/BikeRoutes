@@ -45,9 +45,9 @@ class FragmentNavigatorImpl(
     }
 
     override fun <T> navigateTo(
-        destinationId: Int, param1: Pair<String, T>, param2: Pair<String, T>, fragmentTransition: FragmentTransition?
+        destinationId: Int, fragmentTransition: FragmentTransition?, vararg params: Pair<String, T>
     ) {
-        val bundle = bundleOf(param1, param2)
+        val bundle = bundleOf(*params)
         val navOptions = fragmentTransition?.let {
             navOptions {
                 anim { enter = it.enterAnim }

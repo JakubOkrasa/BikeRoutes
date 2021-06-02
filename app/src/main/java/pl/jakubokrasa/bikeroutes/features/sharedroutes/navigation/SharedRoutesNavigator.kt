@@ -10,12 +10,13 @@ import pl.jakubokrasa.bikeroutes.features.myroutes.presentation.FollowRouteFragm
 class SharedRoutesNavigator(private val fragmentNavigator: FragmentNavigator) {
 
     fun openFollowRouteFragment(route: RouteDisplayable, points: List<PointDisplayable>) {
-
         fragmentNavigator.navigateTo(
             R.id.action_shared_routes_to_followRouteFragment,
-        FollowRouteFragment.ROUTE_TO_FOLLOW_KEY to route,
-            FollowRouteFragment.POINTS_TO_FOLLOW_KEY to points,
-        null)
+            null,
+            FollowRouteFragment.ROUTE_TO_FOLLOW_KEY to route,
+                    FollowRouteFragment.POINTS_TO_FOLLOW_KEY to points,
+                    FollowRouteFragment.IS_MY_ROUTE_KEY to false,
+            )
 
     }
 

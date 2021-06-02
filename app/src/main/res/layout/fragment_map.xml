@@ -61,8 +61,8 @@
 
             <Button
                 android:id="@+id/bt_show_location"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
                 android:background="@drawable/ic_my_location_grey"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@id/map_view"

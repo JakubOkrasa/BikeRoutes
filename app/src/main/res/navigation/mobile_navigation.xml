@@ -37,7 +37,8 @@
         tools:layout="@layout/fragment_shared_routes" >
         <action
             android:id="@+id/action_shared_routes_to_followRouteFragment"
-            app:destination="@id/followRouteFragment" />
+            app:destination="@id/followRouteFragment"
+            app:popUpTo="@id/nav_shared_routes"/>
     </fragment>
 
     <fragment

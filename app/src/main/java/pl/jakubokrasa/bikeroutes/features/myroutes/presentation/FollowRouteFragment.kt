@@ -9,9 +9,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.location.Location
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.Window
 import android.view.WindowManager
 import androidx.core.content.res.ResourcesCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
@@ -23,9 +21,10 @@ import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.Polyline
 import pl.jakubokrasa.bikeroutes.R
 import pl.jakubokrasa.bikeroutes.core.base.platform.BaseFragment
+import pl.jakubokrasa.bikeroutes.core.extensions.makeGone
+import pl.jakubokrasa.bikeroutes.core.extensions.makeVisible
 import pl.jakubokrasa.bikeroutes.core.util.*
 import pl.jakubokrasa.bikeroutes.core.util.enums.MapMode
-import pl.jakubokrasa.bikeroutes.databinding.DialogConfirmBinding
 import pl.jakubokrasa.bikeroutes.databinding.FragmentFollowRouteBinding
 import pl.jakubokrasa.bikeroutes.features.map.domain.LocationService
 import pl.jakubokrasa.bikeroutes.features.map.presentation.MapFragment.Companion.SEND_LOCATION_ACTION
@@ -58,7 +57,7 @@ class FollowRouteFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_fo
         showRoute(view)
 
         binding.btShowLocation.setOnClickListener(btShowLocationOnClick)
-        dialogConfirmRemove = DialogConfirm(requireContext(), "Are you sure to remove this route?", "remove")
+        if(isMyRoute()) dialogConfirmRemove = DialogConfirm(requireContext(), "Are you sure to remove this route?", "remove")
     }
 
     override fun onStart() {
@@ -95,32 +94,36 @@ class FollowRouteFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_fo
     }
 
     private fun updateToolbar() {
-        binding.toolbar.inflateMenu(R.menu.menu_followroute_home)
-        binding.toolbar.setOnMenuItemClickListener { menuItem ->
-            when (menuItem.itemId) {
-                R.id.action_followroute_edit -> {
-                    clearToolbarMenu()
-                    binding.toolbar.inflateMenu(R.menu.menu_followroute_edit)
-                    binding.toolbar.setOnMenuItemClickListener { insideMenuItem ->
-                        when (insideMenuItem.itemId) {
-                            R.id.action_followroute_done -> {
-                                clearToolbarMenu()
-                                updateToolbar()
-                                true
+        if(isMyRoute()) {
+            binding.toolbar.inflateMenu(R.menu.menu_followroute_home)
+            binding.toolbar.setOnMenuItemClickListener { menuItem ->
+                when (menuItem.itemId) {
+                    R.id.action_followroute_edit -> {
+                        clearToolbarMenu()
+                        binding.toolbar.inflateMenu(R.menu.menu_followroute_edit)
+                        binding.toolbar.setOnMenuItemClickListener { insideMenuItem ->
+                            when (insideMenuItem.itemId) {
+                                R.id.action_followroute_done -> {
+                                    clearToolbarMenu()
+                                    updateToolbar()
+                                    true
+                                }
+                                R.id.action_followroute_remove -> {
+                                    dialogConfirmRemove.show()
+                                    true
+                                }
+                                else -> false
                             }
-                            R.id.action_followroute_remove -> {
-                                dialogConfirmRemove.show()
-                                true
-                            }
-                            else -> false
                         }
+                        true
                     }
-                    true
+                    else -> false
                 }
-                else -> false
             }
         }
     }
+
+    private fun isMyRoute() = arguments?.getBoolean(IS_MY_ROUTE_KEY) ?: false
 
     private val btDialogConfirmOnClick = View.OnClickListener {
         viewModel.removeRouteAndNavBack(route)
@@ -241,5 +244,6 @@ class FollowRouteFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_fo
     companion object {
         const val ROUTE_TO_FOLLOW_KEY = "routeToFollowKey"
         const val POINTS_TO_FOLLOW_KEY = "pointsToFollowKey"
+        const val IS_MY_ROUTE_KEY = "isMyRoutesSourceKey"
     }
 }

@@ -16,9 +16,8 @@ interface FragmentNavigator {
 
     fun <T> navigateTo(
         @IdRes destinationId: Int,
-        param1: Pair<String, T>,
-        param2: Pair<String, T>,
-        fragmentTransition: FragmentTransition? = null
+        fragmentTransition: FragmentTransition? = null,
+        vararg params: Pair<String, T>
     )
 
     fun goBack(
