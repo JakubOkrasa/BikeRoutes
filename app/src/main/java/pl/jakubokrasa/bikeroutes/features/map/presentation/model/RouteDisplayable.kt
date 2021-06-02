@@ -10,10 +10,10 @@ data class RouteDisplayable (
     val routeId: String,
     val createdAt: Long,
     val userId: String,
-    val name: String,
-    val description: String,
+    var name: String,
+    var description: String,
     val distance: Int,
-    val sharingType: sharingType,
+    var sharingType: sharingType,
     val rideTimeMinutes: Int,
     ): Parcelable {
 

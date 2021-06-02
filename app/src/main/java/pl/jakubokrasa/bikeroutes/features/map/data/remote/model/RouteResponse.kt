@@ -16,6 +16,8 @@ class RouteResponse(
 
     constructor() : this("", 0,"", "", "", pl.jakubokrasa.bikeroutes.core.util.enums.sharingType.PRIVATE, 0, 0)
 
+    constructor(route: Route) : this(route.routeId, route.createdAt, route.userId, route.name, route.description, route.sharingType, route.distance, route.rideTimeMinutes)
+
     fun toRoute(): Route {
         return Route(
             routeId = this.routeId,

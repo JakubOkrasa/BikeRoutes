@@ -1,5 +1,6 @@
 package pl.jakubokrasa.bikeroutes.features.myroutes.presentation
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -16,6 +17,7 @@ class MyRoutesViewModel(
     private val getMyRoutesWithFilterUseCase: GetMyRoutesWithFilterUseCase,
     private val getPointsFromRemoteUseCase: GetPointsFromRemoteUseCase,
     private val removeRouteUseCase: RemoveRouteUseCase,
+    private val updateRouteUseCase: UpdateRouteUseCase,
     private val myRoutesNavigator: MyRoutesNavigator,
 ): BaseViewModel() {
 
@@ -44,6 +46,23 @@ class MyRoutesViewModel(
             result.onFailure { handleFailure("removeRouteAndNavBack", "Route wasn't removed") }
         }
     }
+
+    fun updateRoute(route: RouteDisplayable) {
+        setPendingState()
+        updateRouteUseCase(
+            params = route.toRoute(),
+            scope = viewModelScope
+        ){
+                result ->
+            setIdleState()
+            result.onSuccess {
+                handleSuccess("updateRoute", "Route was updated")
+            }
+            result.onFailure { handleFailure("updateRoute", "Route wasn't updated") }
+        }
+    }
+
+
 
     fun getMyRoutesWithFilter(filterData: FilterData) {
         setPendingState()
