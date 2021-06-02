@@ -17,6 +17,7 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.CustomZoomButtonsController
+import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.Polyline
 import pl.jakubokrasa.bikeroutes.R
@@ -24,7 +25,6 @@ import pl.jakubokrasa.bikeroutes.core.base.platform.BaseFragment
 import pl.jakubokrasa.bikeroutes.core.util.*
 import pl.jakubokrasa.bikeroutes.core.util.enums.MapMode
 import pl.jakubokrasa.bikeroutes.databinding.FragmentFollowrouteBinding
-import pl.jakubokrasa.bikeroutes.features.common.presentation.CommonRoutesNavigator
 import pl.jakubokrasa.bikeroutes.features.map.domain.LocationService
 import pl.jakubokrasa.bikeroutes.features.map.presentation.MapFragment.Companion.SEND_LOCATION_ACTION
 import pl.jakubokrasa.bikeroutes.features.map.presentation.model.PointDisplayable
@@ -54,6 +54,7 @@ class FollowRouteFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_fo
         showRoute(view)
 
         binding.btShowLocation.setOnClickListener(btShowLocationOnClick)
+        binding.btRecenter.setOnClickListener(btRecenterOnClick)
     }
 
     override fun onStart() {
@@ -90,15 +91,19 @@ class FollowRouteFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_fo
 
     private fun setMapViewProperties() {
         with(binding.mapView) {
-            setTileSource(TileSourceFactory.WIKIMEDIA)
-            zoomController.setVisibility(CustomZoomButtonsController.Visibility.NEVER)
-            isTilesScaledToDpi = true
-            setMultiTouchControls(true)
+            setBaseMapViewProperties()
             overlayManager.add(polyline)
-            zoomToBoundingBox(polyline.bounds, false, 18, 18.0, 0)
-            val currentZoom = zoomLevelDouble
-            controller.zoomTo(currentZoom-0.5)
+            recenterRoute()
         }
+    }
+
+    private fun MapView.recenterRoute() {
+        zoomToBoundingBox(polyline.bounds, false, 40, 18.0, 0)
+        disableFollowingLocation()
+    }
+
+    private fun MapView.recenterRouteWithAnimation() {
+        zoomToBoundingBox(polyline.bounds, true, 40, 18.0, 1000)
     }
 
     private fun setPolylineProperties() {
@@ -144,6 +149,11 @@ class FollowRouteFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_fo
             disableFollowingLocation()
             false
         }
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private val btRecenterOnClick = View.OnClickListener {
+        binding.mapView.recenterRouteWithAnimation()
     }
 
     private fun disableFollowingLocation() {

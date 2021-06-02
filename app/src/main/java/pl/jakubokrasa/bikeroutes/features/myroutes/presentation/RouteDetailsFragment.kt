@@ -6,8 +6,7 @@ import android.view.View
 import androidx.appcompat.widget.Toolbar
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import org.osmdroid.tileprovider.tilesource.TileSourceFactory
-import org.osmdroid.views.CustomZoomButtonsController
+import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Polyline
 import pl.jakubokrasa.bikeroutes.R
 import pl.jakubokrasa.bikeroutes.core.base.platform.BaseFragment
@@ -151,23 +150,22 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
 
     private fun setMapViewProperties() {
         with(binding.mapView) {
-            setTileSource(TileSourceFactory.WIKIMEDIA)
-            zoomController.setVisibility(CustomZoomButtonsController.Visibility.NEVER)
-            isTilesScaledToDpi = true
-            setMultiTouchControls(true)
+            setBaseMapViewProperties()
             overlayManager.add(polyline)
-            zoomToBoundingBox(polyline.bounds, false, 18, 18.0, 0)
-            val currentZoom = zoomLevelDouble
-            controller.zoomTo(currentZoom-0.5)
+            recenterRoute()
         }
+    }
+
+    private fun MapView.recenterRoute() {
+        zoomToBoundingBox(polyline.bounds, false, 18, 18.0, 0)
+        val currentZoom = zoomLevelDouble
+        controller.zoomTo(currentZoom - 0.5)
     }
 
     private fun setPolylineProperties() {
         polyline = Polyline() // needed when you pop up from FollowRouteFragment to RouteDetailsFragment
         polyline.setPoints(points.map { p -> p.geoPoint })
-        if (!polyline.isEnabled) polyline.isEnabled = true //we get the location for the first time
-        polyline.outlinePaint.strokeWidth = routeWidth
-        polyline.outlinePaint.color = routeColor
+        polyline.setBaseProperties()
     }
 
     private fun clearToolbarMenu() {
