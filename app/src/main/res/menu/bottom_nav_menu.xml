@@ -12,7 +12,7 @@
         android:title="@string/nav_title_my_routes" />
 
     <item
-        android:id="@+id/nav_explore"
+        android:id="@+id/nav_shared_routes"
         android:icon="@drawable/ic_baseline_explore_24"
         android:title="@string/nav_title_explore" />
 

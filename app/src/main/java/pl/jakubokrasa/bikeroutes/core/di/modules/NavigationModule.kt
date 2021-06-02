@@ -9,8 +9,10 @@ import pl.jakubokrasa.bikeroutes.core.navigation.FragmentNavigator
 import pl.jakubokrasa.bikeroutes.core.navigation.FragmentNavigatorImpl
 import pl.jakubokrasa.bikeroutes.core.provider.ActivityProvider
 import pl.jakubokrasa.bikeroutes.core.user.navigation.UserNavigator
+import pl.jakubokrasa.bikeroutes.core.util.AppUtil
 import pl.jakubokrasa.bikeroutes.features.map.navigation.MapFrgNavigator
 import pl.jakubokrasa.bikeroutes.features.myroutes.navigation.MyRoutesNavigator
+import pl.jakubokrasa.bikeroutes.features.sharedroutes.navigation.SharedRoutesNavigator
 
 val navigationModule = module {
     single(createdAtStart = true) { ActivityProvider(androidApplication()) }
@@ -25,6 +27,7 @@ val navigationModule = module {
     single { UserNavigator(get())}
     single { MapFrgNavigator(get()) }
     single { MyRoutesNavigator(get()) }
+    single { SharedRoutesNavigator(get()) }
 
     factory {
         navOptions {

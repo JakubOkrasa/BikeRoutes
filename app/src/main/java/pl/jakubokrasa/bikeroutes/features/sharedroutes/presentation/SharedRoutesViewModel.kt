@@ -1,4 +1,4 @@
-package pl.jakubokrasa.bikeroutes.features.myroutes.presentation
+package pl.jakubokrasa.bikeroutes.features.sharedroutes.presentation
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -8,76 +8,59 @@ import pl.jakubokrasa.bikeroutes.features.common.domain.FilterData
 import pl.jakubokrasa.bikeroutes.features.common.domain.GetPointsFromRemoteUseCase
 import pl.jakubokrasa.bikeroutes.features.map.presentation.model.PointDisplayable
 import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteDisplayable
-import pl.jakubokrasa.bikeroutes.features.myroutes.domain.*
-import pl.jakubokrasa.bikeroutes.features.myroutes.navigation.MyRoutesNavigator
+import pl.jakubokrasa.bikeroutes.features.sharedroutes.domain.GetSharedRoutesUseCase
+import pl.jakubokrasa.bikeroutes.features.sharedroutes.domain.GetSharedRoutesWithFilterUseCase
+import pl.jakubokrasa.bikeroutes.features.sharedroutes.navigation.SharedRoutesNavigator
 
-class MyRoutesViewModel(
-    private val getMyRoutesUseCase: GetMyRoutesUseCase,
-    private val getMyRoutesWithFilterUseCase: GetMyRoutesWithFilterUseCase,
+class SharedRoutesViewModel(
+    private val getSharedRoutesUseCase: GetSharedRoutesUseCase,
+    private val getSharedRoutesWithFilterUseCase: GetSharedRoutesWithFilterUseCase,
     private val getPointsFromRemoteUseCase: GetPointsFromRemoteUseCase,
-    private val removeRouteUseCase: RemoveRouteUseCase,
-    private val myRoutesNavigator: MyRoutesNavigator,
+    private val sharedRoutesNavigator: SharedRoutesNavigator,
 ): BaseViewModel() {
 
-    private val _myRoutes by lazy { MutableLiveData<List<RouteDisplayable>>() }
+    private val _sharedRoutes by lazy { MutableLiveData<List<RouteDisplayable>>() }
     private val _pointsFromRemote by lazy { MutableLiveData<List<PointDisplayable>>() } //liveEvent could be better here todo (but points can be set too early)
     private val _isFilter by lazy { MutableLiveData<Boolean>() }
-    override val LOG_TAG: String = MyRoutesViewModel::class.simpleName?: "unknown"
+    override val LOG_TAG: String = SharedRoutesViewModel::class.simpleName?: "unknown"
 
     val pointsFromRemote: LiveData<List<PointDisplayable>> by lazy { _pointsFromRemote }
-    val myRoutes: LiveData<List<RouteDisplayable>> by lazy { _myRoutes }
+    val sharedRoutes: LiveData<List<RouteDisplayable>> by lazy { _sharedRoutes }
     val isFilter: LiveData<Boolean> by lazy { _isFilter }
 
-
-    fun removeRouteAndNavBack(route: RouteDisplayable) {
+    fun getSharedRoutesWithFilter(filterData: FilterData) {
         setPendingState()
-        removeRouteUseCase(
-            params = route.toRoute(),
-            scope = viewModelScope
-        ){
-                result ->
-            setIdleState()
-            result.onSuccess {
-                myRoutesNavigator.goBack()
-                handleSuccess("removeRouteAndNavBack", "Route was removed")
-            }
-            result.onFailure { handleFailure("removeRouteAndNavBack", "Route wasn't removed") }
-        }
-    }
-
-    fun getMyRoutesWithFilter(filterData: FilterData) {
-        setPendingState()
-        getMyRoutesWithFilterUseCase(
+        getSharedRoutesWithFilterUseCase(
             filterData = filterData,
             scope = viewModelScope
         ) {
                 result ->
             setIdleState()
             result.onSuccess {
-                _myRoutes.value = it.map { route ->  RouteDisplayable(route)}
+                _sharedRoutes.value = it.map { route ->  RouteDisplayable(route)}
                 _isFilter.value = true
-                handleSuccess("getMyRoutesWithFilter")
+                handleSuccess("getSharedRoutesWithFilter")
             }
             result.onFailure {
-                handleFailure("getMyRoutesWithFilter", errLog = it.message)
+                handleFailure("getSharedRoutesWithFilter", errLog = it.message)
             }
         }
     }
 
-    fun getMyRoutes() {
+    fun getSharedRoutes() {
         setPendingState()
-        getMyRoutesUseCase(
+        getSharedRoutesUseCase(
             scope = viewModelScope
         ) {
                 result ->
             setIdleState()
             result.onSuccess {
-                _myRoutes.value = it.map { route ->  RouteDisplayable(route)}
+                _sharedRoutes.value = it.map { route ->  RouteDisplayable(route)}
                 _isFilter.value = false
-                handleSuccess("getMyRoutes")
+                handleSuccess("getSharedRoutes")
             }
             result.onFailure {
-                handleFailure("getMyRoutes", errLog = it.message)
+                handleFailure("getSharedRoutes", errLog = it.message)
             }
         }
     }
@@ -92,9 +75,13 @@ class MyRoutesViewModel(
             setIdleState()
             result.onSuccess {
                 handleSuccess("getPointsFromRemote")
-                myRoutesNavigator.openFollowRouteFragment(route, it.map { point -> PointDisplayable(point) })
+                sharedRoutesNavigator.openFollowRouteFragment(route, it.map { point -> PointDisplayable(point) })
             }
             result.onFailure { handleFailure("getPointsFromRemote", errLog = it.message) }
         }
+    }
+
+    companion object {
+        val LOG_TAG = SharedRoutesViewModel::class.simpleName
     }
 }

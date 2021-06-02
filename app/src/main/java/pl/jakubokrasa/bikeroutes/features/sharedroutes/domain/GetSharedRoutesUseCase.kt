@@ -1,29 +1,27 @@
-package pl.jakubokrasa.bikeroutes.features.myroutes.domain
+package pl.jakubokrasa.bikeroutes.features.sharedroutes.domain
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import pl.jakubokrasa.bikeroutes.core.user.domain.UserAuth
-import pl.jakubokrasa.bikeroutes.features.common.domain.FilterData
 import pl.jakubokrasa.bikeroutes.features.map.domain.RemoteRepository
 import pl.jakubokrasa.bikeroutes.features.map.domain.model.Route
 
-class GetMyRoutesWithFilterUseCase(
+class GetSharedRoutesUseCase(
     private val remoteRepository: RemoteRepository,
     private val auth: UserAuth
 ) {
-    suspend fun action(filterData: FilterData) =
-        remoteRepository.getMyRoutesWithFilter(auth.getCurrentUserId(), filterData)
+    suspend fun action() =
+        remoteRepository.getSharedRoutes(auth.getCurrentUserId())
 
     operator fun invoke(
-        filterData: FilterData,
         scope: CoroutineScope,
         onResult: (Result<List<Route>>) -> Unit = {}
         ) {
             scope.launch {
                 val result = withContext(Dispatchers.IO) {
-                    runCatching { return@runCatching action(filterData) }
+                    runCatching { return@runCatching action() }
                 }
                 onResult(result)
             }

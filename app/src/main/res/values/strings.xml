@@ -8,6 +8,7 @@
     <string name="title_activity_sign_up">Sign Up</string>
     <string name="location_service_notif_title">Location updates service</string>
     <string name="nav_title_my_routes">My Routes</string>
+    <string name="nav_title_shared_routes">Explore</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="contentdescription_route_menu_button">route menu button</string>
 	<string name="signup_btn">Sign up</string>
@@ -18,5 +19,6 @@
     <string name="get_password_link">get password link</string>
     <string name="title_account">Account</string>
     <string name="fragment_myroutes_no_data">It seems that you don\'t have any route at the moment.</string>
-    <string name="fragment_myroutes_no_data_filter">No route meets your filters.</string>
+    <string name="fragment_sharedroutes_no_data">It seems that no route is shared. Check your Internet connection.</string>
+    <string name="fragment_common_no_data_filter">No route meets your filters.</string>
 </resources>

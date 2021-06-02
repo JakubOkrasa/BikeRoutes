@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/nav_map">
+    app:startDestination="@id/nav_map">
 
     <fragment
         android:id="@+id/nav_map"
@@ -14,6 +14,9 @@
             android:id="@+id/action_map_to_save_route"
             app:destination="@id/fragment_save_route"
             app:popUpTo="@id/nav_map"/>
+        <action
+            android:id="@+id/action_nav_map_to_signUpFragment"
+            app:destination="@id/signUpFragment" />
     </fragment>
 
     <fragment
@@ -28,10 +31,21 @@
     </fragment>
 
     <fragment
+        android:id="@+id/nav_shared_routes"
+        android:name="pl.jakubokrasa.bikeroutes.features.sharedroutes.presentation.SharedRoutesFragment"
+        android:label="@string/nav_title_shared_routes"
+        tools:layout="@layout/fragment_shared_routes" >
+        <action
+            android:id="@+id/action_shared_routes_to_followRouteFragment"
+            app:destination="@id/followRouteFragment"
+            app:popUpTo="@id/nav_shared_routes"/>
+    </fragment>
+
+    <fragment
         android:id="@+id/signInFragment"
-        android:name="pl.jakubokrasa.bikeroutes.core.user.presentation.SignInFragment"
+        android:name="pl.jakubokrasa.bikeroutes.core.user.presentation.SignInActivity"
         android:label="fragment_sign_in"
-        tools:layout="@layout/fragment_sign_in" >
+        tools:layout="@layout/activity_sign_in" >
         <action
             android:id="@+id/action_signInFragment_to_nav_map"
             app:destination="@id/nav_map"/>
@@ -45,9 +59,9 @@
 
     <fragment
         android:id="@+id/signUpFragment"
-        android:name="pl.jakubokrasa.bikeroutes.core.user.presentation.SignUpFragment"
+        android:name="pl.jakubokrasa.bikeroutes.core.user.presentation.SignUpActivity"
         android:label="fragment_sign_up"
-        tools:layout="@layout/fragment_sign_up" >
+        tools:layout="@layout/activity_sign_up" >
         <action
             android:id="@+id/action_signUpFragment_to_signInFragment"
             app:destination="@id/signInFragment" />
@@ -78,9 +92,9 @@
         tools:layout="@layout/fragment_follow_route" />
     <fragment
         android:id="@+id/forgotPasswordFragment"
-        android:name="pl.jakubokrasa.bikeroutes.core.user.presentation.ForgotPasswordFragment"
+        android:name="pl.jakubokrasa.bikeroutes.core.user.presentation.ForgotPasswordActivity"
         android:label="fragment_forgot_password"
-        tools:layout="@layout/fragment_forgot_password" >
+        tools:layout="@layout/activity_forgot_password" >
         <action
             android:id="@+id/action_forgotPasswordFragment_to_signInFragment"
             app:destination="@id/signInFragment" />

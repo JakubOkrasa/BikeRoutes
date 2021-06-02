@@ -12,13 +12,11 @@ class MapViewModel(
     private val getPointsUseCase: GetPointsUseCase,
     private val deletePointsUseCase: DeletePointsUseCase,
     private val saveRouteUseCase: SaveRouteUseCase,
-//    private val deleteRouteUseCase: RemoveRouteUseCase,
     private val updateDistanceByPrefsUseCase: UpdateDistanceByPrefsUseCase,
 
 ) : BaseViewModel() {
 
-    //=========MAP=================
-
+    override val LOG_TAG: String = MapViewModel::class.simpleName ?: "unknown"
 
     fun getPoints(): LiveData<List<PointDisplayable>> {
         return getPointsUseCase(params = Unit)
@@ -72,22 +70,5 @@ class MapViewModel(
             result.onFailure { handleFailure("updateDistanceByPrefs") }
         }
     }
-
-    private fun handleSuccess(methodName: String, msg: String = "") {
-        Log.d(LOG_TAG, "onSuccess $methodName")
-        if (msg.isNotEmpty())
-            showMessage(msg)
-    }
-
-    private fun handleFailure(methodName: String, msg: String = "", errLog: String?="") {
-        Log.e(LOG_TAG, "onFailure $methodName $errLog")
-        if (msg.isNotEmpty())
-            showMessage("Error: $msg")
-    }
-
-    companion object {
-        val LOG_TAG = MapViewModel::class.simpleName
-    }
-
 
 }

@@ -1,33 +1,32 @@
- package pl.jakubokrasa.bikeroutes.features.myroutes.presentation
+ package pl.jakubokrasa.bikeroutes.features.sharedroutes.presentation
 
 import android.app.Dialog
 import android.os.Bundle
 import android.view.View
-import android.widget.Button
-import android.widget.TextView
-import com.google.android.material.slider.RangeSlider
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import pl.jakubokrasa.bikeroutes.R
 import pl.jakubokrasa.bikeroutes.core.base.platform.BaseFragment
-import pl.jakubokrasa.bikeroutes.databinding.FragmentMyRoutesBinding
+import pl.jakubokrasa.bikeroutes.core.extensions.makeGone
+import pl.jakubokrasa.bikeroutes.core.extensions.makeVisible
+import pl.jakubokrasa.bikeroutes.databinding.FragmentSharedRoutesBinding
 import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteDisplayable
 
- class MyRoutesFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_my_routes){
-    private var _binding: FragmentMyRoutesBinding? = null
+ class SharedRoutesFragment : BaseFragment<SharedRoutesViewModel>(R.layout.fragment_shared_routes){
+    private var _binding: FragmentSharedRoutesBinding? = null
     private val binding get() = _binding!!
-    private val myRoutesRecyclerAdapter: MyRoutesRecyclerAdapter by inject()
-	override val viewModel: MyRoutesViewModel by sharedViewModel()
+    private val sharedRoutesRecyclerAdapter: SharedRoutesRecyclerAdapter by inject()
+	override val viewModel: SharedRoutesViewModel by sharedViewModel()
     private lateinit var dialogFilter: Dialog
     private var isFilter = false
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        _binding = FragmentMyRoutesBinding.bind(view)
+        _binding = FragmentSharedRoutesBinding.bind(view)
         initRecycler() // todo ten init powinien być w initViews() ale wtedy jest java.lang.NullPointerException
-                        //at pl.jakubokrasa.bikeroutes.features.myroutes.presentation.MyRoutesFragment.getBinding(MyRoutesFragment.kt:17)
+                        //at pl.jakubokrasa.bikeroutes.features.myroutes.presentation.SharedRoutesFragment.getBinding(SharedRoutesFragment.kt:17)
                         //w AA to działą
-        viewModel.getMyRoutes()
+        viewModel.getSharedRoutes()
 
         binding.btFilter.setOnClickListener(btFilterOnClick)
         initializeFilterDialog()
@@ -42,15 +41,15 @@ import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteDisplayabl
     override fun initObservers() {
         super.initObservers()
         observeIsFilter()
-        observeMyRoutes()
+        observeSharedRoutes()
     }
 
     override fun initViews() {
         super.initViews()
     }
 
-    private fun observeMyRoutes() {
-        viewModel.myRoutes.observe(viewLifecycleOwner) {
+    private fun observeSharedRoutes() {
+        viewModel.sharedRoutes.observe(viewLifecycleOwner) {
             if(it.isNotEmpty()) {
                 showRecyclerWithItems(it)
             } else {
@@ -61,7 +60,7 @@ import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteDisplayabl
 
      private fun showNoDataMessage() {
          if (isFilter) binding.tvNoData.text = String.format(getString(R.string.fragment_common_no_data_filter))
-         else binding.tvNoData.text = getString(R.string.fragment_myroutes_no_data)
+         else binding.tvNoData.text = getString(R.string.fragment_sharedroutes_no_data)
          binding.tvNoData.visibility = View.VISIBLE
          binding.recyclerView.visibility = View.GONE
      }
@@ -69,15 +68,9 @@ import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteDisplayabl
      private fun showRecyclerWithItems(it: List<RouteDisplayable>) {
          binding.recyclerView.visibility = View.VISIBLE
          binding.tvNoData.visibility = View.GONE
-         myRoutesRecyclerAdapter.setItems(it)
+         sharedRoutesRecyclerAdapter.setItems(it)
      }
-
-     private fun observePoints() {
-         viewModel.pointsFromRemote.observe(viewLifecycleOwner) {
-             // not needed right now, points are taken from remote onClick item by viewModel
-         }
-     }
-
+     
      private fun observeIsFilter() {
          viewModel.isFilter.observe(viewLifecycleOwner) {
              isFilter = it
@@ -87,16 +80,11 @@ import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteDisplayabl
     private fun initRecycler() {
         with(binding.recyclerView) {
             setHasFixedSize(true)
-            myRoutesRecyclerAdapter.onItemClick = {
-                route -> //todo może od razu przejść do FollowRouteFrg (bez czekania
-                        // todo i wtedy user od razu widzi szczegóły trasy)
-                        // todo a wynik można przekazać w LiveData
-                        // todo ale jeśli potem będzie przechodzenie do odczielnego frg
-                        // todo żeby po itemOnclick było widać szczegóły trasy i obrazek (bez follow)
-                        // todo to wtedy chcę żeby points się załadowały wcześniej, a potem przechodziło do frg
+            sharedRoutesRecyclerAdapter.onItemClick = {
+                route ->
                 viewModel.getPointsFromRemoteAndOpenFollowRouteFrg(route)
             }
-            adapter = myRoutesRecyclerAdapter
+            adapter = sharedRoutesRecyclerAdapter
         }
     }
 
@@ -115,21 +103,20 @@ import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteDisplayabl
      }
 
      private fun initializeFilterDialog() {
-         dialogFilter = DialogMyRoutesFilter(requireContext(), binding, viewModel)
+         dialogFilter = DialogSharedRoutesFilter(requireContext(), binding, viewModel)
      }
 
      override fun onPendingState() {
          super.onPendingState()
-         binding.progressLayout.visibility = View.VISIBLE
+         binding.progressLayout.makeVisible()
      }
 
      override fun onIdleState() {
          super.onIdleState()
-         binding.progressLayout.visibility = View.GONE
+         binding.progressLayout.makeGone()
      }
 
     companion object {
-        val LOG_TAG = MyRoutesFragment::class.simpleName
-        const val DISTANCE_SLIDER_VALUE_TO = 500.0f
+        val LOG_TAG = SharedRoutesFragment::class.simpleName
     }
 }

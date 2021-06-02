@@ -15,14 +15,13 @@ class DialogConfirm(
     private val btConfirmLabel: String,
 ): Dialog(ctx) {
 
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         requestWindowFeature(Window.FEATURE_NO_TITLE)
         setCancelable(true)
         val binding = DialogConfirmBinding
             .inflate(LayoutInflater.from(context))
+        setContentView(binding.root)
         binding.tvTitle.text = title
         binding.btConfirm.text = btConfirmLabel
         binding.btConfirm.setOnClickListener(btConfirmOnClick)

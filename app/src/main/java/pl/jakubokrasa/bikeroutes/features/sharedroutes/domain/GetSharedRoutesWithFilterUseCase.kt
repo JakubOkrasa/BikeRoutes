@@ -1,4 +1,4 @@
-package pl.jakubokrasa.bikeroutes.features.myroutes.domain
+package pl.jakubokrasa.bikeroutes.features.sharedroutes.domain
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -9,12 +9,12 @@ import pl.jakubokrasa.bikeroutes.features.common.domain.FilterData
 import pl.jakubokrasa.bikeroutes.features.map.domain.RemoteRepository
 import pl.jakubokrasa.bikeroutes.features.map.domain.model.Route
 
-class GetMyRoutesWithFilterUseCase(
+class GetSharedRoutesWithFilterUseCase(
     private val remoteRepository: RemoteRepository,
     private val auth: UserAuth
 ) {
     suspend fun action(filterData: FilterData) =
-        remoteRepository.getMyRoutesWithFilter(auth.getCurrentUserId(), filterData)
+        remoteRepository.getSharedRoutesWithFilter(auth.getCurrentUserId(), filterData)
 
     operator fun invoke(
         filterData: FilterData,
@@ -29,3 +29,5 @@ class GetMyRoutesWithFilterUseCase(
             }
         }
 }
+
+
