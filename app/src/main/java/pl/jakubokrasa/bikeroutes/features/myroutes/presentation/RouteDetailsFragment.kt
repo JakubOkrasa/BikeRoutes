@@ -44,7 +44,7 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
     private val binding get() = _binding!!
     private lateinit var route: RouteDisplayable
     private lateinit var points: List<PointDisplayable>
-    private val polyline = Polyline()
+    private lateinit var polyline: Polyline
     private val mLocalBR: LocalBroadcastManager by inject()
     private lateinit var mPreviousLocMarker: Marker
     private lateinit var dialogConfirmRemove: Dialog
@@ -203,6 +203,7 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
     }
 
     private fun setPolylineProperties() {
+        polyline = Polyline() // needed when you pop up from FollowRouteFragment to RouteDetailsFragment
         polyline.setPoints(points.map { p -> p.geoPoint })
         if (!polyline.isEnabled) polyline.isEnabled = true //we get the location for the first time
         polyline.outlinePaint.strokeWidth = routeWidth
@@ -239,16 +240,6 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
                 newLocationUpdateUI(GeoPoint(loc))
             }
         }
-    }
-
-    private fun disableFollowingLocation() {
-        mapMode = MapMode.moveFreely
-        requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-    }
-
-    private fun enableFollowingLocation() {
-        mapMode = MapMode.followLocation
-        requireActivity().window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
 
     private fun stopLocationService() {
