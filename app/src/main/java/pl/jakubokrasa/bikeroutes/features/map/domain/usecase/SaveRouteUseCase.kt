@@ -24,7 +24,7 @@ class SaveRouteUseCase(
                 params.name,
                 params.description,
                 params.distance,
-                sharingType.PRIVATE,
+                params.sharingType,
                 getRideTimeMinutes(points),
             )
             remoteRepository.addRoute(route, points)
@@ -42,5 +42,6 @@ class SaveRouteUseCase(
 data class DataSaveRoute (
     val name: String,
     val description: String,
-    val distance: Int
+    val distance: Int,
+    val sharingType: sharingType,
 )
