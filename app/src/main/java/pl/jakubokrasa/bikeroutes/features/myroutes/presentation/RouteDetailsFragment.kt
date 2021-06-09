@@ -41,8 +41,6 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
         showRoute(view)
 
         binding.btFollow.setOnClickListener(btFollowOnClick)
-
-        if(isMyRoute()) dialogConfirmRemove = DialogConfirm(requireContext(), "Are you sure to remove this route?", "remove")
     }
 
     override fun onResume() {
@@ -103,11 +101,20 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
                 true
             }
             R.id.action_routedetails_remove -> {
+                if (isMyRoute()) initializeDialogRemove()
                 dialogConfirmRemove.show()
                 true
             }
             else -> false
         }
+    }
+
+    private fun initializeDialogRemove() {
+        dialogConfirmRemove = DialogConfirm(requireContext(),
+            "Are you sure to remove this route?",
+            "remove",
+            viewModel,
+            route)
     }
 
     private fun updateRouteDisplayableModel() {
