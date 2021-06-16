@@ -1,8 +1,12 @@
 package pl.jakubokrasa.bikeroutes.features.map.data.remote
 
+import android.util.Log
 import com.google.firebase.firestore.*
+import com.google.gson.Gson
 import kotlinx.coroutines.tasks.await
 import pl.jakubokrasa.bikeroutes.core.util.enums.sharingType
+import pl.jakubokrasa.bikeroutes.features.common.data.GeocodingAPI
+import pl.jakubokrasa.bikeroutes.features.common.data.model.GeocodingItem
 import pl.jakubokrasa.bikeroutes.features.common.domain.FilterData
 import pl.jakubokrasa.bikeroutes.features.map.data.remote.model.PointResponse
 import pl.jakubokrasa.bikeroutes.features.map.data.remote.model.RouteResponse
@@ -13,7 +17,8 @@ import pl.jakubokrasa.bikeroutes.features.myroutes.data.model.PointDocument
 import pl.jakubokrasa.bikeroutes.features.myroutes.presentation.MyRoutesFragment.Companion.DISTANCE_SLIDER_VALUE_TO
 
 class RemoteRepositoryImpl(
-    private val firestore: FirebaseFirestore
+    private val firestore: FirebaseFirestore,
+    private val api: GeocodingAPI
 ): RemoteRepository {
     override suspend fun addRoute(route: Route, points: List<Point>) {
 
@@ -50,6 +55,13 @@ class RemoteRepositoryImpl(
 
         for (doc in documents)
             doc.toObject(RouteResponse::class.java)?.let { routeResponseList.add(it) }
+
+        //for tests todo
+        for(item: GeocodingItem in api.getLocations().results){
+            Log.e("GEOCODING", Gson().toJson(item))
+        }
+
+
         return routeResponseList.map { it.toRoute()}
     }
 
