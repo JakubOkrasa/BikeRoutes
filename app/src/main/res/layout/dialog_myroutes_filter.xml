@@ -6,53 +6,70 @@
     android:paddingHorizontal="15dp"
     android:paddingVertical="10dp">
 
-    <TextView
-        android:id="@+id/dialog_myroutesfilter_tv_title"
-        style="@style/tv_medium"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_distance"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Distance range"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/dialog_myroutesfilter_tv_distance_result"
-        android:layout_width="120dp"
-        android:layout_height="wrap_content"
-        android:textAlignment="center"
-        app:layout_constraintBottom_toBottomOf="@id/dialog_myroutesfilter_tv_title"
-        app:layout_constraintLeft_toRightOf="@id/dialog_myroutesfilter_tv_title"
-        app:layout_constraintRight_toRightOf="parent"
-        android:background="#ddd"
-        android:padding="3dp"
-        android:textColor="#333"
-        android:text="0 km - 500km"/>
+        <TextView
+            android:id="@+id/tv_title"
+            style="@style/tv_medium"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Distance range"/>
 
-    <com.google.android.material.slider.RangeSlider
-        android:id="@+id/dialog_myroutesfilter_slider_distance"
-        app:layout_constraintTop_toBottomOf="@id/dialog_myroutesfilter_tv_title"
+        <TextView
+            android:id="@+id/tv_distance_result"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            app:layout_constraintBottom_toBottomOf="@id/tv_title"
+            app:layout_constraintLeft_toRightOf="@id/tv_title"
+            app:layout_constraintRight_toRightOf="parent"
+            android:background="#ddd"
+            android:padding="3dp"
+            android:textColor="#333"
+            android:text="0 km - 500km"/>
+
+        <com.google.android.material.slider.RangeSlider
+            android:id="@+id/slider_distance"
+            app:layout_constraintTop_toBottomOf="@id/tv_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:labelBehavior="gone"
+            android:stepSize="1.0" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <EditText
+        android:id="@+id/et_location"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:labelBehavior="gone"
-        android:stepSize="1.0" />
+        app:layout_constraintTop_toBottomOf="@id/cl_distance"
+        android:hint="Location"/>
+
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/dialog_myroutesfilter_slider_distance"
+        app:layout_constraintTop_toBottomOf="@id/et_location"
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginTop="10dp"
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/dialog_myroutesfilter_bt_cancel"
+            android:id="@+id/bt_cancel"
             android:backgroundTint="#ccc"
             android:textColor="@color/black"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="CANCEL"/>
         <Button
-            android:id="@+id/dialog_myroutesfilter_bt_save"
+            android:id="@+id/bt_save"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="save"

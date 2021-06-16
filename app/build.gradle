@@ -78,6 +78,7 @@ dependencies {
 
     //OSMdroid
     implementation 'org.osmdroid:osmdroid-android:6.1.10'
+    implementation 'com.github.MKergall:osmbonuspack:6.7.0'
 
     //Koin
     implementation "org.koin:koin-android:$koin_version"
