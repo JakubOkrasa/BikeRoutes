@@ -2,6 +2,7 @@ package pl.jakubokrasa.bikeroutes.core.di.modules.features
 
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
+import pl.jakubokrasa.bikeroutes.features.common.domain.AddPhotoUseCase
 import pl.jakubokrasa.bikeroutes.features.myroutes.domain.GetMyRoutesUseCase
 import pl.jakubokrasa.bikeroutes.features.myroutes.domain.GetMyRoutesWithFilterUseCase
 import pl.jakubokrasa.bikeroutes.features.myroutes.domain.RemoveRouteUseCase
@@ -14,9 +15,10 @@ val myRoutesModule = module {
     factory { GetMyRoutesWithFilterUseCase(get(), get()) }
     factory { RemoveRouteUseCase(get()) }
     factory { UpdateRouteUseCase(get()) }
+    factory { AddPhotoUseCase(get()) }
 
     factory { MyRoutesRecyclerAdapter() }
 
-    viewModel { MyRoutesViewModel(get(), get(), get(), get(), get(), get()) }
+    viewModel { MyRoutesViewModel(get(), get(), get(), get(), get(), get(), get()) }
 
 }

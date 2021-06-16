@@ -2,7 +2,7 @@ package pl.jakubokrasa.bikeroutes.features.map.presentation.model
 
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
-import pl.jakubokrasa.bikeroutes.core.util.enums.sharingType
+import pl.jakubokrasa.bikeroutes.core.util.enums.SharingType
 import pl.jakubokrasa.bikeroutes.features.map.domain.model.Route
 
 @Parcelize
@@ -13,7 +13,7 @@ data class RouteDisplayable (
     var name: String,
     var description: String,
     val distance: Int,
-    var sharingType: sharingType,
+    var sharingType: SharingType,
     val rideTimeMinutes: Int,
     ): Parcelable {
 

@@ -4,6 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import pl.jakubokrasa.bikeroutes.core.base.platform.BaseViewModel
+import pl.jakubokrasa.bikeroutes.core.util.enums.SharingType
+import pl.jakubokrasa.bikeroutes.features.common.domain.AddPhotoData
+import pl.jakubokrasa.bikeroutes.features.common.domain.AddPhotoUseCase
 import pl.jakubokrasa.bikeroutes.features.common.domain.FilterData
 import pl.jakubokrasa.bikeroutes.features.common.domain.GetPointsFromRemoteUseCase
 import pl.jakubokrasa.bikeroutes.features.map.presentation.model.PointDisplayable
@@ -18,6 +21,7 @@ class MyRoutesViewModel(
     private val removeRouteUseCase: RemoveRouteUseCase,
     private val updateRouteUseCase: UpdateRouteUseCase,
     private val myRoutesNavigator: MyRoutesNavigator,
+    private val addPhotoUseCase: AddPhotoUseCase,
 ): BaseViewModel() {
 
     private val _myRoutes by lazy { MutableLiveData<List<RouteDisplayable>>() }
@@ -113,6 +117,19 @@ class MyRoutesViewModel(
                 myRoutesNavigator.openRouteDetailsFragment(route, it.map { point -> PointDisplayable(point) })
             }
             result.onFailure { handleFailure("getPointsFromRemote", errLog = it.message) }
+        }
+    }
+
+    fun addPhoto(routeId: String, localPath: String, sharingType: SharingType) {
+        setPendingState()
+        addPhotoUseCase(
+            params = AddPhotoData(routeId, localPath, sharingType),
+            scope = viewModelScope
+        ) {
+                result ->
+            setIdleState()
+            result.onSuccess { handleSuccess("addPhoto") }
+            result.onFailure { handleFailure("addPhoto", errLog = it.message) }
         }
     }
 }

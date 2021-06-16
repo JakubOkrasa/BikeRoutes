@@ -2,7 +2,7 @@ package pl.jakubokrasa.bikeroutes.features.map.domain.usecase
 
 import pl.jakubokrasa.bikeroutes.core.base.domain.UseCase
 import pl.jakubokrasa.bikeroutes.core.user.domain.UserAuth
-import pl.jakubokrasa.bikeroutes.core.util.enums.sharingType
+import pl.jakubokrasa.bikeroutes.core.util.enums.SharingType
 import pl.jakubokrasa.bikeroutes.features.map.domain.LocalRepository
 import pl.jakubokrasa.bikeroutes.features.map.domain.RemoteRepository
 import pl.jakubokrasa.bikeroutes.features.map.domain.model.Point
@@ -43,5 +43,5 @@ data class DataSaveRoute (
     val name: String,
     val description: String,
     val distance: Int,
-    val sharingType: sharingType,
+    val sharingType: SharingType,
 )

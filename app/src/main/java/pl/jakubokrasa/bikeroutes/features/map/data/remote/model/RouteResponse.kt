@@ -1,6 +1,6 @@
 package pl.jakubokrasa.bikeroutes.features.map.data.remote.model
 
-import pl.jakubokrasa.bikeroutes.core.util.enums.sharingType
+import pl.jakubokrasa.bikeroutes.core.util.enums.SharingType
 import pl.jakubokrasa.bikeroutes.features.map.domain.model.Route
 
 class RouteResponse(
@@ -9,12 +9,12 @@ class RouteResponse(
     val userId: String,
     val name: String,
     val description: String,
-    val sharingType: sharingType,
+    val sharingType: SharingType,
     val distance: Int,
     val rideTimeMinutes: Int,
 ) {
 
-    constructor() : this("", 0,"", "", "", pl.jakubokrasa.bikeroutes.core.util.enums.sharingType.PRIVATE, 0, 0)
+    constructor() : this("", 0,"", "", "", pl.jakubokrasa.bikeroutes.core.util.enums.SharingType.PRIVATE, 0, 0)
 
     constructor(route: Route) : this(route.routeId, route.createdAt, route.userId, route.name, route.description, route.sharingType, route.distance, route.rideTimeMinutes)
 

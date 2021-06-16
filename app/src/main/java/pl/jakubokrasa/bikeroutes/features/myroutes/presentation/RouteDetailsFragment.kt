@@ -1,8 +1,12 @@
 package pl.jakubokrasa.bikeroutes.features.myroutes.presentation
 
 import android.app.Dialog
+import android.database.Cursor
+import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.view.View
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.Toolbar
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
@@ -14,7 +18,7 @@ import pl.jakubokrasa.bikeroutes.core.extensions.hideKeyboard
 import pl.jakubokrasa.bikeroutes.core.extensions.makeGone
 import pl.jakubokrasa.bikeroutes.core.extensions.makeVisible
 import pl.jakubokrasa.bikeroutes.core.util.*
-import pl.jakubokrasa.bikeroutes.core.util.enums.sharingType
+import pl.jakubokrasa.bikeroutes.core.util.enums.SharingType
 import pl.jakubokrasa.bikeroutes.databinding.FragmentRouteDetailsBinding
 import pl.jakubokrasa.bikeroutes.features.common.presentation.CommonRoutesNavigator
 import pl.jakubokrasa.bikeroutes.features.map.presentation.model.PointDisplayable
@@ -31,6 +35,27 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
     private lateinit var polyline: Polyline
     private lateinit var dialogConfirmRemove: Dialog
     private val navigator: CommonRoutesNavigator by inject()
+    private val activityResultGalleryLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) {
+            uri: Uri? ->
+        if (uri != null) {
+//            val projection = arrayOf(MediaStore.Images.Media.DATA)
+            val projection = arrayOf(MediaStore.Images.Media._ID)
+            val cursor: Cursor? =
+                requireActivity().contentResolver.query(uri, projection, null, null, null)
+            cursor?.let {
+                it.moveToFirst()
+
+                val columnIndex: Int = it.getColumnIndex(projection[0])
+                val picturePath: String = it.getString(columnIndex)
+
+                viewModel.addPhoto(route.routeId, picturePath, route.sharingType)
+
+                it.close()
+            }
+        }
+    }
+
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -41,6 +66,7 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
         showRoute(view)
 
         binding.btFollow.setOnClickListener(btFollowOnClick)
+        binding.btAddPhotos.setOnClickListener(btAddPhotosOnClick)
     }
 
     override fun onResume() {
@@ -75,7 +101,7 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
                         binding.toolbar.inflateMenu(R.menu.menu_routedetails_edit)
                         binding.toolbar.setOnMenuItemClickListener(toolbarIconsEditModeOnClick)
                         binding.llRouteInfo.makeGone()
-                        binding.llVisibility.makeGone()
+//                        binding.llVisibility.makeGone()
                         binding.llRouteEdit.makeVisible()
                         true
                     }
@@ -85,8 +111,7 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
         }
     }
 
-	private val toolbarIconsEditModeOnClick = Toolbar.OnMenuItemClickListener {
-            insideMenuItem ->
+	private val toolbarIconsEditModeOnClick = Toolbar.OnMenuItemClickListener { insideMenuItem ->
         when (insideMenuItem.itemId) {
             R.id.action_routedetails_done -> {
                 updateRouteDisplayableModel()
@@ -95,7 +120,7 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
                 hideKeyboard()
                 binding.llRouteEdit.makeGone()
                 binding.llRouteInfo.makeVisible()
-                binding.llVisibility.makeVisible()
+//                binding.llVisibility.makeVisible()
                 clearToolbarMenu()
                 updateToolbar()
                 true
@@ -120,7 +145,7 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
     private fun updateRouteDisplayableModel() {
         route.name = binding.etRouteName.text.toString()
         route.description = binding.etRouteDescription.text.toString()
-        if (binding.swPrivate.isChecked) route.sharingType = sharingType.PRIVATE else route.sharingType = sharingType.PUBLIC
+        if (binding.swPrivate.isChecked) route.sharingType = SharingType.PRIVATE else route.sharingType = SharingType.PUBLIC
     }
 
     private fun updateRouteInfoLayout() {
@@ -133,9 +158,9 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
                 tvRouteDescription.text = route.description
             }
 
-            if(route.sharingType == sharingType.PUBLIC)
+            if(route.sharingType == SharingType.PUBLIC)
                 tvVisibility.text = "public"
-            else if(route.sharingType == sharingType.PRIVATE)
+            else if(route.sharingType == SharingType.PRIVATE)
                 tvVisibility.text = "only me"
 
 
@@ -152,7 +177,7 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
     private fun updateRouteEditLayout() {
         binding.etRouteName.setText(route.name)
         if(route.description.isNotBlank()) binding.etRouteDescription.setText(route.description)
-        binding.swPrivate.isChecked = run { route.sharingType == sharingType.PRIVATE }
+        binding.swPrivate.isChecked = run { route.sharingType == SharingType.PRIVATE }
     }
 
     private fun setMapViewProperties() {
@@ -200,6 +225,27 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
     private val btFollowOnClick = View.OnClickListener {
         navigator.openFollowRouteFragment(route, points)
     }
+
+    private val btAddPhotosOnClick = View.OnClickListener {
+        activityResultGalleryLauncher.launch("image/*")
+    }
+
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        if (resultCode == RESULT_OK && requestCode == <unique_code>) {
+//            imageView.setImageBitmap(getPicture(data.getData()));
+//        }
+//    }
+//
+//    public static Bitmap getPicture(Uri selectedImage) {
+//        String[] filePathColumn = { MediaStore.Images.Media.DATA };
+//        Cursor cursor = getContext().getContentResolver().query(selectedImage, filePathColumn, null, null, null);
+//        cursor.moveToFirst();
+//        int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+//        String picturePath = cursor.getString(columnIndex);
+//        cursor.close();
+//        return BitmapFactory.decodeFile(picturePath);
+//    }
 
     override fun onPendingState() {
         super.onPendingState()

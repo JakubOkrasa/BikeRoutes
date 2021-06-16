@@ -79,6 +79,76 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="10dp"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/ic_distance"/>
+                        <TextView
+                            android:id="@+id/tv_route_distance"
+                            android:layout_marginStart="3dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            style="@style/tv_small" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_marginStart="10dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/ic_time"/>
+
+                        <TextView
+                            android:id="@+id/tv_route_ride_time"
+                            android:layout_marginStart="3dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            style="@style/tv_small" />
+                    </LinearLayout>
+                    <LinearLayout
+                        android:id="@+id/ll_visibility"
+                        android:layout_marginStart="10dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/ic_visibility_public"/>
+
+                        <TextView
+                            android:id="@+id/tv_visibility"
+                            android:layout_marginStart="3dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            style="@style/tv_small" />
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/bt_follow"
+                    android:layout_marginTop="10dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Follow route"/>
+
             </LinearLayout>
 
             <LinearLayout
@@ -88,8 +158,7 @@
                 android:orientation="vertical"
                 android:visibility="gone"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/toolbar"
-                tools:visibility="gone">
+                app:layout_constraintTop_toBottomOf="@id/toolbar">
 
                 <EditText
                     android:id="@+id/et_route_name"
@@ -132,77 +201,13 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <Button
+                    android:id="@+id/bt_add_photos"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="add photos" />
             </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="10dp"
-                android:orientation="horizontal">
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/ic_distance"/>
-                    <TextView
-                        android:id="@+id/tv_route_distance"
-                        android:layout_marginStart="3dp"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        style="@style/tv_small" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_marginStart="10dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/ic_time"/>
-
-                    <TextView
-                        android:id="@+id/tv_route_ride_time"
-                        android:layout_marginStart="3dp"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        style="@style/tv_small" />
-                </LinearLayout>
-                <LinearLayout
-                    android:id="@+id/ll_visibility"
-                    android:layout_marginStart="10dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/ic_visibility_public"/>
-
-                    <TextView
-                        android:id="@+id/tv_visibility"
-                        android:layout_marginStart="3dp"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        style="@style/tv_small" />
-                </LinearLayout>
-
-            </LinearLayout>
-
-            <Button
-                android:id="@+id/bt_follow"
-                android:layout_marginTop="10dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Follow route"/>
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>
