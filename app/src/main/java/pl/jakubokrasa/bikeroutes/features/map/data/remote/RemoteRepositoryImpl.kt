@@ -57,7 +57,7 @@ class RemoteRepositoryImpl(
             doc.toObject(RouteResponse::class.java)?.let { routeResponseList.add(it) }
 
         //for tests todo
-        for(item: GeocodingItem in api.getLocations().results){
+        for(item: GeocodingItem in api.getLocations()){
             Log.e("GEOCODING", Gson().toJson(item))
         }
 
