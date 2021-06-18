@@ -3,17 +3,23 @@ package pl.jakubokrasa.bikeroutes.features.map.domain.usecase
 import pl.jakubokrasa.bikeroutes.core.base.domain.UseCase
 import pl.jakubokrasa.bikeroutes.core.user.domain.UserAuth
 import pl.jakubokrasa.bikeroutes.core.util.enums.sharingType
+import pl.jakubokrasa.bikeroutes.features.common.domain.BoundingBoxData
 import pl.jakubokrasa.bikeroutes.features.map.domain.LocalRepository
 import pl.jakubokrasa.bikeroutes.features.map.domain.RemoteRepository
 import pl.jakubokrasa.bikeroutes.features.map.domain.model.Point
 import pl.jakubokrasa.bikeroutes.features.map.domain.model.Route
+import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteDisplayable
+import pl.jakubokrasa.bikeroutes.features.myroutes.presentation.RouteDetailsFragment
 import java.util.concurrent.TimeUnit
+import kotlin.math.roundToInt
 
 class SaveRouteUseCase(
     private val localRepository: LocalRepository,
     private val remoteRepository: RemoteRepository,
     private val userAuth: UserAuth
 ): UseCase<Unit, DataSaveRoute>() {
+    private var rideTimeMinutes = 0
+
     override suspend fun action(params: DataSaveRoute) {
         val points = localRepository.getPoints2()
         if(points.isNotEmpty()) {
@@ -26,6 +32,8 @@ class SaveRouteUseCase(
                 params.distance,
                 params.sharingType,
                 getRideTimeMinutes(points),
+                getAvgSpeedKmH(params.distance),
+                params.boundingBoxData,
             )
             remoteRepository.addRoute(route, points)
             localRepository.deletePoints()
@@ -34,7 +42,15 @@ class SaveRouteUseCase(
 
     private fun getRideTimeMinutes(points: List<Point>): Int {
         val rideTime = points[points.size - 1].createdAt - points[0].createdAt
-        return TimeUnit.MILLISECONDS.toMinutes(rideTime).toInt()
+        rideTimeMinutes = TimeUnit.MILLISECONDS.toMinutes(rideTime).toInt()
+        return rideTimeMinutes
+    }
+
+    private fun getAvgSpeedKmH(distanceMeters: Int): Int {
+        if(rideTimeMinutes!=0) {
+            return ((distanceMeters.toFloat()/1_000.0)/(rideTimeMinutes.toFloat()/60.0)).roundToInt()
+        }
+        return 0
     }
 
 }
@@ -44,4 +60,5 @@ data class DataSaveRoute (
     val description: String,
     val distance: Int,
     val sharingType: sharingType,
+    val boundingBoxData: BoundingBoxData
 )

@@ -10,8 +10,11 @@ import pl.jakubokrasa.bikeroutes.core.extensions.PreferenceHelper.Companion.PREF
 import pl.jakubokrasa.bikeroutes.core.extensions.hideKeyboard
 import pl.jakubokrasa.bikeroutes.core.util.enums.sharingType
 import pl.jakubokrasa.bikeroutes.databinding.FragmentSaveRouteBinding
+import pl.jakubokrasa.bikeroutes.features.common.domain.BoundingBoxData
 import pl.jakubokrasa.bikeroutes.features.map.domain.usecase.DataSaveRoute
 import pl.jakubokrasa.bikeroutes.features.map.navigation.MapFrgNavigator
+import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteDisplayable
+import pl.jakubokrasa.bikeroutes.features.myroutes.presentation.RouteDetailsFragment
 
 class SaveRouteFragment : BaseFragment<MapViewModel>(R.layout.fragment_save_route) {
 
@@ -33,9 +36,14 @@ class SaveRouteFragment : BaseFragment<MapViewModel>(R.layout.fragment_save_rout
         val sharingType = if (binding.swPrivate.isChecked) sharingType.PRIVATE else sharingType.PUBLIC
         if(name.isEmpty()) showToast("Route must have a name")
         else  {
-            viewModel.saveRoute(DataSaveRoute(name, description, distance, sharingType))
+            viewModel.saveRoute(DataSaveRoute(name, description, distance, sharingType, getBoundingBoxData()))
         }
         hideKeyboard()
         mapFrgNavigator.goBack()
+    }
+
+    private fun getBoundingBoxData(): BoundingBoxData {
+        return arguments
+            ?.getParcelable(MapFragment.BOUNDING_BOX_DATA_KEY) ?: BoundingBoxData()
     }
 }

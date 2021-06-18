@@ -44,7 +44,7 @@ class GetMyRoutesWithFilterUseCase(
             }
         }
 
-    fun doesRouteCoversMap(routeBB: BoundingBoxData, mapBB: BoundingBoxData)
+    private fun doesRouteCoversMap(routeBB: BoundingBoxData, mapBB: BoundingBoxData)
             = doesRouteCoversMapVertically(routeBB, mapBB) && doesRouteCoversMapHorizontally(routeBB, mapBB)
 
     private fun doesRouteCoversMapHorizontally(
