@@ -1,6 +1,7 @@
 package pl.jakubokrasa.bikeroutes.features.map.data.remote.model
 
 import pl.jakubokrasa.bikeroutes.core.util.enums.sharingType
+import pl.jakubokrasa.bikeroutes.features.common.domain.BoundingBoxData
 import pl.jakubokrasa.bikeroutes.features.map.domain.model.Route
 
 class RouteResponse(
@@ -12,11 +13,15 @@ class RouteResponse(
     val sharingType: sharingType,
     val distance: Int,
     val rideTimeMinutes: Int,
+    val avgSpeedKmPerH: Int,
+    val boundingBoxData: BoundingBoxData
 ) {
 
-    constructor() : this("", 0,"", "", "", pl.jakubokrasa.bikeroutes.core.util.enums.sharingType.PRIVATE, 0, 0)
+    constructor() : this("", 0,"", "", "", pl.jakubokrasa.bikeroutes.core.util.enums.sharingType.PRIVATE, //for firestore
+        0, 0, 0, BoundingBoxData(0.0, 0.0,0.0,0.0))
 
-    constructor(route: Route) : this(route.routeId, route.createdAt, route.userId, route.name, route.description, route.sharingType, route.distance, route.rideTimeMinutes)
+    constructor(route: Route) : this(route.routeId, route.createdAt, route.userId, route.name, route.description, route.sharingType,
+        route.distance, route.rideTimeMinutes, route.avgSpeedKmPerH, route.boundingBoxData)
 
     fun toRoute(): Route {
         return Route(
@@ -27,7 +32,9 @@ class RouteResponse(
             description = this.description,
             distance = this.distance,
             sharingType = this.sharingType,
-            rideTimeMinutes = this.rideTimeMinutes
+            rideTimeMinutes = this.rideTimeMinutes,
+            avgSpeedKmPerH = this.avgSpeedKmPerH,
+            boundingBoxData = this.boundingBoxData
         )
     }
 }

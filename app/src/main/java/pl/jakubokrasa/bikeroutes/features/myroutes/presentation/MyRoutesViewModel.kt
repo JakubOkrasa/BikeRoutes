@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import pl.jakubokrasa.bikeroutes.core.base.platform.BaseViewModel
 import pl.jakubokrasa.bikeroutes.features.common.domain.FilterData
+import pl.jakubokrasa.bikeroutes.features.common.domain.GetGeocodingItemUseCase
 import pl.jakubokrasa.bikeroutes.features.common.domain.GetPointsFromRemoteUseCase
 import pl.jakubokrasa.bikeroutes.features.map.presentation.model.PointDisplayable
 import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteDisplayable
@@ -17,6 +18,7 @@ class MyRoutesViewModel(
     private val getPointsFromRemoteUseCase: GetPointsFromRemoteUseCase,
     private val removeRouteUseCase: RemoveRouteUseCase,
     private val updateRouteUseCase: UpdateRouteUseCase,
+    private val getGeocodingItemUseCase: GetGeocodingItemUseCase,
     private val myRoutesNavigator: MyRoutesNavigator,
 ): BaseViewModel() {
 
@@ -113,6 +115,19 @@ class MyRoutesViewModel(
                 myRoutesNavigator.openRouteDetailsFragment(route, it.map { point -> PointDisplayable(point) })
             }
             result.onFailure { handleFailure("getPointsFromRemote", errLog = it.message) }
+        }
+    }
+
+    fun getGeocodingItem(query: String) {
+        getGeocodingItemUseCase(
+            params = query,
+            scope = viewModelScope
+        ) {
+            result ->
+            result.onSuccess {
+                handleSuccess("getGeocodingItem")
+            }
+            result.onFailure { handleFailure("getGeocodingItem", errLog = it.message) }
         }
     }
 }

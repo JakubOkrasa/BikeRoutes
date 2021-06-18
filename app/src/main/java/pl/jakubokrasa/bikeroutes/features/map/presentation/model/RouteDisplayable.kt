@@ -3,6 +3,7 @@ package pl.jakubokrasa.bikeroutes.features.map.presentation.model
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 import pl.jakubokrasa.bikeroutes.core.util.enums.sharingType
+import pl.jakubokrasa.bikeroutes.features.common.domain.BoundingBoxData
 import pl.jakubokrasa.bikeroutes.features.map.domain.model.Route
 
 @Parcelize
@@ -15,6 +16,8 @@ data class RouteDisplayable (
     val distance: Int,
     var sharingType: sharingType,
     val rideTimeMinutes: Int,
+    val avgSpeedKmPerH: Int,
+    val boundingBoxData: BoundingBoxData
     ): Parcelable {
 
     fun toRoute(): Route {
@@ -26,7 +29,9 @@ data class RouteDisplayable (
             description = description,
             distance = distance,
             sharingType = sharingType,
-            rideTimeMinutes = rideTimeMinutes,)
+            rideTimeMinutes = rideTimeMinutes,
+            avgSpeedKmPerH = avgSpeedKmPerH,
+            boundingBoxData = boundingBoxData)
     }
 
     constructor(route: Route) : this (
@@ -38,5 +43,7 @@ data class RouteDisplayable (
         distance = route.distance,
         sharingType = route.sharingType,
         rideTimeMinutes = route.rideTimeMinutes,
+        avgSpeedKmPerH = route.avgSpeedKmPerH,
+        boundingBoxData = route.boundingBoxData
     )
 }
