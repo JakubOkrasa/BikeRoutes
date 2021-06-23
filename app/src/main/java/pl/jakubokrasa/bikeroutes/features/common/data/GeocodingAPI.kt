@@ -7,5 +7,5 @@ import retrofit2.http.Query
 interface GeocodingAPI {
 
     @GET("search/?format=json&limit=1")
-    suspend fun getGeocodingItem(@Query(value = "q", encoded = false) query: String): GeocodingItemResponse
+    suspend fun getGeocodingItem(@Query(value = "q", encoded = false) query: String): List<GeocodingItemResponse>
 }

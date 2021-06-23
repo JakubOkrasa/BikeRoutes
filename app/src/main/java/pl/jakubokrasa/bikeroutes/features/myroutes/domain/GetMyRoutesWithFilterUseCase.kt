@@ -1,5 +1,6 @@
 package pl.jakubokrasa.bikeroutes.features.myroutes.domain
 
+import android.util.Log
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -20,15 +21,15 @@ class GetMyRoutesWithFilterUseCase(
             mapBB = if(it.latNorth == 0.0 && it.latSouth == 0.0 && it.lonEast == 0.0 && it.lonWest == 0.0) null
                 else it
         }
-
-        return remoteRepository.getMyRoutesWithFilter(auth.getCurrentUserId(), filterData)
-            .also {
-                if(mapBB != null) {
-                    it.filter { route ->
-                        doesRouteCoversMap(route.boundingBoxData, mapBB!!)
-                    }
-                }
+        val introFilteredList = remoteRepository.getMyRoutesWithFilter(auth.getCurrentUserId(), filterData)
+        mapBB?.let {
+            val outroFilteredList = introFilteredList.filter { route ->
+                doesRouteCoversMap(route.boundingBoxData, mapBB!!) //todo debug why it not returns true for route in Kraków
             }
+            return outroFilteredList
+        }
+            val outroFilteredList = introFilteredList
+            return outroFilteredList
     }
 
     operator fun invoke(
@@ -44,14 +45,21 @@ class GetMyRoutesWithFilterUseCase(
             }
         }
 
-    private fun doesRouteCoversMap(routeBB: BoundingBoxData, mapBB: BoundingBoxData)
-            = doesRouteCoversMapVertically(routeBB, mapBB) && doesRouteCoversMapHorizontally(routeBB, mapBB)
+    private fun doesRouteCoversMap(routeBB: BoundingBoxData, mapBB: BoundingBoxData):  Boolean  {
+        val result = doesRouteCoversMapVertically(routeBB, mapBB) && doesRouteCoversMapHorizontally(routeBB, mapBB)
+        Log.e("FILTER::", result.toString())
+        return result
+    }
 
     private fun doesRouteCoversMapHorizontally(
         routeBB: BoundingBoxData, mapBB: BoundingBoxData
-    ) = doesRouteCoversMapAndBottomIsOutside(routeBB, mapBB) || doesRouteCoversMapAndTopIsOutside(
-        routeBB,
-        mapBB) || isRouteBetweenVertically(routeBB, mapBB)
+    ): Boolean {
+        val result = doesRouteCoversMapAndBottomIsOutside(routeBB, mapBB) || doesRouteCoversMapAndTopIsOutside(
+            routeBB,
+            mapBB) || isRouteBetweenVertically(routeBB, mapBB)
+        Log.e("FILTER horizontal::", result.toString())
+        return result
+    }
 
     private fun doesRouteCoversMapVertically(
         routeBB: BoundingBoxData, mapBB: BoundingBoxData

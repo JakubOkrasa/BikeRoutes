@@ -162,7 +162,7 @@ class RemoteRepositoryImpl(
     }
 
     override suspend fun getGeocodingItem(query: String): GeocodingItem {
-        return api.getGeocodingItem(query).toGeocodingItem()
+        return api.getGeocodingItem(query)[0].toGeocodingItem()
     }
 
 

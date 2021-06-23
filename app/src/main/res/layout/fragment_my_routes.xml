@@ -46,7 +46,6 @@
                 app:cornerRadius="18dp"
                 android:backgroundTint="@color/light_green"
                 android:textColor="@color/blurred_white"
-                android:text="kkkk"
                 android:visibility="gone"/>
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/bt_filter_distlessthan"
@@ -56,7 +55,15 @@
                 app:cornerRadius="18dp"
                 android:backgroundTint="@color/light_green"
                 android:textColor="@color/blurred_white"
-                android:text="kkkk"
+                android:visibility="gone"/>
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/bt_filter_location"
+                android:layout_marginLeft="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:cornerRadius="18dp"
+                android:backgroundTint="@color/light_green"
+                android:textColor="@color/blurred_white"
                 android:visibility="gone"/>
         </LinearLayout>
 

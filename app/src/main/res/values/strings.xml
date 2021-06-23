@@ -22,4 +22,5 @@
     <string name="fragment_sharedroutes_no_data">It seems that no route is shared. Check your Internet connection.</string>
     <string name="fragment_common_no_data_filter">No route meets your filters.</string>
     <string name="URL_NOMINATIM_GEOCODING_API">https://nominatim.openstreetmap.org/</string>
+    <string name="filter_location_et_hint">Location, e.g. "Warsaw" or "Zagórze, Wiązowna"</string>
 </resources>

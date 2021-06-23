@@ -15,7 +15,7 @@ import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteDisplayabl
     private val binding get() = _binding!!
     private val myRoutesRecyclerAdapter: MyRoutesRecyclerAdapter by inject()
 	override val viewModel: MyRoutesViewModel by sharedViewModel()
-    private lateinit var dialogFilter: Dialog
+    private lateinit var dialogFilter: DialogMyRoutesFilter
     private var isFilter = false
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -40,6 +40,7 @@ import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteDisplayabl
         super.initObservers()
         observeIsFilter()
         observeMyRoutes()
+        observeGeocodingItem()
     }
 
     override fun initViews() {
@@ -55,6 +56,12 @@ import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteDisplayabl
             }
         }
     }
+
+     private fun observeGeocodingItem() {
+        viewModel.geocodingItem.observe(viewLifecycleOwner) {
+          dialogFilter.completeFilterSave(it)
+          }
+     }
 
      private fun showNoDataMessage() {
          if (isFilter) binding.tvNoData.text = String.format(getString(R.string.fragment_common_no_data_filter))

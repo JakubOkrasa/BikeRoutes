@@ -210,13 +210,15 @@ class MapFragment() : BaseFragment<MapViewModel>(R.layout.fragment_map), KoinCom
     }
 
     private val btStopRecordOnClick = View.OnClickListener()  {
+        //convey boundingBoxData to SaveRouteFragment to save it to firestore (from SaveRouteFragment, there is no access to polyline.bounds)
+        with(polyline.bounds) {
+            val boundingBoxData = BoundingBoxData(latSouth, latNorth, lonWest, lonEast)
+                    mapFrgNavigator.openSaveRouteFragment(boundingBoxData)
+        }
+
         disableRecordingMode()
         polyline.setPoints(ArrayList<GeoPoint>()) // strange behaviour: when you make it after stopLocationService(), it doesn't work
         binding.mapView.invalidate()
-        with(polyline.bounds) {
-            val boundingBoxData = BoundingBoxData(latNorth, latSouth, lonEast, lonWest)
-            mapFrgNavigator.openSaveRouteFragment(boundingBoxData)
-        }
 
         preferenceHelper.preferences.edit {
             remove(PREF_KEY_MAPFRAGMENT_MODE_RECORDING)
