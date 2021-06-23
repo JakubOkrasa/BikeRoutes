@@ -19,17 +19,15 @@ class GetMyRoutesWithFilterUseCase(
         var mapBB: BoundingBoxData? = null
         filterData.boundingBoxData?.let {
             mapBB = if(it.latNorth == 0.0 && it.latSouth == 0.0 && it.lonEast == 0.0 && it.lonWest == 0.0) null
-                else it
+            else it
         }
-        val introFilteredList = remoteRepository.getMyRoutesWithFilter(auth.getCurrentUserId(), filterData)
+        val filteredList = remoteRepository.getMyRoutesWithFilter(auth.getCurrentUserId(), filterData)
         mapBB?.let {
-            val outroFilteredList = introFilteredList.filter { route ->
-                doesRouteCoversMap(route.boundingBoxData, mapBB!!) //todo debug why it not returns true for route in Kraków
+            return filteredList.filter { route ->
+                doesRouteCoversMap(route.boundingBoxData, mapBB!!)
             }
-            return outroFilteredList
         }
-            val outroFilteredList = introFilteredList
-            return outroFilteredList
+        return filteredList
     }
 
     operator fun invoke(
@@ -45,21 +43,14 @@ class GetMyRoutesWithFilterUseCase(
             }
         }
 
-    private fun doesRouteCoversMap(routeBB: BoundingBoxData, mapBB: BoundingBoxData):  Boolean  {
-        val result = doesRouteCoversMapVertically(routeBB, mapBB) && doesRouteCoversMapHorizontally(routeBB, mapBB)
-        Log.e("FILTER::", result.toString())
-        return result
-    }
+    private fun doesRouteCoversMap(routeBB: BoundingBoxData, mapBB: BoundingBoxData
+    ) = doesRouteCoversMapVertically(routeBB, mapBB) && doesRouteCoversMapHorizontally(routeBB, mapBB)
 
     private fun doesRouteCoversMapHorizontally(
         routeBB: BoundingBoxData, mapBB: BoundingBoxData
-    ): Boolean {
-        val result = doesRouteCoversMapAndBottomIsOutside(routeBB, mapBB) || doesRouteCoversMapAndTopIsOutside(
+    ) = doesRouteCoversMapAndBottomIsOutside(routeBB, mapBB) || doesRouteCoversMapAndTopIsOutside(
             routeBB,
             mapBB) || isRouteBetweenVertically(routeBB, mapBB)
-        Log.e("FILTER horizontal::", result.toString())
-        return result
-    }
 
     private fun doesRouteCoversMapVertically(
         routeBB: BoundingBoxData, mapBB: BoundingBoxData

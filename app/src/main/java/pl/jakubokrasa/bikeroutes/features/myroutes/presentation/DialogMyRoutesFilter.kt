@@ -4,6 +4,7 @@ import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.View
 import android.view.Window
 import com.google.android.material.slider.RangeSlider
 import pl.jakubokrasa.bikeroutes.core.extensions.getValFrom
@@ -40,27 +41,14 @@ class DialogMyRoutesFilter(
         setContentView(dlgBinding.root)
         initializeDistanceSlider()
 
-        dlgBinding.btSave.setOnClickListener {
+        dlgBinding.btSave.setOnClickListener(btSaveOnClick)
+        dlgBinding.btCancel.setOnClickListener(btCancelOnClick)
+        dlgBinding.btReset.setOnClickListener(btResetOnClick)
+    }
 
-            val filterData = FilterData()
-            if(isDistanceChanged()) {
-                filterData.minDistanceKm = dlgBinding.sliderDistance.getValFrom()
-                filterData.maxDistanceKm = dlgBinding.sliderDistance.getValTo()
-            }
-            if(isLocationChanged()) {
-                if(dlgBinding.etLocation.text.isBlank())
-                    frgBinding.btFilterLocation.makeGone()
-                else
-                    viewModel.getGeocodingItem(dlgBinding.etLocation.text.toString())
-            }
-
-                viewModel.getMyRoutesWithFilter(FilterData(dlgBinding.sliderDistance.getValFrom(), dlgBinding.sliderDistance.getValTo()))
-
-            showFilterInfoInFragment()
-
-            dismiss()
-        }
-        dlgBinding.btCancel.setOnClickListener { dismiss() }
+    private fun resetFilterValues() {
+        dlgBinding.sliderDistance.setValues(0.0F, DISTANCE_SLIDER_VALUE_TO)
+        dlgBinding.etLocation.text.clear()
     }
 
     override fun onStart() {
@@ -119,4 +107,24 @@ class DialogMyRoutesFilter(
         viewModel.getMyRoutesWithFilter(FilterData(dlgBinding.sliderDistance.getValFrom(), dlgBinding.sliderDistance.getValTo(), geocodingItemDisplayable.boundingBox))
         showLocationInfoInFragment(geocodingItemDisplayable.displayName)
     }
+
+    private val btSaveOnClick = View.OnClickListener {
+        val filterData = FilterData()
+        if(isDistanceChanged()) {
+            filterData.minDistanceKm = dlgBinding.sliderDistance.getValFrom()
+            filterData.maxDistanceKm = dlgBinding.sliderDistance.getValTo()
+        }
+        if(isLocationChanged()) {
+            if(dlgBinding.etLocation.text.isBlank())
+                frgBinding.btFilterLocation.makeGone()
+            else
+                viewModel.getGeocodingItem(dlgBinding.etLocation.text.toString())
+        }
+        viewModel.getMyRoutesWithFilter(FilterData(dlgBinding.sliderDistance.getValFrom(), dlgBinding.sliderDistance.getValTo()))
+        showFilterInfoInFragment()
+        dismiss()
+    }
+
+    private val btCancelOnClick = View.OnClickListener { dismiss() }
+    private val btResetOnClick = View.OnClickListener { resetFilterValues() }
 }
