@@ -4,6 +4,7 @@ import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.View
 import android.view.Window
 import com.google.android.material.slider.RangeSlider
 import pl.jakubokrasa.bikeroutes.core.extensions.getValFrom
@@ -13,9 +14,12 @@ import pl.jakubokrasa.bikeroutes.core.extensions.makeVisible
 import pl.jakubokrasa.bikeroutes.core.util.getFormattedFilterDistance
 import pl.jakubokrasa.bikeroutes.core.util.getFormattedFilterDistanceGreaterThan
 import pl.jakubokrasa.bikeroutes.core.util.getFormattedFilterDistanceLessThan
+import pl.jakubokrasa.bikeroutes.core.util.getFormattedFilterLocation
+import pl.jakubokrasa.bikeroutes.databinding.DialogMyroutesFilterBinding
 import pl.jakubokrasa.bikeroutes.databinding.DialogSharedroutesFilterBinding
 import pl.jakubokrasa.bikeroutes.databinding.FragmentSharedRoutesBinding
 import pl.jakubokrasa.bikeroutes.features.common.domain.FilterData
+import pl.jakubokrasa.bikeroutes.features.common.presentation.model.GeocodingItemDisplayable
 import pl.jakubokrasa.bikeroutes.features.myroutes.presentation.MyRoutesFragment.Companion.DISTANCE_SLIDER_VALUE_TO
 import pl.jakubokrasa.bikeroutes.features.sharedroutes.presentation.SharedRoutesViewModel
 
@@ -25,6 +29,9 @@ class DialogSharedRoutesFilter(
     private val viewModel: SharedRoutesViewModel
 ): Dialog(ctx) {
     private lateinit var dlgBinding: DialogSharedroutesFilterBinding
+    private var previousValFrom = 0
+    private var previousValTo = DISTANCE_SLIDER_VALUE_TO.toInt()
+    private var previousLocation = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,27 +40,55 @@ class DialogSharedRoutesFilter(
         dlgBinding = DialogSharedroutesFilterBinding.inflate(LayoutInflater.from(context))
         setContentView(dlgBinding.root)
         initializeDistanceSlider()
-        dlgBinding.btSave.setOnClickListener {
-            viewModel.getSharedRoutesWithFilter(FilterData(dlgBinding.sliderDistance.getValFrom(), dlgBinding.sliderDistance.getValTo()))
 
-            if(dlgBinding.sliderDistance.getValFrom() > 0.0f) {
-                frgBinding.btFilterDistgreaterthan.text =
-                    getFormattedFilterDistanceGreaterThan(dlgBinding.sliderDistance.getValFrom())
-                frgBinding.btFilterDistgreaterthan.makeVisible()
-            } else {
-                frgBinding.btFilterDistgreaterthan.makeGone()
-            }
-            if(dlgBinding.sliderDistance.getValTo() < DISTANCE_SLIDER_VALUE_TO) {
-                frgBinding.btFilterDistlessthan.text =
-                    getFormattedFilterDistanceLessThan(dlgBinding.sliderDistance.getValTo())
-                frgBinding.btFilterDistlessthan.makeVisible()
-            } else {
-                frgBinding.btFilterDistlessthan.makeGone()
-            }
+        dlgBinding.btSave.setOnClickListener(btSaveOnClick)
+        dlgBinding.btCancel.setOnClickListener(btCancelOnClick)
+        dlgBinding.btReset.setOnClickListener(btResetOnClick)
+    }
 
-            dismiss()
+    private fun resetFilterValues() {
+        dlgBinding.sliderDistance.setValues(0.0F, DISTANCE_SLIDER_VALUE_TO)
+        dlgBinding.etLocation.text.clear()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        previousValFrom = dlgBinding.sliderDistance.getValFrom()
+        previousValTo = dlgBinding.sliderDistance.getValTo()
+        previousLocation = dlgBinding.etLocation.text.toString()
+    }
+
+    private fun isDistanceChanged()
+            = previousValFrom != dlgBinding.sliderDistance.getValFrom() || previousValTo != dlgBinding.sliderDistance.getValTo()
+
+    private fun isLocationChanged() = previousLocation != dlgBinding.etLocation.text.toString()
+
+    private fun showFilterInfoInFragment() { //todo this method should be in fragment
+        showDistanceInfoInFragment()
+    }
+
+    private fun showDistanceInfoInFragment() {
+        if (dlgBinding.sliderDistance.getValFrom() > 0.0f) {
+            frgBinding.btFilterDistgreaterthan.text = getFormattedFilterDistanceGreaterThan(dlgBinding.sliderDistance.getValFrom())
+            frgBinding.btFilterDistgreaterthan.makeVisible()
+        } else {
+            frgBinding.btFilterDistgreaterthan.makeGone()
         }
-        dlgBinding.btCancel.setOnClickListener { dismiss() }
+        if (dlgBinding.sliderDistance.getValTo() < DISTANCE_SLIDER_VALUE_TO) {
+            frgBinding.btFilterDistlessthan.text = getFormattedFilterDistanceLessThan(dlgBinding.sliderDistance.getValTo())
+            frgBinding.btFilterDistlessthan.makeVisible()
+        } else {
+            frgBinding.btFilterDistlessthan.makeGone()
+        }
+    }
+
+    private fun showLocationInfoInFragment(displayName: String) {
+        if(dlgBinding.etLocation.text.isNotEmpty()) {
+            frgBinding.btFilterLocation.text = getFormattedFilterLocation(displayName)
+            frgBinding.btFilterLocation.makeVisible()
+        } else {
+            frgBinding.btFilterLocation.makeGone()
+        }
     }
 
     private fun initializeDistanceSlider() {
@@ -67,4 +102,29 @@ class DialogSharedRoutesFilter(
         }
 
     }
+
+    fun completeFilterSave(geocodingItemDisplayable: GeocodingItemDisplayable) {
+        viewModel.getSharedRoutesWithFilter(FilterData(dlgBinding.sliderDistance.getValFrom(), dlgBinding.sliderDistance.getValTo(), geocodingItemDisplayable.boundingBox))
+        showLocationInfoInFragment(geocodingItemDisplayable.displayName)
+    }
+
+    private val btSaveOnClick = View.OnClickListener {
+        val filterData = FilterData()
+        if(isDistanceChanged()) {
+            filterData.minDistanceKm = dlgBinding.sliderDistance.getValFrom()
+            filterData.maxDistanceKm = dlgBinding.sliderDistance.getValTo()
+        }
+        if(isLocationChanged()) {
+            if(dlgBinding.etLocation.text.isBlank())
+                frgBinding.btFilterLocation.makeGone()
+            else
+                viewModel.getGeocodingItem(dlgBinding.etLocation.text.toString())
+        }
+        viewModel.getSharedRoutesWithFilter(FilterData(dlgBinding.sliderDistance.getValFrom(), dlgBinding.sliderDistance.getValTo()))
+        showFilterInfoInFragment()
+        dismiss()
+    }
+
+    private val btCancelOnClick = View.OnClickListener { dismiss() }
+    private val btResetOnClick = View.OnClickListener { resetFilterValues() }
 }
