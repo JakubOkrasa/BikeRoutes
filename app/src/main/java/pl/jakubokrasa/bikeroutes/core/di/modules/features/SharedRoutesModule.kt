@@ -13,6 +13,6 @@ val sharedRoutesModule = module {
 
     factory { SharedRoutesRecyclerAdapter() }
 
-    viewModel { SharedRoutesViewModel(get(), get(), get(), get()) }
+    viewModel { SharedRoutesViewModel(get(), get(), get(), get(), get()) }
 
 }
