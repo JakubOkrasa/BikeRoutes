@@ -39,6 +39,7 @@ import pl.jakubokrasa.bikeroutes.core.util.configureOsmDroid
 import pl.jakubokrasa.bikeroutes.core.util.routeColor
 import pl.jakubokrasa.bikeroutes.core.util.routeWidth
 import pl.jakubokrasa.bikeroutes.databinding.FragmentMapBinding
+import pl.jakubokrasa.bikeroutes.features.common.domain.BoundingBoxData
 import pl.jakubokrasa.bikeroutes.features.map.domain.LocationService
 import pl.jakubokrasa.bikeroutes.features.map.navigation.MapFrgNavigator
 import pl.jakubokrasa.bikeroutes.features.map.presentation.model.PointDisplayable
@@ -209,10 +210,15 @@ class MapFragment() : BaseFragment<MapViewModel>(R.layout.fragment_map), KoinCom
     }
 
     private val btStopRecordOnClick = View.OnClickListener()  {
+        //convey boundingBoxData to SaveRouteFragment to save it to firestore (from SaveRouteFragment, there is no access to polyline.bounds)
+        with(polyline.bounds) {
+            val boundingBoxData = BoundingBoxData(latSouth, latNorth, lonWest, lonEast)
+                    mapFrgNavigator.openSaveRouteFragment(boundingBoxData)
+        }
+
         disableRecordingMode()
         polyline.setPoints(ArrayList<GeoPoint>()) // strange behaviour: when you make it after stopLocationService(), it doesn't work
         binding.mapView.invalidate()
-        mapFrgNavigator.openSaveRouteFragment()
 
         preferenceHelper.preferences.edit {
             remove(PREF_KEY_MAPFRAGMENT_MODE_RECORDING)
@@ -273,6 +279,7 @@ class MapFragment() : BaseFragment<MapViewModel>(R.layout.fragment_map), KoinCom
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.WRITE_EXTERNAL_STORAGE)
         const val SEND_LOCATION_ACTION = BuildConfig.APPLICATION_ID + ".send_location_action"
+        val BOUNDING_BOX_DATA_KEY = "boundingBoxDataKey"
 
     }
 }

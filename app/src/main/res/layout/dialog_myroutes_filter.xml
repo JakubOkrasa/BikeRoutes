@@ -6,53 +6,119 @@
     android:paddingHorizontal="15dp"
     android:paddingVertical="10dp">
 
-    <TextView
-        android:id="@+id/dialog_myroutesfilter_tv_title"
-        style="@style/tv_medium"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Distance range"/>
-
-    <TextView
-        android:id="@+id/dialog_myroutesfilter_tv_distance_result"
-        android:layout_width="120dp"
-        android:layout_height="wrap_content"
-        android:textAlignment="center"
-        app:layout_constraintBottom_toBottomOf="@id/dialog_myroutesfilter_tv_title"
-        app:layout_constraintLeft_toRightOf="@id/dialog_myroutesfilter_tv_title"
-        app:layout_constraintRight_toRightOf="parent"
-        android:background="#ddd"
-        android:padding="3dp"
-        android:textColor="#333"
-        android:text="0 km - 500km"/>
-
-    <com.google.android.material.slider.RangeSlider
-        android:id="@+id/dialog_myroutesfilter_slider_distance"
-        app:layout_constraintTop_toBottomOf="@id/dialog_myroutesfilter_tv_title"
+    <LinearLayout
+        android:id="@+id/ll_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:labelBehavior="gone"
-        android:stepSize="1.0" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:paddingBottom="15dp">
+
+        <TextView
+            style="@style/tv_big"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:text="Filter"/>
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/bt_reset"
+            android:textColor="@color/black"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:text="reset filters"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_distance_ext"
+        app:layout_constraintTop_toBottomOf="@id/ll_header"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tv_distance_title"
+                style="@style/tv_medium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Distance range"/>
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <TextView
+                android:id="@+id/tv_distance_result"
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:background="#ddd"
+                android:padding="3dp"
+                android:textColor="#333"
+                android:text="0 km - 500km"/>
+
+        </LinearLayout>
+
+        <com.google.android.material.slider.RangeSlider
+            android:id="@+id/slider_distance"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:labelBehavior="gone"
+            android:stepSize="1.0" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_location"
+        android:layout_width="0dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/ll_distance_ext"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_location_title"
+            style="@style/tv_medium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Location"/>
+        <EditText
+            android:id="@+id/et_location"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:hint="@string/filter_location_et_hint" />
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/dialog_myroutesfilter_slider_distance"
+        app:layout_constraintTop_toBottomOf="@id/ll_location"
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginTop="10dp"
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/dialog_myroutesfilter_bt_cancel"
+            android:id="@+id/bt_cancel"
             android:backgroundTint="#ccc"
             android:textColor="@color/black"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="CANCEL"/>
+            android:layout_marginStart="20dp"
+            android:text="cancel"/>
         <Button
-            android:id="@+id/dialog_myroutesfilter_bt_save"
+            android:id="@+id/bt_save"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="save"

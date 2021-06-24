@@ -1,9 +1,13 @@
 package pl.jakubokrasa.bikeroutes.features.map.data.remote
 
-import com.google.firebase.firestore.*
+import com.google.firebase.firestore.FieldValue
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 import pl.jakubokrasa.bikeroutes.core.util.enums.sharingType
+import pl.jakubokrasa.bikeroutes.features.common.data.GeocodingAPI
+import pl.jakubokrasa.bikeroutes.features.common.domain.BoundingBoxData
 import pl.jakubokrasa.bikeroutes.features.common.domain.FilterData
+import pl.jakubokrasa.bikeroutes.features.common.domain.model.GeocodingItem
 import pl.jakubokrasa.bikeroutes.features.map.data.remote.model.PointResponse
 import pl.jakubokrasa.bikeroutes.features.map.data.remote.model.RouteResponse
 import pl.jakubokrasa.bikeroutes.features.map.domain.RemoteRepository
@@ -13,7 +17,8 @@ import pl.jakubokrasa.bikeroutes.features.myroutes.data.model.PointDocument
 import pl.jakubokrasa.bikeroutes.features.myroutes.presentation.MyRoutesFragment.Companion.DISTANCE_SLIDER_VALUE_TO
 
 class RemoteRepositoryImpl(
-    private val firestore: FirebaseFirestore
+    private val firestore: FirebaseFirestore,
+    private val api: GeocodingAPI
 ): RemoteRepository {
     override suspend fun addRoute(route: Route, points: List<Point>) {
 
@@ -50,6 +55,7 @@ class RemoteRepositoryImpl(
 
         for (doc in documents)
             doc.toObject(RouteResponse::class.java)?.let { routeResponseList.add(it) }
+
         return routeResponseList.map { it.toRoute()}
     }
 
@@ -78,6 +84,8 @@ class RemoteRepositoryImpl(
         for (doc in documents)
             doc.toObject(RouteResponse::class.java)
                 .let { routeResponseList.add(it) }
+
+
         return routeResponseList.map { it.toRoute()}
     }
 
@@ -152,6 +160,12 @@ class RemoteRepositoryImpl(
                 .let { routeResponseList.add(it) }
         return routeResponseList.map { it.toRoute()}
     }
+
+    override suspend fun getGeocodingItem(query: String): GeocodingItem {
+        return api.getGeocodingItem(query)[0].toGeocodingItem()
+    }
+
+
 
 
     companion object {

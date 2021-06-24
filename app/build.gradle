@@ -78,6 +78,7 @@ dependencies {
 
     //OSMdroid
     implementation 'org.osmdroid:osmdroid-android:6.1.10'
+    implementation 'com.github.MKergall:osmbonuspack:6.7.0'
 
     //Koin
     implementation "org.koin:koin-android:$koin_version"
@@ -109,6 +110,10 @@ dependencies {
     implementation 'com.google.firebase:firebase-firestore:22.1.2'
     implementation 'com.google.android.gms:play-services-tasks:17.2.1'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.4.3'
+
+    //Network
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation "com.squareup.retrofit2:converter-gson:2.9.0"
 
     //Gson
     implementation 'com.google.code.gson:gson:2.8.6'

@@ -13,7 +13,7 @@ import pl.jakubokrasa.bikeroutes.core.extensions.makeVisible
 import pl.jakubokrasa.bikeroutes.core.util.getFormattedFilterDistance
 import pl.jakubokrasa.bikeroutes.core.util.getFormattedFilterDistanceGreaterThan
 import pl.jakubokrasa.bikeroutes.core.util.getFormattedFilterDistanceLessThan
-import pl.jakubokrasa.bikeroutes.databinding.DialogFilterBinding
+import pl.jakubokrasa.bikeroutes.databinding.DialogSharedroutesFilterBinding
 import pl.jakubokrasa.bikeroutes.databinding.FragmentSharedRoutesBinding
 import pl.jakubokrasa.bikeroutes.features.common.domain.FilterData
 import pl.jakubokrasa.bikeroutes.features.myroutes.presentation.MyRoutesFragment.Companion.DISTANCE_SLIDER_VALUE_TO
@@ -24,13 +24,13 @@ class DialogSharedRoutesFilter(
     private val frgBinding: FragmentSharedRoutesBinding,
     private val viewModel: SharedRoutesViewModel
 ): Dialog(ctx) {
-    private lateinit var dlgBinding: DialogFilterBinding
+    private lateinit var dlgBinding: DialogSharedroutesFilterBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         requestWindowFeature(Window.FEATURE_NO_TITLE)
         setCancelable(true)
-        dlgBinding = DialogFilterBinding.inflate(LayoutInflater.from(context))
+        dlgBinding = DialogSharedroutesFilterBinding.inflate(LayoutInflater.from(context))
         setContentView(dlgBinding.root)
         initializeDistanceSlider()
         dlgBinding.btSave.setOnClickListener {
