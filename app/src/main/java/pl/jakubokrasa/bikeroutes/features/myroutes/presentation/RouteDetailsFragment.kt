@@ -17,6 +17,7 @@ import pl.jakubokrasa.bikeroutes.core.util.*
 import pl.jakubokrasa.bikeroutes.core.util.enums.sharingType
 import pl.jakubokrasa.bikeroutes.databinding.FragmentRouteDetailsBinding
 import pl.jakubokrasa.bikeroutes.features.common.presentation.CommonRoutesNavigator
+import pl.jakubokrasa.bikeroutes.features.common.segments.presentation.model.SegmentDisplayable
 import pl.jakubokrasa.bikeroutes.features.map.presentation.model.PointDisplayable
 import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteDisplayable
 
@@ -70,6 +71,10 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
             binding.toolbar.inflateMenu(R.menu.menu_routedetails_home)
             binding.toolbar.setOnMenuItemClickListener { menuItem ->
                 when (menuItem.itemId) {
+                    R.id.action_segments -> {
+                        navigator.openSegmentsFragment(route, points, ArrayList<SegmentDisplayable>()) //todo
+                        true
+                    }
                     R.id.action_routedetails_edit -> {
                         clearToolbarMenu()
                         binding.toolbar.inflateMenu(R.menu.menu_routedetails_edit)
@@ -181,13 +186,13 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
 
     private fun setRoute() {
         arguments
-            ?.getParcelable<RouteDisplayable>(ROUTE_TO_FOLLOW_KEY)
+            ?.getParcelable<RouteDisplayable>(ROUTE_BUNDLE_KEY)
             ?.let { route = it}
     }
 
     private fun setPoints() {
         val serializable = arguments
-            ?.getSerializable(POINTS_TO_FOLLOW_KEY) //I use Serializable instead of Parcelable because I didn't find any simple solution to pass a List through Parcelable
+            ?.getSerializable(POINTS_BUNDLE_KEY) //I use Serializable instead of Parcelable because I didn't find any simple solution to pass a List through Parcelable
                 if(serializable is List<*>?) {
                     serializable.let {
                         points = serializable as List<PointDisplayable>
@@ -195,7 +200,7 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
                 }
     }
 
-    private fun isMyRoute() = arguments?.getBoolean(IS_MY_ROUTE_KEY) ?: false
+    private fun isMyRoute() = arguments?.getBoolean(IS_MY_ROUTE_BUNDLE_KEY) ?: false
 
     private val btFollowOnClick = View.OnClickListener {
         navigator.openFollowRouteFragment(route, points)
@@ -212,8 +217,9 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
     }
 
     companion object {
-        const val ROUTE_TO_FOLLOW_KEY = "routeToFollowKey"
-        const val POINTS_TO_FOLLOW_KEY = "pointsToFollowKey"
-        const val IS_MY_ROUTE_KEY = "isMyRoutesSourceKey"
+        const val ROUTE_BUNDLE_KEY = "routeBundleKey"
+        const val POINTS_BUNDLE_KEY = "pointsBundleKey"
+        const val SEGMENTS_BUNDLE_KEY = "segmentsBundleKey"
+        const val IS_MY_ROUTE_BUNDLE_KEY = "isMyRouteBundleKey"
     }
 }

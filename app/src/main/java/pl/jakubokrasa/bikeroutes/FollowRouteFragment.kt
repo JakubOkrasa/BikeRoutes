@@ -14,9 +14,7 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
-import org.osmdroid.views.CustomZoomButtonsController
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.Polyline
@@ -29,6 +27,8 @@ import pl.jakubokrasa.bikeroutes.features.map.domain.LocationService
 import pl.jakubokrasa.bikeroutes.features.map.presentation.MapFragment.Companion.SEND_LOCATION_ACTION
 import pl.jakubokrasa.bikeroutes.features.map.presentation.model.PointDisplayable
 import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteDisplayable
+import pl.jakubokrasa.bikeroutes.features.myroutes.presentation.RouteDetailsFragment.Companion.POINTS_BUNDLE_KEY
+import pl.jakubokrasa.bikeroutes.features.myroutes.presentation.RouteDetailsFragment.Companion.ROUTE_BUNDLE_KEY
 
 
 class FollowRouteFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_followroute) {
@@ -85,6 +85,7 @@ class FollowRouteFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_fo
             setPoints()
             setPolylineProperties()
             setMapViewProperties()
+            disableFollowingLocation()
             binding.mapView.invalidate()
         }
     }
@@ -99,7 +100,6 @@ class FollowRouteFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_fo
 
     private fun MapView.recenterRoute() {
         zoomToBoundingBox(polyline.bounds, false, 40, 18.0, 0)
-        disableFollowingLocation()
     }
 
     private fun MapView.recenterRouteWithAnimation() {
@@ -172,22 +172,17 @@ class FollowRouteFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_fo
 
     private fun setRoute() {
         arguments
-            ?.getParcelable<RouteDisplayable>(ROUTE_TO_FOLLOW_KEY)
+            ?.getParcelable<RouteDisplayable>(ROUTE_BUNDLE_KEY)
             ?.let { route = it}
     }
 
     private fun setPoints() {
         val serializable = arguments
-            ?.getSerializable(POINTS_TO_FOLLOW_KEY) //I use Serializable instead of Parcelable because I didn't find any simple solution to pass a List through Parcelable
+            ?.getSerializable(POINTS_BUNDLE_KEY) //I use Serializable instead of Parcelable because I didn't find any simple solution to pass a List through Parcelable
         if(serializable is List<*>?) {
             serializable.let {
                 points = serializable as List<PointDisplayable>
             }
         }
-    }
-
-    companion object {
-        const val ROUTE_TO_FOLLOW_KEY = "routeToFollowKey"
-        const val POINTS_TO_FOLLOW_KEY = "pointsToFollowKey"
     }
 }
