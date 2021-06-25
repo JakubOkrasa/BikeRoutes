@@ -33,6 +33,7 @@ import pl.jakubokrasa.bikeroutes.core.extensions.PreferenceHelper
 import pl.jakubokrasa.bikeroutes.core.extensions.PreferenceHelper.Companion.PREF_KEY_MAPFRAGMENT_MODE_RECORDING
 import pl.jakubokrasa.bikeroutes.core.extensions.makeGone
 import pl.jakubokrasa.bikeroutes.core.extensions.makeVisible
+import pl.jakubokrasa.bikeroutes.core.extensions.putDouble
 import pl.jakubokrasa.bikeroutes.core.util.LocationUtils
 import pl.jakubokrasa.bikeroutes.core.util.enums.MapMode
 import pl.jakubokrasa.bikeroutes.core.util.configureOsmDroid
@@ -198,7 +199,8 @@ class MapFragment() : BaseFragment<MapViewModel>(R.layout.fragment_map), KoinCom
         override fun onReceive(context: Context?, intent: Intent?) {
             val loc = intent!!.getParcelableExtra<Location>("EXTRA_LOCATION")
             loc?.let {
-                if(isRecordingMode()) viewModel.updateDistanceByPrefs(GeoPoint(loc))
+                if(isRecordingMode())
+                    viewModel.updateDistanceByPrefs(GeoPoint(loc))
                 newLocationUpdateUI(GeoPoint(loc))
             }
         }
@@ -226,7 +228,11 @@ class MapFragment() : BaseFragment<MapViewModel>(R.layout.fragment_map), KoinCom
     }
 
     private val btRecordRouteOnClick = View.OnClickListener() {
-        preferenceHelper.preferences.edit { putInt(PreferenceHelper.PREF_KEY_DISTANCE_SUM, 0)}
+        preferenceHelper.preferences.edit {
+            putInt(PreferenceHelper.PREF_KEY_DISTANCE_SUM, 0)
+            remove(PreferenceHelper.PREF_KEY_LAST_LAT)
+            remove(PreferenceHelper.PREF_KEY_LAST_LNG)
+        }
         enableRecordingMode()
     }
 
@@ -236,7 +242,7 @@ class MapFragment() : BaseFragment<MapViewModel>(R.layout.fragment_map), KoinCom
         false //
     }
 
-    private fun enableRecordingMode() { //todo not a clean practice (public to use it in ViewModel)
+    private fun enableRecordingMode() {
         preferenceHelper.preferences.edit {
             putBoolean(PREF_KEY_MAPFRAGMENT_MODE_RECORDING, true)
         }
@@ -256,7 +262,8 @@ class MapFragment() : BaseFragment<MapViewModel>(R.layout.fragment_map), KoinCom
         requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
 
-    private fun isRecordingMode() = preferenceHelper.preferences.getBoolean(PREF_KEY_MAPFRAGMENT_MODE_RECORDING, false)
+    private fun isRecordingMode() =
+        preferenceHelper.preferences.getBoolean(PREF_KEY_MAPFRAGMENT_MODE_RECORDING, false)
 
     private val pointsObserver = Observer<List<PointDisplayable>> {
         if(it.isNotEmpty())

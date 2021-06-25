@@ -37,9 +37,9 @@ class SaveRouteFragment : BaseFragment<MapViewModel>(R.layout.fragment_save_rout
         if(name.isEmpty()) showToast("Route must have a name")
         else  {
             viewModel.saveRoute(DataSaveRoute(name, description, distance, sharingType, getBoundingBoxData()))
+            hideKeyboard()
+            mapFrgNavigator.goBack()
         }
-        hideKeyboard()
-        mapFrgNavigator.goBack()
     }
 
     private fun getBoundingBoxData(): BoundingBoxData {
