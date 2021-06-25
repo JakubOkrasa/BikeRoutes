@@ -9,6 +9,7 @@ import android.location.Location
 import android.os.*
 import android.util.Log
 import androidx.core.app.NotificationCompat
+import androidx.core.content.edit
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.google.android.gms.location.*
 import org.koin.core.KoinComponent
@@ -39,12 +40,14 @@ class LocationService : Service(), KoinComponent {
 
     override fun onCreate() {
         Log.i(LOG_TAG, "onCreate")
-       // getLastLocation()  //todo probably not necessary
         handlerThread = HandlerThread(LOG_TAG)
         handlerThread.start()
         mServiceHandler = Handler(handlerThread.looper)
         mNotificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         createNotificationChannel()
+        preferenceHelper.preferences.edit {
+            putBoolean(PreferenceHelper.PREF_KEY_MAPFRAGMENT_MODE_RECORDING, false) // useful e.g. when the process with app was killed while the Recording Mode was turned on //todo not tested
+        }
         super.onCreate()
 
     }
