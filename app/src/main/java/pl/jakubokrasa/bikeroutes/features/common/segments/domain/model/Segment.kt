@@ -5,7 +5,7 @@ data class Segment(
     val routeId: String,
     val segmentLocationData: SegmentLocationData,
     val segmentType: SegmentType,
-    val comment: String
+    val info: String
 )
 
 data class SegmentLocationData(

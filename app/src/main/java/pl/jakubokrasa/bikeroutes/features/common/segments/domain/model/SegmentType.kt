@@ -4,5 +4,6 @@ enum class SegmentType {
     SAND,
     BUMPS,
     HILLY_GROUND,
-    TRAFFIC
+    TRAFFIC,
+    OTHER
 }

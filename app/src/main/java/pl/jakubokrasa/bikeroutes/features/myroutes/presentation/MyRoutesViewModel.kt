@@ -1,6 +1,5 @@
 package pl.jakubokrasa.bikeroutes.features.myroutes.presentation
 
-import android.graphics.Point
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -141,9 +140,9 @@ class MyRoutesViewModel(
         }
     }
 
-    fun getSegmentBegin(geoPoint: GeoPoint, points: List<PointDisplayable>) {
+    fun getSegmentBegin(geoPoint: GeoPoint, points: List<PointDisplayable>, thresholdDistance: Int) {
         getSegmentBeginUseCase(
-            params = GetSegmentBeginData(geoPoint, points.map { it.toPointNoCreatedAt() }),
+            params = GetSegmentBeginData(geoPoint, points.map { it.toPointNoCreatedAt() }, thresholdDistance),
             scope = viewModelScope
         ) {
                 result ->

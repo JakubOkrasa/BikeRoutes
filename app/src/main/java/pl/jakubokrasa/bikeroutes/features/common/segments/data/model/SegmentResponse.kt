@@ -9,7 +9,7 @@ data class SegmentResponse(
     val routeId: String,
     val segmentLocationData: SegmentLocationData,
     val segmentType: SegmentType,
-    val comment: String
+    val info: String
 ) {
     constructor(): this("", "", SegmentLocationData(0.0, 0.0, 0.0, 0.0), SegmentType.SAND, "")
 
@@ -18,7 +18,7 @@ data class SegmentResponse(
         routeId = segment.routeId,
         segmentLocationData = segment.segmentLocationData,
         segmentType = segment.segmentType,
-        comment = segment.comment
+        info = segment.info
     )
 
     fun toSegment() = Segment(
@@ -26,6 +26,6 @@ data class SegmentResponse(
         routeId = this.routeId,
         segmentLocationData = this.segmentLocationData,
         segmentType = this.segmentType,
-        comment = this.comment
+        info = this.info
     )
 }
