@@ -1,15 +1,15 @@
 package pl.jakubokrasa.bikeroutes.features.common.segments.presentation
 
 import android.annotation.SuppressLint
+import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.res.ResourcesCompat
-import com.google.android.material.slider.Slider
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import org.koin.java.KoinJavaComponent.inject
 import org.osmdroid.events.MapEventsReceiver
-import org.osmdroid.events.MapListener
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.MapEventsOverlay
@@ -23,10 +23,10 @@ import pl.jakubokrasa.bikeroutes.core.util.*
 import pl.jakubokrasa.bikeroutes.databinding.FragmentSegmentsBinding
 import pl.jakubokrasa.bikeroutes.features.map.presentation.model.PointDisplayable
 import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteDisplayable
+import pl.jakubokrasa.bikeroutes.features.myroutes.presentation.DialogSegment
 import pl.jakubokrasa.bikeroutes.features.myroutes.presentation.MyRoutesViewModel
 import pl.jakubokrasa.bikeroutes.features.myroutes.presentation.RouteDetailsFragment.Companion.POINTS_BUNDLE_KEY
 import pl.jakubokrasa.bikeroutes.features.myroutes.presentation.RouteDetailsFragment.Companion.ROUTE_BUNDLE_KEY
-import kotlin.math.roundToInt
 
 
 class SegmentsFragment: BaseFragment<MyRoutesViewModel>(R.layout.fragment_segments) {
@@ -38,8 +38,12 @@ class SegmentsFragment: BaseFragment<MyRoutesViewModel>(R.layout.fragment_segmen
     private lateinit var points: List<PointDisplayable>
     private val polyline = Polyline()
 
-    private var thresholdDistance = 100
-    private lateinit var marker: Marker
+    private lateinit var markerBegin: Marker
+    private lateinit var markerEnd: Marker
+    private var stage = CreateSegmentStage.CHOOSE_BEGIN
+    private var segmentBeginIndex = -1
+    private var segmentEndIndex = -1
+    private lateinit var segmentPolyline: Polyline
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -49,26 +53,26 @@ class SegmentsFragment: BaseFragment<MyRoutesViewModel>(R.layout.fragment_segmen
         showRoute(view)
         binding.btRecenter.setOnClickListener(btRecenterOnClick)
 
-        updateToolbar()
 
+        initMarkerBegin()
+        initMarkerEnd()
 
-        val overlayEvents = MapEventsOverlay(mapEventsReceiver)
-        binding.mapView.overlays.add(overlayEvents)
+        stage = CreateSegmentStage.CHOOSE_BEGIN
+        binding.mapView.overlays.add(mapTapEvents)
+    }
 
-        //slider
-        binding.sliderTest.value = thresholdDistance.toFloat()
-        binding.sliderTest.valueFrom = 0.0f
-        binding.sliderTest.valueTo = 160.0f
-        binding.sliderTest.addOnChangeListener(Slider.OnChangeListener { _, _, _ ->
-            thresholdDistance = binding.sliderTest.value.toInt()
-        })
+    private fun initMarkerBegin() {
+        markerBegin = Marker(binding.mapView)
+        markerBegin.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+        markerBegin.icon =
+            ResourcesCompat.getDrawable(resources, R.drawable.ic_location_green, null)
+    }
 
-        binding.btUpdate.setOnClickListener {
-            binding.tvZoom.text = String.format("%.2f", binding.mapView.zoomLevelDouble)
-        }
-
-        marker = Marker(binding.mapView)
-
+    private fun initMarkerEnd() {
+        markerEnd = Marker(binding.mapView)
+        markerEnd.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+        markerEnd.icon =
+            ResourcesCompat.getDrawable(resources, R.drawable.ic_location_green, null)
     }
 
     override fun onResume() {
@@ -83,22 +87,28 @@ class SegmentsFragment: BaseFragment<MyRoutesViewModel>(R.layout.fragment_segmen
 
     override fun initObservers() {
         super.initObservers()
-        observeSegmentBeginIndex()
+        observeSegmentPointIndex()
     }
 
-    private fun observeSegmentBeginIndex() {
-        viewModel.segmentBeginIndex.observe(viewLifecycleOwner, {
-            showBeginIndex(it)
+    private fun observeSegmentPointIndex() {
+        viewModel.segmentPointIndex.observe(viewLifecycleOwner, {
+            if(stage == CreateSegmentStage.CHOOSE_BEGIN) {
+                segmentBeginIndex = it
+                showSegmentPoint(it, markerBegin)
+                stage = CreateSegmentStage.CHOOSE_END
+            } else if(stage == CreateSegmentStage.CHOOSE_END) {
+                segmentEndIndex = it
+                showSegmentPoint(it, markerEnd)
+                showSegmentPolyline()
+                stage = CreateSegmentStage.NONE
+                updateToolbar()
+            }
         })
     }
 
-    private fun showBeginIndex(index: Int?) {
+    private fun showSegmentPoint(index: Int?, marker: Marker) {
         index?.let {
             marker.position = points[it].geoPoint
-            marker.icon = ResourcesCompat.getDrawable(resources,
-                R.drawable.location_marker,
-                null)
-            marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
             binding.mapView.overlays.add(marker)
             binding.mapView.invalidate()
         }
@@ -108,10 +118,11 @@ class SegmentsFragment: BaseFragment<MyRoutesViewModel>(R.layout.fragment_segmen
         binding.toolbar.inflateMenu(R.menu.menu_segments_home)
         binding.toolbar.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
-                R.id.action_add_segment -> {
+                R.id.action_save_segment -> {
+                    DialogSegment(requireContext(), viewModel).show()
                     clearToolbarMenu()
-                    binding.toolbar.inflateMenu(R.menu.menu_segments_add)
-                    binding.toolbar.setOnMenuItemClickListener(toolbarIconsAddModeOnClick)
+//                    binding.toolbar.inflateMenu(R.menu.menu_segments_add)
+//                    binding.toolbar.setOnMenuItemClickListener(toolbarIconsAddModeOnClick)
                     true
                 }
                 else -> false
@@ -119,10 +130,29 @@ class SegmentsFragment: BaseFragment<MyRoutesViewModel>(R.layout.fragment_segmen
         }
     }
 
+    private fun showSegmentPolyline() {
+        segmentPolyline = Polyline()
+        setSegmentPoints()
+        segmentPolyline.outlinePaint.strokeWidth = routeWidth
+        segmentPolyline.outlinePaint.color = Color.RED
+        binding.mapView.overlayManager.add(segmentPolyline)
+        binding.mapView.invalidate()
+    }
+
+    private fun setSegmentPoints() {
+        val segmentPoints: List<GeoPoint>
+        if(segmentBeginIndex<segmentEndIndex) {
+            segmentPoints = points.subList(segmentBeginIndex, segmentEndIndex + 1).map { it.geoPoint }
+        } else {
+            segmentPoints = points.subList(segmentEndIndex, segmentBeginIndex + 1).map { it.geoPoint }
+        }
+        segmentPolyline.setPoints(segmentPoints)
+    }
+
     private val toolbarIconsAddModeOnClick = Toolbar.OnMenuItemClickListener { markBeginMenuItem ->
         when (markBeginMenuItem.itemId) {
             R.id.action_begin_marked -> {
-                //todo
+
 
                 clearToolbarMenu()
                 updateToolbar()
@@ -201,11 +231,26 @@ class SegmentsFragment: BaseFragment<MyRoutesViewModel>(R.layout.fragment_segmen
         binding.progressLayout.makeGone()
     }
 
-    private val mapEventsReceiver = object: MapEventsReceiver {
+
+
+    private val mapTapEventsReceiver = object: MapEventsReceiver {
         override fun singleTapConfirmedHelper(geoPoint: GeoPoint?): Boolean {
-            geoPoint?.let { viewModel.getSegmentBegin(geoPoint, points, thresholdDistance) }
+            geoPoint?.let {
+                if(stage == CreateSegmentStage.CHOOSE_BEGIN || stage == CreateSegmentStage.CHOOSE_END)
+                    viewModel.getSegmentPoint(geoPoint, points, binding.mapView.zoomLevelDouble)
+
+            }
             return false
         }
         override fun longPressHelper(p: GeoPoint?) = false
     }
+
+    private val mapTapEvents = MapEventsOverlay(mapTapEventsReceiver)
+
+    private enum class CreateSegmentStage {
+        NONE,
+        CHOOSE_BEGIN,
+        CHOOSE_END
+    }
+
 }

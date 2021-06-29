@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/action_add_segment"
+        android:id="@+id/action_save_segment"
         android:icon="@drawable/ic_baseline_add_24"
         android:title="add a segment"
         app:showAsAction="always"

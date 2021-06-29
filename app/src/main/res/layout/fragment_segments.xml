@@ -69,7 +69,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="@id/map_view"
-        android:stepSize="1.0"/>
+        android:stepSize="1.0"
+        android:visibility="gone"/>
 
     <Button
         android:id="@+id/bt_update"
@@ -79,6 +80,7 @@
         app:layout_constraintTop_toBottomOf="@id/tv_zoom"
         android:layout_marginTop="10dp"
         android:text="update"
-        android:layout_marginEnd="7.5dp" />
+        android:layout_marginEnd="7.5dp"
+        android:visibility="gone"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

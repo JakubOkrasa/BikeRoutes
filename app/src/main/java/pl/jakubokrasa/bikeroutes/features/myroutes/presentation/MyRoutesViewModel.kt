@@ -22,7 +22,7 @@ class MyRoutesViewModel(
     private val removeRouteUseCase: RemoveRouteUseCase,
     private val updateRouteUseCase: UpdateRouteUseCase,
     private val getGeocodingItemUseCase: GetGeocodingItemUseCase,
-    private val getSegmentBeginUseCase: GetSegmentBeginUseCase,
+    private val getSegmentPointUseCase: GetSegmentPointUseCase,
     private val myRoutesNavigator: MyRoutesNavigator,
 ): BaseViewModel() {
 
@@ -30,14 +30,14 @@ class MyRoutesViewModel(
     private val _pointsFromRemote by lazy { MutableLiveData<List<PointDisplayable>>() } //liveEvent could be better here todo (but points can be set too early)
     private val _isFilter by lazy { MutableLiveData<Boolean>() }
     private val _geocodingItem by lazy { LiveEvent<GeocodingItemDisplayable>() }
-    private val _segmentBeginIndex by lazy { LiveEvent<Int>() }
+    private val _segmentPointIndex by lazy { LiveEvent<Int>() }
     override val LOG_TAG: String = MyRoutesViewModel::class.simpleName?: "unknown"
 
     val pointsFromRemote: LiveData<List<PointDisplayable>> by lazy { _pointsFromRemote }
     val myRoutes: LiveData<List<RouteDisplayable>> by lazy { _myRoutes }
     val isFilter: LiveData<Boolean> by lazy { _isFilter }
     val geocodingItem: LiveData<GeocodingItemDisplayable> by lazy { _geocodingItem }
-    val segmentBeginIndex: LiveData<Int> by lazy { _segmentBeginIndex }
+    val segmentPointIndex: LiveData<Int> by lazy { _segmentPointIndex }
 
 
     fun removeRouteAndNavBack(route: RouteDisplayable) {
@@ -140,17 +140,17 @@ class MyRoutesViewModel(
         }
     }
 
-    fun getSegmentBegin(geoPoint: GeoPoint, points: List<PointDisplayable>, thresholdDistance: Int) {
-        getSegmentBeginUseCase(
-            params = GetSegmentBeginData(geoPoint, points.map { it.toPointNoCreatedAt() }, thresholdDistance),
+    fun getSegmentPoint(geoPoint: GeoPoint, points: List<PointDisplayable>, zoomLevel: Double) {
+        getSegmentPointUseCase(
+            params = GetSegmentBeginData(geoPoint, points.map { it.toPointNoCreatedAt() }, zoomLevel),
             scope = viewModelScope
         ) {
                 result ->
             result.onSuccess {
-                _segmentBeginIndex.value = it
-                handleSuccess("getSegmentBegin")
+                _segmentPointIndex.value = it
+                handleSuccess("getSegmentPoint")
             }
-            result.onFailure { handleFailure("getSegmentBegin", errLog = it.message) }
+            result.onFailure { handleFailure("getSegmentPoint", errLog = it.message) }
         }
     }
 }
