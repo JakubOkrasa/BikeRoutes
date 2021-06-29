@@ -16,10 +16,11 @@ val myRoutesModule = module {
     factory { UpdateRouteUseCase(get()) }
     factory { GetGeocodingItemUseCase(get()) }
     factory { GetSegmentPointUseCase() }
+    factory { AddSegmentUseCase(get()) }
 
     factory { MyRoutesRecyclerAdapter() }
 
 
-    viewModel { MyRoutesViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
+    viewModel { MyRoutesViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
 
 }

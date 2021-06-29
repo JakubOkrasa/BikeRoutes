@@ -21,6 +21,8 @@ import pl.jakubokrasa.bikeroutes.core.extensions.makeGone
 import pl.jakubokrasa.bikeroutes.core.extensions.makeVisible
 import pl.jakubokrasa.bikeroutes.core.util.*
 import pl.jakubokrasa.bikeroutes.databinding.FragmentSegmentsBinding
+import pl.jakubokrasa.bikeroutes.features.common.segments.domain.model.SegmentLocationData
+import pl.jakubokrasa.bikeroutes.features.common.segments.presentation.model.SegmentDisplayable
 import pl.jakubokrasa.bikeroutes.features.map.presentation.model.PointDisplayable
 import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteDisplayable
 import pl.jakubokrasa.bikeroutes.features.myroutes.presentation.DialogSegment
@@ -52,7 +54,6 @@ class SegmentsFragment: BaseFragment<MyRoutesViewModel>(R.layout.fragment_segmen
 
         showRoute(view)
         binding.btRecenter.setOnClickListener(btRecenterOnClick)
-
 
         initMarkerBegin()
         initMarkerEnd()
@@ -119,6 +120,11 @@ class SegmentsFragment: BaseFragment<MyRoutesViewModel>(R.layout.fragment_segmen
         binding.toolbar.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.action_save_segment -> {
+                    val segmentDisplayable = SegmentDisplayable(
+                        "",
+                        route.routeId,
+                        SegmentLocationData()
+                    )
                     DialogSegment(requireContext(), viewModel).show()
                     clearToolbarMenu()
 //                    binding.toolbar.inflateMenu(R.menu.menu_segments_add)

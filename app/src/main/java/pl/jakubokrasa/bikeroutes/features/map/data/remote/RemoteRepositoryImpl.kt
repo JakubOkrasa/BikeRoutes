@@ -8,6 +8,8 @@ import pl.jakubokrasa.bikeroutes.features.common.data.GeocodingAPI
 import pl.jakubokrasa.bikeroutes.features.common.domain.BoundingBoxData
 import pl.jakubokrasa.bikeroutes.features.common.domain.FilterData
 import pl.jakubokrasa.bikeroutes.features.common.domain.model.GeocodingItem
+import pl.jakubokrasa.bikeroutes.features.common.segments.data.model.SegmentResponse
+import pl.jakubokrasa.bikeroutes.features.common.segments.domain.model.Segment
 import pl.jakubokrasa.bikeroutes.features.map.data.remote.model.PointResponse
 import pl.jakubokrasa.bikeroutes.features.map.data.remote.model.RouteResponse
 import pl.jakubokrasa.bikeroutes.features.map.domain.RemoteRepository
@@ -113,6 +115,13 @@ class RemoteRepositoryImpl(
         val doc = firestore.collection("points").document(routeId).get().await()
         return doc.toObject(PointDocument::class.java)?.pointsArray?.map { it.toPoint() } ?: throw RuntimeException(
             "no points in the route")
+    }
+
+    override suspend fun addSegment(segment: Segment) {
+        firestore.collection("segments")
+            .document(segment.routeId)
+            .set(SegmentResponse(segment))
+            .await()
     }
 
 

@@ -4,12 +4,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.hadilq.liveevent.LiveEvent
+import org.koin.ext.scope
 import org.osmdroid.util.GeoPoint
 import pl.jakubokrasa.bikeroutes.core.base.platform.BaseViewModel
 import pl.jakubokrasa.bikeroutes.features.common.domain.FilterData
 import pl.jakubokrasa.bikeroutes.features.common.domain.GetGeocodingItemUseCase
 import pl.jakubokrasa.bikeroutes.features.common.domain.GetPointsFromRemoteUseCase
 import pl.jakubokrasa.bikeroutes.features.common.presentation.model.GeocodingItemDisplayable
+import pl.jakubokrasa.bikeroutes.features.common.segments.presentation.model.SegmentDisplayable
 import pl.jakubokrasa.bikeroutes.features.map.presentation.model.PointDisplayable
 import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteDisplayable
 import pl.jakubokrasa.bikeroutes.features.myroutes.domain.*
@@ -23,6 +25,7 @@ class MyRoutesViewModel(
     private val updateRouteUseCase: UpdateRouteUseCase,
     private val getGeocodingItemUseCase: GetGeocodingItemUseCase,
     private val getSegmentPointUseCase: GetSegmentPointUseCase,
+    private val addSegmentUseCase: AddSegmentUseCase,
     private val myRoutesNavigator: MyRoutesNavigator,
 ): BaseViewModel() {
 
@@ -151,6 +154,19 @@ class MyRoutesViewModel(
                 handleSuccess("getSegmentPoint")
             }
             result.onFailure { handleFailure("getSegmentPoint", errLog = it.message) }
+        }
+    }
+
+    fun addSegment(segmentDisplayable: SegmentDisplayable) {
+        setPendingState()
+        addSegmentUseCase(
+            params = segmentDisplayable.toSegment(),
+            scope = viewModelScope
+        ) {
+            result ->
+            setIdleState()
+            result.onSuccess { handleSuccess("addSegment") }
+            result.onFailure { handleFailure("addSegment", errLog = it.message) }
         }
     }
 }
