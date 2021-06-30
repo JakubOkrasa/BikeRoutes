@@ -1,5 +1,6 @@
 package pl.jakubokrasa.bikeroutes.features.map.data.remote
 
+import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
@@ -118,12 +119,13 @@ class RemoteRepositoryImpl(
     }
 
     override suspend fun addSegment(segment: Segment) {
-        firestore.collection("segments")
-            .document(segment.routeId)
-            .set(SegmentResponse(segment))
-            .await()
-    }
+        val segmentDoc = firestore.collection("segments").document()
 
+        firestore.runBatch { batch ->
+            batch.set(segmentDoc, SegmentResponse(segment))
+            batch.update(segmentDoc, "segmentId", segmentDoc.id)
+        }.await()
+    }
 
     //============ SHARED ROUTES ===================
     override suspend fun getSharedRoutes(uid: String): List<Route> {

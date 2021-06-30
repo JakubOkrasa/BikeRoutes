@@ -7,16 +7,18 @@ import pl.jakubokrasa.bikeroutes.features.common.segments.domain.model.SegmentLo
 data class SegmentResponse(
     val segmentId: String,
     val routeId: String,
-    val segmentLocationData: SegmentLocationData,
+    val beginIndex: Int,
+    val endIndex: Int,
     val segmentType: SegmentType,
     val info: String
 ) {
-    constructor(): this("", "", SegmentLocationData(0.0, 0.0, 0.0, 0.0), SegmentType.SAND, "")
+    constructor(): this("", "", 0, 0, SegmentType.SAND, "")
 
     constructor(segment: Segment): this(
         segmentId = segment.segmentId,
         routeId = segment.routeId,
-        segmentLocationData = segment.segmentLocationData,
+        beginIndex = segment.beginIndex,
+        endIndex = segment.endIndex,
         segmentType = segment.segmentType,
         info = segment.info
     )
@@ -24,7 +26,8 @@ data class SegmentResponse(
     fun toSegment() = Segment(
         segmentId = this.segmentId,
         routeId = this.routeId,
-        segmentLocationData = this.segmentLocationData,
+        beginIndex = this.beginIndex,
+        endIndex = this.endIndex,
         segmentType = this.segmentType,
         info = this.info
     )

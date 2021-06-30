@@ -9,15 +9,17 @@ import android.view.View
 import android.view.Window
 import android.widget.ArrayAdapter
 import androidx.annotation.NonNull
+import kotlinx.android.synthetic.main.dialog_segment.*
 import pl.jakubokrasa.bikeroutes.databinding.DialogMyroutesFilterBinding
 import pl.jakubokrasa.bikeroutes.databinding.DialogSegmentBinding
 import pl.jakubokrasa.bikeroutes.features.common.segments.domain.model.SegmentType
+import pl.jakubokrasa.bikeroutes.features.common.segments.presentation.SegmentBasicModel
 import pl.jakubokrasa.bikeroutes.features.common.segments.presentation.model.SegmentDisplayable
 
 class DialogSegment(
     ctx: Context,
     private val viewModel: MyRoutesViewModel,
-    private val segmentDisplayable: SegmentDisplayable
+    private val segmentBasicModel: SegmentBasicModel
 ): Dialog(ctx) {
     private lateinit var binding: DialogSegmentBinding
 
@@ -37,12 +39,20 @@ class DialogSegment(
     private fun initSpinner() {
         val spinnerAdapter = ArrayAdapter(context,
             R.layout.simple_dropdown_item_1line,
-            SegmentType.values().map { it.name })
+            SegmentType.values())
         binding.spinner.adapter = spinnerAdapter
     }
 
     private val btSaveOnClick = View.OnClickListener {
-        viewModel.addSegment()
+        val segmentDisplayable = SegmentDisplayable(
+            segmentBasicModel.segmentId,
+            segmentBasicModel.routeId,
+            segmentBasicModel.beginIndex,
+            segmentBasicModel.endIndex,
+            binding.spinner.selectedItem as SegmentType,
+            binding.etAdditionalInfo.text.toString()
+        )
+        viewModel.addSegment(segmentDisplayable)
         dismiss()
     }
 

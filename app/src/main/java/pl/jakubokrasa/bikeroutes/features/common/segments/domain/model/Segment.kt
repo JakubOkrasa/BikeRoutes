@@ -3,7 +3,8 @@ package pl.jakubokrasa.bikeroutes.features.common.segments.domain.model
 data class Segment(
     val segmentId: String,
     val routeId: String,
-    val segmentLocationData: SegmentLocationData,
+    val beginIndex: Int,
+    val endIndex: Int,
     val segmentType: SegmentType,
     val info: String
 )
