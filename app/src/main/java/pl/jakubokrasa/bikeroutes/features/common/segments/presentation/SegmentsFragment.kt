@@ -274,19 +274,26 @@ class SegmentsFragment: BaseFragment<MyRoutesViewModel>(R.layout.fragment_segmen
 
 
 
-    private val mapTapEventsReceiver = object: MapEventsReceiver {
-        override fun singleTapConfirmedHelper(geoPoint: GeoPoint?): Boolean {
-            geoPoint?.let {
-                if(stage == CreateSegmentStage.CHOOSE_BEGIN || stage == CreateSegmentStage.CHOOSE_END)
-                    viewModel.getSegmentPoint(geoPoint, points, binding.mapView.zoomLevelDouble)
+//    private val mapTapEventsReceiver = object: MapEventsReceiver {
+//        override fun singleTapConfirmedHelper(geoPoint: GeoPoint?): Boolean {
+//            geoPoint?.let {
+//                if(stage == CreateSegmentStage.CHOOSE_BEGIN || stage == CreateSegmentStage.CHOOSE_END)
+//                    viewModel.getSegmentPoint(geoPoint, points, binding.mapView.zoomLevelDouble)
+//
+//            }
+//            return false
+//        }
+//        override fun longPressHelper(p: GeoPoint?) = false
+//    }
+//    private val mapTapEvents = MapEventsOverlay(mapTapEventsReceiver)
 
-            }
-            return false
+    private val polylineOnClickListener = object: Polyline.OnClickListener {
+        override fun onClick(polyline: Polyline, mapView: MapView, eventPos: GeoPoint): Boolean {
+            if(stage == CreateSegmentStage.CHOOSE_BEGIN || stage == CreateSegmentStage.CHOOSE_END)
+                    viewModel.getSegmentPoint(eventPos, points, binding.mapView.zoomLevelDouble)
         }
-        override fun longPressHelper(p: GeoPoint?) = false
-    }
 
-    private val mapTapEvents = MapEventsOverlay(mapTapEventsReceiver)
+    }
 
     private enum class CreateSegmentStage {
         READY_TO_ADD,
