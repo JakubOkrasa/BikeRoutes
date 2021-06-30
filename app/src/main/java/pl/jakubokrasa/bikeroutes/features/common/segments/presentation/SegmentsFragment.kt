@@ -4,11 +4,8 @@ import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
-import androidx.appcompat.widget.Toolbar
 import androidx.core.content.res.ResourcesCompat
-import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import org.koin.java.KoinJavaComponent.inject
 import org.osmdroid.events.MapEventsReceiver
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
@@ -21,9 +18,6 @@ import pl.jakubokrasa.bikeroutes.core.extensions.makeGone
 import pl.jakubokrasa.bikeroutes.core.extensions.makeVisible
 import pl.jakubokrasa.bikeroutes.core.util.*
 import pl.jakubokrasa.bikeroutes.databinding.FragmentSegmentsBinding
-import pl.jakubokrasa.bikeroutes.features.common.segments.domain.model.SegmentLocationData
-import pl.jakubokrasa.bikeroutes.features.common.segments.domain.model.SegmentType
-import pl.jakubokrasa.bikeroutes.features.common.segments.presentation.model.SegmentDisplayable
 import pl.jakubokrasa.bikeroutes.features.map.presentation.model.PointDisplayable
 import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteDisplayable
 import pl.jakubokrasa.bikeroutes.features.myroutes.presentation.DialogSegment
@@ -55,6 +49,8 @@ class SegmentsFragment: BaseFragment<MyRoutesViewModel>(R.layout.fragment_segmen
 
         showRoute(view)
         binding.btRecenter.setOnClickListener(btRecenterOnClick)
+        binding.btAddSegment.setOnClickListener(btAddOnClick)
+        setToolbarText(getString(R.string.fragment_segments_toolbarbegin))
 
         initMarkerBegin()
         initMarkerEnd()
@@ -68,6 +64,7 @@ class SegmentsFragment: BaseFragment<MyRoutesViewModel>(R.layout.fragment_segmen
         markerBegin.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
         markerBegin.icon =
             ResourcesCompat.getDrawable(resources, R.drawable.ic_location_green, null)
+        markerBegin.setInfoWindow(null)
     }
 
     private fun initMarkerEnd() {
@@ -75,6 +72,7 @@ class SegmentsFragment: BaseFragment<MyRoutesViewModel>(R.layout.fragment_segmen
         markerEnd.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
         markerEnd.icon =
             ResourcesCompat.getDrawable(resources, R.drawable.ic_location_green, null)
+        markerEnd.setInfoWindow(null)
     }
 
     override fun onResume() {
@@ -90,6 +88,7 @@ class SegmentsFragment: BaseFragment<MyRoutesViewModel>(R.layout.fragment_segmen
     override fun initObservers() {
         super.initObservers()
         observeSegmentPointIndex()
+        observeIsSegmentAdded()
     }
 
     private fun observeSegmentPointIndex() {
@@ -97,14 +96,23 @@ class SegmentsFragment: BaseFragment<MyRoutesViewModel>(R.layout.fragment_segmen
             if(stage == CreateSegmentStage.CHOOSE_BEGIN) {
                 segmentBeginIndex = it
                 showSegmentPoint(it, markerBegin)
+                setToolbarText(getString(R.string.fragment_segments_toolbarend))
                 stage = CreateSegmentStage.CHOOSE_END
             } else if(stage == CreateSegmentStage.CHOOSE_END) {
                 segmentEndIndex = it
                 showSegmentPoint(it, markerEnd)
                 showSegmentPolyline()
-                stage = CreateSegmentStage.NONE
-                updateToolbar()
+                binding.btAddSegment.makeVisible()
+                setToolbarText(getString(R.string.fragment_segments_toolbarready))
+                stage = CreateSegmentStage.READY_TO_ADD
             }
+            updateToolbar()
+        })
+    }
+
+    private fun observeIsSegmentAdded() {
+        viewModel.isSegmentAdded.observe(viewLifecycleOwner, {
+            prepareToAddTheNextSegment() //onSuccess and onFailure
         })
     }
 
@@ -117,25 +125,37 @@ class SegmentsFragment: BaseFragment<MyRoutesViewModel>(R.layout.fragment_segmen
     }
 
     private fun updateToolbar() {
-        binding.toolbar.inflateMenu(R.menu.menu_segments_home)
-        binding.toolbar.setOnMenuItemClickListener { menuItem ->
-            when (menuItem.itemId) {
-                R.id.action_save_segment -> {
-                    val segmentBasicModel = SegmentBasicModel(
-                        "", //todo not sure
-                        route.routeId,
-                        segmentBeginIndex,
-                        segmentEndIndex,
-                    )
-                    DialogSegment(requireContext(), viewModel, segmentBasicModel).show()
-                    clearToolbarMenu()
-//                    binding.toolbar.inflateMenu(R.menu.menu_segments_add)
-//                    binding.toolbar.setOnMenuItemClickListener(toolbarIconsAddModeOnClick)
-                    true
+        if(stage == CreateSegmentStage.CHOOSE_END) {
+            binding.toolbar.inflateMenu(R.menu.menu_segments_undo)
+            binding.toolbar.setOnMenuItemClickListener { menuItem ->
+                when (menuItem.itemId) {
+                    R.id.action_undo -> {
+                        if(stage == CreateSegmentStage.CHOOSE_END) {
+                            segmentBeginIndex = -1
+                            binding.mapView.overlays.remove(markerBegin)
+                            binding.mapView.invalidate()
+                            binding.btAddSegment.makeGone()
+                            setToolbarText(getString(R.string.fragment_segments_toolbarbegin))
+                            clearToolbarMenu()
+                        } else if(stage == CreateSegmentStage.READY_TO_ADD) {
+                            segmentEndIndex = -1
+                            binding.mapView.overlays.remove(markerEnd)
+                            binding.mapView.overlays.remove(segmentPolyline)
+                            binding.mapView.invalidate()
+                            binding.btAddSegment.makeGone()
+                            stage = CreateSegmentStage.CHOOSE_END
+                            setToolbarText(getString(R.string.fragment_segments_toolbarend))
+                        }
+
+                        true
+                    }
+                    else -> false
                 }
-                else -> false
             }
+        } else {
+
         }
+
     }
 
     private fun showSegmentPolyline() {
@@ -155,19 +175,6 @@ class SegmentsFragment: BaseFragment<MyRoutesViewModel>(R.layout.fragment_segmen
             segmentPoints = points.subList(segmentEndIndex, segmentBeginIndex + 1).map { it.geoPoint }
         }
         segmentPolyline.setPoints(segmentPoints)
-    }
-
-    private val toolbarIconsAddModeOnClick = Toolbar.OnMenuItemClickListener { markBeginMenuItem ->
-        when (markBeginMenuItem.itemId) {
-            R.id.action_begin_marked -> {
-
-
-                clearToolbarMenu()
-                updateToolbar()
-                true
-            }
-            else -> false
-        }
     }
 
     private fun showRoute(view: View) {
@@ -209,6 +216,16 @@ class SegmentsFragment: BaseFragment<MyRoutesViewModel>(R.layout.fragment_segmen
         binding.mapView.recenterRouteWithAnimation()
     }
 
+    private val btAddOnClick = View.OnClickListener {
+        clearToolbarMenu()
+        val segmentBasicModel = SegmentBasicModel(
+            route.routeId,
+            segmentBeginIndex,
+            segmentEndIndex,
+        )
+        DialogSegment(requireContext(), viewModel, segmentBasicModel).show()
+    }
+
     private fun setRoute() {
         arguments
             ?.getParcelable<RouteDisplayable>(ROUTE_BUNDLE_KEY)
@@ -223,6 +240,22 @@ class SegmentsFragment: BaseFragment<MyRoutesViewModel>(R.layout.fragment_segmen
                 points = serializable as List<PointDisplayable>
             }
         }
+    }
+
+    fun prepareToAddTheNextSegment() {
+        setToolbarText("Add another segment")
+        binding.btAddSegment.makeGone()
+        stage = CreateSegmentStage.CHOOSE_BEGIN
+        segmentBeginIndex = -1
+        segmentEndIndex = -1
+        markerBegin.remove(binding.mapView)
+        markerEnd.remove(binding.mapView)
+        binding.mapView.overlays.remove(segmentPolyline)
+        binding.mapView.invalidate()
+    }
+
+    private fun setToolbarText(text: String) {
+        binding.tvToolbarTitle.text = text
     }
 
     private fun clearToolbarMenu() {
@@ -256,7 +289,7 @@ class SegmentsFragment: BaseFragment<MyRoutesViewModel>(R.layout.fragment_segmen
     private val mapTapEvents = MapEventsOverlay(mapTapEventsReceiver)
 
     private enum class CreateSegmentStage {
-        NONE,
+        READY_TO_ADD,
         CHOOSE_BEGIN,
         CHOOSE_END
     }
@@ -264,7 +297,6 @@ class SegmentsFragment: BaseFragment<MyRoutesViewModel>(R.layout.fragment_segmen
 }
 
 data class SegmentBasicModel(
-    val segmentId: String,
     val routeId: String,
     val beginIndex: Int,
     val endIndex: Int

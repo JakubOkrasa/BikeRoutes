@@ -45,7 +45,7 @@ class DialogSegment(
 
     private val btSaveOnClick = View.OnClickListener {
         val segmentDisplayable = SegmentDisplayable(
-            segmentBasicModel.segmentId,
+            "",
             segmentBasicModel.routeId,
             segmentBasicModel.beginIndex,
             segmentBasicModel.endIndex,

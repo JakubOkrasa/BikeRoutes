@@ -34,6 +34,7 @@ class MyRoutesViewModel(
     private val _isFilter by lazy { MutableLiveData<Boolean>() }
     private val _geocodingItem by lazy { LiveEvent<GeocodingItemDisplayable>() }
     private val _segmentPointIndex by lazy { LiveEvent<Int>() }
+    private val _isSegmentAdded by lazy { LiveEvent<Boolean>() }
     override val LOG_TAG: String = MyRoutesViewModel::class.simpleName?: "unknown"
 
     val pointsFromRemote: LiveData<List<PointDisplayable>> by lazy { _pointsFromRemote }
@@ -41,6 +42,7 @@ class MyRoutesViewModel(
     val isFilter: LiveData<Boolean> by lazy { _isFilter }
     val geocodingItem: LiveData<GeocodingItemDisplayable> by lazy { _geocodingItem }
     val segmentPointIndex: LiveData<Int> by lazy { _segmentPointIndex }
+    val isSegmentAdded: LiveData<Boolean> by lazy { _isSegmentAdded }
 
 
     fun removeRouteAndNavBack(route: RouteDisplayable) {
@@ -165,8 +167,14 @@ class MyRoutesViewModel(
         ) {
             result ->
             setIdleState()
-            result.onSuccess { handleSuccess("addSegment") }
-            result.onFailure { handleFailure("addSegment", errLog = it.message) }
+            result.onSuccess {
+                _isSegmentAdded.value = true
+                handleSuccess("addSegment", "segment added")
+            }
+            result.onFailure {
+                _isSegmentAdded.value = false
+                handleFailure("addSegment", errLog = it.message)
+            }
         }
     }
 }

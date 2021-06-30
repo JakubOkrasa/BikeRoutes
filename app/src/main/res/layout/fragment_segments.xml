@@ -31,9 +31,22 @@
         app:layout_constraintTop_toBottomOf="@id/progress_layout">
 
         <TextView
-            style="@style/BR_ToolbarTv"
-            android:text="Mark segments" />
+            android:id="@+id/tv_toolbar_title"
+            style="@style/BR_ToolbarTv" />
     </androidx.appcompat.widget.Toolbar>
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@id/map_view"
+        app:layout_constraintEnd_toStartOf="@id/bt_recenter"
+        app:layout_constraintTop_toTopOf="@id/map_view"
+        android:layout_marginEnd="15dp"
+        style="@style/tv_small"
+        android:padding="10dp"
+        android:backgroundTint="@color/blurred_white"
+        android:text="To add a new segment tap the beginning and the end point."/>
+
 
     <org.osmdroid.views.MapView
         android:id="@+id/map_view"
@@ -63,6 +76,16 @@
         app:layout_constraintEnd_toEndOf="@id/map_view"
         android:layout_margin="20dp"
         android:textColor="#a38"/>
+
+    <Button
+        android:id="@+id/bt_add_segment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@id/map_view"
+        android:layout_marginBottom="10dp"
+        android:layout_marginHorizontal="10dp"
+        android:text="add segment"
+        android:visibility="gone"/>
 
     <com.google.android.material.slider.Slider
         android:id="@+id/slider_test"
