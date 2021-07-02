@@ -2,6 +2,7 @@ package pl.jakubokrasa.bikeroutes.features.myroutes.presentation
 
 import android.app.Dialog
 import android.database.Cursor
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -23,6 +24,7 @@ import pl.jakubokrasa.bikeroutes.databinding.FragmentRouteDetailsBinding
 import pl.jakubokrasa.bikeroutes.features.common.presentation.CommonRoutesNavigator
 import pl.jakubokrasa.bikeroutes.features.map.presentation.model.PointDisplayable
 import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteDisplayable
+import pl.jakubokrasa.bikeroutes.core.util.FileUtils
 
 
 class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_route_details) {
@@ -35,27 +37,12 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
     private lateinit var polyline: Polyline
     private lateinit var dialogConfirmRemove: Dialog
     private val navigator: CommonRoutesNavigator by inject()
-    private val activityResultGalleryLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) {
-            uri: Uri? ->
-        if (uri != null) {
-//            val projection = arrayOf(MediaStore.Images.Media.DATA)
-            val projection = arrayOf(MediaStore.Images.Media._ID)
-            val cursor: Cursor? =
-                requireActivity().contentResolver.query(uri, projection, null, null, null)
-            cursor?.let {
-                it.moveToFirst()
-
-                val columnIndex: Int = it.getColumnIndex(projection[0])
-                val picturePath: String = it.getString(columnIndex)
-
-                viewModel.addPhoto(route.routeId, picturePath, route.sharingType)
-
-                it.close()
-            }
+    private val activityResultGalleryLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+        uri?.let {
+            val picturePath = FileUtils(requireContext()).getPath(uri)
+            viewModel.addPhoto(route.routeId, picturePath, route.sharingType)
         }
     }
-
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

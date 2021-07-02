@@ -133,7 +133,7 @@ class RemoteRepositoryImpl(
             firestore
                 .collection("routes")
 //                .whereNotEqualTo("userId", uid) //todo omitted for tests
-                .whereEqualTo("SharingType", SharingType.PUBLIC.name)
+                .whereEqualTo("sharingType", SharingType.PUBLIC.name)
                 .get().await().documents
 
         for (doc in documents)

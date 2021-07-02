@@ -6,7 +6,7 @@ import pl.jakubokrasa.bikeroutes.features.map.domain.RemoteRepository
 
 class AddPhotoUseCase(private val remoteRepository: RemoteRepository): UseCase<Unit, AddPhotoData>() {
     override suspend fun action(params: AddPhotoData) {
-        remoteRepository.addPhoto(params.routeId, params.localPath)
+        remoteRepository.addPhoto(params.routeId, params.localPath, params.sharingType)
     }
 }
 
