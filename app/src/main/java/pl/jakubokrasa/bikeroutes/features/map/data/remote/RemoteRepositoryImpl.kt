@@ -7,6 +7,7 @@ import kotlinx.coroutines.tasks.await
 import pl.jakubokrasa.bikeroutes.core.util.enums.SharingType
 import pl.jakubokrasa.bikeroutes.features.common.data.model.PhotoInfoResponse
 import pl.jakubokrasa.bikeroutes.features.common.domain.FilterData
+import pl.jakubokrasa.bikeroutes.features.common.domain.model.PhotoInfo
 import pl.jakubokrasa.bikeroutes.features.map.data.remote.model.PointResponse
 import pl.jakubokrasa.bikeroutes.features.map.data.remote.model.RouteResponse
 import pl.jakubokrasa.bikeroutes.features.map.domain.RemoteRepository
@@ -15,6 +16,7 @@ import pl.jakubokrasa.bikeroutes.features.map.domain.model.Route
 import pl.jakubokrasa.bikeroutes.features.myroutes.data.model.PointDocument
 import pl.jakubokrasa.bikeroutes.features.myroutes.presentation.MyRoutesFragment.Companion.DISTANCE_SLIDER_VALUE_TO
 import java.io.File
+import java.lang.Exception
 
 class RemoteRepositoryImpl(
     private val firestore: FirebaseFirestore,
@@ -113,16 +115,21 @@ class RemoteRepositoryImpl(
     }
 
     override suspend fun addPhoto(routeId: String, localPath: String, sharingType: SharingType) {
-        val file = Uri.fromFile(File(localPath)) //a nie DCIM
-//        content://media/external/images/media/3248
-        val photoRef = storageRef.child("routes/$routeId/photos/${file.lastPathSegment}")
-        photoRef.putFile(file).await()
 
+        //save image to Firebase Cloud Storage
+        val uri = Uri.fromFile(File(localPath)) //encode local path (e.g. no polish characters)
+        val photoRef = storageRef.child("routes/$routeId/photos/${uri.lastPathSegment}")
+        photoRef.putFile(uri).await()
+
+        //save reference to Firestore
         val downloadUri = photoRef.downloadUrl.await()
-        val reference: String = downloadUri.encodedPath ?: ""
-        val photo = PhotoInfoResponse(routeId, reference, sharingType)
-        firestore.document("photos/$routeId")
-            .update("photos", FieldValue.arrayUnion(photo)).await()
+        val reference: String = downloadUri.encodedPath ?: throw Exception("Error while encoding the file path")
+        val photo = PhotoInfoResponse("", routeId, reference, sharingType)
+        val photoDoc = firestore.collection("photos").document()
+        firestore.runBatch { batch ->
+            batch.set(photoDoc, photo)
+            batch.update(photoDoc, "photoId", photoDoc.id)
+        }.await()
     }
 
 
@@ -169,6 +176,17 @@ class RemoteRepositoryImpl(
             doc.toObject(RouteResponse::class.java)
                 .let { routeResponseList.add(it) }
         return routeResponseList.map { it.toRoute()}
+    }
+
+    override suspend fun getPhotos(routeId: String): List<PhotoInfo> {
+        val photoResponseList = ArrayList<PhotoInfoResponse>()
+        val documents = firestore.collection("photos")
+            .whereEqualTo("routeId", routeId)
+            .get().await().documents
+
+        for (doc in documents)
+            doc.toObject(PhotoInfoResponse::class.java)?.let { photoResponseList.add(it) }
+        return photoResponseList.map { it.toPhotoInfo() }
     }
 
 

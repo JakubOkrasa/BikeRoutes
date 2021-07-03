@@ -5,10 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import pl.jakubokrasa.bikeroutes.core.base.platform.BaseViewModel
 import pl.jakubokrasa.bikeroutes.core.util.enums.SharingType
-import pl.jakubokrasa.bikeroutes.features.common.domain.AddPhotoData
-import pl.jakubokrasa.bikeroutes.features.common.domain.AddPhotoUseCase
-import pl.jakubokrasa.bikeroutes.features.common.domain.FilterData
-import pl.jakubokrasa.bikeroutes.features.common.domain.GetPointsFromRemoteUseCase
+import pl.jakubokrasa.bikeroutes.features.common.domain.*
+import pl.jakubokrasa.bikeroutes.features.common.presentation.model.PhotoInfoDisplayable
 import pl.jakubokrasa.bikeroutes.features.map.presentation.model.PointDisplayable
 import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteDisplayable
 import pl.jakubokrasa.bikeroutes.features.myroutes.domain.*
@@ -22,15 +20,18 @@ class MyRoutesViewModel(
     private val updateRouteUseCase: UpdateRouteUseCase,
     private val myRoutesNavigator: MyRoutesNavigator,
     private val addPhotoUseCase: AddPhotoUseCase,
+    private val getPhotosUseCase: GetPhotosUseCase,
 ): BaseViewModel() {
 
     private val _myRoutes by lazy { MutableLiveData<List<RouteDisplayable>>() }
     private val _pointsFromRemote by lazy { MutableLiveData<List<PointDisplayable>>() } //liveEvent could be better here todo (but points can be set too early)
     private val _isFilter by lazy { MutableLiveData<Boolean>() }
+    private val _photos by lazy { MutableLiveData<List<PhotoInfoDisplayable>>() }
     override val LOG_TAG: String = MyRoutesViewModel::class.simpleName?: "unknown"
 
     val pointsFromRemote: LiveData<List<PointDisplayable>> by lazy { _pointsFromRemote }
     val myRoutes: LiveData<List<RouteDisplayable>> by lazy { _myRoutes }
+    val photos: LiveData<List<PhotoInfoDisplayable>> by lazy { _photos }
     val isFilter: LiveData<Boolean> by lazy { _isFilter }
 
 
@@ -115,6 +116,7 @@ class MyRoutesViewModel(
             result.onSuccess {
                 handleSuccess("getPointsFromRemote")
                 myRoutesNavigator.openRouteDetailsFragment(route, it.map { point -> PointDisplayable(point) })
+                getPhotos(route.routeId)
             }
             result.onFailure { handleFailure("getPointsFromRemote", errLog = it.message) }
         }
@@ -130,6 +132,18 @@ class MyRoutesViewModel(
             setIdleState()
             result.onSuccess { handleSuccess("addPhoto") }
             result.onFailure { handleFailure("addPhoto", errLog = it.message) }
+        }
+    }
+
+    fun getPhotos(routeId: String) {
+        setPendingState()
+        getPhotosUseCase(params = routeId, scope = viewModelScope) { result ->
+            setIdleState()
+            result.onSuccess { list ->
+                _photos.value = list.map { PhotoInfoDisplayable(it) }
+                handleSuccess("getPhotos")
+            }
+            result.onFailure { handleFailure("getPhotos", errLog = it.message) }
         }
     }
 }

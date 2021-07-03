@@ -1,14 +1,12 @@
 package pl.jakubokrasa.bikeroutes.features.myroutes.presentation
 
 import android.app.Dialog
-import android.database.Cursor
-import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.Toolbar
+import androidx.recyclerview.widget.LinearLayoutManager
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.osmdroid.views.MapView
@@ -25,6 +23,8 @@ import pl.jakubokrasa.bikeroutes.features.common.presentation.CommonRoutesNaviga
 import pl.jakubokrasa.bikeroutes.features.map.presentation.model.PointDisplayable
 import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteDisplayable
 import pl.jakubokrasa.bikeroutes.core.util.FileUtils
+import pl.jakubokrasa.bikeroutes.features.common.presentation.PhotosRecyclerAdapter
+import pl.jakubokrasa.bikeroutes.features.common.presentation.model.PhotoInfoDisplayable
 
 
 class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_route_details) {
@@ -37,10 +37,13 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
     private lateinit var polyline: Polyline
     private lateinit var dialogConfirmRemove: Dialog
     private val navigator: CommonRoutesNavigator by inject()
+    private val photosRecyclerAdapter: PhotosRecyclerAdapter by inject()
+
     private val activityResultGalleryLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
         uri?.let {
             val picturePath = FileUtils(requireContext()).getPath(uri)
             viewModel.addPhoto(route.routeId, picturePath, route.sharingType)
+//            initRecycler() //w MyRoutesFragment RV jest inicjowany także w onResume, nie pamiętam czemu
         }
     }
 
@@ -64,6 +67,62 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
     override fun onPause() {
         super.onPause()
         binding.mapView.onPause()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        initRecycler()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        destroyRecycler() // needed for every Recycler View Adapter while using Navigation Component
+    }
+
+    private fun destroyRecycler() {
+        binding.rvPhotos.layoutManager = null
+        binding.rvPhotos.adapter = null
+    }
+
+    private fun initRecycler() {
+        with(binding.rvPhotos) {
+            setHasFixedSize(true)
+            adapter = photosRecyclerAdapter
+            val photosLayoutManager = LinearLayoutManager(requireContext())
+            photosLayoutManager.orientation = LinearLayoutManager.HORIZONTAL
+            layoutManager = photosLayoutManager
+//            photosRecyclerAdapter.onItemClick = {
+//                    photo ->
+//            }
+
+        }
+    }
+
+    override fun initObservers() {
+        super.initObservers()
+        observePhotos()
+    }
+
+    private fun observePhotos() {
+        viewModel.photos.observe(viewLifecycleOwner, {
+            if(it.isNotEmpty()) {
+                showPhotos(it)
+            } else {
+                hidePhotos()
+            }
+        })
+    }
+
+    private fun hidePhotos() {
+        binding.tvPhotos.makeGone()
+        binding.rvPhotos.makeGone()
+    }
+
+    private fun showPhotos(list: List<PhotoInfoDisplayable>) {
+        binding.tvPhotos.makeVisible()
+        binding.rvPhotos.makeVisible()
+//        binding.tvNoData.makeGone()
+        photosRecyclerAdapter.setItems(list)
     }
 
     private fun showRoute(view: View) {
