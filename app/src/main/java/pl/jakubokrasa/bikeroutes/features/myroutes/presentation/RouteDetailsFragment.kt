@@ -91,9 +91,9 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
             val photosLayoutManager = LinearLayoutManager(requireContext())
             photosLayoutManager.orientation = LinearLayoutManager.HORIZONTAL
             layoutManager = photosLayoutManager
-//            photosRecyclerAdapter.onItemClick = {
-//                    photo ->
-//            }
+            photosRecyclerAdapter.onItemClick = {
+                    photos, position -> navigator.openGalleryFragment(photos, position)
+            }
 
         }
     }
