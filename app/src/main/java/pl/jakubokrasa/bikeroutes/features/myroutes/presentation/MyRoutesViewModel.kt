@@ -130,7 +130,7 @@ class MyRoutesViewModel(
         ) {
                 result ->
             setIdleState()
-            result.onSuccess { handleSuccess("addPhoto") }
+            result.onSuccess { handleSuccess("addPhoto", "photo added") }
             result.onFailure { handleFailure("addPhoto", errLog = it.message) }
         }
     }
