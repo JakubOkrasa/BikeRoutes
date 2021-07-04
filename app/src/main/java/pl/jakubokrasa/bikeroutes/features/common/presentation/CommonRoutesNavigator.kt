@@ -20,7 +20,7 @@ class CommonRoutesNavigator(private val fragmentNavigator: FragmentNavigator) {
 
     fun openGalleryFragment(photos: List<PhotoInfoDisplayable>, position: Int) {
         fragmentNavigator.navigateTo(
-            R.id.action_followRouteFragment_to_photoGalleryFragment,
+            R.id.action_routeDetailsFragment_to_photoGalleryFragment,
             null,
             PhotoGalleryFragment.PHOTOS_BUNDLE_KEY to photos,
             PhotoGalleryFragment.PHOTO_POSITION_BUNDLE_KEY to position

@@ -94,6 +94,10 @@
             android:id="@+id/action_RouteDetailsFragment_to_followRouteFragment"
             app:destination="@id/followRouteFragment"
             app:popUpTo="@id/routeDetailsFragment"/>
+        <action
+            android:id="@+id/action_routeDetailsFragment_to_photoGalleryFragment"
+            app:destination="@id/photoGalleryFragment"
+            app:popUpTo="@layout/fragment_route_details"/>
     </fragment>
     <fragment
         android:id="@+id/forgotPasswordFragment"

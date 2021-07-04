@@ -2,6 +2,7 @@ package pl.jakubokrasa.bikeroutes.features.common.presentation
 
 import android.os.Bundle
 import android.view.View
+import androidx.viewpager2.widget.ViewPager2
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import pl.jakubokrasa.bikeroutes.R
 import pl.jakubokrasa.bikeroutes.core.base.platform.BaseFragment
@@ -23,7 +24,6 @@ class PhotoGalleryFragment(): BaseFragment<MyRoutesViewModel>(R.layout.fragment_
 
         val galleryAdapter = PhotoGalleryAdapter(requireContext(), getPhotos())
         binding.viewPager.adapter = galleryAdapter
-
     }
 
     private fun getPhotos(): List<PhotoInfoDisplayable> {

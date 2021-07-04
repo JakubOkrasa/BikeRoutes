@@ -7,9 +7,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import pl.jakubokrasa.bikeroutes.R
+import pl.jakubokrasa.bikeroutes.core.extensions.isVisible
+import pl.jakubokrasa.bikeroutes.core.extensions.makeGone
+import pl.jakubokrasa.bikeroutes.core.extensions.makeVisible
 import pl.jakubokrasa.bikeroutes.databinding.PhotoGalleryItemBinding
 import pl.jakubokrasa.bikeroutes.databinding.RvPhotoItemBinding
 import pl.jakubokrasa.bikeroutes.features.common.presentation.model.PhotoInfoDisplayable
+import pl.jakubokrasa.bikeroutes.features.myroutes.presentation.DialogConfirm
 
 class PhotoGalleryAdapter(
     private var context: Context,
@@ -34,46 +38,39 @@ class PhotoGalleryAdapter(
     override fun getItemCount(): Int {
         return photos.size
     }
-//    override fun isViewFromObject(view: View, obj: Any): Boolean {
-//        return view == obj
-//    }
-//
-//    override fun getCount(): Int {
-//        return photos.size
-//    }
-//
-//    override fun instantiateItem(container: ViewGroup, position: Int): Any {
-//        val inflater = LayoutInflater.from(context)
-//        val view = inflater.inflate(R.layout.photo_gallery_item,null)
-//        val imageView = view.findViewById(R.id.photo_gallery_item_image) as ImageView
-//        Glide.with(context).load(photos[position])
-//            .placeholder(R.drawable.ic_baseline_photo_24)
-//            .apply(RequestOptions().centerInside())
-//            .into(imageView)
-//        val vp = container as ViewPager
-//        vp.addView(view,0)
-//        return view
-//
-//
-//    }
-//
-//    override fun destroyItem(container: ViewGroup, position: Int, obj: Any) {
-//        //  super.destroyItem(container, position, `object`)
-//        val viewPager = container as ViewPager
-//        val view = obj as View
-//        viewPager.removeView(view)
-//    }
+
+    override fun onViewAttachedToWindow(holder: PhotoGalleryViewHolder) {
+        super.onViewAttachedToWindow(holder)
+        holder.hideTopBar()
+    }
+
 
     inner class PhotoGalleryViewHolder(private val binding: PhotoGalleryItemBinding) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(photo: PhotoInfoDisplayable) {
             with(binding) {
+                topBar.makeGone()
                 Glide.with(context)
                     .load(photo.reference)
                     .placeholder(R.drawable.ic_baseline_photo_24)
                     .apply(RequestOptions().centerInside())
                     .into(galleryImage)
+
+                galleryImage.setOnClickListener {
+                    if(topBar.isVisible())
+                        topBar.makeGone()
+                    else
+                        topBar.makeVisible()
+                }
+
+                ibRemove.setOnClickListener {
+//                    DialogConfirm(context, "Are you sure to remove this photo?", "remove", )
+                }
             }
+        }
+
+        fun hideTopBar() {
+            binding.topBar.makeGone()
         }
     }
 

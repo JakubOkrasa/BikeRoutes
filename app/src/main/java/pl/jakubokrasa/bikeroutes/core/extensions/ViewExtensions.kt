@@ -7,6 +7,8 @@ fun View.makeVisible() = run { visibility = View.VISIBLE }
 
 fun View.makeGone() = run { visibility = View.GONE }
 
+fun View.isVisible() = visibility == View.VISIBLE
+
 fun RangeSlider.getValFrom(): Int {
     return values[0].toInt()
 }
