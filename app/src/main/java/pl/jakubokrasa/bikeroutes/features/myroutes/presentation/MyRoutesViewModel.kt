@@ -3,6 +3,7 @@ package pl.jakubokrasa.bikeroutes.features.myroutes.presentation
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import org.koin.ext.scope
 import pl.jakubokrasa.bikeroutes.core.base.platform.BaseViewModel
 import pl.jakubokrasa.bikeroutes.core.util.enums.SharingType
 import pl.jakubokrasa.bikeroutes.features.common.domain.*
@@ -21,6 +22,7 @@ class MyRoutesViewModel(
     private val myRoutesNavigator: MyRoutesNavigator,
     private val addPhotoUseCase: AddPhotoUseCase,
     private val getPhotosUseCase: GetPhotosUseCase,
+    private val removePhotoUseCase: RemovePhotoUseCase,
 ): BaseViewModel() {
 
     private val _myRoutes by lazy { MutableLiveData<List<RouteDisplayable>>() }
@@ -144,6 +146,19 @@ class MyRoutesViewModel(
                 handleSuccess("getPhotos")
             }
             result.onFailure { handleFailure("getPhotos", errLog = it.message) }
+        }
+    }
+
+    fun removePhoto(photo: PhotoInfoDisplayable) {
+        removePhotoUseCase(
+            params = photo.toPhotoInfo(),
+            scope = viewModelScope
+        ) { result ->
+            setIdleState()
+            result.onSuccess {
+                handleSuccess("removePhoto")
+            }
+            result.onFailure { handleFailure("removePhoto", errLog = it.message) }
         }
     }
 }

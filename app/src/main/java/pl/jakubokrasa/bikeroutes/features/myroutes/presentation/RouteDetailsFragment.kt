@@ -276,23 +276,6 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
         activityResultGalleryLauncher.launch("image/*")
     }
 
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        if (resultCode == RESULT_OK && requestCode == <unique_code>) {
-//            imageView.setImageBitmap(getPicture(data.getData()));
-//        }
-//    }
-//
-//    public static Bitmap getPicture(Uri selectedImage) {
-//        String[] filePathColumn = { MediaStore.Images.Media.DATA };
-//        Cursor cursor = getContext().getContentResolver().query(selectedImage, filePathColumn, null, null, null);
-//        cursor.moveToFirst();
-//        int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-//        String picturePath = cursor.getString(columnIndex);
-//        cursor.close();
-//        return BitmapFactory.decodeFile(picturePath);
-//    }
-
     override fun onPendingState() {
         super.onPendingState()
         binding.progressLayout.makeVisible()

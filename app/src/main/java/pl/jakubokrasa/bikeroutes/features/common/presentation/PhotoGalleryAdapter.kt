@@ -11,13 +11,13 @@ import pl.jakubokrasa.bikeroutes.core.extensions.isVisible
 import pl.jakubokrasa.bikeroutes.core.extensions.makeGone
 import pl.jakubokrasa.bikeroutes.core.extensions.makeVisible
 import pl.jakubokrasa.bikeroutes.databinding.PhotoGalleryItemBinding
-import pl.jakubokrasa.bikeroutes.databinding.RvPhotoItemBinding
 import pl.jakubokrasa.bikeroutes.features.common.presentation.model.PhotoInfoDisplayable
-import pl.jakubokrasa.bikeroutes.features.myroutes.presentation.DialogConfirm
+import pl.jakubokrasa.bikeroutes.features.myroutes.presentation.MyRoutesViewModel
 
 class PhotoGalleryAdapter(
-    private var context: Context,
+    private val context: Context,
     private var photos: List<PhotoInfoDisplayable>,
+    private val viewModel: MyRoutesViewModel
     ): RecyclerView.Adapter<PhotoGalleryAdapter.PhotoGalleryViewHolder>() {
 
     override fun onCreateViewHolder(
@@ -51,7 +51,7 @@ class PhotoGalleryAdapter(
             with(binding) {
                 topBar.makeGone()
                 Glide.with(context)
-                    .load(photo.reference)
+                    .load(photo.downloadUrl)
                     .placeholder(R.drawable.ic_baseline_photo_24)
                     .apply(RequestOptions().centerInside())
                     .into(galleryImage)
@@ -64,7 +64,7 @@ class PhotoGalleryAdapter(
                 }
 
                 ibRemove.setOnClickListener {
-//                    DialogConfirm(context, "Are you sure to remove this photo?", "remove", )
+                    DialogRemovePhoto(context, viewModel, photo).show()
                 }
             }
         }

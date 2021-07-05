@@ -3,14 +3,8 @@ package pl.jakubokrasa.bikeroutes.features.common.presentation
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.model.GlideUrl
-import com.bumptech.glide.load.model.LazyHeaders
-import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.ktx.storage
-import pl.jakubokrasa.bikeroutes.R
 import pl.jakubokrasa.bikeroutes.databinding.RvPhotoItemBinding
 import pl.jakubokrasa.bikeroutes.features.common.presentation.model.PhotoInfoDisplayable
 
@@ -49,7 +43,7 @@ class PhotosRecyclerAdapter: RecyclerView.Adapter<PhotosRecyclerAdapter.PhotosVi
         fun bind(photo: PhotoInfoDisplayable) {
             with(binding) {
                 Glide.with(context)
-                    .load(photo.reference)
+                    .load(photo.downloadUrl)
                     .centerCrop()
                     .into(smallPhoto)
             }

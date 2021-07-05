@@ -22,7 +22,7 @@ class PhotoGalleryFragment(): BaseFragment<MyRoutesViewModel>(R.layout.fragment_
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentPhotogalleryBinding.bind(view)
 
-        val galleryAdapter = PhotoGalleryAdapter(requireContext(), getPhotos())
+        val galleryAdapter = PhotoGalleryAdapter(requireContext(), getPhotos(), viewModel)
         binding.viewPager.adapter = galleryAdapter
     }
 
