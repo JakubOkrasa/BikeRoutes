@@ -118,20 +118,34 @@ class RemoteRepositoryImpl(
 
         //save image to Firebase Cloud Storage
         val uri = Uri.fromFile(File(localPath)) //encode local path (e.g. no polish characters)
-        val photoRef = storageRef.child("routes/$routeId/photos/${uri.lastPathSegment}")
+        val photoName = uri.lastPathSegment ?: throw Exception("Error while adding photo")
+        val photoRef = storageRef.child("routes/$routeId/photos/${photoName}")
         photoRef.putFile(uri).await()
 
         //save reference to Firestore
         val urlResult = photoRef.downloadUrl.await()
-        val photo = PhotoInfoResponse("", routeId, urlResult.toString(), sharingType)
+        val photo = PhotoInfoResponse("", routeId, urlResult.toString(), sharingType, photoName)
         val photoDoc = firestore.collection("photos").document()
         firestore.runBatch { batch ->
             batch.set(photoDoc, photo)
             batch.update(photoDoc, "photoId", photoDoc.id)
+            batch.update(photoDoc, "name", photoName)
         }.await()
     }
 
+    override suspend fun removePhoto(photo: PhotoInfo) {
 
+        //remove from Cloud Storage
+        val photoResponse = PhotoInfoResponse(photo)
+        val photoRef = storageRef.child("routes/${photoResponse.routeId}/photos/${photoResponse.name}")
+        photoRef.delete().await()
+
+        //remove from Firestore
+        firestore.collection("photos")
+            .document(photoResponse.photoId)
+            .delete().await()
+
+    }
     //============ SHARED ROUTES ===================
     override suspend fun getSharedRoutes(uid: String): List<Route> {
         val routeResponseList = ArrayList<RouteResponse>()

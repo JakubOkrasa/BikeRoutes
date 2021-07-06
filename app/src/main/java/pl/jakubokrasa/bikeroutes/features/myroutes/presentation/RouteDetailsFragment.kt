@@ -3,10 +3,12 @@ package pl.jakubokrasa.bikeroutes.features.myroutes.presentation
 import android.app.Dialog
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
+import kotlinx.android.synthetic.main.fragment_route_details.*
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.osmdroid.views.MapView
@@ -71,7 +73,10 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
 
     override fun onStart() {
         super.onStart()
-        initRecycler()
+        Log.e("TEST", "On Start")
+        initPhotoRecycler()
+        if(this::route.isInitialized)
+            viewModel.getPhotos(route.routeId)
     }
 
     override fun onDestroy() {
@@ -84,16 +89,16 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
         binding.rvPhotos.adapter = null
     }
 
-    private fun initRecycler() {
+    private fun initPhotoRecycler() {
         with(binding.rvPhotos) {
             setHasFixedSize(true)
             adapter = photosRecyclerAdapter
             val photosLayoutManager = LinearLayoutManager(requireContext())
             photosLayoutManager.orientation = LinearLayoutManager.HORIZONTAL
             layoutManager = photosLayoutManager
-//            photosRecyclerAdapter.onItemClick = {
-//                    photo ->
-//            }
+            photosRecyclerAdapter.onItemClick = {
+                    photos, position -> navigator.openGalleryFragment(photos, position)
+            }
 
         }
     }
@@ -160,6 +165,12 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
 	private val toolbarIconsEditModeOnClick = Toolbar.OnMenuItemClickListener { insideMenuItem ->
         when (insideMenuItem.itemId) {
             R.id.action_routedetails_done -> {
+//                with(binding) {
+//                    if(tvRouteName == etRouteName
+//                        && tvRouteDescription == etRouteDescription
+//                        &&
+//                    )
+//                }
                 updateRouteDisplayableModel()
                 viewModel.updateRoute(route)
                 updateRouteInfoLayout()
@@ -275,23 +286,6 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
     private val btAddPhotosOnClick = View.OnClickListener {
         activityResultGalleryLauncher.launch("image/*")
     }
-
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        if (resultCode == RESULT_OK && requestCode == <unique_code>) {
-//            imageView.setImageBitmap(getPicture(data.getData()));
-//        }
-//    }
-//
-//    public static Bitmap getPicture(Uri selectedImage) {
-//        String[] filePathColumn = { MediaStore.Images.Media.DATA };
-//        Cursor cursor = getContext().getContentResolver().query(selectedImage, filePathColumn, null, null, null);
-//        cursor.moveToFirst();
-//        int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-//        String picturePath = cursor.getString(columnIndex);
-//        cursor.close();
-//        return BitmapFactory.decodeFile(picturePath);
-//    }
 
     override fun onPendingState() {
         super.onPendingState()

@@ -1,23 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <TextView
-        android:id="@+id/tv_test"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="photo test"
-        android:textStyle="italic"
-        android:background="@color/light_green"
-        android:layout_marginEnd="20dp"
-        android:visibility="gone"/>
-    <LinearLayout
-        android:id="@+id/linear_layout"
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"/>
+        app:cardCornerRadius="8dp"
+        android:layout_margin="5dp"
+        android:elevation="10dp">
+
+        <ImageView
+            android:id="@+id/small_photo"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            />
+    </androidx.cardview.widget.CardView>
+
+
+
 
 </LinearLayout>

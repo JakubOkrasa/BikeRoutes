@@ -94,6 +94,10 @@
             android:id="@+id/action_RouteDetailsFragment_to_followRouteFragment"
             app:destination="@id/followRouteFragment"
             app:popUpTo="@id/routeDetailsFragment"/>
+        <action
+            android:id="@+id/action_routeDetailsFragment_to_photoGalleryFragment"
+            app:destination="@id/photoGalleryFragment"
+            app:popUpTo="@layout/fragment_route_details"/>
     </fragment>
     <fragment
         android:id="@+id/forgotPasswordFragment"
@@ -113,6 +117,11 @@
         android:name="pl.jakubokrasa.bikeroutes.features.myroutes.presentation.FollowRouteFragment"
         android:label="fragment_follow_route"
         tools:layout="@layout/fragment_followroute" />
+    <fragment
+        android:id="@+id/photoGalleryFragment"
+        android:name="pl.jakubokrasa.bikeroutes.features.common.presentation.PhotoGalleryFragment"
+        android:label="PhotoGalleryFragment"
+        tools:layout="@layout/fragment_photogallery"/>
 
 
 </navigation>

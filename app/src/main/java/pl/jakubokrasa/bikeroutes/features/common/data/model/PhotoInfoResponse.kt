@@ -6,24 +6,27 @@ import pl.jakubokrasa.bikeroutes.features.common.domain.model.PhotoInfo
 data class PhotoInfoResponse(
     val photoId: String,
     val routeId: String,
-    val reference: String,
+    val downloadUrl: String,
     val sharingType: SharingType,
+    val name: String
 ) {
     constructor(photoInfo: PhotoInfo): this(
         photoId = photoInfo.photoId,
         routeId = photoInfo.routeId,
-        reference = photoInfo.reference,
+        downloadUrl = photoInfo.downloadUrl,
         sharingType = photoInfo.sharingType,
+        name = photoInfo.name
     )
 
-    constructor(): this("", "", "", pl.jakubokrasa.bikeroutes.core.util.enums.SharingType.PUBLIC)
+    constructor(): this("", "", "", pl.jakubokrasa.bikeroutes.core.util.enums.SharingType.PUBLIC, "")
 
     fun toPhotoInfo(): PhotoInfo {
         return PhotoInfo(
             this.photoId,
             this.routeId,
-            this.reference,
-            this.sharingType
+            this.downloadUrl,
+            this.sharingType,
+            this.name
         )
     }
 }

@@ -21,6 +21,7 @@ interface RemoteRepository {
     suspend fun getPoints(routeId: String): List<Point>
 
     suspend fun addPhoto(routeId: String, localPath: String, sharingType: SharingType)
+    suspend fun removePhoto(photoInfo: PhotoInfo)
 
 
     //SHARED ROUTES
