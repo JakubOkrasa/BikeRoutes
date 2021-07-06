@@ -17,6 +17,7 @@ class DialogRemovePhoto(
     ctx: Context,
     private val viewModel: MyRoutesViewModel,
     private val photo: PhotoInfoDisplayable,
+    private val photoPosition: Int
 ): Dialog(ctx) {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,7 +32,7 @@ class DialogRemovePhoto(
     }
 
     private val btConfirmOnClick = View.OnClickListener {
-        viewModel.removePhoto(photo)
+        viewModel.removePhoto(photo, photoPosition)
         dismiss()
     }
 

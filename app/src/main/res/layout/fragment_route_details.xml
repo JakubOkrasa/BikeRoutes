@@ -169,6 +169,11 @@
                     android:visibility="gone">
                 </androidx.recyclerview.widget.RecyclerView>
 
+                <Button
+                    android:id="@+id/bt_add_photos"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="add photos" />
             </LinearLayout>
 
             <LinearLayout
@@ -221,12 +226,6 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
-
-                <Button
-                    android:id="@+id/bt_add_photos"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="add photos" />
             </LinearLayout>
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>

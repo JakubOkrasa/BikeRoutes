@@ -16,7 +16,7 @@ import pl.jakubokrasa.bikeroutes.features.myroutes.presentation.MyRoutesViewMode
 
 class PhotoGalleryAdapter(
     private val context: Context,
-    private var photos: List<PhotoInfoDisplayable>,
+    private var photos: ArrayList<PhotoInfoDisplayable>,
     private val viewModel: MyRoutesViewModel
     ): RecyclerView.Adapter<PhotoGalleryAdapter.PhotoGalleryViewHolder>() {
 
@@ -44,6 +44,11 @@ class PhotoGalleryAdapter(
         holder.hideTopBar()
     }
 
+    fun removePhoto(position: Int) {
+        photos.removeAt(position)
+        notifyDataSetChanged()
+    }
+
 
     inner class PhotoGalleryViewHolder(private val binding: PhotoGalleryItemBinding) : RecyclerView.ViewHolder(binding.root) {
 
@@ -64,7 +69,7 @@ class PhotoGalleryAdapter(
                 }
 
                 ibRemove.setOnClickListener {
-                    DialogRemovePhoto(context, viewModel, photo).show()
+                    DialogRemovePhoto(context, viewModel, photo, adapterPosition).show()
                 }
             }
         }

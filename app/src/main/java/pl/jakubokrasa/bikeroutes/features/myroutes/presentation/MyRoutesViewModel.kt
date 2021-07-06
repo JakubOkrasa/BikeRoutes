@@ -3,6 +3,7 @@ package pl.jakubokrasa.bikeroutes.features.myroutes.presentation
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.hadilq.liveevent.LiveEvent
 import org.koin.ext.scope
 import pl.jakubokrasa.bikeroutes.core.base.platform.BaseViewModel
 import pl.jakubokrasa.bikeroutes.core.util.enums.SharingType
@@ -29,11 +30,13 @@ class MyRoutesViewModel(
     private val _pointsFromRemote by lazy { MutableLiveData<List<PointDisplayable>>() } //liveEvent could be better here todo (but points can be set too early)
     private val _isFilter by lazy { MutableLiveData<Boolean>() }
     private val _photos by lazy { MutableLiveData<List<PhotoInfoDisplayable>>() }
+    private val _photoRemovePos by lazy { LiveEvent<Int>() }
     override val LOG_TAG: String = MyRoutesViewModel::class.simpleName?: "unknown"
 
     val pointsFromRemote: LiveData<List<PointDisplayable>> by lazy { _pointsFromRemote }
     val myRoutes: LiveData<List<RouteDisplayable>> by lazy { _myRoutes }
     val photos: LiveData<List<PhotoInfoDisplayable>> by lazy { _photos }
+    val photoRemovePos: LiveData<Int> by lazy { _photoRemovePos }
     val isFilter: LiveData<Boolean> by lazy { _isFilter }
 
 
@@ -47,9 +50,9 @@ class MyRoutesViewModel(
             setIdleState()
             result.onSuccess {
                 myRoutesNavigator.goBack()
-                handleSuccess("removeRouteAndNavBack", "Route was removed")
+                handleSuccess("removeRouteAndNavBack", "Route removed")
             }
-            result.onFailure { handleFailure("removeRouteAndNavBack", "Route wasn't removed") }
+            result.onFailure { handleFailure("removeRouteAndNavBack", "Route not removed") }
         }
     }
 
@@ -62,9 +65,9 @@ class MyRoutesViewModel(
                 result ->
             setIdleState()
             result.onSuccess {
-                handleSuccess("updateRoute", "Route was updated")
+                handleSuccess("updateRoute", "Route updated")
             }
-            result.onFailure { handleFailure("updateRoute", "Route wasn't updated") }
+            result.onFailure { handleFailure("updateRoute", "Route not updated") }
         }
     }
 
@@ -132,7 +135,10 @@ class MyRoutesViewModel(
         ) {
                 result ->
             setIdleState()
-            result.onSuccess { handleSuccess("addPhoto", "photo added") }
+            result.onSuccess {
+                getPhotos(routeId)
+                handleSuccess("addPhoto", "photo added")
+            }
             result.onFailure { handleFailure("addPhoto", errLog = it.message) }
         }
     }
@@ -149,14 +155,15 @@ class MyRoutesViewModel(
         }
     }
 
-    fun removePhoto(photo: PhotoInfoDisplayable) {
+    fun removePhoto(photo: PhotoInfoDisplayable, photoPosition: Int) {
         removePhotoUseCase(
             params = photo.toPhotoInfo(),
             scope = viewModelScope
         ) { result ->
             setIdleState()
             result.onSuccess {
-                handleSuccess("removePhoto")
+                _photoRemovePos.value = photoPosition
+                handleSuccess("removePhoto", "photo removed")
             }
             result.onFailure { handleFailure("removePhoto", errLog = it.message) }
         }
