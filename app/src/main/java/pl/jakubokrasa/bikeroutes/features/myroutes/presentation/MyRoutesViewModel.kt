@@ -163,9 +163,13 @@ class MyRoutesViewModel(
             setIdleState()
             result.onSuccess {
                 _photoRemovePos.value = photoPosition
-                handleSuccess("removePhoto", "photo removed")
+                handleSuccess("removePhoto")
             }
             result.onFailure { handleFailure("removePhoto", errLog = it.message) }
         }
+    }
+
+    fun navigateBack() {
+        myRoutesNavigator.goBack()
     }
 }

@@ -5,6 +5,10 @@ import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.AdapterView
+import android.widget.AdapterView.OnItemSelectedListener
+import android.widget.ArrayAdapter
+import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -22,11 +26,10 @@ import pl.jakubokrasa.bikeroutes.core.util.*
 import pl.jakubokrasa.bikeroutes.core.util.enums.SharingType
 import pl.jakubokrasa.bikeroutes.databinding.FragmentRouteDetailsBinding
 import pl.jakubokrasa.bikeroutes.features.common.presentation.CommonRoutesNavigator
-import pl.jakubokrasa.bikeroutes.features.map.presentation.model.PointDisplayable
-import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteDisplayable
-import pl.jakubokrasa.bikeroutes.core.util.FileUtils
 import pl.jakubokrasa.bikeroutes.features.common.presentation.PhotosRecyclerAdapter
 import pl.jakubokrasa.bikeroutes.features.common.presentation.model.PhotoInfoDisplayable
+import pl.jakubokrasa.bikeroutes.features.map.presentation.model.PointDisplayable
+import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteDisplayable
 
 
 class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_route_details) {
@@ -56,6 +59,8 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
 
         updateToolbar()
         showRoute(view)
+        initVisibilitySpinner()
+
 
         binding.btFollow.setOnClickListener(btFollowOnClick)
         binding.btAddPhotos.setOnClickListener(btAddPhotosOnClick)
@@ -89,6 +94,13 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
         binding.rvPhotos.adapter = null
     }
 
+    private fun initVisibilitySpinner() {
+        val spinnerAdapter = ArrayAdapter(requireContext(),
+            android.R.layout.simple_dropdown_item_1line,
+            SharingType.values())
+        binding.spinnerVisibility.adapter = spinnerAdapter
+    }
+
     private fun initPhotoRecycler() {
         with(binding.rvPhotos) {
             setHasFixedSize(true)
@@ -96,8 +108,9 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
             val photosLayoutManager = LinearLayoutManager(requireContext())
             photosLayoutManager.orientation = LinearLayoutManager.HORIZONTAL
             layoutManager = photosLayoutManager
-            photosRecyclerAdapter.onItemClick = {
-                    photos, position -> navigator.openGalleryFragment(photos, position)
+            photosRecyclerAdapter.onItemClick = { photos, position -> navigator.openGalleryFragment(
+                photos,
+                position)
             }
 
         }
@@ -110,7 +123,7 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
 
     private fun observePhotos() {
         viewModel.photos.observe(viewLifecycleOwner, {
-            if(it.isNotEmpty()) {
+            if (it.isNotEmpty()) {
                 showPhotos(it)
             } else {
                 hidePhotos()
@@ -126,7 +139,6 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
     private fun showPhotos(list: List<PhotoInfoDisplayable>) {
         binding.tvPhotos.makeVisible()
         binding.rvPhotos.makeVisible()
-//        binding.tvNoData.makeGone()
         photosRecyclerAdapter.setItems(list)
     }
 
@@ -139,6 +151,13 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
             setPolylineProperties()
             setMapViewProperties()
             binding.mapView.invalidate()
+
+            if (!isMyRoute()) {
+                binding.btAddPhotos.makeGone()
+                if (route.sharingType == SharingType.PUBLIC_WITH_PRIVATE_PHOTOS) {
+                    hidePhotos()
+                }
+            }
         }
     }
 
@@ -152,7 +171,6 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
                         binding.toolbar.inflateMenu(R.menu.menu_routedetails_edit)
                         binding.toolbar.setOnMenuItemClickListener(toolbarIconsEditModeOnClick)
                         binding.llRouteInfo.makeGone()
-//                        binding.llVisibility.makeGone()
                         binding.llRouteEdit.makeVisible()
                         true
                     }
@@ -165,22 +183,22 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
 	private val toolbarIconsEditModeOnClick = Toolbar.OnMenuItemClickListener { insideMenuItem ->
         when (insideMenuItem.itemId) {
             R.id.action_routedetails_done -> {
-//                with(binding) {
-//                    if(tvRouteName == etRouteName
-//                        && tvRouteDescription == etRouteDescription
-//                        &&
-//                    )
-//                }
-                updateRouteDisplayableModel()
-                viewModel.updateRoute(route)
-                updateRouteInfoLayout()
-                hideKeyboard()
-                binding.llRouteEdit.makeGone()
-                binding.llRouteInfo.makeVisible()
-//                binding.llVisibility.makeVisible()
-                clearToolbarMenu()
-                updateToolbar()
-                true
+                with(binding) {
+                    if(isRouteChanged()) {
+                        updateRouteDisplayableModel()
+                        viewModel.updateRoute(route)
+                        updateRouteInfoLayout()
+                    }
+
+                    hideKeyboard()
+                    llRouteEdit.makeGone()
+                    llRouteInfo.makeVisible()
+                    clearToolbarMenu()
+                    updateToolbar()
+                    true
+                }
+
+
             }
             R.id.action_routedetails_remove -> {
                 if (isMyRoute()) initializeDialogRemove()
@@ -191,6 +209,9 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
         }
     }
 
+    private fun FragmentRouteDetailsBinding.isRouteChanged() =
+        (tvRouteName != etRouteName || tvRouteDescription != etRouteDescription || route.sharingType != spinnerVisibility.selectedItem as SharingType)
+
     private fun initializeDialogRemove() {
         dialogConfirmRemove = DialogConfirm(requireContext(),
             "Are you sure to remove this route?",
@@ -200,9 +221,17 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
     }
 
     private fun updateRouteDisplayableModel() {
-        route.name = binding.etRouteName.text.toString()
-        route.description = binding.etRouteDescription.text.toString()
-        if (binding.swPrivate.isChecked) route.sharingType = SharingType.PRIVATE else route.sharingType = SharingType.PUBLIC
+        with(binding) {
+            route.name = etRouteName.text.toString()
+            route.description = etRouteDescription.text.toString()
+//            if (swPrivate.isChecked) route.sharingType = SharingType.PRIVATE else route.sharingType = SharingType.PUBLIC
+            when(spinnerVisibility.selectedItem) {
+                SharingType.PUBLIC -> route.sharingType = SharingType.PUBLIC
+                SharingType.PRIVATE -> route.sharingType = SharingType.PRIVATE
+                SharingType.PUBLIC_WITH_PRIVATE_PHOTOS -> route.sharingType =
+                    SharingType.PUBLIC_WITH_PRIVATE_PHOTOS
+            }
+        }
     }
 
     private fun updateRouteInfoLayout() {
@@ -215,10 +244,11 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
                 tvRouteDescription.text = route.description
             }
 
-            if(route.sharingType == SharingType.PUBLIC)
-                tvVisibility.text = "public"
-            else if(route.sharingType == SharingType.PRIVATE)
-                tvVisibility.text = "only me"
+            when(route.sharingType) {
+                SharingType.PUBLIC -> tvVisibility.text = "public"
+                SharingType.PRIVATE -> tvVisibility.text = "only me"
+                SharingType.PUBLIC_WITH_PRIVATE_PHOTOS -> tvVisibility.text = "private photos"
+            }
 
 
             tvRouteDistance.text = getFormattedDistance(route.distance)
@@ -232,9 +262,16 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
     }
 
     private fun updateRouteEditLayout() {
-        binding.etRouteName.setText(route.name)
-        if(route.description.isNotBlank()) binding.etRouteDescription.setText(route.description)
-        binding.swPrivate.isChecked = run { route.sharingType == SharingType.PRIVATE }
+        with(binding) {
+            etRouteName.setText(route.name)
+            if (route.description.isNotBlank()) etRouteDescription.setText(route.description)
+
+            when(route.sharingType) {
+                SharingType.PUBLIC -> spinnerVisibility.setSelection(SharingType.PUBLIC.ordinal)
+                SharingType.PRIVATE -> spinnerVisibility.setSelection(SharingType.PRIVATE.ordinal)
+                SharingType.PUBLIC_WITH_PRIVATE_PHOTOS -> spinnerVisibility.setSelection(SharingType.PUBLIC_WITH_PRIVATE_PHOTOS.ordinal)
+            }
+        }
     }
 
     private fun setMapViewProperties() {

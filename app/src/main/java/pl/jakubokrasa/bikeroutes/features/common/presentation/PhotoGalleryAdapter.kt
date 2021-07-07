@@ -46,7 +46,10 @@ class PhotoGalleryAdapter(
 
     fun removePhoto(position: Int) {
         photos.removeAt(position)
-        notifyDataSetChanged()
+        if(photos.isEmpty())
+            viewModel.navigateBack()
+        else
+            notifyDataSetChanged()
     }
 
 

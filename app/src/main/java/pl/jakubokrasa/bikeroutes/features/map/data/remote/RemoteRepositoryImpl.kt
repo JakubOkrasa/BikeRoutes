@@ -153,7 +153,7 @@ class RemoteRepositoryImpl(
             firestore
                 .collection("routes")
 //                .whereNotEqualTo("userId", uid) //todo omitted for tests
-                .whereEqualTo("sharingType", SharingType.PUBLIC.name)
+                .whereNotEqualTo("sharingType", SharingType.PRIVATE.name)
                 .get().await().documents
 
         for (doc in documents)
@@ -180,7 +180,7 @@ class RemoteRepositoryImpl(
 
         var query = firestore.collection("routes")
         // .whereNotEqualTo("userId", uid) //todo omitted for tests
-        .whereEqualTo("SharingType", SharingType.PUBLIC.name)
+            .whereNotEqualTo("sharingType", SharingType.PRIVATE.name)
         maxDistanceMeters?.let { query = query.whereLessThanOrEqualTo("distance", it) }
         minDistanceMeters?.let { query = query.whereGreaterThanOrEqualTo("distance", it) }
         val documents = query.get().await()

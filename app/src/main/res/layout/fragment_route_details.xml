@@ -94,80 +94,81 @@
                         <ImageView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:background="@drawable/ic_distance"/>
+                            android:background="@drawable/ic_distance" />
+
                         <TextView
                             android:id="@+id/tv_route_distance"
-                            android:layout_marginStart="3dp"
+                            style="@style/tv_small"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            style="@style/tv_small" />
+                            android:layout_marginStart="3dp" />
                     </LinearLayout>
 
                     <LinearLayout
-                        android:layout_marginStart="10dp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
                         android:orientation="horizontal">
 
                         <ImageView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:background="@drawable/ic_time"/>
+                            android:background="@drawable/ic_time" />
 
                         <TextView
                             android:id="@+id/tv_route_ride_time"
-                            android:layout_marginStart="3dp"
+                            style="@style/tv_small"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            style="@style/tv_small" />
+                            android:layout_marginStart="3dp" />
                     </LinearLayout>
+
                     <LinearLayout
                         android:id="@+id/ll_visibility"
-                        android:layout_marginStart="10dp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
                         android:orientation="horizontal">
 
                         <ImageView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:background="@drawable/ic_visibility_public"/>
+                            android:background="@drawable/ic_visibility_public" />
 
                         <TextView
                             android:id="@+id/tv_visibility"
-                            android:layout_marginStart="3dp"
+                            style="@style/tv_small"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            style="@style/tv_small" />
+                            android:layout_marginStart="3dp" />
                     </LinearLayout>
 
                 </LinearLayout>
 
                 <Button
                     android:id="@+id/bt_follow"
-                    android:layout_marginTop="10dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Follow route"
-                    android:layout_marginBottom="20dp"/>
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="20dp"
+                    android:text="Follow route" />
 
                 <TextView
                     android:id="@+id/tv_photos"
+                    style="@style/tv_medium"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Photos"
-                    style="@style/tv_medium"
-                    android:textStyle="bold"
                     android:layout_marginBottom="10dp"
-                    android:visibility="gone"/>
+                    android:text="Photos"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
 
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_photos"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:visibility="gone">
-                </androidx.recyclerview.widget.RecyclerView>
+                    android:visibility="gone" />
 
                 <Button
                     android:id="@+id/bt_add_photos"
@@ -183,7 +184,8 @@
                 android:orientation="vertical"
                 android:visibility="gone"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/toolbar">
+                app:layout_constraintTop_toBottomOf="@id/toolbar"
+                tools:visibility="visible">
 
                 <EditText
                     android:id="@+id/et_route_name"
@@ -200,32 +202,39 @@
                     android:layout_height="wrap_content"
                     android:hint="Description" />
 
-                <androidx.constraintlayout.widget.ConstraintLayout
+                <LinearLayout
                     android:id="@+id/ll_sharing"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    app:layout_constraintTop_toBottomOf="@id/ll_name">
+                    app:layout_constraintTop_toBottomOf="@id/ll_name"
+                    tools:visibility="visible">
 
                     <TextView
                         style="@style/tv_medium"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:padding="7dp"
-                        android:text="Visible only for me"
+                        android:text="Visibility"
                         android:textColor="#222"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        tools:visibility="visible" />
 
-                    <com.google.android.material.switchmaterial.SwitchMaterial
-                        android:id="@+id/sw_private"
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        tools:visibility="visible" />
+
+                    <Spinner
+                        android:id="@+id/spinnerVisibility"
+                        style="@style/tv_medium"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="20dp"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        android:spinnerMode="dialog"
+                        tools:visibility="visible"/>
 
-                </androidx.constraintlayout.widget.ConstraintLayout>
+                </LinearLayout>
+
             </LinearLayout>
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
