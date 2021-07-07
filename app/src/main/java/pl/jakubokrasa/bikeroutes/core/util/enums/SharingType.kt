@@ -1,7 +1,11 @@
 package pl.jakubokrasa.bikeroutes.core.util.enums
 
-enum class sharingType {
+import java.util.*
+
+enum class SharingType {
     PRIVATE,
     PUBLIC,
-    PRIVATE_PHOTOS
+    PUBLIC_WITH_PRIVATE_PHOTOS;
+
+    override fun toString() = this.name.toLowerCase(Locale.ROOT).replace('_', ' ')
 }

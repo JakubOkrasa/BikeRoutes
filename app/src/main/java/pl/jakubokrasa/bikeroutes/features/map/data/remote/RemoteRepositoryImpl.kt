@@ -2,12 +2,17 @@ package pl.jakubokrasa.bikeroutes.features.map.data.remote
 
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
+import android.net.Uri
+import com.google.firebase.firestore.*
+import com.google.firebase.storage.StorageReference
 import kotlinx.coroutines.tasks.await
-import pl.jakubokrasa.bikeroutes.core.util.enums.sharingType
+import pl.jakubokrasa.bikeroutes.core.util.enums.SharingType
 import pl.jakubokrasa.bikeroutes.features.common.data.GeocodingAPI
 import pl.jakubokrasa.bikeroutes.features.common.domain.BoundingBoxData
 import pl.jakubokrasa.bikeroutes.features.common.domain.FilterData
 import pl.jakubokrasa.bikeroutes.features.common.domain.model.GeocodingItem
+import pl.jakubokrasa.bikeroutes.features.common.data.model.PhotoInfoResponse
+import pl.jakubokrasa.bikeroutes.features.common.domain.model.PhotoInfo
 import pl.jakubokrasa.bikeroutes.features.map.data.remote.model.PointResponse
 import pl.jakubokrasa.bikeroutes.features.map.data.remote.model.RouteResponse
 import pl.jakubokrasa.bikeroutes.features.map.domain.RemoteRepository
@@ -15,10 +20,13 @@ import pl.jakubokrasa.bikeroutes.features.map.domain.model.Point
 import pl.jakubokrasa.bikeroutes.features.map.domain.model.Route
 import pl.jakubokrasa.bikeroutes.features.myroutes.data.model.PointDocument
 import pl.jakubokrasa.bikeroutes.features.myroutes.presentation.MyRoutesFragment.Companion.DISTANCE_SLIDER_VALUE_TO
+import java.io.File
+import java.lang.Exception
 
 class RemoteRepositoryImpl(
     private val firestore: FirebaseFirestore,
-    private val api: GeocodingAPI
+    private val api: GeocodingAPI,
+	private val storageRef: StorageReference
 ): RemoteRepository {
     override suspend fun addRoute(route: Route, points: List<Point>) {
 
@@ -55,7 +63,6 @@ class RemoteRepositoryImpl(
 
         for (doc in documents)
             doc.toObject(RouteResponse::class.java)?.let { routeResponseList.add(it) }
-
         return routeResponseList.map { it.toRoute()}
     }
 
@@ -84,8 +91,6 @@ class RemoteRepositoryImpl(
         for (doc in documents)
             doc.toObject(RouteResponse::class.java)
                 .let { routeResponseList.add(it) }
-
-
         return routeResponseList.map { it.toRoute()}
     }
 
@@ -115,7 +120,38 @@ class RemoteRepositoryImpl(
             "no points in the route")
     }
 
+    override suspend fun addPhoto(routeId: String, localPath: String, sharingType: SharingType) {
 
+        //save image to Firebase Cloud Storage
+        val uri = Uri.fromFile(File(localPath)) //encode local path (e.g. no polish characters)
+        val photoName = uri.lastPathSegment ?: throw Exception("Error while adding photo")
+        val photoRef = storageRef.child("routes/$routeId/photos/${photoName}")
+        photoRef.putFile(uri).await()
+
+        //save reference to Firestore
+        val urlResult = photoRef.downloadUrl.await()
+        val photo = PhotoInfoResponse("", routeId, urlResult.toString(), sharingType, photoName)
+        val photoDoc = firestore.collection("photos").document()
+        firestore.runBatch { batch ->
+            batch.set(photoDoc, photo)
+            batch.update(photoDoc, "photoId", photoDoc.id)
+            batch.update(photoDoc, "name", photoName)
+        }.await()
+    }
+
+    override suspend fun removePhoto(photo: PhotoInfo) {
+
+        //remove from Cloud Storage
+        val photoResponse = PhotoInfoResponse(photo)
+        val photoRef = storageRef.child("routes/${photoResponse.routeId}/photos/${photoResponse.name}")
+        photoRef.delete().await()
+
+        //remove from Firestore
+        firestore.collection("photos")
+            .document(photoResponse.photoId)
+            .delete().await()
+
+    }
     //============ SHARED ROUTES ===================
     override suspend fun getSharedRoutes(uid: String): List<Route> {
         val routeResponseList = ArrayList<RouteResponse>()
@@ -123,7 +159,7 @@ class RemoteRepositoryImpl(
             firestore
                 .collection("routes")
 //                .whereNotEqualTo("userId", uid) //todo omitted for tests
-                .whereEqualTo("sharingType", sharingType.PUBLIC.name)
+                .whereNotEqualTo("sharingType", SharingType.PRIVATE.name)
                 .get().await().documents
 
         for (doc in documents)
@@ -150,7 +186,7 @@ class RemoteRepositoryImpl(
 
         var query = firestore.collection("routes")
         // .whereNotEqualTo("userId", uid) //todo omitted for tests
-        .whereEqualTo("sharingType", sharingType.PUBLIC.name)
+            .whereNotEqualTo("sharingType", SharingType.PRIVATE.name)
         maxDistanceMeters?.let { query = query.whereLessThanOrEqualTo("distance", it) }
         minDistanceMeters?.let { query = query.whereGreaterThanOrEqualTo("distance", it) }
         val documents = query.get().await()
@@ -165,7 +201,16 @@ class RemoteRepositoryImpl(
         return api.getGeocodingItem(query)[0].toGeocodingItem()
     }
 
+	override suspend fun getPhotos(routeId: String): List<PhotoInfo> {
+        val photoResponseList = ArrayList<PhotoInfoResponse>()
+        val documents = firestore.collection("photos")
+            .whereEqualTo("routeId", routeId)
+            .get().await().documents
 
+        for (doc in documents)
+            doc.toObject(PhotoInfoResponse::class.java)?.let { photoResponseList.add(it) }
+        return photoResponseList.map { it.toPhotoInfo() }
+    }
 
 
     companion object {

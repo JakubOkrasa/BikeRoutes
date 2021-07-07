@@ -1,6 +1,6 @@
 package pl.jakubokrasa.bikeroutes.features.map.data.remote.model
 
-import pl.jakubokrasa.bikeroutes.core.util.enums.sharingType
+import pl.jakubokrasa.bikeroutes.core.util.enums.SharingType
 import pl.jakubokrasa.bikeroutes.features.common.domain.BoundingBoxData
 import pl.jakubokrasa.bikeroutes.features.map.domain.model.Route
 
@@ -10,14 +10,14 @@ class RouteResponse(
     val userId: String,
     val name: String,
     val description: String,
-    val sharingType: sharingType,
+    val sharingType: SharingType,
     val distance: Int,
     val rideTimeMinutes: Int,
     val avgSpeedKmPerH: Int,
     val boundingBoxData: BoundingBoxData
 ) {
 
-    constructor() : this("", 0,"", "", "", pl.jakubokrasa.bikeroutes.core.util.enums.sharingType.PRIVATE, //for firestore
+    constructor() : this("", 0,"", "", "", pl.jakubokrasa.bikeroutes.core.util.enums.SharingType.PRIVATE, //for firestore
         0, 0, 0, BoundingBoxData(0.0, 0.0,0.0,0.0))
 
     constructor(route: Route) : this(route.routeId, route.createdAt, route.userId, route.name, route.description, route.sharingType,

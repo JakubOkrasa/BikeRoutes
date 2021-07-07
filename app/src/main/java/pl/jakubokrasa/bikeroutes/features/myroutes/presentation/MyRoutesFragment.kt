@@ -7,6 +7,8 @@ import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import pl.jakubokrasa.bikeroutes.R
 import pl.jakubokrasa.bikeroutes.core.base.platform.BaseFragment
+import pl.jakubokrasa.bikeroutes.core.extensions.makeGone
+import pl.jakubokrasa.bikeroutes.core.extensions.makeVisible
 import pl.jakubokrasa.bikeroutes.databinding.FragmentMyRoutesBinding
 import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteDisplayable
 
@@ -71,8 +73,8 @@ import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteDisplayabl
      }
 
      private fun showRecyclerWithItems(it: List<RouteDisplayable>) {
-         binding.recyclerView.visibility = View.VISIBLE
-         binding.tvNoData.visibility = View.GONE
+         binding.recyclerView.makeVisible()
+         binding.tvNoData.makeGone()
          myRoutesRecyclerAdapter.setItems(it)
      }
 
