@@ -10,5 +10,7 @@
     <color name="blurred_white">#EEE</color>
     <color name="black_default">#222</color>
     <color name="light_green">#69AE6C</color>
+    <color name="orange">#FF6839</color>
+    <color name="light_orange">#FF8D69</color>
 
 </resources>

@@ -176,7 +176,13 @@ class RemoteRepositoryImpl(
         return api.getGeocodingItem(query)[0].toGeocodingItem()
     }
 
-
+    override suspend fun getSegments(routeId: String): List<Segment> {
+        return firestore.collection("segments")
+            .whereEqualTo("routeId", routeId)
+            .get()
+            .await()
+            .map { doc -> doc.toObject(SegmentResponse::class.java).toSegment() }
+    }
 
 
     companion object {

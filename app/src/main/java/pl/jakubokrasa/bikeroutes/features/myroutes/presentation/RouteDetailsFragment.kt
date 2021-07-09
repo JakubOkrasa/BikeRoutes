@@ -1,13 +1,19 @@
 package pl.jakubokrasa.bikeroutes.features.myroutes.presentation
 
 import android.app.Dialog
+import android.graphics.Color
+import android.graphics.Paint
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.widget.Toolbar
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
+import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.Polyline
+import org.osmdroid.views.overlay.advancedpolyline.MonochromaticPaintList
+import org.osmdroid.views.overlay.infowindow.InfoWindow
 import pl.jakubokrasa.bikeroutes.R
 import pl.jakubokrasa.bikeroutes.core.base.platform.BaseFragment
 import pl.jakubokrasa.bikeroutes.core.extensions.hideKeyboard
@@ -20,6 +26,8 @@ import pl.jakubokrasa.bikeroutes.features.common.presentation.CommonRoutesNaviga
 import pl.jakubokrasa.bikeroutes.features.common.segments.presentation.model.SegmentDisplayable
 import pl.jakubokrasa.bikeroutes.features.map.presentation.model.PointDisplayable
 import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteDisplayable
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_route_details) {
@@ -32,6 +40,8 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
     private lateinit var polyline: Polyline
     private lateinit var dialogConfirmRemove: Dialog
     private val navigator: CommonRoutesNavigator by inject()
+    private lateinit var segmentPolylines :ArrayList<Polyline>
+    private lateinit var segments: List<SegmentDisplayable>
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -39,9 +49,80 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
         configureOsmDroid(requireContext())
 
         updateToolbar()
-        showRoute(view)
+        onViewPost(view)
 
         binding.btFollow.setOnClickListener(btFollowOnClick)
+
+    }
+
+    override fun initObservers() {
+        super.initObservers()
+        observeSegments()
+    }
+
+    private fun observeSegments() {
+        viewModel.segments.observe(viewLifecycleOwner, {
+            segments = it
+            showSegments(segments)
+        })
+    }
+
+    private fun showSegments(segments: List<SegmentDisplayable>) {
+        segmentPolylines = ArrayList(segments.size)
+        for(segment in segments) {
+            val segmentPolyline = Polyline()
+            segmentPolyline.outlinePaint.color = Color.GREEN
+
+            val paintBorder = Paint()
+            paintBorder.strokeWidth = 20F
+            paintBorder.style = Paint.Style.STROKE
+            paintBorder.color = Color.BLACK
+            paintBorder.strokeCap = Paint.Cap.ROUND
+            paintBorder.isAntiAlias = true
+
+            // create mapping paint
+            val paintMapping = Paint()
+            paintMapping.setAntiAlias(true);
+            paintMapping.setStrokeWidth(15F);
+            paintMapping.setStyle(Paint.Style.FILL_AND_STROKE);
+            paintMapping.setStrokeJoin(Paint.Join.ROUND);
+            paintMapping.color = Color.RED
+            paintMapping.setStrokeCap(Paint.Cap.ROUND);
+            paintMapping.setAntiAlias(true);
+
+            segmentPolyline.outlinePaintLists.add(MonochromaticPaintList(paintBorder))
+            segmentPolyline.outlinePaintLists.add(MonochromaticPaintList(paintMapping))
+
+
+            val segmentPoints: List<GeoPoint>
+            if(segment.beginIndex<segment.endIndex) {
+                segmentPoints = points.subList(segment.beginIndex, segment.endIndex + 1).map { it.geoPoint }
+            } else {
+                segmentPoints = points.subList(segment.endIndex, segment.beginIndex - 1).map { it.geoPoint }
+            }
+            segmentPolyline.setPoints(segmentPoints)
+            segmentPolylines.add(segmentPolyline)
+            binding.mapView.overlays.add(segmentPolyline)
+
+            segmentPolyline.setOnClickListener(polylineOnClickListener)
+        }
+        binding.mapView.invalidate()
+    }
+
+    private val polylineOnClickListener = object: Polyline.OnClickListener {
+        override fun onClick(polyline: Polyline, mapView: MapView, eventPos: GeoPoint): Boolean {
+            binding.llSegments.makeVisible()
+            val segmentIndex = segmentPolylines.indexOf(polyline)
+            binding.btSegmentType.text =
+                segments[segmentIndex].segmentType.toString().toUpperCase(Locale.ROOT)
+            if(segments[segmentIndex].info.isNotEmpty()) {
+                binding.llSegmentInfo.makeVisible()
+                binding.tvSegmentInfo.text = segments[segmentIndex].info
+            } else {
+                binding.llSegmentInfo.makeGone()
+            }
+            return true
+        }
     }
 
     override fun onResume() {
@@ -54,16 +135,21 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
         binding.mapView.onPause()
     }
 
-    private fun showRoute(view: View) {
+    private fun onViewPost(view: View) {
         view.post {
-            setRoute()
-            setPoints()
-            updateRouteInfoLayout()
-            updateRouteEditLayout()
-            setPolylineProperties()
-            setMapViewProperties()
-            binding.mapView.invalidate()
+            showRoute()
+            viewModel.getSegments(route.routeId)
         }
+    }
+
+    private fun showRoute() {
+        setRoute()
+        setPoints()
+        updateRouteInfoLayout()
+        updateRouteEditLayout()
+        setPolylineProperties()
+        setMapViewProperties()
+        binding.mapView.invalidate()
     }
 
     private fun updateToolbar() {
@@ -72,7 +158,9 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
             binding.toolbar.setOnMenuItemClickListener { menuItem ->
                 when (menuItem.itemId) {
                     R.id.action_segments -> {
-                        navigator.openSegmentsFragment(route, points, ArrayList<SegmentDisplayable>()) //todo
+                        navigator.openSegmentsFragment(route,
+                            points,
+                            ArrayList<SegmentDisplayable>()) //todo
                         true
                     }
                     R.id.action_routedetails_edit -> {
@@ -90,8 +178,7 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
         }
     }
 
-	private val toolbarIconsEditModeOnClick = Toolbar.OnMenuItemClickListener {
-            insideMenuItem ->
+	private val toolbarIconsEditModeOnClick = Toolbar.OnMenuItemClickListener { insideMenuItem ->
         when (insideMenuItem.itemId) {
             R.id.action_routedetails_done -> {
                 updateRouteDisplayableModel()

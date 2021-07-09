@@ -11,6 +11,7 @@ import pl.jakubokrasa.bikeroutes.features.common.domain.FilterData
 import pl.jakubokrasa.bikeroutes.features.common.domain.GetGeocodingItemUseCase
 import pl.jakubokrasa.bikeroutes.features.common.domain.GetPointsFromRemoteUseCase
 import pl.jakubokrasa.bikeroutes.features.common.presentation.model.GeocodingItemDisplayable
+import pl.jakubokrasa.bikeroutes.features.common.segments.domain.GetSegmentsUseCase
 import pl.jakubokrasa.bikeroutes.features.common.segments.presentation.model.SegmentDisplayable
 import pl.jakubokrasa.bikeroutes.features.map.presentation.model.PointDisplayable
 import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteDisplayable
@@ -26,6 +27,7 @@ class MyRoutesViewModel(
     private val getGeocodingItemUseCase: GetGeocodingItemUseCase,
     private val getSegmentPointUseCase: GetSegmentPointUseCase,
     private val addSegmentUseCase: AddSegmentUseCase,
+    private val getSegmentsUseCase: GetSegmentsUseCase,
     private val myRoutesNavigator: MyRoutesNavigator,
 ): BaseViewModel() {
 
@@ -35,6 +37,7 @@ class MyRoutesViewModel(
     private val _geocodingItem by lazy { LiveEvent<GeocodingItemDisplayable>() }
     private val _segmentPointIndex by lazy { LiveEvent<Int>() }
     private val _isSegmentAdded by lazy { LiveEvent<Boolean>() }
+    private val _segments by lazy { LiveEvent<List<SegmentDisplayable>>() }
     override val LOG_TAG: String = MyRoutesViewModel::class.simpleName?: "unknown"
 
     val pointsFromRemote: LiveData<List<PointDisplayable>> by lazy { _pointsFromRemote }
@@ -43,6 +46,7 @@ class MyRoutesViewModel(
     val geocodingItem: LiveData<GeocodingItemDisplayable> by lazy { _geocodingItem }
     val segmentPointIndex: LiveData<Int> by lazy { _segmentPointIndex }
     val isSegmentAdded: LiveData<Boolean> by lazy { _isSegmentAdded }
+    val segments: LiveData<List<SegmentDisplayable>> by lazy { _segments }
 
 
     fun removeRouteAndNavBack(route: RouteDisplayable) {
@@ -174,6 +178,24 @@ class MyRoutesViewModel(
             result.onFailure {
                 _isSegmentAdded.value = false
                 handleFailure("addSegment", errLog = it.message)
+            }
+        }
+    }
+
+    fun getSegments(routeId: String) {
+        setPendingState()
+        getSegmentsUseCase(
+            params = routeId,
+            scope = viewModelScope
+        ) {
+                result ->
+            setIdleState()
+            result.onSuccess { list ->
+                _segments.value = list.map { SegmentDisplayable(it) }
+                handleSuccess("getSegments")
+            }
+            result.onFailure {
+                handleFailure("getSegments", errLog = it.message)
             }
         }
     }

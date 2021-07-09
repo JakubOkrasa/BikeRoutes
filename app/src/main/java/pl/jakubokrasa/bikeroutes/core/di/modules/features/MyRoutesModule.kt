@@ -4,6 +4,7 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 import pl.jakubokrasa.bikeroutes.features.common.domain.GetGeocodingItemUseCase
+import pl.jakubokrasa.bikeroutes.features.common.segments.domain.GetSegmentsUseCase
 import pl.jakubokrasa.bikeroutes.features.myroutes.domain.*
 import pl.jakubokrasa.bikeroutes.features.myroutes.presentation.DialogSegment
 import pl.jakubokrasa.bikeroutes.features.myroutes.presentation.MyRoutesRecyclerAdapter
@@ -21,6 +22,6 @@ val myRoutesModule = module {
     factory { MyRoutesRecyclerAdapter() }
 
 
-    viewModel { MyRoutesViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
+    viewModel { MyRoutesViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get(), get()) }
 
 }

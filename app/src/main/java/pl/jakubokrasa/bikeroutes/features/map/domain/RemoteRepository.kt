@@ -29,4 +29,6 @@ interface RemoteRepository {
 
     //COMMON
     suspend fun getGeocodingItem(query: String): GeocodingItem
+
+    suspend fun getSegments(routeId: String): List<Segment>
 }
