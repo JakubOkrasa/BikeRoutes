@@ -23,12 +23,20 @@
         app:layout_constraintStart_toStartOf="parent"
         android:spinnerMode="dropdown"/>
 
+    <Spinner
+        android:id="@+id/spinner_color"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/spinner"
+        app:layout_constraintStart_toStartOf="parent"
+        android:spinnerMode="dropdown"/>
+
     <TextView
         android:id="@+id/tv_additional_info"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         style="@style/tv_medium"
-        app:layout_constraintTop_toBottomOf="@id/spinner"
+        app:layout_constraintTop_toBottomOf="@id/spinner_color"
         app:layout_constraintStart_toStartOf="parent"
         android:text="Additional Info"/>
 
