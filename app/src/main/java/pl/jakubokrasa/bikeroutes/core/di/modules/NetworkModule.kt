@@ -1,6 +1,5 @@
 package pl.jakubokrasa.bikeroutes.core.di.modules
 
-import okhttp3.OkHttpClient
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 import pl.jakubokrasa.bikeroutes.R

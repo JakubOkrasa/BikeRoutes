@@ -4,11 +4,15 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.hadilq.liveevent.LiveEvent
+import org.koin.ext.scope
 import pl.jakubokrasa.bikeroutes.core.base.platform.BaseViewModel
 import pl.jakubokrasa.bikeroutes.features.common.domain.FilterData
 import pl.jakubokrasa.bikeroutes.features.common.domain.GetGeocodingItemUseCase
 import pl.jakubokrasa.bikeroutes.features.common.domain.GetPointsFromRemoteUseCase
 import pl.jakubokrasa.bikeroutes.features.common.presentation.model.GeocodingItemDisplayable
+import pl.jakubokrasa.bikeroutes.core.util.enums.SharingType
+import pl.jakubokrasa.bikeroutes.features.common.domain.*
+import pl.jakubokrasa.bikeroutes.features.common.presentation.model.PhotoInfoDisplayable
 import pl.jakubokrasa.bikeroutes.features.map.presentation.model.PointDisplayable
 import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteDisplayable
 import pl.jakubokrasa.bikeroutes.features.myroutes.domain.*
@@ -22,16 +26,24 @@ class MyRoutesViewModel(
     private val updateRouteUseCase: UpdateRouteUseCase,
     private val getGeocodingItemUseCase: GetGeocodingItemUseCase,
     private val myRoutesNavigator: MyRoutesNavigator,
+    private val addPhotoUseCase: AddPhotoUseCase,
+    private val getPhotosUseCase: GetPhotosUseCase,
+    private val removePhotoUseCase: RemovePhotoUseCase,
 ): BaseViewModel() {
 
     private val _myRoutes by lazy { MutableLiveData<List<RouteDisplayable>>() }
     private val _pointsFromRemote by lazy { MutableLiveData<List<PointDisplayable>>() } //liveEvent could be better here todo (but points can be set too early)
     private val _isFilter by lazy { MutableLiveData<Boolean>() }
     private val _geocodingItem by lazy { LiveEvent<GeocodingItemDisplayable>() }
+	private val _photos by lazy { MutableLiveData<List<PhotoInfoDisplayable>>() }
+    private val _photoRemovePos by lazy { LiveEvent<Int>() }
+
     override val LOG_TAG: String = MyRoutesViewModel::class.simpleName?: "unknown"
 
     val pointsFromRemote: LiveData<List<PointDisplayable>> by lazy { _pointsFromRemote }
     val myRoutes: LiveData<List<RouteDisplayable>> by lazy { _myRoutes }
+    val photos: LiveData<List<PhotoInfoDisplayable>> by lazy { _photos }
+    val photoRemovePos: LiveData<Int> by lazy { _photoRemovePos }
     val isFilter: LiveData<Boolean> by lazy { _isFilter }
     val geocodingItem: LiveData<GeocodingItemDisplayable> by lazy { _geocodingItem }
 
@@ -46,9 +58,9 @@ class MyRoutesViewModel(
             setIdleState()
             result.onSuccess {
                 myRoutesNavigator.goBack()
-                handleSuccess("removeRouteAndNavBack", "Route was removed")
+                handleSuccess("removeRouteAndNavBack", "Route removed")
             }
-            result.onFailure { handleFailure("removeRouteAndNavBack", "Route wasn't removed") }
+            result.onFailure { handleFailure("removeRouteAndNavBack", "Route not removed") }
         }
     }
 
@@ -61,9 +73,9 @@ class MyRoutesViewModel(
                 result ->
             setIdleState()
             result.onSuccess {
-                handleSuccess("updateRoute", "Route was updated")
+                handleSuccess("updateRoute", "Route updated")
             }
-            result.onFailure { handleFailure("updateRoute", "Route wasn't updated") }
+            result.onFailure { handleFailure("updateRoute", "Route not updated") }
         }
     }
 
@@ -117,6 +129,7 @@ class MyRoutesViewModel(
             result.onSuccess {
                 handleSuccess("getPointsFromRemote")
                 myRoutesNavigator.openRouteDetailsFragment(route, it.map { point -> PointDisplayable(point) })
+                getPhotos(route.routeId)
             }
             result.onFailure { handleFailure("getPointsFromRemote", errLog = it.message) }
         }
@@ -134,5 +147,51 @@ class MyRoutesViewModel(
             }
             result.onFailure { handleFailure("getGeocodingItem", errLog = it.message) }
         }
+}
+
+fun addPhoto(routeId: String, localPath: String, sharingType: SharingType) {
+        setPendingState()
+        addPhotoUseCase(
+            params = AddPhotoData(routeId, localPath, sharingType),
+            scope = viewModelScope
+        ) {
+                result ->
+            setIdleState()
+            result.onSuccess {
+                getPhotos(routeId)
+                handleSuccess("addPhoto", "photo added")
+            }
+            result.onFailure { handleFailure("addPhoto", errLog = it.message) }
+        }
+    }
+
+    fun getPhotos(routeId: String) {
+        setPendingState()
+        getPhotosUseCase(params = routeId, scope = viewModelScope) { result ->
+            setIdleState()
+            result.onSuccess { list ->
+                _photos.value = list.map { PhotoInfoDisplayable(it) }
+                handleSuccess("getPhotos")
+            }
+            result.onFailure { handleFailure("getPhotos", errLog = it.message) }
+        }
+    }
+
+    fun removePhoto(photo: PhotoInfoDisplayable, photoPosition: Int) {
+        removePhotoUseCase(
+            params = photo.toPhotoInfo(),
+            scope = viewModelScope
+        ) { result ->
+            setIdleState()
+            result.onSuccess {
+                _photoRemovePos.value = photoPosition
+                handleSuccess("removePhoto")
+            }
+            result.onFailure { handleFailure("removePhoto", errLog = it.message) }
+        }
+    }
+
+    fun navigateBack() {
+        myRoutesNavigator.goBack()
     }
 }

@@ -37,26 +37,31 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/bt_start_record">
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginBottom="60dp">
             </org.osmdroid.views.MapView>
 
             <Button
                 android:id="@+id/bt_start_record"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"
                 android:text="Record"
+                app:layout_constraintBottom_toBottomOf="@id/map_view"
+                app:layout_constraintStart_toStartOf="@id/map_view"
+                app:layout_constraintEnd_toEndOf="@id/map_view"
+                android:layout_marginHorizontal="10dp"
                 />
 
             <Button
                 android:id="@+id/bt_stop_record"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"
                 android:text="Finish"
                 android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@id/map_view"
+                app:layout_constraintStart_toStartOf="@id/map_view"
+                app:layout_constraintEnd_toEndOf="@id/map_view"
+                android:layout_marginHorizontal="10dp"
                 />
 
             <Button
