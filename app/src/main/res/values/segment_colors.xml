@@ -1,18 +1,2 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <item name="seg_blue" type="color">#FF33B5E5</item>
-    <item name="seg_purple" type="color">#FFAA66CC</item>
-    <item name="seg_green" type="color">#4CAF50</item>
-    <item name="seg_yellow" type="color">#FFC107</item>
-    <item name="seg_orange" type="color">#FF6534</item>
-    <item name="seg_red" type="color">#FFFF4444</item>
-
-    <integer-array name="segment_colors">
-        <item>@color/seg_blue</item>
-        <item>@color/seg_purple</item>
-        <item>@color/seg_green</item>
-        <item>@color/seg_yellow</item>
-        <item>@color/seg_orange</item>
-        <item>@color/seg_red</item>
-    </integer-array>
-</resources>
+<resources></resources>
