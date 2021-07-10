@@ -1,6 +1,7 @@
 package pl.jakubokrasa.bikeroutes.features.myroutes.presentation
 
 import android.R
+import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
@@ -8,9 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.Window
 import android.widget.ArrayAdapter
-import androidx.annotation.NonNull
-import kotlinx.android.synthetic.main.dialog_segment.*
-import pl.jakubokrasa.bikeroutes.databinding.DialogMyroutesFilterBinding
+import pl.jakubokrasa.bikeroutes.R.color
 import pl.jakubokrasa.bikeroutes.databinding.DialogSegmentBinding
 import pl.jakubokrasa.bikeroutes.features.common.segments.domain.model.SegmentType
 import pl.jakubokrasa.bikeroutes.features.common.segments.presentation.SegmentBasicModel
@@ -34,6 +33,7 @@ class DialogSegment(
         binding.btCancel.setOnClickListener(btCancelOnClick)
 
         initSpinner()
+        binding.segColorRed.isChecked = true
     }
 
     private fun initSpinner() {
@@ -50,10 +50,28 @@ class DialogSegment(
             segmentBasicModel.beginIndex,
             segmentBasicModel.endIndex,
             binding.spinner.selectedItem as SegmentType,
-            binding.etAdditionalInfo.text.toString()
+            binding.etAdditionalInfo.text.toString(),
+            getCheckedColor()
         )
+
         viewModel.addSegment(segmentDisplayable)
         dismiss()
+    }
+
+    @SuppressLint("ResourceType")
+    private fun getCheckedColor(): String {
+        val segmentColor: String
+        with(binding) {
+            segmentColor = when {
+                segColorRed.isChecked -> context.resources.getString(color.seg_red)
+                segColorOrange.isChecked -> context.resources.getString(color.seg_orange)
+                segColorYellow.isChecked -> context.resources.getString(color.seg_yellow)
+                segColorGreen.isChecked -> context.resources.getString(color.seg_light_green)
+                segColorBlue.isChecked -> context.resources.getString(color.seg_light_blue)
+                else -> context.resources.getString(color.seg_red)
+            }
+        }
+        return segmentColor
     }
 
     private val btCancelOnClick = View.OnClickListener {

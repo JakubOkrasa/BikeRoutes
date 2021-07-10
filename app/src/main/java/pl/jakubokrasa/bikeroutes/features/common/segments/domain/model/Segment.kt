@@ -6,7 +6,8 @@ data class Segment(
     val beginIndex: Int,
     val endIndex: Int,
     val segmentType: SegmentType,
-    val info: String
+    val info: String,
+    val segmentColor: String
 )
 
 data class SegmentLocationData(
