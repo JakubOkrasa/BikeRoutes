@@ -1,11 +1,13 @@
 package pl.jakubokrasa.bikeroutes.features.myroutes.presentation
 
+import android.annotation.SuppressLint
 import android.app.Dialog
 import android.graphics.Color
 import android.graphics.Paint
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.res.ResourcesCompat
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.osmdroid.util.GeoPoint
@@ -13,7 +15,6 @@ import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.Polyline
 import org.osmdroid.views.overlay.advancedpolyline.MonochromaticPaintList
-import org.osmdroid.views.overlay.infowindow.InfoWindow
 import pl.jakubokrasa.bikeroutes.R
 import pl.jakubokrasa.bikeroutes.core.base.platform.BaseFragment
 import pl.jakubokrasa.bikeroutes.core.extensions.hideKeyboard
@@ -71,28 +72,8 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
         segmentPolylines = ArrayList(segments.size)
         for(segment in segments) {
             val segmentPolyline = Polyline()
-            segmentPolyline.outlinePaint.color = Color.GREEN
-
-            val paintBorder = Paint()
-            paintBorder.strokeWidth = 20F
-            paintBorder.style = Paint.Style.STROKE
-            paintBorder.color = Color.BLACK
-            paintBorder.strokeCap = Paint.Cap.ROUND
-            paintBorder.isAntiAlias = true
-
-            // create mapping paint
-            val paintMapping = Paint()
-            paintMapping.setAntiAlias(true);
-            paintMapping.setStrokeWidth(15F);
-            paintMapping.setStyle(Paint.Style.FILL_AND_STROKE);
-            paintMapping.setStrokeJoin(Paint.Join.ROUND);
-            paintMapping.color = Color.RED
-            paintMapping.setStrokeCap(Paint.Cap.ROUND);
-            paintMapping.setAntiAlias(true);
-
-            segmentPolyline.outlinePaintLists.add(MonochromaticPaintList(paintBorder))
-            segmentPolyline.outlinePaintLists.add(MonochromaticPaintList(paintMapping))
-
+            addBorderPaint(segmentPolyline)
+            addMappingPaint(segment, segmentPolyline)
 
             val segmentPoints: List<GeoPoint>
             if(segment.beginIndex<segment.endIndex) {
@@ -104,20 +85,50 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
             segmentPolylines.add(segmentPolyline)
             binding.mapView.overlays.add(segmentPolyline)
 
-            segmentPolyline.setOnClickListener(polylineOnClickListener)
+            segmentPolyline.setOnClickListener(segmentOnClickListener)
         }
         binding.mapView.invalidate()
     }
 
-    private val polylineOnClickListener = object: Polyline.OnClickListener {
+    @SuppressLint("ResourceType")
+    private fun addMappingPaint(
+        segment: SegmentDisplayable, segmentPolyline: Polyline
+    ) {
+        val paintMapping = Paint()
+        paintMapping.isAntiAlias = true;
+        paintMapping.strokeWidth = 15F;
+        paintMapping.style = Paint.Style.FILL_AND_STROKE;
+        paintMapping.strokeJoin = Paint.Join.ROUND;
+        paintMapping.color = Color.RED
+        if(segment.segmentColor.isNotEmpty())
+            paintMapping.color = Color.parseColor(segment.segmentColor)
+        else
+            paintMapping.color = Color.parseColor(requireContext().resources.getString(R.color.seg_red))
+        paintMapping.strokeCap = Paint.Cap.ROUND;
+        paintMapping.isAntiAlias = true;
+        segmentPolyline.outlinePaintLists.add(MonochromaticPaintList(paintMapping))
+    }
+
+    private fun addBorderPaint(segmentPolyline: Polyline) {
+        val paintBorder = Paint()
+        paintBorder.strokeWidth = 20F
+        paintBorder.style = Paint.Style.STROKE
+        paintBorder.color = Color.BLACK
+        paintBorder.strokeCap = Paint.Cap.ROUND
+        paintBorder.isAntiAlias = true
+        segmentPolyline.outlinePaintLists.add(MonochromaticPaintList(paintBorder))
+    }
+
+    private val segmentOnClickListener = object: Polyline.OnClickListener {
         override fun onClick(polyline: Polyline, mapView: MapView, eventPos: GeoPoint): Boolean {
-            binding.llSegments.makeVisible()
+            binding.llSegment.makeVisible()
             val segmentIndex = segmentPolylines.indexOf(polyline)
             binding.btSegmentType.text =
                 segments[segmentIndex].segmentType.toString().toUpperCase(Locale.ROOT)
             if(segments[segmentIndex].info.isNotEmpty()) {
                 binding.llSegmentInfo.makeVisible()
                 binding.tvSegmentInfo.text = segments[segmentIndex].info
+                binding
             } else {
                 binding.llSegmentInfo.makeGone()
             }
