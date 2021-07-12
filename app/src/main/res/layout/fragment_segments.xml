@@ -87,6 +87,15 @@
         android:text="add segment"
         android:visibility="gone"/>
 
+    <Button
+        android:id="@+id/bt_new_segment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@id/map_view"
+        android:layout_marginBottom="10dp"
+        android:layout_marginHorizontal="10dp"
+        android:text="new segment"/>
+
     <com.google.android.material.slider.Slider
         android:id="@+id/slider_test"
         android:layout_width="match_parent"

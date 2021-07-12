@@ -2,6 +2,7 @@ package pl.jakubokrasa.bikeroutes.features.common.segments.presentation
 
 import android.annotation.SuppressLint
 import android.graphics.Color
+import android.graphics.Paint
 import android.os.Bundle
 import android.view.View
 import androidx.core.content.res.ResourcesCompat
@@ -12,18 +13,21 @@ import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.MapEventsOverlay
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.Polyline
+import org.osmdroid.views.overlay.advancedpolyline.MonochromaticPaintList
 import pl.jakubokrasa.bikeroutes.R
 import pl.jakubokrasa.bikeroutes.core.base.platform.BaseFragment
 import pl.jakubokrasa.bikeroutes.core.extensions.makeGone
 import pl.jakubokrasa.bikeroutes.core.extensions.makeVisible
 import pl.jakubokrasa.bikeroutes.core.util.*
 import pl.jakubokrasa.bikeroutes.databinding.FragmentSegmentsBinding
+import pl.jakubokrasa.bikeroutes.features.common.segments.presentation.model.SegmentDisplayable
 import pl.jakubokrasa.bikeroutes.features.map.presentation.model.PointDisplayable
 import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteDisplayable
 import pl.jakubokrasa.bikeroutes.features.myroutes.presentation.DialogSegment
 import pl.jakubokrasa.bikeroutes.features.myroutes.presentation.MyRoutesViewModel
 import pl.jakubokrasa.bikeroutes.features.myroutes.presentation.RouteDetailsFragment.Companion.POINTS_BUNDLE_KEY
 import pl.jakubokrasa.bikeroutes.features.myroutes.presentation.RouteDetailsFragment.Companion.ROUTE_BUNDLE_KEY
+import pl.jakubokrasa.bikeroutes.features.myroutes.presentation.RouteDetailsFragment.Companion.SEGMENTS_BUNDLE_KEY
 
 
 class SegmentsFragment: BaseFragment<MyRoutesViewModel>(R.layout.fragment_segments) {
@@ -37,10 +41,11 @@ class SegmentsFragment: BaseFragment<MyRoutesViewModel>(R.layout.fragment_segmen
 
     private lateinit var markerBegin: Marker
     private lateinit var markerEnd: Marker
-    private var stage = CreateSegmentStage.CHOOSE_BEGIN
+    private lateinit var stage: CreateSegmentStage
     private var segmentBeginIndex = -1
     private var segmentEndIndex = -1
     private lateinit var segmentPolyline: Polyline
+    private lateinit var segments: List<SegmentDisplayable>
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -50,12 +55,13 @@ class SegmentsFragment: BaseFragment<MyRoutesViewModel>(R.layout.fragment_segmen
         showRoute(view)
         binding.btRecenter.setOnClickListener(btRecenterOnClick)
         binding.btAddSegment.setOnClickListener(btAddOnClick)
-        setToolbarText(getString(R.string.fragment_segments_toolbarbegin))
+        binding.btNewSegment.setOnClickListener(btNewOnClick)
+        setToolbarText("Segments")
 
         initMarkerBegin()
         initMarkerEnd()
 
-        stage = CreateSegmentStage.CHOOSE_BEGIN
+        stage = CreateSegmentStage.SHOW_CURRENT_SEGMENTS
         binding.mapView.overlays.add(mapTapEvents)
     }
 
@@ -89,6 +95,7 @@ class SegmentsFragment: BaseFragment<MyRoutesViewModel>(R.layout.fragment_segmen
         super.initObservers()
         observeSegmentPointIndex()
         observeIsSegmentAdded()
+        observeSegments()
     }
 
     private fun observeSegmentPointIndex() {
@@ -98,21 +105,33 @@ class SegmentsFragment: BaseFragment<MyRoutesViewModel>(R.layout.fragment_segmen
                 showSegmentPoint(it, markerBegin)
                 setToolbarText(getString(R.string.fragment_segments_toolbarend))
                 stage = CreateSegmentStage.CHOOSE_END
+                binding.btNewSegment.makeGone()
             } else if(stage == CreateSegmentStage.CHOOSE_END) {
                 segmentEndIndex = it
                 showSegmentPoint(it, markerEnd)
                 showSegmentPolyline()
                 binding.btAddSegment.makeVisible()
                 setToolbarText(getString(R.string.fragment_segments_toolbarready))
-                stage = CreateSegmentStage.READY_TO_ADD
+                stage = CreateSegmentStage.READY_TO_SAVE
             }
             updateToolbar()
         })
     }
 
     private fun observeIsSegmentAdded() {
-        viewModel.isSegmentAdded.observe(viewLifecycleOwner, {
+        viewModel.isSegmentAdded.observe(viewLifecycleOwner, { success ->
             prepareToAddTheNextSegment() //onSuccess and onFailure
+            if(success)
+                viewModel.getSegments(route.routeId)
+        })
+    }
+
+    private fun observeSegments() {
+        viewModel.segments.observe(viewLifecycleOwner, { newSegments ->
+
+            //todo possible optimization (by checking which segment already exists)
+            segments = newSegments
+            showSegments()
         })
     }
 
@@ -137,7 +156,7 @@ class SegmentsFragment: BaseFragment<MyRoutesViewModel>(R.layout.fragment_segmen
                             binding.btAddSegment.makeGone()
                             setToolbarText(getString(R.string.fragment_segments_toolbarbegin))
                             clearToolbarMenu()
-                        } else if(stage == CreateSegmentStage.READY_TO_ADD) {
+                        } else if(stage == CreateSegmentStage.READY_TO_SAVE) {
                             segmentEndIndex = -1
                             binding.mapView.overlays.remove(markerEnd)
                             binding.mapView.overlays.remove(segmentPolyline)
@@ -183,8 +202,60 @@ class SegmentsFragment: BaseFragment<MyRoutesViewModel>(R.layout.fragment_segmen
             setPoints()
             setPolylineProperties()
             setMapViewProperties()
+            setSegments()
+            showSegments()
             binding.mapView.invalidate()
         }
+    }
+
+    private fun showSegments() {
+        val segmentPolylines = ArrayList<Polyline>(segments.size)
+        for(segment in segments) {
+            val segmentPolyline = Polyline()
+            addBorderPaint(segmentPolyline)
+            addMappingPaint(segment, segmentPolyline)
+
+            val segmentPoints: List<GeoPoint>
+            if(segment.beginIndex<segment.endIndex) {
+                segmentPoints = points.subList(segment.beginIndex, segment.endIndex + 1).map { it.geoPoint }
+            } else {
+                segmentPoints = points.subList(segment.endIndex, segment.beginIndex - 1).map { it.geoPoint }
+            }
+            segmentPolyline.setPoints(segmentPoints)
+            segmentPolylines.add(segmentPolyline)
+            binding.mapView.overlays.add(segmentPolyline)
+
+        }
+        binding.mapView.invalidate()
+    }
+
+    @SuppressLint("ResourceType")
+    private fun addMappingPaint(
+        segment: SegmentDisplayable, segmentPolyline: Polyline
+    ) {
+        val paintMapping = Paint()
+        paintMapping.isAntiAlias = true;
+        paintMapping.strokeWidth = 15F;
+        paintMapping.style = Paint.Style.FILL_AND_STROKE;
+        paintMapping.strokeJoin = Paint.Join.ROUND;
+        paintMapping.color = Color.RED
+        if(segment.segmentColor.isNotEmpty())
+            paintMapping.color = Color.parseColor(segment.segmentColor)
+        else
+            paintMapping.color = Color.parseColor(requireContext().resources.getString(R.color.seg_red))
+        paintMapping.strokeCap = Paint.Cap.ROUND;
+        paintMapping.isAntiAlias = true;
+        segmentPolyline.outlinePaintLists.add(MonochromaticPaintList(paintMapping))
+    }
+
+    private fun addBorderPaint(segmentPolyline: Polyline) {
+        val paintBorder = Paint()
+        paintBorder.strokeWidth = 20F
+        paintBorder.style = Paint.Style.STROKE
+        paintBorder.color = Color.BLACK
+        paintBorder.strokeCap = Paint.Cap.ROUND
+        paintBorder.isAntiAlias = true
+        segmentPolyline.outlinePaintLists.add(MonochromaticPaintList(paintBorder))
     }
 
     private fun setMapViewProperties() {
@@ -217,13 +288,18 @@ class SegmentsFragment: BaseFragment<MyRoutesViewModel>(R.layout.fragment_segmen
     }
 
     private val btAddOnClick = View.OnClickListener {
-        clearToolbarMenu()
         val segmentBasicModel = SegmentBasicModel(
             route.routeId,
             segmentBeginIndex,
             segmentEndIndex,
         )
         DialogSegment(requireContext(), viewModel, segmentBasicModel).show()
+    }
+
+    private val btNewOnClick = View.OnClickListener {
+        stage = CreateSegmentStage.CHOOSE_BEGIN
+        binding.btNewSegment.makeGone()
+        setToolbarText(getString(R.string.fragment_segments_toolbarbegin))
     }
 
     private fun setRoute() {
@@ -242,10 +318,22 @@ class SegmentsFragment: BaseFragment<MyRoutesViewModel>(R.layout.fragment_segmen
         }
     }
 
-    fun prepareToAddTheNextSegment() {
+    private fun setSegments() {
+        val serializable = arguments
+            ?.getSerializable(SEGMENTS_BUNDLE_KEY) //I use Serializable instead of Parcelable because I didn't find any simple solution to pass a List through Parcelable
+        if(serializable is List<*>?) {
+            serializable.let {
+                segments = serializable as List<SegmentDisplayable>
+            }
+        }
+    }
+
+    private fun prepareToAddTheNextSegment() {
+        clearToolbarMenu()
         setToolbarText("Add another segment")
         binding.btAddSegment.makeGone()
-        stage = CreateSegmentStage.CHOOSE_BEGIN
+        binding.btNewSegment.makeVisible()
+        stage = CreateSegmentStage.SHOW_CURRENT_SEGMENTS
         segmentBeginIndex = -1
         segmentEndIndex = -1
         markerBegin.remove(binding.mapView)
@@ -289,9 +377,10 @@ class SegmentsFragment: BaseFragment<MyRoutesViewModel>(R.layout.fragment_segmen
     private val mapTapEvents = MapEventsOverlay(mapTapEventsReceiver)
 
     private enum class CreateSegmentStage {
-        READY_TO_ADD,
+        SHOW_CURRENT_SEGMENTS,
         CHOOSE_BEGIN,
-        CHOOSE_END
+        CHOOSE_END,
+        READY_TO_SAVE
     }
 
 }

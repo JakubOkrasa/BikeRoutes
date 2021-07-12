@@ -24,7 +24,7 @@ class CommonRoutesNavigator(private val fragmentNavigator: FragmentNavigator) {
             null,
             RouteDetailsFragment.ROUTE_BUNDLE_KEY to route,
             RouteDetailsFragment.POINTS_BUNDLE_KEY to points,
-
+            RouteDetailsFragment.SEGMENTS_BUNDLE_KEY to segments
         )
     }
 }

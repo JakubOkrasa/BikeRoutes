@@ -63,6 +63,7 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
 
     private fun observeSegments() {
         viewModel.segments.observe(viewLifecycleOwner, {
+            //todo possible optimization (by checking which segment already exists)
             segments = it
             showSegments(segments)
         })
@@ -171,7 +172,7 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
                     R.id.action_segments -> {
                         navigator.openSegmentsFragment(route,
                             points,
-                            ArrayList<SegmentDisplayable>()) //todo
+                            segments)
                         true
                     }
                     R.id.action_routedetails_edit -> {
