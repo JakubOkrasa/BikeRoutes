@@ -1,10 +1,13 @@
 package pl.jakubokrasa.bikeroutes.features.common.segments.presentation
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import android.util.Log
+import androidx.core.content.edit
 import androidx.core.content.res.ResourcesCompat
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.osmdroid.events.MapEventsReceiver
@@ -15,6 +18,7 @@ import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.Polyline
 import pl.jakubokrasa.bikeroutes.R
 import pl.jakubokrasa.bikeroutes.core.base.platform.BaseFragment
+import pl.jakubokrasa.bikeroutes.core.extensions.PreferenceHelper.Companion.PREF_KEY_TIPS_SEGMENTS_NOT_SHOWED
 import pl.jakubokrasa.bikeroutes.core.extensions.makeGone
 import pl.jakubokrasa.bikeroutes.core.extensions.makeVisible
 import pl.jakubokrasa.bikeroutes.core.util.*
@@ -62,7 +66,11 @@ class SegmentsFragment: BaseFragment<MyRoutesViewModel>(R.layout.fragment_segmen
 
         stage = CreateSegmentStage.SHOW_CURRENT_SEGMENTS
         binding.mapView.overlays.add(mapTapEvents)
+
+        showSegmentsTipDialogForFirstTimeUsage()
     }
+
+
 
     private fun initMarkerBegin() {
         markerBegin = Marker(binding.mapView)
@@ -88,6 +96,18 @@ class SegmentsFragment: BaseFragment<MyRoutesViewModel>(R.layout.fragment_segmen
     override fun onPause() {
         super.onPause()
         binding.mapView.onPause()
+    }
+
+    private fun showSegmentsTipDialogForFirstTimeUsage() {
+        if(!preferenceHelper.preferences.contains(PREF_KEY_TIPS_SEGMENTS_NOT_SHOWED))
+            AlertDialog.Builder(requireContext())
+                .setTitle("Tip")
+                .setMessage("Here you can mark different route segments such as bumpy, sandy or busy road. To do that, tap on the begin and the end point of the segment")
+                .setPositiveButton("OK", DialogInterface.OnClickListener { _, _ ->
+                    preferenceHelper.preferences.edit {
+                        putBoolean(PREF_KEY_TIPS_SEGMENTS_NOT_SHOWED, false)
+                    }
+                }).show()
     }
 
     override fun initObservers() {

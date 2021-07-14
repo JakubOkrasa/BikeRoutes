@@ -16,6 +16,8 @@ class PreferenceHelper(ctx: Context) {
 
         const val PREF_KEY_USER_EMAIL = "user_email"
         const val PREF_KEY_USER_PASSWORD = "user_password"
+
+        const val PREF_KEY_TIPS_SEGMENTS_NOT_SHOWED = "key_tips_segments_not_showed"
     }
 
     private val filePath = BuildConfig.APPLICATION_ID + ".preferences"
