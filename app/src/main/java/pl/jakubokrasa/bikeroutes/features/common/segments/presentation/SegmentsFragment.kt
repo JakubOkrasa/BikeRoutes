@@ -2,7 +2,6 @@ package pl.jakubokrasa.bikeroutes.features.common.segments.presentation
 
 import android.annotation.SuppressLint
 import android.graphics.Color
-import android.graphics.Paint
 import android.os.Bundle
 import android.view.View
 import androidx.core.content.res.ResourcesCompat
@@ -13,7 +12,6 @@ import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.MapEventsOverlay
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.Polyline
-import org.osmdroid.views.overlay.advancedpolyline.MonochromaticPaintList
 import pl.jakubokrasa.bikeroutes.R
 import pl.jakubokrasa.bikeroutes.core.base.platform.BaseFragment
 import pl.jakubokrasa.bikeroutes.core.extensions.makeGone
@@ -212,8 +210,8 @@ class SegmentsFragment: BaseFragment<MyRoutesViewModel>(R.layout.fragment_segmen
         val segmentPolylines = ArrayList<Polyline>(segments.size)
         for(segment in segments) {
             val segmentPolyline = Polyline()
-            addBorderPaint(segmentPolyline)
-            addMappingPaint(segment, segmentPolyline)
+            addSegmentBorderPaint(segmentPolyline)
+            addSegmentMappingPaint(requireContext(), segment, segmentPolyline)
 
             val segmentPoints: List<GeoPoint>
             if(segment.beginIndex<segment.endIndex) {
@@ -227,35 +225,6 @@ class SegmentsFragment: BaseFragment<MyRoutesViewModel>(R.layout.fragment_segmen
 
         }
         binding.mapView.invalidate()
-    }
-
-    @SuppressLint("ResourceType")
-    private fun addMappingPaint(
-        segment: SegmentDisplayable, segmentPolyline: Polyline
-    ) {
-        val paintMapping = Paint()
-        paintMapping.isAntiAlias = true;
-        paintMapping.strokeWidth = 15F;
-        paintMapping.style = Paint.Style.FILL_AND_STROKE;
-        paintMapping.strokeJoin = Paint.Join.ROUND;
-        paintMapping.color = Color.RED
-        if(segment.segmentColor.isNotEmpty())
-            paintMapping.color = Color.parseColor(segment.segmentColor)
-        else
-            paintMapping.color = Color.parseColor(requireContext().resources.getString(R.color.seg_red))
-        paintMapping.strokeCap = Paint.Cap.ROUND;
-        paintMapping.isAntiAlias = true;
-        segmentPolyline.outlinePaintLists.add(MonochromaticPaintList(paintMapping))
-    }
-
-    private fun addBorderPaint(segmentPolyline: Polyline) {
-        val paintBorder = Paint()
-        paintBorder.strokeWidth = 20F
-        paintBorder.style = Paint.Style.STROKE
-        paintBorder.color = Color.BLACK
-        paintBorder.strokeCap = Paint.Cap.ROUND
-        paintBorder.isAntiAlias = true
-        segmentPolyline.outlinePaintLists.add(MonochromaticPaintList(paintBorder))
     }
 
     private fun setMapViewProperties() {
