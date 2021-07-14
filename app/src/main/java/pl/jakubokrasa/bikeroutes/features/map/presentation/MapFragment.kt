@@ -34,11 +34,8 @@ import pl.jakubokrasa.bikeroutes.core.extensions.PreferenceHelper.Companion.PREF
 import pl.jakubokrasa.bikeroutes.core.extensions.makeGone
 import pl.jakubokrasa.bikeroutes.core.extensions.makeVisible
 import pl.jakubokrasa.bikeroutes.core.extensions.putDouble
-import pl.jakubokrasa.bikeroutes.core.util.LocationUtils
+import pl.jakubokrasa.bikeroutes.core.util.*
 import pl.jakubokrasa.bikeroutes.core.util.enums.MapMode
-import pl.jakubokrasa.bikeroutes.core.util.configureOsmDroid
-import pl.jakubokrasa.bikeroutes.core.util.routeColor
-import pl.jakubokrasa.bikeroutes.core.util.routeWidth
 import pl.jakubokrasa.bikeroutes.databinding.FragmentMapBinding
 import pl.jakubokrasa.bikeroutes.features.common.domain.BoundingBoxData
 import pl.jakubokrasa.bikeroutes.features.map.domain.LocationService
@@ -191,8 +188,7 @@ class MapFragment() : BaseFragment<MapViewModel>(R.layout.fragment_map), KoinCom
     }
 
     private fun setPolylineProperties() {
-        polyline.outlinePaint.strokeWidth = routeWidth
-        polyline.outlinePaint.color = routeColor
+        addMappingPaint(polyline)
     }
 
     private val locationServiceReceiver: BroadcastReceiver = object : BroadcastReceiver() {

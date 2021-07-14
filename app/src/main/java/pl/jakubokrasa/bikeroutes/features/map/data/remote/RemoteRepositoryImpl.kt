@@ -1,5 +1,6 @@
 package pl.jakubokrasa.bikeroutes.features.map.data.remote
 
+import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import android.net.Uri
@@ -13,6 +14,8 @@ import pl.jakubokrasa.bikeroutes.features.common.domain.FilterData
 import pl.jakubokrasa.bikeroutes.features.common.domain.model.GeocodingItem
 import pl.jakubokrasa.bikeroutes.features.common.data.model.PhotoInfoResponse
 import pl.jakubokrasa.bikeroutes.features.common.domain.model.PhotoInfo
+import pl.jakubokrasa.bikeroutes.features.common.segments.data.model.SegmentResponse
+import pl.jakubokrasa.bikeroutes.features.common.segments.domain.model.Segment
 import pl.jakubokrasa.bikeroutes.features.map.data.remote.model.PointResponse
 import pl.jakubokrasa.bikeroutes.features.map.data.remote.model.RouteResponse
 import pl.jakubokrasa.bikeroutes.features.map.domain.RemoteRepository
@@ -152,6 +155,23 @@ class RemoteRepositoryImpl(
             .delete().await()
 
     }
+
+	override suspend fun addSegment(segment: Segment) {
+        val segmentDoc = firestore.collection("segments").document()
+
+        firestore.runBatch { batch ->
+            batch.set(segmentDoc, SegmentResponse(segment))
+            batch.update(segmentDoc, "segmentId", segmentDoc.id)
+        }.await()
+    }
+
+    override suspend fun removeSegment(segmentId: String) {
+        firestore.collection("segments")
+            .document(segmentId)
+            .delete()
+            .await()
+    }
+
     //============ SHARED ROUTES ===================
     override suspend fun getSharedRoutes(uid: String): List<Route> {
         val routeResponseList = ArrayList<RouteResponse>()
@@ -210,6 +230,14 @@ class RemoteRepositoryImpl(
         for (doc in documents)
             doc.toObject(PhotoInfoResponse::class.java)?.let { photoResponseList.add(it) }
         return photoResponseList.map { it.toPhotoInfo() }
+    }
+
+	override suspend fun getSegments(routeId: String): List<Segment> {
+        return firestore.collection("segments")
+            .whereEqualTo("routeId", routeId)
+            .get()
+            .await()
+            .map { doc -> doc.toObject(SegmentResponse::class.java).toSegment() }
     }
 
 

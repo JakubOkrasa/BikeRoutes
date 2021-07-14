@@ -23,4 +23,7 @@
     <string name="fragment_common_no_data_filter">No route meets your filters.</string>
     <string name="URL_NOMINATIM_GEOCODING_API">https://nominatim.openstreetmap.org/</string>
     <string name="filter_location_et_hint">e.g. "Ochota, Warszawa"</string>
+    <string name="fragment_segments_toolbarbegin">Tap on the start</string>
+    <string name="fragment_segments_toolbarend">Tap on the end</string>
+    <string name="fragment_segments_toolbarready">Add the segment</string>
 </resources>

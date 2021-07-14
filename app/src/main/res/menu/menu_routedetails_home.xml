@@ -2,6 +2,12 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
         <item
+            android:id="@+id/action_segments"
+            android:icon="@drawable/ic_baseline_add_road_24"
+            android:title="segments"
+            app:showAsAction="always"
+                />
+        <item
             android:id="@+id/action_routedetails_edit"
             android:icon="@drawable/ic_edit_24"
             android:title="Edit"

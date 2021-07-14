@@ -1,7 +1,10 @@
 package pl.jakubokrasa.bikeroutes.features.myroutes.presentation
 
+import android.annotation.SuppressLint
 import android.app.Dialog
 import android.net.Uri
+import android.content.res.ColorStateList
+import android.graphics.*
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -15,6 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_route_details.*
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Polyline
 import pl.jakubokrasa.bikeroutes.R
@@ -28,8 +32,11 @@ import pl.jakubokrasa.bikeroutes.databinding.FragmentRouteDetailsBinding
 import pl.jakubokrasa.bikeroutes.features.common.presentation.CommonRoutesNavigator
 import pl.jakubokrasa.bikeroutes.features.common.presentation.PhotosRecyclerAdapter
 import pl.jakubokrasa.bikeroutes.features.common.presentation.model.PhotoInfoDisplayable
+import pl.jakubokrasa.bikeroutes.features.common.segments.presentation.model.SegmentDisplayable
 import pl.jakubokrasa.bikeroutes.features.map.presentation.model.PointDisplayable
 import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteDisplayable
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_route_details) {
@@ -43,11 +50,15 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
     private lateinit var dialogConfirmRemove: Dialog
     private val navigator: CommonRoutesNavigator by inject()
     private val photosRecyclerAdapter: PhotosRecyclerAdapter by inject()
-
+	private lateinit var segmentPolylines :ArrayList<Polyline>
+    private lateinit var segments: ArrayList<SegmentDisplayable>
+    private lateinit var selectedSegment: SegmentDisplayable
     private val activityResultGalleryLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
         uri?.let {
             val picturePath = FileUtils(requireContext()).getPath(uri)
             viewModel.addPhoto(route.routeId, picturePath, route.sharingType)
+            onPendingState() // the call is needed here because when view model calls it setPendingState, RouteDetailsFragment is not showed
+
 //            initRecycler() //w MyRoutesFragment RV jest inicjowany także w onResume, nie pamiętam czemu
         }
     }
@@ -58,11 +69,12 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
         configureOsmDroid(requireContext())
 
         updateToolbar()
-        showRoute(view)
+        onViewPost(view)
         initVisibilitySpinner()
 
 
         binding.btFollow.setOnClickListener(btFollowOnClick)
+		binding.ibRemove.setOnClickListener(ibRemoveOnClick)
         binding.btAddPhotos.setOnClickListener(btAddPhotosOnClick)
     }
 
@@ -119,6 +131,7 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
     override fun initObservers() {
         super.initObservers()
         observePhotos()
+		observeSegments()
     }
 
     private fun observePhotos() {
@@ -129,6 +142,36 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
                 hidePhotos()
             }
         })
+    }
+
+	private fun observeSegments() {
+        viewModel.segments.observe(viewLifecycleOwner, {
+            //todo possible optimization (by checking which segment already exists)
+            segments = ArrayList(it)
+            showSegments(segments)
+        })
+    }
+
+    private fun showSegments(segments: List<SegmentDisplayable>) {
+        segmentPolylines = ArrayList(segments.size)
+        for(segment in segments) {
+            val segmentPolyline = Polyline()
+            addSegmentBorderPaint(segmentPolyline)
+            addSegmentMappingPaint(requireContext(), segment, segmentPolyline)
+
+            val segmentPoints: List<GeoPoint>
+            if(segment.beginIndex<segment.endIndex) {
+                segmentPoints = points.subList(segment.beginIndex, segment.endIndex + 1).map { it.geoPoint }
+            } else {
+                segmentPoints = points.subList(segment.endIndex, segment.beginIndex - 1).map { it.geoPoint }
+            }
+            segmentPolyline.setPoints(segmentPoints)
+            segmentPolylines.add(segmentPolyline)
+            binding.mapView.overlays.add(segmentPolyline)
+
+            segmentPolyline.setOnClickListener(segmentOnClickListener)
+        }
+        binding.mapView.invalidate()
     }
 
     private fun hidePhotos() {
@@ -142,22 +185,26 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
         photosRecyclerAdapter.setItems(list)
     }
 
-    private fun showRoute(view: View) {
+    private fun onViewPost(view: View) {
         view.post {
-            setRoute()
-            setPoints()
-            updateRouteInfoLayout()
-            updateRouteEditLayout()
-            setPolylineProperties()
-            setMapViewProperties()
-            binding.mapView.invalidate()
+            showRoute()
+            viewModel.getSegments(route.routeId)
+        }
+    }
 
-            if (!isMyRoute()) {
+    private fun showRoute() {
+        setRoute()
+        setPoints()
+        updateRouteInfoLayout()
+        updateRouteEditLayout()
+        setPolylineProperties()
+        setMapViewProperties()
+        binding.mapView.invalidate()
+		if (!isMyRoute()) {
                 binding.btAddPhotos.makeGone()
                 if (route.sharingType == SharingType.PUBLIC_WITH_PRIVATE_PHOTOS) {
                     hidePhotos()
                 }
-            }
         }
     }
 
@@ -166,11 +213,18 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
             binding.toolbar.inflateMenu(R.menu.menu_routedetails_home)
             binding.toolbar.setOnMenuItemClickListener { menuItem ->
                 when (menuItem.itemId) {
+                    R.id.action_segments -> {
+                        navigator.openSegmentsFragment(route,
+                            points,
+                            segments)
+                        true
+                    }
                     R.id.action_routedetails_edit -> {
                         clearToolbarMenu()
                         binding.toolbar.inflateMenu(R.menu.menu_routedetails_edit)
                         binding.toolbar.setOnMenuItemClickListener(toolbarIconsEditModeOnClick)
                         binding.llRouteInfo.makeGone()
+                        binding.llVisibility.makeGone()
                         binding.llRouteEdit.makeVisible()
                         true
                     }
@@ -193,6 +247,7 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
                     hideKeyboard()
                     llRouteEdit.makeGone()
                     llRouteInfo.makeVisible()
+					binding.llVisibility.makeVisible()
                     clearToolbarMenu()
                     updateToolbar()
                     true
@@ -291,7 +346,7 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
     private fun setPolylineProperties() {
         polyline = Polyline() // needed when you pop up from FollowRouteFragment to RouteDetailsFragment
         polyline.setPoints(points.map { p -> p.geoPoint })
-        polyline.setBaseProperties()
+        addMappingPaint(polyline)
     }
 
     private fun clearToolbarMenu() {
@@ -300,13 +355,13 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
 
     private fun setRoute() {
         arguments
-            ?.getParcelable<RouteDisplayable>(ROUTE_TO_FOLLOW_KEY)
+            ?.getParcelable<RouteDisplayable>(ROUTE_BUNDLE_KEY)
             ?.let { route = it}
     }
 
     private fun setPoints() {
         val serializable = arguments
-            ?.getSerializable(POINTS_TO_FOLLOW_KEY) //I use Serializable instead of Parcelable because I didn't find any simple solution to pass a List through Parcelable
+            ?.getSerializable(POINTS_BUNDLE_KEY) //I use Serializable instead of Parcelable because I didn't find any simple solution to pass a List through Parcelable
                 if(serializable is List<*>?) {
                     serializable.let {
                         points = serializable as List<PointDisplayable>
@@ -314,14 +369,70 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
                 }
     }
 
-    private fun isMyRoute() = arguments?.getBoolean(IS_MY_ROUTE_KEY) ?: false
+    private fun isMyRoute() = arguments?.getBoolean(IS_MY_ROUTE_BUNDLE_KEY) ?: false
 
     private val btFollowOnClick = View.OnClickListener {
         navigator.openFollowRouteFragment(route, points)
     }
 
-    private val btAddPhotosOnClick = View.OnClickListener {
+	private val btAddPhotosOnClick = View.OnClickListener {
         activityResultGalleryLauncher.launch("image/*")
+	}
+
+    private val ibRemoveOnClick = View.OnClickListener {
+        viewModel.removeSegment(selectedSegment.segmentId)
+        val removedSegmentIndex = segments.indexOf(selectedSegment)
+        binding.mapView.overlays.remove(segmentPolylines[removedSegmentIndex])
+        segmentPolylines.removeAt(removedSegmentIndex)
+        binding.mapView.invalidate()
+        segments.removeAt(removedSegmentIndex)
+        binding.llSegment.makeGone()
+    }
+
+    private val segmentOnClickListener = object: Polyline.OnClickListener {
+        override fun onClick(polyline: Polyline, mapView: MapView, eventPos: GeoPoint): Boolean {
+            showSegmentDetails(polyline)
+            return true
+        }
+
+        private fun showSegmentDetails(polyline: Polyline) {
+            binding.llSegment.makeVisible()
+            val segmentIndex = segmentPolylines.indexOf(polyline)
+            selectedSegment = segments[segmentIndex]
+            showSegmentType()
+            showSegmentButtonsIfMyRoute()
+            hideSegmentInfoIfEmpty(segmentIndex)
+            setSegmentDetailsColor()
+        }
+
+        private fun showSegmentType() {
+            binding.btSegmentType.text = selectedSegment.segmentType.toString().toUpperCase(Locale.ROOT)
+        }
+
+        private fun showSegmentButtonsIfMyRoute() {
+            if (isMyRoute()) {
+                binding.ibEdit.makeVisible()
+                binding.ibRemove.makeVisible()
+            }
+        }
+
+        private fun hideSegmentInfoIfEmpty(segmentIndex: Int) {
+            if (selectedSegment.info.isNotEmpty()) {
+                binding.llSegmentInfo.makeVisible()
+                binding.tvSegmentInfo.text = segments[segmentIndex].info
+            } else {
+                binding.llSegmentInfo.makeGone()
+            }
+        }
+
+        @SuppressLint("ResourceType")
+        private fun setSegmentDetailsColor() {
+            val segmentColor = selectedSegment.segmentColor.ifEmpty { requireContext().resources.getString(R.color.seg_red) }
+            val colorStateList = ColorStateList.valueOf(Color.parseColor(segmentColor))
+            binding.btSegmentType.backgroundTintList = colorStateList
+            binding.ibEdit.backgroundTintList = colorStateList
+            binding.ibRemove.backgroundTintList = colorStateList
+        }
     }
 
     override fun onPendingState() {
@@ -335,8 +446,9 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
     }
 
     companion object {
-        const val ROUTE_TO_FOLLOW_KEY = "routeToFollowKey"
-        const val POINTS_TO_FOLLOW_KEY = "pointsToFollowKey"
-        const val IS_MY_ROUTE_KEY = "isMyRoutesSourceKey"
+        const val ROUTE_BUNDLE_KEY = "routeBundleKey"
+        const val POINTS_BUNDLE_KEY = "pointsBundleKey"
+        const val SEGMENTS_BUNDLE_KEY = "segmentsBundleKey"
+        const val IS_MY_ROUTE_BUNDLE_KEY = "isMyRouteBundleKey"
     }
 }

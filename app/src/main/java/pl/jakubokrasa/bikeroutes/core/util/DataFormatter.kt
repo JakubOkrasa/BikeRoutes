@@ -40,6 +40,18 @@ fun getFormattedFilterDistanceLessThan(valueTo: Int): String {
 }
 
 fun getFormattedFilterLocation(displayName: String): String {
-    val secondPartEnd = displayName.indexOf(',', displayName.indexOf(',')+1)
-    return displayName.substring(0, secondPartEnd)
+    val firstCommaIndex = displayName.indexOfComma()
+    if(firstCommaIndex != -1) {
+        val secondCommaIndex = displayName.indexOfComma(firstCommaIndex+1)
+        if(secondCommaIndex != -1)
+            return displayName.substring(0, secondCommaIndex)
+        else
+            return displayName
+    } else {
+        return displayName
+    }
+}
+
+private fun String.indexOfComma(startIndex: Int = 0): Int {
+    return this.indexOf(',', startIndex)
 }
