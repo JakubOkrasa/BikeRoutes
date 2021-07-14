@@ -65,81 +65,95 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/toolbar">
 
-                <LinearLayout
+                <RelativeLayout
                     android:id="@+id/ll_segment"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
                     android:visibility="gone"
-                    android:padding="5dp"
                     tools:visibility="visible"
-                    android:background="@drawable/border_segment_details">
-
+                    android:layout_margin="5dp">
                     <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_vertical">
-
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/bt_segment_type"
-                            android:layout_marginLeft="10dp"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            app:cornerRadius="18dp"
-                            android:backgroundTint="@color/light_orange"
-                            android:textColor="@color/blurred_white"
-                            android:enabled="false"
-                            android:text="BUMPS"/>
-
-                        <View
-                            android:layout_width="0dp"
-                            android:layout_height="0dp"
-                            android:layout_weight="1"/>
-
-                        <ImageButton
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:src="@drawable/ic_edit_24"
-                            android:backgroundTint="@color/light_orange"/>
-
-                        <ImageButton
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:src="@drawable/ic_remove_24"
-                            android:backgroundTint="@color/light_orange"/>
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/ll_segment_info"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:layout_marginVertical="2dp"
-                        android:layout_marginHorizontal="10dp">
-
-                        <TextView
-                            android:layout_width="wrap_content"
+                        android:padding="10dp"
+                        android:layout_marginTop="10dp"
+                        android:background="@drawable/border_segment_round">
+                        <LinearLayout
+                            android:id="@+id/segment_top"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            style="@style/tv_small"
-                            android:textStyle="bold"
-                            android:text="Additional info:"/>
-                        <TextView
-                            android:id="@+id/tv_segment_info"
-                            style="@style/tv_small"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Huge holes in asphalt, heavy traffic"/>
+                            android:gravity="center_vertical">
 
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/bt_segment_type"
+                                android:layout_marginLeft="10dp"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                app:cornerRadius="18dp"
+                                android:textColor="@color/blurred_white"
+                                android:enabled="false"
+                                android:text="BUMPS"/>
+
+                            <View
+                                android:layout_width="0dp"
+                                android:layout_height="0dp"
+                                android:layout_weight="1"/>
+
+                            <ImageButton
+                                android:id="@+id/ib_edit"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:src="@drawable/ic_edit_24"/>
+
+                            <ImageButton
+                                android:id="@+id/ib_remove"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:src="@drawable/ic_remove_24"/>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/ll_segment_info"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:layout_marginVertical="2dp"
+                            android:layout_marginHorizontal="10dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                style="@style/tv_small"
+                                android:textStyle="bold"
+                                android:text="Additional info:"/>
+                            <TextView
+                                android:id="@+id/tv_segment_info"
+                                style="@style/tv_small"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Huge holes in asphalt, heavy traffic"/>
+
+                        </LinearLayout>
                     </LinearLayout>
-                </LinearLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="20dp"
+                        style="@style/tv_small"
+                        android:text="  Segment details  "
+                        android:background="@color/white"
+                        android:layout_alignParentTop="true"/>
+                </RelativeLayout>
+
 
                 <TextView
                     android:id="@+id/tv_route_name"
                     style="@style/tv_medium"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="test name"
+                    android:text="Route name abc"
                     android:textStyle="bold" />
 
                 <TextView

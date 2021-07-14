@@ -2,10 +2,12 @@ package pl.jakubokrasa.bikeroutes.features.myroutes.presentation
 
 import android.annotation.SuppressLint
 import android.app.Dialog
-import android.graphics.Color
-import android.graphics.Paint
+import android.content.res.ColorStateList
+import android.graphics.*
+import android.os.Build
 import android.os.Bundle
 import android.view.View
+import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.res.ResourcesCompat
 import org.koin.android.ext.android.inject
@@ -15,6 +17,7 @@ import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.Polyline
 import org.osmdroid.views.overlay.advancedpolyline.MonochromaticPaintList
+import pl.jakubokrasa.bikeroutes.BuildConfig
 import pl.jakubokrasa.bikeroutes.R
 import pl.jakubokrasa.bikeroutes.core.base.platform.BaseFragment
 import pl.jakubokrasa.bikeroutes.core.extensions.hideKeyboard
@@ -118,23 +121,6 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
         paintBorder.strokeCap = Paint.Cap.ROUND
         paintBorder.isAntiAlias = true
         segmentPolyline.outlinePaintLists.add(MonochromaticPaintList(paintBorder))
-    }
-
-    private val segmentOnClickListener = object: Polyline.OnClickListener {
-        override fun onClick(polyline: Polyline, mapView: MapView, eventPos: GeoPoint): Boolean {
-            binding.llSegment.makeVisible()
-            val segmentIndex = segmentPolylines.indexOf(polyline)
-            binding.btSegmentType.text =
-                segments[segmentIndex].segmentType.toString().toUpperCase(Locale.ROOT)
-            if(segments[segmentIndex].info.isNotEmpty()) {
-                binding.llSegmentInfo.makeVisible()
-                binding.tvSegmentInfo.text = segments[segmentIndex].info
-                binding
-            } else {
-                binding.llSegmentInfo.makeGone()
-            }
-            return true
-        }
     }
 
     override fun onResume() {
@@ -303,6 +289,34 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
 
     private val btFollowOnClick = View.OnClickListener {
         navigator.openFollowRouteFragment(route, points)
+    }
+
+    private val segmentOnClickListener = object: Polyline.OnClickListener {
+        @SuppressLint("ResourceType")
+        override fun onClick(polyline: Polyline, mapView: MapView, eventPos: GeoPoint): Boolean {
+            binding.llSegment.makeVisible()
+            val segmentIndex = segmentPolylines.indexOf(polyline)
+            binding.btSegmentType.text =
+                segments[segmentIndex].segmentType.toString().toUpperCase(Locale.ROOT)
+            if(segments[segmentIndex].info.isNotEmpty()) {
+                binding.llSegmentInfo.makeVisible()
+                binding.tvSegmentInfo.text = segments[segmentIndex].info
+                binding
+            } else {
+                binding.llSegmentInfo.makeGone()
+            }
+            val segmentColor = segments[segmentIndex].segmentColor.ifEmpty { requireContext().resources.getString(R.color.seg_red) }
+//            val BrighterSegmentColor = todo
+            val colorStateList =  ColorStateList.valueOf(Color.parseColor(segmentColor))
+            binding.btSegmentType.backgroundTintList = colorStateList
+            binding.ibEdit.backgroundTintList = colorStateList
+            binding.ibRemove.backgroundTintList = colorStateList
+//            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
+//                binding.llSegment.background.colorFilter = BlendModeColorFilter(Color.parseColor(segmentColor), BlendMode.SRC_ATOP)
+//            else
+//                binding.llSegment.background.setColorFilter(Color.parseColor(segmentColor), PorterDuff.Mode.SRC_ATOP)
+            return true
+        }
     }
 
     override fun onPendingState() {
