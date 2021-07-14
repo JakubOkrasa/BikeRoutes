@@ -279,12 +279,20 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
             val segmentIndex = segmentPolylines.indexOf(polyline)
             selectedSegment = segments[segmentIndex]
             showSegmentType()
+            showSegmentButtonsIfMyRoute()
             hideSegmentInfoIfEmpty(segmentIndex)
             setSegmentDetailsColor()
         }
 
         private fun showSegmentType() {
             binding.btSegmentType.text = selectedSegment.segmentType.toString().toUpperCase(Locale.ROOT)
+        }
+
+        private fun showSegmentButtonsIfMyRoute() {
+            if (isMyRoute()) {
+                binding.ibEdit.makeVisible()
+                binding.ibRemove.makeVisible()
+            }
         }
 
         private fun hideSegmentInfoIfEmpty(segmentIndex: Int) {
