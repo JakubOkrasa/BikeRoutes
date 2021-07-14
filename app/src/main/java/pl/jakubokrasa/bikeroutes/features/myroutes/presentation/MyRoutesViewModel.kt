@@ -27,7 +27,9 @@ class MyRoutesViewModel(
     private val getGeocodingItemUseCase: GetGeocodingItemUseCase,
     private val getSegmentPointUseCase: GetSegmentPointUseCase,
     private val addSegmentUseCase: AddSegmentUseCase,
+    private val removeSegmentUseCase: RemoveSegmentUseCase,
     private val getSegmentsUseCase: GetSegmentsUseCase,
+
     private val myRoutesNavigator: MyRoutesNavigator,
 ): BaseViewModel() {
 
@@ -178,6 +180,23 @@ class MyRoutesViewModel(
             result.onFailure {
                 _isSegmentAdded.value = false
                 handleFailure("addSegment", errLog = it.message)
+            }
+        }
+    }
+
+    fun removeSegment(segmentId: String) {
+        setPendingState()
+        removeSegmentUseCase(
+            params = segmentId,
+            scope = viewModelScope
+        ) {
+                result ->
+            setIdleState()
+            result.onSuccess {
+                handleSuccess("removeSegment", "segment removed")
+            }
+            result.onFailure {
+                handleFailure("removeSegment", errLog = it.message)
             }
         }
     }

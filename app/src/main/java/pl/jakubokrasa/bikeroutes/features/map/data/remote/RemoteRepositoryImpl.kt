@@ -127,6 +127,13 @@ class RemoteRepositoryImpl(
         }.await()
     }
 
+    override suspend fun removeSegment(segmentId: String) {
+        firestore.collection("segments")
+            .document(segmentId)
+            .delete()
+            .await()
+    }
+
     //============ SHARED ROUTES ===================
     override suspend fun getSharedRoutes(uid: String): List<Route> {
         val routeResponseList = ArrayList<RouteResponse>()

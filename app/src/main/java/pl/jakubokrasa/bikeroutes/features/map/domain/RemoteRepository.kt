@@ -22,6 +22,7 @@ interface RemoteRepository {
 
     suspend fun addSegment(segment: Segment)
 
+    suspend fun removeSegment(segmentId: String)
 
     //SHARED ROUTES
     suspend fun getSharedRoutes(uid: String): List<Route>

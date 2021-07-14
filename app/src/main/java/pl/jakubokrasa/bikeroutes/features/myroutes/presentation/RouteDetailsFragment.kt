@@ -45,7 +45,8 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
     private lateinit var dialogConfirmRemove: Dialog
     private val navigator: CommonRoutesNavigator by inject()
     private lateinit var segmentPolylines :ArrayList<Polyline>
-    private lateinit var segments: List<SegmentDisplayable>
+    private lateinit var segments: ArrayList<SegmentDisplayable>
+    private lateinit var selectedSegment: SegmentDisplayable
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -56,6 +57,7 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
         onViewPost(view)
 
         binding.btFollow.setOnClickListener(btFollowOnClick)
+        binding.ibRemove.setOnClickListener(ibRemoveOnClick)
 
     }
 
@@ -67,7 +69,7 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
     private fun observeSegments() {
         viewModel.segments.observe(viewLifecycleOwner, {
             //todo possible optimization (by checking which segment already exists)
-            segments = it
+            segments = ArrayList(it)
             showSegments(segments)
         })
     }
@@ -291,31 +293,51 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
         navigator.openFollowRouteFragment(route, points)
     }
 
+    private val ibRemoveOnClick = View.OnClickListener {
+        viewModel.removeSegment(selectedSegment.segmentId)
+        val removedSegmentIndex = segments.indexOf(selectedSegment)
+        binding.mapView.overlays.remove(segmentPolylines[removedSegmentIndex])
+        segmentPolylines.removeAt(removedSegmentIndex)
+        binding.mapView.invalidate()
+        segments.removeAt(removedSegmentIndex)
+        binding.llSegment.makeGone()
+    }
+
     private val segmentOnClickListener = object: Polyline.OnClickListener {
-        @SuppressLint("ResourceType")
         override fun onClick(polyline: Polyline, mapView: MapView, eventPos: GeoPoint): Boolean {
+            showSegmentDetails(polyline)
+            return true
+        }
+
+        private fun showSegmentDetails(polyline: Polyline) {
             binding.llSegment.makeVisible()
             val segmentIndex = segmentPolylines.indexOf(polyline)
-            binding.btSegmentType.text =
-                segments[segmentIndex].segmentType.toString().toUpperCase(Locale.ROOT)
-            if(segments[segmentIndex].info.isNotEmpty()) {
+            selectedSegment = segments[segmentIndex]
+            showSegmentType()
+            hideSegmentInfoIfEmpty(segmentIndex)
+            setSegmentDetailsColor()
+        }
+
+        private fun showSegmentType() {
+            binding.btSegmentType.text = selectedSegment.segmentType.toString().toUpperCase(Locale.ROOT)
+        }
+
+        private fun hideSegmentInfoIfEmpty(segmentIndex: Int) {
+            if (selectedSegment.info.isNotEmpty()) {
                 binding.llSegmentInfo.makeVisible()
                 binding.tvSegmentInfo.text = segments[segmentIndex].info
-                binding
             } else {
                 binding.llSegmentInfo.makeGone()
             }
-            val segmentColor = segments[segmentIndex].segmentColor.ifEmpty { requireContext().resources.getString(R.color.seg_red) }
-//            val BrighterSegmentColor = todo
-            val colorStateList =  ColorStateList.valueOf(Color.parseColor(segmentColor))
+        }
+
+        @SuppressLint("ResourceType")
+        private fun setSegmentDetailsColor() {
+            val segmentColor = selectedSegment.segmentColor.ifEmpty { requireContext().resources.getString(R.color.seg_red) }
+            val colorStateList = ColorStateList.valueOf(Color.parseColor(segmentColor))
             binding.btSegmentType.backgroundTintList = colorStateList
             binding.ibEdit.backgroundTintList = colorStateList
             binding.ibRemove.backgroundTintList = colorStateList
-//            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
-//                binding.llSegment.background.colorFilter = BlendModeColorFilter(Color.parseColor(segmentColor), BlendMode.SRC_ATOP)
-//            else
-//                binding.llSegment.background.setColorFilter(Color.parseColor(segmentColor), PorterDuff.Mode.SRC_ATOP)
-            return true
         }
     }
 
