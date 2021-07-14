@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
+import android.util.Log
 import androidx.core.content.res.ResourcesCompat
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.osmdroid.events.MapEventsReceiver
@@ -154,6 +155,7 @@ class SegmentsFragment: BaseFragment<MyRoutesViewModel>(R.layout.fragment_segmen
                             binding.btAddSegment.makeGone()
                             setToolbarText(getString(R.string.fragment_segments_toolbarbegin))
                             clearToolbarMenu()
+                            stage = CreateSegmentStage.CHOOSE_BEGIN
                         } else if(stage == CreateSegmentStage.READY_TO_SAVE) {
                             segmentEndIndex = -1
                             binding.mapView.overlays.remove(markerEnd)
@@ -186,8 +188,9 @@ class SegmentsFragment: BaseFragment<MyRoutesViewModel>(R.layout.fragment_segmen
 
     private fun setSegmentPoints() {
         val segmentPoints: List<GeoPoint>
+        Log.d("TEST", String.format("points.size=${points.size} beginIndex=$segmentBeginIndex endIndex=$segmentEndIndex"))
         if(segmentBeginIndex<segmentEndIndex) {
-            segmentPoints = points.subList(segmentBeginIndex, segmentEndIndex + 1).map { it.geoPoint } // +1 since sublist's second index is exlusive
+            segmentPoints = points.subList(segmentBeginIndex, segmentEndIndex + 1).map { it.geoPoint } // +1 since sublist's second index is exclusive
         } else {
             segmentPoints = points.subList(segmentEndIndex, segmentBeginIndex - 1).map { it.geoPoint }
         }
