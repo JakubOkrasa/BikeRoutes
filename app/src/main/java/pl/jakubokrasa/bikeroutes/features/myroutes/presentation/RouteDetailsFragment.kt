@@ -38,7 +38,6 @@ import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteDisplayabl
 import java.util.*
 import kotlin.collections.ArrayList
 
-
 class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_route_details) {
 
     override val viewModel: MyRoutesViewModel by sharedViewModel()
@@ -75,7 +74,6 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
 
         binding.btFollow.setOnClickListener(btFollowOnClick)
 		binding.ibRemove.setOnClickListener(ibRemoveOnClick)
-        binding.btAddPhotos.setOnClickListener(btAddPhotosOnClick)
     }
 
     override fun onResume() {
@@ -201,7 +199,6 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
         setMapViewProperties()
         binding.mapView.invalidate()
 		if (!isMyRoute()) {
-                binding.btAddPhotos.makeGone()
                 if (route.sharingType == SharingType.PUBLIC_WITH_PRIVATE_PHOTOS) {
                     hidePhotos()
                 }
@@ -213,6 +210,10 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
             binding.toolbar.inflateMenu(R.menu.menu_routedetails_home)
             binding.toolbar.setOnMenuItemClickListener { menuItem ->
                 when (menuItem.itemId) {
+                    R.id.action_add_photo -> {
+                        pickPhotoFromGallery()
+                        true
+                    }
                     R.id.action_segments -> {
                         navigator.openSegmentsFragment(route,
                             points,
@@ -234,7 +235,11 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
         }
     }
 
-	private val toolbarIconsEditModeOnClick = Toolbar.OnMenuItemClickListener { insideMenuItem ->
+    private fun pickPhotoFromGallery() {
+        activityResultGalleryLauncher.launch("image/*")
+    }
+
+    private val toolbarIconsEditModeOnClick = Toolbar.OnMenuItemClickListener { insideMenuItem ->
         when (insideMenuItem.itemId) {
             R.id.action_routedetails_done -> {
                 with(binding) {
@@ -265,7 +270,10 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
     }
 
     private fun FragmentRouteDetailsBinding.isRouteChanged() =
-        (tvRouteName != etRouteName || tvRouteDescription != etRouteDescription || route.sharingType != spinnerVisibility.selectedItem as SharingType)
+        (tvRouteName.text.toString() != etRouteName.text.toString()
+        || tvRouteDescription.text.toString() != etRouteDescription.text.toString()
+        || route.sharingType != spinnerVisibility.selectedItem as SharingType)
+
 
     private fun initializeDialogRemove() {
         dialogConfirmRemove = DialogConfirm(requireContext(),
@@ -375,10 +383,6 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
         navigator.openFollowRouteFragment(route, points)
     }
 
-	private val btAddPhotosOnClick = View.OnClickListener {
-        activityResultGalleryLauncher.launch("image/*")
-	}
-
     private val ibRemoveOnClick = View.OnClickListener {
         viewModel.removeSegment(selectedSegment.segmentId)
         val removedSegmentIndex = segments.indexOf(selectedSegment)
@@ -452,3 +456,4 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
         const val IS_MY_ROUTE_BUNDLE_KEY = "isMyRouteBundleKey"
     }
 }
+
