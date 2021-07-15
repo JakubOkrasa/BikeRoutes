@@ -2,11 +2,15 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
         <item
+            android:id="@+id/action_add_photo"
+            android:icon="@drawable/ic_add_photo"
+            android:title="Photo"
+            app:showAsAction="ifRoom" />
+        <item
             android:id="@+id/action_segments"
             android:icon="@drawable/ic_baseline_add_road_24"
-            android:title="segments"
-            app:showAsAction="always"
-                />
+            android:title="Segments"
+            app:showAsAction="ifRoom" />
         <item
             android:id="@+id/action_routedetails_edit"
             android:icon="@drawable/ic_edit_24"
