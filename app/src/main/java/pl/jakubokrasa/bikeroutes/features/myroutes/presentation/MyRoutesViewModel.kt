@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.hadilq.liveevent.LiveEvent
 import org.koin.ext.scope
+import org.osmdroid.util.GeoPoint
 import pl.jakubokrasa.bikeroutes.core.base.platform.BaseViewModel
 import pl.jakubokrasa.bikeroutes.features.common.domain.FilterData
 import pl.jakubokrasa.bikeroutes.features.common.domain.GetGeocodingItemUseCase
@@ -13,6 +14,8 @@ import pl.jakubokrasa.bikeroutes.features.common.presentation.model.GeocodingIte
 import pl.jakubokrasa.bikeroutes.core.util.enums.SharingType
 import pl.jakubokrasa.bikeroutes.features.common.domain.*
 import pl.jakubokrasa.bikeroutes.features.common.presentation.model.PhotoInfoDisplayable
+import pl.jakubokrasa.bikeroutes.features.common.segments.domain.GetSegmentsUseCase
+import pl.jakubokrasa.bikeroutes.features.common.segments.presentation.model.SegmentDisplayable
 import pl.jakubokrasa.bikeroutes.features.map.presentation.model.PointDisplayable
 import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteDisplayable
 import pl.jakubokrasa.bikeroutes.features.myroutes.domain.*
@@ -25,6 +28,11 @@ class MyRoutesViewModel(
     private val removeRouteUseCase: RemoveRouteUseCase,
     private val updateRouteUseCase: UpdateRouteUseCase,
     private val getGeocodingItemUseCase: GetGeocodingItemUseCase,
+    private val getSegmentPointUseCase: GetSegmentPointUseCase,
+    private val addSegmentUseCase: AddSegmentUseCase,
+    private val removeSegmentUseCase: RemoveSegmentUseCase,
+    private val getSegmentsUseCase: GetSegmentsUseCase,
+
     private val myRoutesNavigator: MyRoutesNavigator,
     private val addPhotoUseCase: AddPhotoUseCase,
     private val getPhotosUseCase: GetPhotosUseCase,
@@ -37,7 +45,9 @@ class MyRoutesViewModel(
     private val _geocodingItem by lazy { LiveEvent<GeocodingItemDisplayable>() }
 	private val _photos by lazy { MutableLiveData<List<PhotoInfoDisplayable>>() }
     private val _photoRemovePos by lazy { LiveEvent<Int>() }
-
+	private val _segmentPointIndex by lazy { LiveEvent<Int>() }
+    private val _isSegmentAdded by lazy { LiveEvent<Boolean>() }
+    private val _segments by lazy { LiveEvent<List<SegmentDisplayable>>() }
     override val LOG_TAG: String = MyRoutesViewModel::class.simpleName?: "unknown"
 
     val pointsFromRemote: LiveData<List<PointDisplayable>> by lazy { _pointsFromRemote }
@@ -46,6 +56,9 @@ class MyRoutesViewModel(
     val photoRemovePos: LiveData<Int> by lazy { _photoRemovePos }
     val isFilter: LiveData<Boolean> by lazy { _isFilter }
     val geocodingItem: LiveData<GeocodingItemDisplayable> by lazy { _geocodingItem }
+    val segmentPointIndex: LiveData<Int> by lazy { _segmentPointIndex }
+    val isSegmentAdded: LiveData<Boolean> by lazy { _isSegmentAdded }
+    val segments: LiveData<List<SegmentDisplayable>> by lazy { _segments }
 
 
     fun removeRouteAndNavBack(route: RouteDisplayable) {
@@ -147,7 +160,7 @@ class MyRoutesViewModel(
             }
             result.onFailure { handleFailure("getGeocodingItem", errLog = it.message) }
         }
-}
+    }
 
 fun addPhoto(routeId: String, localPath: String, sharingType: SharingType) {
         setPendingState()
@@ -188,6 +201,74 @@ fun addPhoto(routeId: String, localPath: String, sharingType: SharingType) {
                 handleSuccess("removePhoto")
             }
             result.onFailure { handleFailure("removePhoto", errLog = it.message) }
+        }
+    }
+
+	fun getSegmentPoint(geoPoint: GeoPoint, points: List<PointDisplayable>, zoomLevel: Double) {
+        getSegmentPointUseCase(
+            params = GetSegmentBeginData(geoPoint, points.map { it.toPointNoCreatedAt() }, zoomLevel),
+            scope = viewModelScope
+        ) {
+                result ->
+            result.onSuccess {
+                _segmentPointIndex.value = it
+                handleSuccess("getSegmentPoint")
+            }
+            result.onFailure { handleFailure("getSegmentPoint", errLog = it.message) }
+        }
+    }
+
+	fun addSegment(segmentDisplayable: SegmentDisplayable) {
+        setPendingState()
+        addSegmentUseCase(
+            params = segmentDisplayable.toSegment(),
+            scope = viewModelScope
+        ) {
+            result ->
+            setIdleState()
+            result.onSuccess {
+                _isSegmentAdded.value = true
+                handleSuccess("addSegment", "segment added")
+            }
+            result.onFailure {
+                _isSegmentAdded.value = false
+                handleFailure("addSegment", errLog = it.message)
+            }
+        }
+    }
+
+    fun removeSegment(segmentId: String) {
+        setPendingState()
+        removeSegmentUseCase(
+            params = segmentId,
+            scope = viewModelScope
+        ) {
+                result ->
+            setIdleState()
+            result.onSuccess {
+                handleSuccess("removeSegment", "segment removed")
+            }
+            result.onFailure {
+                handleFailure("removeSegment", errLog = it.message)
+            }
+        }
+    }
+
+    fun getSegments(routeId: String) {
+        setPendingState()
+        getSegmentsUseCase(
+            params = routeId,
+            scope = viewModelScope
+        ) {
+                result ->
+            setIdleState()
+            result.onSuccess { list ->
+                _segments.value = list.map { SegmentDisplayable(it) }
+                handleSuccess("getSegments")
+            }
+            result.onFailure {
+                handleFailure("getSegments", errLog = it.message)
+            }
         }
     }
 

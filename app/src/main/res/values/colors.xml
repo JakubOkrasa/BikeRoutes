@@ -8,7 +8,15 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="blurred_white">#EEE</color>
+    <color name="light_grey">#CCC</color>
     <color name="black_default">#222</color>
+    <color name="light_orange">#FF8D69</color>
     <color name="light_green">#69AE6C</color>
+
+    <color name="seg_red">#E91E63</color>
+    <color name="seg_orange">#FF6839</color>
+    <color name="seg_yellow">#FFC107</color>
+    <color name="seg_light_green">#69AE6C</color>
+    <color name="seg_light_blue">#57B4FF</color>
 
 </resources>

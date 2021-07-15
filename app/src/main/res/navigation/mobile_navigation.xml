@@ -98,6 +98,10 @@
             android:id="@+id/action_routeDetailsFragment_to_photoGalleryFragment"
             app:destination="@id/photoGalleryFragment"
             app:popUpTo="@layout/fragment_route_details"/>
+		<action
+            android:id="@+id/action_routeDetailsFragment_to_segmentsFragment"
+            app:destination="@id/segmentsFragment"
+            app:popUpTo="@id/routeDetailsFragment"/>
     </fragment>
     <fragment
         android:id="@+id/forgotPasswordFragment"
@@ -122,6 +126,11 @@
         android:name="pl.jakubokrasa.bikeroutes.features.common.presentation.PhotoGalleryFragment"
         android:label="PhotoGalleryFragment"
         tools:layout="@layout/fragment_photogallery"/>
+	<fragment
+        android:id="@+id/segmentsFragment"
+        android:name="pl.jakubokrasa.bikeroutes.features.common.segments.presentation.SegmentsFragment"
+        android:label="SegmentsFragment"
+        tools:layout="@layout/fragment_segments"/>
 
 
 </navigation>

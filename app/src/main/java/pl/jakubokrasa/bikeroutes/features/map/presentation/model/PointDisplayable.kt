@@ -14,4 +14,14 @@ data class PointDisplayable(
         pointId = point.pointId,
         geoPoint = point.geoPoint
     )
+
+    fun toPointNoCreatedAt(): Point {
+        return Point(
+            this.pointId,
+            GeoPoint(this.geoPoint.latitude, this.geoPoint.longitude),
+            0,
+            false,
+            false
+        )
+    }
 }

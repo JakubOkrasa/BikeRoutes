@@ -5,6 +5,7 @@ import pl.jakubokrasa.bikeroutes.core.util.enums.SharingType
 import pl.jakubokrasa.bikeroutes.features.common.domain.FilterData
 import pl.jakubokrasa.bikeroutes.features.common.domain.model.PhotoInfo
 import pl.jakubokrasa.bikeroutes.features.common.domain.model.GeocodingItem
+import pl.jakubokrasa.bikeroutes.features.common.segments.domain.model.Segment
 import pl.jakubokrasa.bikeroutes.features.map.domain.model.Point
 import pl.jakubokrasa.bikeroutes.features.map.domain.model.Route
 
@@ -25,6 +26,9 @@ interface RemoteRepository {
     suspend fun addPhoto(routeId: String, localPath: String, sharingType: SharingType)
     suspend fun removePhoto(photoInfo: PhotoInfo)
 
+	suspend fun addSegment(segment: Segment)
+
+    suspend fun removeSegment(segmentId: String)
 
     //SHARED ROUTES
     suspend fun getSharedRoutes(uid: String): List<Route>
@@ -34,4 +38,6 @@ interface RemoteRepository {
     suspend fun getGeocodingItem(query: String): GeocodingItem
 
 	suspend fun getPhotos(routeId: String): List<PhotoInfo>
+
+	suspend fun getSegments(routeId: String): List<Segment>
 }
