@@ -220,6 +220,10 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
                             segments)
                         true
                     }
+                    R.id.action_share -> {
+//                        viewModel.exportRoute()
+                        true
+                    }
                     R.id.action_routedetails_edit -> {
                         clearToolbarMenu()
                         binding.toolbar.inflateMenu(R.menu.menu_routedetails_edit)

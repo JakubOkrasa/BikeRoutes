@@ -4,16 +4,21 @@
         <item
             android:id="@+id/action_add_photo"
             android:icon="@drawable/ic_add_photo"
-            android:title="Photo"
+            android:title="Add photo"
             app:showAsAction="ifRoom" />
         <item
             android:id="@+id/action_segments"
             android:icon="@drawable/ic_baseline_add_road_24"
-            android:title="Segments"
+            android:title="Add segments"
+            app:showAsAction="ifRoom" />
+        <item
+            android:id="@+id/action_share"
+            android:icon="@drawable/ic_share"
+            android:title="Share route"
             app:showAsAction="ifRoom" />
         <item
             android:id="@+id/action_routedetails_edit"
             android:icon="@drawable/ic_edit_24"
-            android:title="Edit"
+            android:title="Edit route"
             app:showAsAction="always"/>
 </menu>
