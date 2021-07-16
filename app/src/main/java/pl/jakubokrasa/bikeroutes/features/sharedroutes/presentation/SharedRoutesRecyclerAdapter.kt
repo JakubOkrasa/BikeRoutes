@@ -41,7 +41,7 @@ class SharedRoutesRecyclerAdapter: RecyclerView.Adapter<SharedRoutesRecyclerAdap
                 tvName.text = String.format("%s", route.name)
                 tvDescription.text = String.format("%s", route.description)
                 tvDistance.text = getFormattedDistance(route.distance)
-                tvRidetime.text = getFormattedRideTime(route.rideTimeMinutes)
+                tvRideTime.text = getFormattedRideTime(route.rideTimeMinutes)
             }
         }
         init {

@@ -94,13 +94,7 @@ import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteDisplayabl
         with(binding.recyclerView) {
             setHasFixedSize(true)
             myRoutesRecyclerAdapter.onItemClick = {
-                route -> //todo może od razu przejść do RouteDetailsFrg (bez czekania
-                        // todo i wtedy user od razu widzi szczegóły trasy)
-                        // todo a wynik można przekazać w LiveData
-                        // todo ale jeśli potem będzie przechodzenie do odczielnego frg
-                        // todo żeby po itemOnclick było widać szczegóły trasy i obrazek (bez follow)
-                        // todo to wtedy chcę żeby points się załadowały wcześniej, a potem przechodziło do frg
-                viewModel.getPointsFromRemoteAndOpenRouteDetailsFrg(route)
+                route -> viewModel.getPointsFromRemoteAndOpenRouteDetailsFrg(route)
             }
             adapter = myRoutesRecyclerAdapter
         }

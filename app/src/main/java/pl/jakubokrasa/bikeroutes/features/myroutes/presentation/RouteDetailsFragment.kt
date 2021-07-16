@@ -307,15 +307,9 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
                 tvRouteDescription.text = route.description
             }
 
-            when(route.sharingType) {
-                SharingType.PUBLIC -> tvVisibility.text = "public"
-                SharingType.PRIVATE -> tvVisibility.text = "only me"
-                SharingType.PUBLIC_WITH_PRIVATE_PHOTOS -> tvVisibility.text = "private photos"
-            }
-
-
             tvRouteDistance.text = getFormattedDistance(route.distance)
             tvRouteRideTime.text = getFormattedRideTime(route.rideTimeMinutes)
+            tvVisibility.text = getFormattedSharingTypeName(route.sharingType)
 
             if(isMyRoute())
                 binding.llVisibility.makeVisible()

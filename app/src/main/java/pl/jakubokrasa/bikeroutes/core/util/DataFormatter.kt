@@ -1,6 +1,7 @@
 package pl.jakubokrasa.bikeroutes.core.util
 
 import androidx.room.util.StringUtil
+import pl.jakubokrasa.bikeroutes.core.util.enums.SharingType
 import pl.jakubokrasa.bikeroutes.features.myroutes.presentation.MyRoutesFragment.Companion.DISTANCE_SLIDER_VALUE_TO
 
 fun getFormattedRideTime(rideTimeMinutes: Int): String {
@@ -51,6 +52,16 @@ fun getFormattedFilterLocation(displayName: String): String {
         return displayName
     }
 }
+
+fun getFormattedAvgSpeed(speedKmH: Int) =
+    String.format("$speedKmH km/h")
+
+fun getFormattedSharingTypeName(sharingType: SharingType) =
+    when(sharingType) {
+        SharingType.PUBLIC -> "public"
+        SharingType.PRIVATE -> "only me"
+        SharingType.PUBLIC_WITH_PRIVATE_PHOTOS -> "private photos"
+    }
 
 private fun String.indexOfComma(startIndex: Int = 0): Int {
     return this.indexOf(',', startIndex)

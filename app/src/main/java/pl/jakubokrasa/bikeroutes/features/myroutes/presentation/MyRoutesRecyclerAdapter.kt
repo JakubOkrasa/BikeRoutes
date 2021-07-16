@@ -3,8 +3,10 @@ package pl.jakubokrasa.bikeroutes.features.myroutes.presentation
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import pl.jakubokrasa.bikeroutes.core.util.getFormattedAvgSpeed
 import pl.jakubokrasa.bikeroutes.core.util.getFormattedDistance
 import pl.jakubokrasa.bikeroutes.core.util.getFormattedRideTime
+import pl.jakubokrasa.bikeroutes.core.util.getFormattedSharingTypeName
 import pl.jakubokrasa.bikeroutes.databinding.RvMyroutesItemBinding
 import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteDisplayable
 
@@ -38,10 +40,12 @@ class MyRoutesRecyclerAdapter() : RecyclerView.Adapter<MyRoutesRecyclerAdapter.M
 
         fun bind(route: RouteDisplayable) {
             with(binding) {
-                tvName.text = String.format("%s", route.name)
-                tvDescription.text = String.format("%s", route.description)
+                tvName.text = String.format(route.name)
+                tvDescription.text = String.format(route.description)
                 tvDistance.text = getFormattedDistance(route.distance)
-                tvRidetime.text = getFormattedRideTime(route.rideTimeMinutes)
+                tvRideTime.text = getFormattedRideTime(route.rideTimeMinutes)
+                tvAvgSpeed.text = getFormattedAvgSpeed(route.avgSpeedKmPerH)
+                tvVisibility.text = getFormattedSharingTypeName(route.sharingType)
             }
         }
         init {
