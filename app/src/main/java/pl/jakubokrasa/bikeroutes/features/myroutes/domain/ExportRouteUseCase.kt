@@ -11,14 +11,15 @@ import org.osmdroid.views.Projection
 import org.osmdroid.views.drawing.MapSnapshot
 import org.osmdroid.views.overlay.Polyline
 import pl.jakubokrasa.bikeroutes.core.base.domain.UseCase
+import pl.jakubokrasa.bikeroutes.core.base.domain.UseCaseTest
 import pl.jakubokrasa.bikeroutes.features.common.segments.domain.model.Segment
 import pl.jakubokrasa.bikeroutes.features.map.domain.model.Route
 import java.lang.Exception
+import kotlin.coroutines.resumeWithException
 
-class ExportRouteUseCase(private val context: Context): UseCase<MapSnapshot, ExportRouteData>() {
+class ExportRouteUseCase(private val context: Context): UseCaseTest<MapSnapshot, ExportRouteData>() {
     @ExperimentalCoroutinesApi
     override suspend fun action(params: ExportRouteData): MapSnapshot {
-
       return getSnapshot(params)
     }
 
@@ -27,16 +28,15 @@ class ExportRouteUseCase(private val context: Context): UseCase<MapSnapshot, Exp
     suspend fun getSnapshot(params: ExportRouteData): MapSnapshot = suspendCancellableCoroutine { continuation ->
         val boundingBox: BoundingBox
         with(params.route.boundingBoxData) {
-            boundingBox = BoundingBox( //todo możliwe że tu trzeba zamienić parametry miejscami
+            boundingBox = BoundingBox( // możliwe że tu trzeba zamienić parametry miejscami
                 latNorth, lonEast, latSouth, lonWest)
         }
 
-
-        val mapSnapshot = MapSnapshot(
+        MapSnapshot(
             { snapshot ->
-                continuation.resume(
-                    snapshot,
-                    throw Exception("MapSnapshot error"))
+                    continuation.resume(
+                        snapshot,
+                        onCancellation = snapshot.)
             },
             MapSnapshot.INCLUDE_FLAG_UPTODATE,
             MapTileProviderBasic(context, TileSourceFactory.WIKIMEDIA),
@@ -49,8 +49,7 @@ class ExportRouteUseCase(private val context: Context): UseCase<MapSnapshot, Exp
                 true,
                 true,
                 0,
-                0))
-
+                0)).run()
     }
 
     companion object {
