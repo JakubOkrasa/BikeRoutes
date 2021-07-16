@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.hadilq.liveevent.LiveEvent
 import org.koin.ext.scope
 import org.osmdroid.util.GeoPoint
+import org.osmdroid.views.overlay.Polyline
 import pl.jakubokrasa.bikeroutes.core.base.platform.BaseViewModel
 import pl.jakubokrasa.bikeroutes.features.common.domain.FilterData
 import pl.jakubokrasa.bikeroutes.features.common.domain.GetGeocodingItemUseCase
@@ -32,6 +33,7 @@ class MyRoutesViewModel(
     private val addSegmentUseCase: AddSegmentUseCase,
     private val removeSegmentUseCase: RemoveSegmentUseCase,
     private val getSegmentsUseCase: GetSegmentsUseCase,
+    private val exportRouteUseCase: ExportRouteUseCase,
 
     private val myRoutesNavigator: MyRoutesNavigator,
     private val addPhotoUseCase: AddPhotoUseCase,
@@ -268,6 +270,23 @@ fun addPhoto(routeId: String, localPath: String, sharingType: SharingType) {
             }
             result.onFailure {
                 handleFailure("getSegments", errLog = it.message)
+            }
+        }
+    }
+
+    fun exportRoute(route: RouteDisplayable, polyline: Polyline, segments: List<SegmentDisplayable>) {
+        setPendingState()
+        exportRouteUseCase(
+            params = ExportRouteData(route.toRoute(), polyline, segments.map { it.toSegment() }),
+            scope = viewModelScope
+        ) {
+                result ->
+            setIdleState()
+            result.onSuccess { list ->
+                handleSuccess("exportRoute")
+            }
+            result.onFailure {
+                handleFailure("exportRoute", errLog = it.message)
             }
         }
     }

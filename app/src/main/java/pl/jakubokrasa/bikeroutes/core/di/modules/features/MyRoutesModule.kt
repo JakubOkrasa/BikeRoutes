@@ -27,9 +27,11 @@ val myRoutesModule = module {
 	factory { GetSegmentPointUseCase() }
     factory { AddSegmentUseCase(get()) }
     factory { RemoveSegmentUseCase(get()) }
+    factory { ExportRouteUseCase(androidContext()) }
 
     factory { MyRoutesRecyclerAdapter() }
 
-    viewModel { MyRoutesViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get()) }
+    viewModel { MyRoutesViewModel(get(), get(), get(), get(), get(), get(), get(),
+        get(), get(), get(), get(), get(), get(), get(), get()) }
 
 }
