@@ -2,6 +2,7 @@ package pl.jakubokrasa.bikeroutes.features.myroutes.domain
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.util.Log
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.suspendCancellableCoroutine
 import org.osmdroid.tileprovider.MapTileProviderBasic
@@ -32,12 +33,13 @@ class ExportRouteUseCase(private val context: Context): UseCaseTest<MapSnapshot,
                 latNorth, lonEast, latSouth, lonWest)
         }
 
-        MapSnapshot(
-            { snapshot ->
-                    continuation.resume(
-                        snapshot,
-                        onCancellation = snapshot.)
-            },
+        MapSnapshot({ snapshot ->
+            continuation.resume(snapshot) { error ->
+                error.message?.let {
+                    Log.e("ExportRouteUseCase", it)
+                }
+            }
+        },
             MapSnapshot.INCLUDE_FLAG_UPTODATE,
             MapTileProviderBasic(context, TileSourceFactory.WIKIMEDIA),
             listOf(params.polyline),
