@@ -1,6 +1,7 @@
 package pl.jakubokrasa.bikeroutes.features.myroutes.presentation
 
 import android.graphics.Bitmap
+import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -52,7 +53,7 @@ class MyRoutesViewModel(
 	private val _segmentPointIndex by lazy { LiveEvent<Int>() }
     private val _isSegmentAdded by lazy { LiveEvent<Boolean>() }
     private val _segments by lazy { LiveEvent<List<SegmentDisplayable>>() }
-    private val _exportedRoute by lazy { LiveEvent<Bitmap>() }
+    private val _exportedRoute by lazy { LiveEvent<Uri>() }
     override val LOG_TAG: String = MyRoutesViewModel::class.simpleName?: "unknown"
 
     val pointsFromRemote: LiveData<List<PointDisplayable>> by lazy { _pointsFromRemote }
@@ -64,7 +65,7 @@ class MyRoutesViewModel(
     val segmentPointIndex: LiveData<Int> by lazy { _segmentPointIndex }
     val isSegmentAdded: LiveData<Boolean> by lazy { _isSegmentAdded }
     val segments: LiveData<List<SegmentDisplayable>> by lazy { _segments }
-    val exportedRoute: LiveData<Bitmap> by lazy { _exportedRoute }
+    val exportedRoute: LiveData<Uri> by lazy { _exportedRoute }
 
 
     fun removeRouteAndNavBack(route: RouteDisplayable) {

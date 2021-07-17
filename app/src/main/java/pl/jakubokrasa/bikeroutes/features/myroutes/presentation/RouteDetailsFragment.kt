@@ -2,6 +2,7 @@ package pl.jakubokrasa.bikeroutes.features.myroutes.presentation
 
 import android.annotation.SuppressLint
 import android.app.Dialog
+import android.content.Intent
 import android.net.Uri
 import android.content.res.ColorStateList
 import android.graphics.*
@@ -35,7 +36,6 @@ import pl.jakubokrasa.bikeroutes.features.map.presentation.model.PointDisplayabl
 import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteDisplayable
 import java.util.*
 import kotlin.collections.ArrayList
-import kotlin.properties.Delegates
 
 class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_route_details) {
 
@@ -130,7 +130,7 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
         super.initObservers()
         observePhotos()
 		observeSegments()
-        observeBitmap()
+        observeShareUri()
     }
 
     private fun observePhotos() {
@@ -143,13 +143,19 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
         })
     }
 
-    private fun observeBitmap() {
-        viewModel.exportedRoute.observe(viewLifecycleOwner, {
-            Glide.with(requireContext())
-                .load(it)
-                .placeholder(R.drawable.ic_baseline_photo_24)
-                .apply(RequestOptions().centerInside())
-                .into(binding.imgTestExport)
+    private fun observeShareUri() {
+        viewModel.exportedRoute.observe(viewLifecycleOwner, { uri ->
+
+            val intent = Intent(Intent.ACTION_SEND)
+            intent.putExtra(Intent.EXTRA_STREAM, uri)
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            intent.type = "image/png"
+            startActivity(Intent.createChooser(intent, "Export route"))
+//            Glide.with(requireContext())
+//                .load(it)
+//                .placeholder(R.drawable.ic_baseline_photo_24)
+//                .apply(RequestOptions().centerInside())
+//                .into(binding.imgTestExport)
         })
     }
 
