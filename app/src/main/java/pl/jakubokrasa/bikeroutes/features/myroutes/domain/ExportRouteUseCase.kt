@@ -25,20 +25,19 @@ class ExportRouteUseCase(private val context: Context): UseCase<Uri, ExportRoute
     @ExperimentalCoroutinesApi
     override suspend fun action(params: ExportRouteData): Uri {
         val snapshot = getSnapshot(params)
-        return getUri(snapshot, params.route.routeId)
+        return getUri(snapshot)
     }
 
     private fun getUri(
-        snapshot: MapSnapshot, fileName: String
+        snapshot: MapSnapshot
     ): Uri {
 
         val bitmap = Bitmap.createBitmap(snapshot.bitmap) //todo to powinno być w wątku Default
 
-
-
-
-        return saveImageToLocalCache(bitmap, fileName)
+        return saveImageToLocalCache(bitmap, getFileName())
     }
+
+    private fun getFileName() = "shared_route_${System.currentTimeMillis()}"
 
 
     @ExperimentalCoroutinesApi
