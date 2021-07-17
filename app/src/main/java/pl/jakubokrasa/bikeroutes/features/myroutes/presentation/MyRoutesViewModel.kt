@@ -1,13 +1,11 @@
 package pl.jakubokrasa.bikeroutes.features.myroutes.presentation
 
-import android.graphics.Bitmap
 import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.hadilq.liveevent.LiveEvent
 import kotlinx.coroutines.Dispatchers
-import org.koin.ext.scope
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.overlay.Polyline
 import pl.jakubokrasa.bikeroutes.core.base.platform.BaseViewModel
@@ -279,10 +277,10 @@ fun addPhoto(routeId: String, localPath: String, sharingType: SharingType) {
         }
     }
 
-    fun exportRoute(route: RouteDisplayable, polyline: Polyline, segments: List<SegmentDisplayable>, zoom: Double) {
+    fun exportRoute(route: RouteDisplayable, polyline: Polyline, segmentPolylines: List<Polyline>, zoom: Double) {
         setPendingState()
         exportRouteUseCase(
-            params = ExportRouteData(route.toRoute(), polyline, segments.map { it.toSegment() }, zoom),
+            params = ExportRouteData(route.toRoute(), polyline, segmentPolylines, zoom),
             scope = viewModelScope,
             dispatcher = Dispatchers.Main //creating MapSnapshot requires UI thread
         ) {

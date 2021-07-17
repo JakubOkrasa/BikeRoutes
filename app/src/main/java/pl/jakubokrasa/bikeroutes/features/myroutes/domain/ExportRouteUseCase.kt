@@ -12,6 +12,7 @@ import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.BoundingBox
 import org.osmdroid.views.Projection
 import org.osmdroid.views.drawing.MapSnapshot
+import org.osmdroid.views.overlay.Overlay
 import org.osmdroid.views.overlay.Polyline
 import pl.jakubokrasa.bikeroutes.R
 import pl.jakubokrasa.bikeroutes.core.base.domain.UseCase
@@ -59,7 +60,7 @@ class ExportRouteUseCase(private val context: Context): UseCase<Uri, ExportRoute
         },
             MapSnapshot.INCLUDE_FLAG_UPTODATE,
             MapTileProviderBasic(context, TileSourceFactory.WIKIMEDIA),
-            listOf(params.polyline),
+            listOf(params.polyline).plus(params.segmentPolylines),
             Projection(params.zoom,
                 MAP_WIDTH_PIXELS,
                 MAP_HEIGHT_PIXELS,
@@ -111,5 +112,8 @@ class ExportRouteUseCase(private val context: Context): UseCase<Uri, ExportRoute
 
 
 data class ExportRouteData(
-    val route: Route, val polyline: Polyline, val segments: List<Segment>, val zoom: Double
+    val route: Route,
+    val polyline: Polyline,
+    val segmentPolylines: List<Polyline>,
+    val zoom: Double
 )

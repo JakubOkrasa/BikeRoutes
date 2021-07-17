@@ -238,7 +238,7 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
                         true
                     }
                     R.id.action_share -> {
-                        viewModel.exportRoute(route, polyline, segments, zoom)
+                        viewModel.exportRoute(route, polyline, segmentPolylines, zoom)
                         true
                     }
                     R.id.action_routedetails_edit -> {
