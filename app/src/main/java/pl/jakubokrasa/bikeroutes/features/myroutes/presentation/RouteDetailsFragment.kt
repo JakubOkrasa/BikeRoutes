@@ -8,14 +8,12 @@ import android.graphics.*
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.AdapterView
-import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.ArrayAdapter
-import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
-import kotlinx.android.synthetic.main.fragment_route_details.*
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.osmdroid.util.GeoPoint
@@ -37,6 +35,7 @@ import pl.jakubokrasa.bikeroutes.features.map.presentation.model.PointDisplayabl
 import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteDisplayable
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.properties.Delegates
 
 class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_route_details) {
 
@@ -52,6 +51,7 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
 	private lateinit var segmentPolylines :ArrayList<Polyline>
     private lateinit var segments: ArrayList<SegmentDisplayable>
     private lateinit var selectedSegment: SegmentDisplayable
+    private var zoom = -1.0
     private val activityResultGalleryLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
         uri?.let {
             val picturePath = FileUtils(requireContext()).getPath(uri)
@@ -130,6 +130,7 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
         super.initObservers()
         observePhotos()
 		observeSegments()
+        observeBitmap()
     }
 
     private fun observePhotos() {
@@ -139,6 +140,16 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
             } else {
                 hidePhotos()
             }
+        })
+    }
+
+    private fun observeBitmap() {
+        viewModel.exportedRoute.observe(viewLifecycleOwner, {
+            Glide.with(requireContext())
+                .load(it)
+                .placeholder(R.drawable.ic_baseline_photo_24)
+                .apply(RequestOptions().centerInside())
+                .into(binding.imgTestExport)
         })
     }
 
@@ -221,7 +232,7 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
                         true
                     }
                     R.id.action_share -> {
-                        viewModel.exportRoute(route, polyline, segments)
+                        viewModel.exportRoute(route, polyline, segments, zoom)
                         true
                     }
                     R.id.action_routedetails_edit -> {
@@ -351,8 +362,8 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
 
     private fun MapView.recenterRoute() {
         zoomToBoundingBox(polyline.bounds, false, 18, 18.0, 0)
-        val currentZoom = zoomLevelDouble
-        controller.zoomTo(currentZoom - 0.5)
+        zoom = zoomLevelDouble - 0.5
+        controller.zoomTo(zoom)
     }
 
     private fun setPolylineProperties() {

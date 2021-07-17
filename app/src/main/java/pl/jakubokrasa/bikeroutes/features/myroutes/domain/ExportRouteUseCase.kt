@@ -12,40 +12,43 @@ import org.osmdroid.views.Projection
 import org.osmdroid.views.drawing.MapSnapshot
 import org.osmdroid.views.overlay.Polyline
 import pl.jakubokrasa.bikeroutes.core.base.domain.UseCase
-import pl.jakubokrasa.bikeroutes.core.base.domain.UseCaseTest
 import pl.jakubokrasa.bikeroutes.features.common.segments.domain.model.Segment
 import pl.jakubokrasa.bikeroutes.features.map.domain.model.Route
-import java.lang.Exception
-import kotlin.coroutines.resumeWithException
 
-class ExportRouteUseCase(private val context: Context): UseCaseTest<MapSnapshot, ExportRouteData>() {
+class ExportRouteUseCase(private val context: Context): UseCase<Bitmap, ExportRouteData>() {
     @ExperimentalCoroutinesApi
-    override suspend fun action(params: ExportRouteData): MapSnapshot {
+    override suspend fun action(params: ExportRouteData): Bitmap {
       return getSnapshot(params)
     }
 
 
     @ExperimentalCoroutinesApi
-    suspend fun getSnapshot(params: ExportRouteData): MapSnapshot = suspendCancellableCoroutine { continuation ->
+    suspend fun getSnapshot(params: ExportRouteData): Bitmap = suspendCancellableCoroutine { continuation ->
         val boundingBox: BoundingBox
         with(params.route.boundingBoxData) {
-            boundingBox = BoundingBox( // możliwe że tu trzeba zamienić parametry miejscami
+            boundingBox = BoundingBox(
                 latNorth, lonEast, latSouth, lonWest)
         }
 
         MapSnapshot({ snapshot ->
-            continuation.resume(snapshot) { error ->
+
+            if (snapshot.status != MapSnapshot.Status.CANVAS_OK) {
+                throw Exception("MapSnapshot status is NOT CANVAS_OK")
+            }
+            val bitmap = Bitmap.createBitmap(snapshot.bitmap)
+
+            continuation.resume(bitmap) { error -> //todo nie jestem pewny czy to przekaże błąd do runcatching
                 error.message?.let {
-                    Log.e("ExportRouteUseCase", it)
+                    throw Exception(it)
                 }
             }
         },
             MapSnapshot.INCLUDE_FLAG_UPTODATE,
             MapTileProviderBasic(context, TileSourceFactory.WIKIMEDIA),
             listOf(params.polyline),
-            Projection(MAP_ZOOM,
-                MAP_SIZE_PIXELS,
-                MAP_SIZE_PIXELS,
+            Projection(params.zoom,
+                MAP_WIDTH_PIXELS,
+                MAP_HEIGHT_PIXELS,
                 boundingBox.centerWithDateLine,
                 0F,
                 true,
@@ -55,12 +58,12 @@ class ExportRouteUseCase(private val context: Context): UseCaseTest<MapSnapshot,
     }
 
     companion object {
-        const val MAP_SIZE_PIXELS = 300
-        const val MAP_ZOOM = 13.0
+        const val MAP_WIDTH_PIXELS = 900
+        const val MAP_HEIGHT_PIXELS = 600
     }
 }
 
 
 data class ExportRouteData(
-    val route: Route, val polyline: Polyline, val segments: List<Segment>
+    val route: Route, val polyline: Polyline, val segments: List<Segment>, val zoom: Double
 )

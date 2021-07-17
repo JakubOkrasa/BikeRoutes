@@ -263,8 +263,7 @@
                 android:orientation="vertical"
                 android:visibility="gone"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/toolbar"
-                tools:visibility="visible">
+                app:layout_constraintTop_toBottomOf="@id/toolbar">
 
                 <EditText
                     android:id="@+id/et_route_name"
@@ -286,8 +285,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    app:layout_constraintTop_toBottomOf="@id/ll_name"
-                    tools:visibility="visible">
+                    app:layout_constraintTop_toBottomOf="@id/ll_name">
 
                     <TextView
                         style="@style/tv_medium"
@@ -296,26 +294,31 @@
                         android:padding="7dp"
                         android:text="Visibility"
                         android:textColor="#222"
-                        tools:visibility="visible" />
+                        tools:visibility="gone" />
 
                     <View
                         android:layout_width="0dp"
                         android:layout_height="0dp"
-                        android:layout_weight="1"
-                        tools:visibility="visible" />
+                        android:layout_weight="1" />
 
                     <Spinner
                         android:id="@+id/spinnerVisibility"
                         style="@style/tv_medium"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:spinnerMode="dialog"
-                        tools:visibility="visible"/>
+                        android:spinnerMode="dialog" />
 
                 </LinearLayout>
 
             </LinearLayout>
         </LinearLayout>
+
+        <ImageView
+            android:id="@+id/img_test_export"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/ll_main"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>
 

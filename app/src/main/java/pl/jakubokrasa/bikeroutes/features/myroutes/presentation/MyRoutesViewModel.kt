@@ -1,9 +1,11 @@
 package pl.jakubokrasa.bikeroutes.features.myroutes.presentation
 
+import android.graphics.Bitmap
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.hadilq.liveevent.LiveEvent
+import kotlinx.coroutines.Dispatchers
 import org.koin.ext.scope
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.overlay.Polyline
@@ -50,6 +52,7 @@ class MyRoutesViewModel(
 	private val _segmentPointIndex by lazy { LiveEvent<Int>() }
     private val _isSegmentAdded by lazy { LiveEvent<Boolean>() }
     private val _segments by lazy { LiveEvent<List<SegmentDisplayable>>() }
+    private val _exportedRoute by lazy { LiveEvent<Bitmap>() }
     override val LOG_TAG: String = MyRoutesViewModel::class.simpleName?: "unknown"
 
     val pointsFromRemote: LiveData<List<PointDisplayable>> by lazy { _pointsFromRemote }
@@ -61,6 +64,7 @@ class MyRoutesViewModel(
     val segmentPointIndex: LiveData<Int> by lazy { _segmentPointIndex }
     val isSegmentAdded: LiveData<Boolean> by lazy { _isSegmentAdded }
     val segments: LiveData<List<SegmentDisplayable>> by lazy { _segments }
+    val exportedRoute: LiveData<Bitmap> by lazy { _exportedRoute }
 
 
     fun removeRouteAndNavBack(route: RouteDisplayable) {
@@ -274,15 +278,17 @@ fun addPhoto(routeId: String, localPath: String, sharingType: SharingType) {
         }
     }
 
-    fun exportRoute(route: RouteDisplayable, polyline: Polyline, segments: List<SegmentDisplayable>) {
+    fun exportRoute(route: RouteDisplayable, polyline: Polyline, segments: List<SegmentDisplayable>, zoom: Double) {
         setPendingState()
         exportRouteUseCase(
-            params = ExportRouteData(route.toRoute(), polyline, segments.map { it.toSegment() }),
-            scope = viewModelScope
+            params = ExportRouteData(route.toRoute(), polyline, segments.map { it.toSegment() }, zoom),
+            scope = viewModelScope,
+            dispatcher = Dispatchers.Main //creating MapSnapshot requires UI thread
         ) {
                 result ->
             setIdleState()
             result.onSuccess {
+                _exportedRoute.value = it
                 handleSuccess("exportRoute")
             }
             result.onFailure {
