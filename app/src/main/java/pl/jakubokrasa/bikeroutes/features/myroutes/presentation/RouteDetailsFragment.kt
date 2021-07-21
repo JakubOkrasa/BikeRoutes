@@ -10,8 +10,10 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.ArrayAdapter
+import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.Toolbar
+import androidx.core.view.drawToBitmap
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
@@ -144,22 +146,26 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
     }
 
     private fun observeShareUri() {
+
+
         viewModel.exportedRoute.observe(viewLifecycleOwner, { uri ->
 
-            val intent = Intent(Intent.ACTION_SEND)
-            intent.putExtra(Intent.EXTRA_STREAM, uri)
-            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            intent.type = "image/png"
-            startActivity(Intent.createChooser(intent, "Export route"))
-//            Glide.with(requireContext())
-//                .load(it)
-//                .placeholder(R.drawable.ic_baseline_photo_24)
-//                .apply(RequestOptions().centerInside())
-//                .into(binding.imgTestExport)
+
+
+            startShareChooser(uri)
+
         })
     }
 
-	private fun observeSegments() {
+    private fun startShareChooser(uri: Uri) {
+        val intent = Intent(Intent.ACTION_SEND)
+        intent.putExtra(Intent.EXTRA_STREAM, uri)
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        intent.type = "image/png"
+        startActivity(Intent.createChooser(intent, "Export route"))
+    }
+
+    private fun observeSegments() {
         viewModel.segments.observe(viewLifecycleOwner, {
             //todo possible optimization (by checking which segment already exists)
             segments = ArrayList(it)
@@ -204,7 +210,26 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
         view.post {
             showRoute()
             viewModel.getSegments(route.routeId)
+
+
+            val cardviewImage =loadBitmapFromView(View.inflate(requireContext(), R.layout.rv_myroutes_item,  null))
+            Glide.with(requireContext())
+                .load(cardviewImage)
+                .placeholder(R.drawable.ic_baseline_photo_24)
+                .apply(RequestOptions().centerInside())
+                .into(binding.imgTestExport)
         }
+    }
+
+    private fun loadBitmapFromView(view: View): Bitmap {
+        val tvDesc = view.findViewById<TextView>(R.id.tv_description)
+        tvDesc.text = "orem ipsum dolor sit amet, consectetur adipiscing elit"
+        view.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED), View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED))
+        val bitmap = Bitmap.createBitmap(view.measuredWidth, view.measuredHeight, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(bitmap)
+        view.layout(0, 0, view.measuredWidth, view.measuredHeight)
+        view.draw(canvas)
+        return bitmap
     }
 
     private fun showRoute() {

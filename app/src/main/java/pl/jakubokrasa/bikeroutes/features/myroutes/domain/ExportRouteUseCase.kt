@@ -21,23 +21,14 @@ import pl.jakubokrasa.bikeroutes.features.map.domain.model.Route
 import java.io.File
 import java.io.FileOutputStream
 
-class ExportRouteUseCase(private val context: Context): UseCase<Uri, ExportRouteData>() {
+class ExportRouteUseCase(private val context: Context): UseCase<MapSnapshot, ExportRouteData>() {
     @ExperimentalCoroutinesApi
-    override suspend fun action(params: ExportRouteData): Uri {
-        val snapshot = getSnapshot(params)
-        return getUri(snapshot)
+    override suspend fun action(params: ExportRouteData): MapSnapshot {
+        return getSnapshot(params)
     }
 
-    private fun getUri(
-        snapshot: MapSnapshot
-    ): Uri {
 
-        val bitmap = Bitmap.createBitmap(snapshot.bitmap) //todo to powinno być w wątku Default
 
-        return saveImageToLocalCache(bitmap, getFileName())
-    }
-
-    private fun getFileName() = "shared_route_${System.currentTimeMillis()}"
 
 
     @ExperimentalCoroutinesApi
@@ -71,35 +62,7 @@ class ExportRouteUseCase(private val context: Context): UseCase<Uri, ExportRoute
                 0)).run()
     }
 
-    private fun saveImageToLocalCache(bitmap: Bitmap, fileName: String): Uri {
-            val uri: Uri
-    //todo czy tu potrzebne try catch, bo do runCatching błąd trafi?
 
-            // local storage only for API<24
-            if(!isExternalStorageWritable()) throw Exception("External storage is not writable")
-                val file = File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES),
-                    "$fileName.png")
-                val stream = FileOutputStream(file)
-                bitmap.compress(Bitmap.CompressFormat.PNG, 90, stream)
-                stream.close()
-                uri = Uri.fromFile(file)
-
-        // file provider, doesn't work
-//        val imagesFolder = File(context.cacheDir, "images")
-//        imagesFolder.mkdirs()
-//        val file = File(imagesFolder, "$fileName.png")
-//        val stream = FileOutputStream(file)
-//        bitmap.compress(Bitmap.CompressFormat.PNG, 90, stream)
-//        stream.close()
-//        uri = FileProvider.getUriForFile(context, context.resources.getString(R.string.file_provider_path), file)
-
-            return uri
-    }
-
-    private fun isExternalStorageWritable(): Boolean {
-        val state = Environment.getExternalStorageState()
-        return Environment.MEDIA_MOUNTED == state
-    }
 
 
 

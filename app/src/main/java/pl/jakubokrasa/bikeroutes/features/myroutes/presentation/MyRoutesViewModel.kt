@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.hadilq.liveevent.LiveEvent
 import kotlinx.coroutines.Dispatchers
 import org.osmdroid.util.GeoPoint
+import org.osmdroid.views.drawing.MapSnapshot
 import org.osmdroid.views.overlay.Polyline
 import pl.jakubokrasa.bikeroutes.core.base.platform.BaseViewModel
 import pl.jakubokrasa.bikeroutes.features.common.domain.FilterData
@@ -35,6 +36,7 @@ class MyRoutesViewModel(
     private val removeSegmentUseCase: RemoveSegmentUseCase,
     private val getSegmentsUseCase: GetSegmentsUseCase,
     private val exportRouteUseCase: ExportRouteUseCase,
+    private val completeExportRouteUseCase: CompleteExportRouteUseCase,
 
     private val myRoutesNavigator: MyRoutesNavigator,
     private val addPhotoUseCase: AddPhotoUseCase,
@@ -287,11 +289,29 @@ fun addPhoto(routeId: String, localPath: String, sharingType: SharingType) {
                 result ->
             setIdleState()
             result.onSuccess {
-                _exportedRoute.value = it
+                completeExportRoute(it)
                 handleSuccess("exportRoute")
             }
             result.onFailure {
                 handleFailure("exportRoute", errLog = it.message)
+            }
+        }
+    }
+
+    fun completeExportRoute(snapshot: MapSnapshot) {
+        setPendingState()
+        completeExportRouteUseCase(
+            params = snapshot,
+            scope = viewModelScope
+        ) {
+                result ->
+            setIdleState()
+            result.onSuccess {
+                _exportedRoute.value = it
+                handleSuccess("completeExportRoute")
+            }
+            result.onFailure {
+                handleFailure("completeExportRoute", errLog = it.message)
             }
         }
     }
