@@ -149,7 +149,11 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
 
 
         viewModel.exportedRoute.observe(viewLifecycleOwner, { uri ->
-
+                        Glide.with(requireContext())
+//                .load(cardviewImage)
+//                .placeholder(R.drawable.ic_baseline_photo_24)
+//                .apply(RequestOptions().centerInside())
+//                .into(binding.imgTestExport)
 
 
             startShareChooser(uri)
@@ -212,25 +216,11 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
             viewModel.getSegments(route.routeId)
 
 
-            val cardviewImage =loadBitmapFromView(View.inflate(requireContext(), R.layout.rv_myroutes_item,  null))
-            Glide.with(requireContext())
-                .load(cardviewImage)
-                .placeholder(R.drawable.ic_baseline_photo_24)
-                .apply(RequestOptions().centerInside())
-                .into(binding.imgTestExport)
+
         }
     }
 
-    private fun loadBitmapFromView(view: View): Bitmap {
-        val tvDesc = view.findViewById<TextView>(R.id.tv_description)
-        tvDesc.text = "orem ipsum dolor sit amet, consectetur adipiscing elit"
-        view.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED), View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED))
-        val bitmap = Bitmap.createBitmap(view.measuredWidth, view.measuredHeight, Bitmap.Config.ARGB_8888)
-        val canvas = Canvas(bitmap)
-        view.layout(0, 0, view.measuredWidth, view.measuredHeight)
-        view.draw(canvas)
-        return bitmap
-    }
+
 
     private fun showRoute() {
         setRoute()

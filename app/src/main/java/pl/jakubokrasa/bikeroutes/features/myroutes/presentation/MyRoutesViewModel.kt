@@ -289,7 +289,7 @@ fun addPhoto(routeId: String, localPath: String, sharingType: SharingType) {
                 result ->
             setIdleState()
             result.onSuccess {
-                completeExportRoute(it)
+                completeExportRoute(it, route)
                 handleSuccess("exportRoute")
             }
             result.onFailure {
@@ -298,10 +298,10 @@ fun addPhoto(routeId: String, localPath: String, sharingType: SharingType) {
         }
     }
 
-    fun completeExportRoute(snapshot: MapSnapshot) {
+    fun completeExportRoute(snapshot: MapSnapshot, route: RouteDisplayable) {
         setPendingState()
         completeExportRouteUseCase(
-            params = snapshot,
+            params = CompleteExportRouteData(snapshot, route.toRoute()),
             scope = viewModelScope
         ) {
                 result ->

@@ -179,7 +179,7 @@ class MapFragment() : BaseFragment<MapViewModel>(R.layout.fragment_map), KoinCom
 
     private fun setMapViewProperties() {
         with(binding.mapView) {
-            setTileSource(TileSourceFactory.WIKIMEDIA)
+            setTileSource(mapTileSource)
             zoomController.setVisibility(CustomZoomButtonsController.Visibility.NEVER)
             isTilesScaledToDpi = true
             setMultiTouchControls(true)

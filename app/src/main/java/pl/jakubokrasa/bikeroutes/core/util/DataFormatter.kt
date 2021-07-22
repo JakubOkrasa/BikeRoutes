@@ -1,7 +1,8 @@
 package pl.jakubokrasa.bikeroutes.core.util
 
-import androidx.room.util.StringUtil
 import pl.jakubokrasa.bikeroutes.features.myroutes.presentation.MyRoutesFragment.Companion.DISTANCE_SLIDER_VALUE_TO
+import java.text.SimpleDateFormat
+import java.util.*
 
 fun getFormattedRideTime(rideTimeMinutes: Int): String {
     val rideTimeRemainedMinutes = rideTimeMinutes%60
@@ -42,7 +43,7 @@ fun getFormattedFilterDistanceLessThan(valueTo: Int): String {
 fun getFormattedFilterLocation(displayName: String): String {
     val firstCommaIndex = displayName.indexOfComma()
     if(firstCommaIndex != -1) {
-        val secondCommaIndex = displayName.indexOfComma(firstCommaIndex+1)
+        val secondCommaIndex = displayName.indexOfComma(firstCommaIndex + 1)
         if(secondCommaIndex != -1)
             return displayName.substring(0, secondCommaIndex)
         else
@@ -50,6 +51,12 @@ fun getFormattedFilterLocation(displayName: String): String {
     } else {
         return displayName
     }
+}
+
+fun getFormattedDate(millis: Long): String {
+    val date = Date(millis)
+    val formatter = SimpleDateFormat("dd/MM/yyyy", Locale.ROOT)
+    return formatter.format(date)
 }
 
 private fun String.indexOfComma(startIndex: Int = 0): Int {

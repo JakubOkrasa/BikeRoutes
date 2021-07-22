@@ -21,7 +21,7 @@ fun configureOsmDroid(context: Context) {
 
 
 fun MapView.setBaseMapViewProperties() {
-    setTileSource(TileSourceFactory.WIKIMEDIA)
+    setTileSource(mapTileSource)
     zoomController.setVisibility(CustomZoomButtonsController.Visibility.NEVER)
     isTilesScaledToDpi = true
     setMultiTouchControls(true)
@@ -95,3 +95,4 @@ fun addMappingPaint(routePolyline: Polyline) {
 
 const val routeColor = Color.BLUE
 const val routeWidth = 7f
+val mapTileSource = TileSourceFactory.WIKIMEDIA

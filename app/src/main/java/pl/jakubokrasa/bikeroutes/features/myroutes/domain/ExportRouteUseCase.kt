@@ -16,6 +16,7 @@ import org.osmdroid.views.overlay.Overlay
 import org.osmdroid.views.overlay.Polyline
 import pl.jakubokrasa.bikeroutes.R
 import pl.jakubokrasa.bikeroutes.core.base.domain.UseCase
+import pl.jakubokrasa.bikeroutes.core.util.mapTileSource
 import pl.jakubokrasa.bikeroutes.features.common.segments.domain.model.Segment
 import pl.jakubokrasa.bikeroutes.features.map.domain.model.Route
 import java.io.File
@@ -49,9 +50,9 @@ class ExportRouteUseCase(private val context: Context): UseCase<MapSnapshot, Exp
             }
         },
             MapSnapshot.INCLUDE_FLAG_UPTODATE,
-            MapTileProviderBasic(context, TileSourceFactory.WIKIMEDIA),
-            listOf(params.polyline).plus(params.segmentPolylines),
-            Projection(params.zoom,
+            MapTileProviderBasic(context, mapTileSource),
+            listOf(params.polyline),
+            Projection(params.zoom+1.0,
                 MAP_WIDTH_PIXELS,
                 MAP_HEIGHT_PIXELS,
                 boundingBox.centerWithDateLine,
@@ -67,8 +68,8 @@ class ExportRouteUseCase(private val context: Context): UseCase<MapSnapshot, Exp
 
 
     companion object {
-        const val MAP_WIDTH_PIXELS = 900
-        const val MAP_HEIGHT_PIXELS = 600
+        const val MAP_WIDTH_PIXELS = 1800
+        const val MAP_HEIGHT_PIXELS = 1200
     }
 }
 
