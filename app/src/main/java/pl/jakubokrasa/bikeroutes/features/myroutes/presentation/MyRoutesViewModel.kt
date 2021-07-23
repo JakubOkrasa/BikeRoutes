@@ -23,6 +23,8 @@ import pl.jakubokrasa.bikeroutes.features.map.presentation.model.PointDisplayabl
 import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteDisplayable
 import pl.jakubokrasa.bikeroutes.features.myroutes.domain.*
 import pl.jakubokrasa.bikeroutes.features.myroutes.navigation.MyRoutesNavigator
+import pl.jakubokrasa.bikeroutes.features.reviews.domain.GetReviewsUseCase
+import pl.jakubokrasa.bikeroutes.features.reviews.presentation.model.ReviewDisplayable
 
 class MyRoutesViewModel(
     private val getMyRoutesUseCase: GetMyRoutesUseCase,
@@ -37,11 +39,12 @@ class MyRoutesViewModel(
     private val getSegmentsUseCase: GetSegmentsUseCase,
     private val exportRouteUseCase: ExportRouteUseCase,
     private val completeExportRouteUseCase: CompleteExportRouteUseCase,
-
-    private val myRoutesNavigator: MyRoutesNavigator,
     private val addPhotoUseCase: AddPhotoUseCase,
     private val getPhotosUseCase: GetPhotosUseCase,
     private val removePhotoUseCase: RemovePhotoUseCase,
+    private val getReviewsUseCase: GetReviewsUseCase,
+
+    private val myRoutesNavigator: MyRoutesNavigator,
 ): BaseViewModel() {
 
     private val _myRoutes by lazy { MutableLiveData<List<RouteDisplayable>>() }
@@ -53,7 +56,8 @@ class MyRoutesViewModel(
 	private val _segmentPointIndex by lazy { LiveEvent<Int>() }
     private val _isSegmentAdded by lazy { LiveEvent<Boolean>() }
     private val _segments by lazy { LiveEvent<List<SegmentDisplayable>>() }
-    private val _exportedRoute by lazy { LiveEvent<Uri>() }
+    private val _exportedRouteUri by lazy { LiveEvent<Uri>() }
+    private val _reviews by lazy { MutableLiveData<List<ReviewDisplayable>>() }
     override val LOG_TAG: String = MyRoutesViewModel::class.simpleName?: "unknown"
 
     val pointsFromRemote: LiveData<List<PointDisplayable>> by lazy { _pointsFromRemote }
@@ -65,7 +69,8 @@ class MyRoutesViewModel(
     val segmentPointIndex: LiveData<Int> by lazy { _segmentPointIndex }
     val isSegmentAdded: LiveData<Boolean> by lazy { _isSegmentAdded }
     val segments: LiveData<List<SegmentDisplayable>> by lazy { _segments }
-    val exportedRoute: LiveData<Uri> by lazy { _exportedRoute }
+    val exportedRouteUri: LiveData<Uri> by lazy { _exportedRouteUri }
+    val reviews: LiveData<List<ReviewDisplayable>> by lazy { _reviews }
 
 
     fun removeRouteAndNavBack(route: RouteDisplayable) {
@@ -298,7 +303,7 @@ fun addPhoto(routeId: String, localPath: String, sharingType: SharingType) {
         }
     }
 
-    fun completeExportRoute(snapshot: MapSnapshot, route: RouteDisplayable) {
+    private fun completeExportRoute(snapshot: MapSnapshot, route: RouteDisplayable) {
         setPendingState()
         completeExportRouteUseCase(
             params = CompleteExportRouteData(snapshot, route.toRoute()),
@@ -307,12 +312,26 @@ fun addPhoto(routeId: String, localPath: String, sharingType: SharingType) {
                 result ->
             setIdleState()
             result.onSuccess {
-                _exportedRoute.value = it
+                _exportedRouteUri.value = it
                 handleSuccess("completeExportRoute")
             }
             result.onFailure {
                 handleFailure("completeExportRoute", errLog = it.message)
             }
+        }
+    }
+
+    fun getReviews(routeId: String) {
+        getReviewsUseCase(
+            params = routeId,
+            scope = viewModelScope
+        ) {
+                result ->
+            result.onSuccess { list ->
+                _reviews.value = list.map { ReviewDisplayable(it) }
+                handleSuccess("getReviews")
+            }
+            result.onFailure { handleFailure("getReviews", errLog = it.message) }
         }
     }
 

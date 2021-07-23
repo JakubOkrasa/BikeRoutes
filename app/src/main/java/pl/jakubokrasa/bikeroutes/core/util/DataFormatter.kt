@@ -70,6 +70,8 @@ fun getFormattedSharingTypeName(sharingType: SharingType) =
         SharingType.PUBLIC_WITH_PRIVATE_PHOTOS -> "private photos"
     }
 
+fun getFormattedUserDisplayName(uid: String) = String.format("user-${uid.substring(0, 6)}")
+
 private fun String.indexOfComma(startIndex: Int = 0): Int {
     return this.indexOf(',', startIndex)
 }

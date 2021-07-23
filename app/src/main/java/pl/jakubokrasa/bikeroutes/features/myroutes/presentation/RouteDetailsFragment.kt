@@ -7,16 +7,13 @@ import android.net.Uri
 import android.content.res.ColorStateList
 import android.graphics.*
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.ArrayAdapter
-import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.Toolbar
-import androidx.core.view.drawToBitmap
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.osmdroid.util.GeoPoint
@@ -36,6 +33,8 @@ import pl.jakubokrasa.bikeroutes.features.common.presentation.model.PhotoInfoDis
 import pl.jakubokrasa.bikeroutes.features.common.segments.presentation.model.SegmentDisplayable
 import pl.jakubokrasa.bikeroutes.features.map.presentation.model.PointDisplayable
 import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteDisplayable
+import pl.jakubokrasa.bikeroutes.features.reviews.presentation.ReviewsRecyclerAdapter
+import pl.jakubokrasa.bikeroutes.features.reviews.presentation.model.ReviewDisplayable
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -50,6 +49,7 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
     private lateinit var dialogConfirmRemove: Dialog
     private val navigator: CommonRoutesNavigator by inject()
     private val photosRecyclerAdapter: PhotosRecyclerAdapter by inject()
+    private val reviewsRecyclerAdapter: ReviewsRecyclerAdapter by inject()
 	private lateinit var segmentPolylines :ArrayList<Polyline>
     private lateinit var segments: ArrayList<SegmentDisplayable>
     private lateinit var selectedSegment: SegmentDisplayable
@@ -91,6 +91,7 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
     override fun onStart() {
         super.onStart()
         initPhotoRecycler()
+        initReviewRecycler()
         if(this::route.isInitialized)
             viewModel.getPhotos(route.routeId)
     }
@@ -127,11 +128,22 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
         }
     }
 
+    private fun initReviewRecycler() {
+        with(binding.rvReviews) {
+            setHasFixedSize(true)
+            adapter = reviewsRecyclerAdapter
+            val linearLayoutManager = LinearLayoutManager(requireContext())
+            layoutManager = linearLayoutManager
+            addItemDecoration(DividerItemDecoration(context, linearLayoutManager.orientation))
+        }
+    }
+
     override fun initObservers() {
         super.initObservers()
         observePhotos()
 		observeSegments()
         observeShareUri()
+        observeReviews()
     }
 
     private fun observePhotos() {
@@ -147,7 +159,7 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
     private fun observeShareUri() {
 
 
-        viewModel.exportedRoute.observe(viewLifecycleOwner, { uri ->
+        viewModel.exportedRouteUri.observe(viewLifecycleOwner, { uri ->
                         Glide.with(requireContext())
 //                .load(cardviewImage)
 //                .placeholder(R.drawable.ic_baseline_photo_24)
@@ -158,6 +170,27 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
             startShareChooser(uri)
 
         })
+    }
+
+    private fun observeReviews() {
+        viewModel.reviews.observe(viewLifecycleOwner, {
+            if(it.isNotEmpty()) {
+                showReviews(it)
+            } else {
+                hideReviews()
+            }
+        })
+    }
+
+    private fun showReviews(reviews: List<ReviewDisplayable>) {
+        binding.tvReviews.makeVisible()
+        binding.rvReviews.makeVisible()
+        reviewsRecyclerAdapter.setItems(reviews)
+    }
+
+    private fun hideReviews() {
+        binding.tvReviews.makeGone()
+        binding.rvReviews.makeGone()
     }
 
     private fun startShareChooser(uri: Uri) {
@@ -214,6 +247,7 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
         view.post {
             showRoute()
             viewModel.getSegments(route.routeId)
+            viewModel.getReviews(route.routeId)
 
 
 

@@ -23,6 +23,8 @@ import pl.jakubokrasa.bikeroutes.features.map.domain.model.Point
 import pl.jakubokrasa.bikeroutes.features.map.domain.model.Route
 import pl.jakubokrasa.bikeroutes.features.myroutes.data.model.PointDocument
 import pl.jakubokrasa.bikeroutes.features.myroutes.presentation.MyRoutesFragment.Companion.DISTANCE_SLIDER_VALUE_TO
+import pl.jakubokrasa.bikeroutes.features.reviews.data.model.ReviewResponse
+import pl.jakubokrasa.bikeroutes.features.reviews.domain.model.Review
 import java.io.File
 import java.lang.Exception
 
@@ -238,6 +240,14 @@ class RemoteRepositoryImpl(
             .get()
             .await()
             .map { doc -> doc.toObject(SegmentResponse::class.java).toSegment() }
+    }
+
+    override suspend fun getReviews(routeId: String): List<Review> {
+        return firestore.collection("reviews")
+            .whereEqualTo("routeId", routeId)
+            .get()
+            .await()
+            .map { doc -> doc.toObject(ReviewResponse::class.java).toReview() }
     }
 
 
