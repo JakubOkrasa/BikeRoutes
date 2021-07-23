@@ -12,6 +12,7 @@ import org.osmdroid.views.drawing.MapSnapshot
 import pl.jakubokrasa.bikeroutes.BuildConfig
 import pl.jakubokrasa.bikeroutes.R
 import pl.jakubokrasa.bikeroutes.core.base.domain.UseCase
+import pl.jakubokrasa.bikeroutes.core.util.getFormattedAvgSpeed
 import pl.jakubokrasa.bikeroutes.core.util.getFormattedDate
 import pl.jakubokrasa.bikeroutes.core.util.getFormattedDistance
 import pl.jakubokrasa.bikeroutes.core.util.getFormattedRideTime
@@ -24,7 +25,8 @@ class CompleteExportRouteUseCase(private val context: Context): UseCase<Uri, Com
 
         val infoBitmap = loadBitmapFromView(View.inflate(context, R.layout.export_route_info,  null), params.route)
         val mapBitmap = Bitmap.createBitmap(params.mapSnapshot.bitmap)
-        return saveImageToLocalCache(mergeExportRouteBitmaps(mapBitmap, infoBitmap), getFileName())
+        val outBitmap = mergeExportRouteBitmaps(mapBitmap, infoBitmap)
+        return saveImageToLocalCache(outBitmap, getFileName())
 
     }
 
@@ -85,7 +87,7 @@ class CompleteExportRouteUseCase(private val context: Context): UseCase<Uri, Com
 
         tvName.text = route.name
         tvDistance.text = getFormattedDistance(route.distance)
-//        tvAvgSpeed.text = getFormattedAvgSpeed(route.avgSpeedKmPerH) todo
+        tvAvgSpeed.text = getFormattedAvgSpeed(route.avgSpeedKmPerH)
         tvRideTime.text = getFormattedRideTime(route.rideTimeMinutes)
     }
 }
