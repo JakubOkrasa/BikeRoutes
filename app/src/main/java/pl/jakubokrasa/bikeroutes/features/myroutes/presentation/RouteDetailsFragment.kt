@@ -165,6 +165,7 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
         val intent = Intent(Intent.ACTION_SEND)
         intent.putExtra(Intent.EXTRA_STREAM, uri)
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
         intent.type = "image/png"
         startActivity(Intent.createChooser(intent, "Export route"))
     }

@@ -81,7 +81,6 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="3dp" />
     </LinearLayout>
-
 </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

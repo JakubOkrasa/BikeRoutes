@@ -7,7 +7,9 @@ import android.net.Uri
 import android.os.Environment
 import android.view.View
 import android.widget.TextView
+import androidx.core.content.FileProvider
 import org.osmdroid.views.drawing.MapSnapshot
+import pl.jakubokrasa.bikeroutes.BuildConfig
 import pl.jakubokrasa.bikeroutes.R
 import pl.jakubokrasa.bikeroutes.core.base.domain.UseCase
 import pl.jakubokrasa.bikeroutes.core.util.getFormattedDate
@@ -36,23 +38,14 @@ class CompleteExportRouteUseCase(private val context: Context): UseCase<Uri, Com
         val uri: Uri
         //todo czy tu potrzebne try catch, bo do runCatching błąd trafi?
 
-        // local storage only for API<24
-        if(!isExternalStorageWritable()) throw Exception("External storage is not writable")
-        val file = File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES),
-            "$fileName.png")
+        val imagesFolder = File(context.cacheDir, "images")
+        imagesFolder.mkdirs()
+        val file = File(imagesFolder, "$fileName.png")
         val stream = FileOutputStream(file)
         bitmap.compress(Bitmap.CompressFormat.PNG, 90, stream)
+        stream.flush()
         stream.close()
-        uri = Uri.fromFile(file)
-
-        // file provider, doesn't work
-//        val imagesFolder = File(context.cacheDir, "images")
-//        imagesFolder.mkdirs()
-//        val file = File(imagesFolder, "$fileName.png")
-//        val stream = FileOutputStream(file)
-//        bitmap.compress(Bitmap.CompressFormat.PNG, 90, stream)
-//        stream.close()
-//        uri = FileProvider.getUriForFile(context, context.resources.getString(R.string.file_provider_path), file)
+        uri = FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID +".fileprovider", file)
 
         return uri
     }
