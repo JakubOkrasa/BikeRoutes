@@ -16,6 +16,7 @@ class PreferenceHelper(ctx: Context) {
 
         const val PREF_KEY_USER_EMAIL = "user_email"
         const val PREF_KEY_USER_PASSWORD = "user_password"
+        const val PREF_KEY_USER_UID = "user_uid"
 
         const val PREF_KEY_TIPS_SEGMENTS_NOT_SHOWED = "key_tips_segments_not_showed"
     }
@@ -23,17 +24,19 @@ class PreferenceHelper(ctx: Context) {
     private val filePath = BuildConfig.APPLICATION_ID + ".preferences"
     val preferences: SharedPreferences = ctx.getSharedPreferences(filePath, Context.MODE_PRIVATE)
 
-    fun saveUserDataToSharedPreferences(email: String, password: String) {
+    fun saveUserDataToSharedPreferences(email: String, password: String, uid: String) {
         this.preferences.edit {
-            putString(PreferenceHelper.PREF_KEY_USER_EMAIL, email)
-            putString(PreferenceHelper.PREF_KEY_USER_PASSWORD, password)
+            putString(PREF_KEY_USER_EMAIL, email)
+            putString(PREF_KEY_USER_PASSWORD, password)
+            putString(PREF_KEY_USER_UID, uid)
         }
     }
 
     fun deleteUserDataFromSharedPreferences() {
         this.preferences.edit {
-            remove(PreferenceHelper.PREF_KEY_USER_EMAIL)
-            remove(PreferenceHelper.PREF_KEY_USER_PASSWORD)
+            remove(PREF_KEY_USER_EMAIL)
+            remove(PREF_KEY_USER_PASSWORD)
+            remove(PREF_KEY_USER_UID)
         }
     }
 
@@ -45,3 +48,5 @@ fun SharedPreferences.Editor.putDouble(key: String, double: Double) =
 
 fun SharedPreferences.getDouble(key: String, default: Double) =
     java.lang.Double.longBitsToDouble(getLong(key, java.lang.Double.doubleToRawLongBits(default)))
+
+fun getCurrentUserUid(preferenceHelper: PreferenceHelper) =  preferenceHelper.preferences.getString(PreferenceHelper.PREF_KEY_USER_UID, "")!!

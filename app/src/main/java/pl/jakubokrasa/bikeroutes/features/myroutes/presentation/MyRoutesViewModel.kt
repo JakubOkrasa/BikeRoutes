@@ -23,7 +23,10 @@ import pl.jakubokrasa.bikeroutes.features.map.presentation.model.PointDisplayabl
 import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteDisplayable
 import pl.jakubokrasa.bikeroutes.features.myroutes.domain.*
 import pl.jakubokrasa.bikeroutes.features.myroutes.navigation.MyRoutesNavigator
+import pl.jakubokrasa.bikeroutes.features.reviews.domain.AddReviewUseCase
 import pl.jakubokrasa.bikeroutes.features.reviews.domain.GetReviewsUseCase
+import pl.jakubokrasa.bikeroutes.features.reviews.domain.RemoveReviewUseCase
+import pl.jakubokrasa.bikeroutes.features.reviews.domain.UpdateReviewUseCase
 import pl.jakubokrasa.bikeroutes.features.reviews.presentation.model.ReviewDisplayable
 
 class MyRoutesViewModel(
@@ -43,6 +46,9 @@ class MyRoutesViewModel(
     private val getPhotosUseCase: GetPhotosUseCase,
     private val removePhotoUseCase: RemovePhotoUseCase,
     private val getReviewsUseCase: GetReviewsUseCase,
+    private val addReviewUseCase: AddReviewUseCase,
+    private val updateReviewUseCase: UpdateReviewUseCase,
+    private val removeReviewUseCase: RemoveReviewUseCase,
 
     private val myRoutesNavigator: MyRoutesNavigator,
 ): BaseViewModel() {
@@ -322,11 +328,13 @@ fun addPhoto(routeId: String, localPath: String, sharingType: SharingType) {
     }
 
     fun getReviews(routeId: String) {
+        setPendingState()
         getReviewsUseCase(
             params = routeId,
             scope = viewModelScope
         ) {
                 result ->
+            setIdleState()
             result.onSuccess { list ->
                 _reviews.value = list.map { ReviewDisplayable(it) }
                 handleSuccess("getReviews")
@@ -335,6 +343,51 @@ fun addPhoto(routeId: String, localPath: String, sharingType: SharingType) {
         }
     }
 
+    fun addReview(review: ReviewDisplayable) {
+        setPendingState()
+        addReviewUseCase(
+            params = review.toReview(),
+            scope = viewModelScope
+        ) {
+                result ->
+            setIdleState()
+            result.onSuccess {
+                getReviews(review.routeId)
+                handleSuccess("addReview")
+            }
+            result.onFailure { handleFailure("addReview", errLog = it.message) }
+        }
+    }
+
+    fun updateReview(review: ReviewDisplayable) {
+        setPendingState()
+        updateReviewUseCase(
+            params = review.toReview(),
+            scope = viewModelScope
+        ) {
+                result ->
+            setIdleState()
+            result.onSuccess {
+                handleSuccess("updateReview")
+            }
+            result.onFailure { handleFailure("updateReview", errLog = it.message) }
+        }
+    }
+
+    fun removeReview(reviewId: String) {
+        setPendingState()
+        removeReviewUseCase(
+            params = reviewId,
+            scope = viewModelScope
+        ) {
+                result ->
+            setIdleState()
+            result.onSuccess {
+                handleSuccess("removeReview")
+            }
+            result.onFailure { handleFailure("removeReview", errLog = it.message) }
+        }
+    }
     fun navigateBack() {
         myRoutesNavigator.goBack()
     }

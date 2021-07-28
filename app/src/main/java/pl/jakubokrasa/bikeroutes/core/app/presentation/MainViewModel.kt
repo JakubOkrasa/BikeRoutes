@@ -52,9 +52,11 @@ class MainViewModel(
         ) {
                 result ->
             setPendingState()
-            result.onSuccess {
-                preferenceHelper.saveUserDataToSharedPreferences(email, password)
-                _isSignedIn.value = true
+            result.onSuccess { authResult ->
+                authResult.uid?.let {
+                    preferenceHelper.saveUserDataToSharedPreferences(email, password, it)
+                }
+                _isSignedIn.value = true //todo osobna livedata do tego chyba nie jest potrzebna
                 handleSuccess("signIn")
             }
             result.onFailure {

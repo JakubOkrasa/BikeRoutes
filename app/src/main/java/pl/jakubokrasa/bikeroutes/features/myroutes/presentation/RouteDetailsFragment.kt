@@ -9,11 +9,12 @@ import android.graphics.*
 import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
+import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.Toolbar
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
+import org.koin.android.ext.android.bind
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.osmdroid.util.GeoPoint
@@ -21,9 +22,7 @@ import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Polyline
 import pl.jakubokrasa.bikeroutes.R
 import pl.jakubokrasa.bikeroutes.core.base.platform.BaseFragment
-import pl.jakubokrasa.bikeroutes.core.extensions.hideKeyboard
-import pl.jakubokrasa.bikeroutes.core.extensions.makeGone
-import pl.jakubokrasa.bikeroutes.core.extensions.makeVisible
+import pl.jakubokrasa.bikeroutes.core.extensions.*
 import pl.jakubokrasa.bikeroutes.core.util.*
 import pl.jakubokrasa.bikeroutes.core.util.enums.SharingType
 import pl.jakubokrasa.bikeroutes.databinding.FragmentRouteDetailsBinding
@@ -52,8 +51,10 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
     private val reviewsRecyclerAdapter: ReviewsRecyclerAdapter by inject()
 	private lateinit var segmentPolylines :ArrayList<Polyline>
     private lateinit var segments: ArrayList<SegmentDisplayable>
+    private lateinit var reviews: ArrayList<ReviewDisplayable>
     private lateinit var selectedSegment: SegmentDisplayable
     private var zoom = -1.0
+    private var currentUserReview: ReviewDisplayable? = null
     private val activityResultGalleryLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
         uri?.let {
             val picturePath = FileUtils(requireContext()).getPath(uri)
@@ -72,10 +73,19 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
         updateToolbar()
         onViewPost(view)
         initVisibilitySpinner()
-
-
-        binding.btFollow.setOnClickListener(btFollowOnClick)
-		binding.ibRemove.setOnClickListener(ibRemoveOnClick)
+        with(binding) {
+            if (!isMyRoute()) {
+                tvReviews.makeVisible()
+                llAddReview.makeVisible()
+            }
+            btFollow.setOnClickListener(btFollowOnClick)
+            ibRemoveSegment.setOnClickListener(ibRemoveSegmentOnClick)
+            btSaveReview.setOnClickListener(btSaveReviewOnClick)
+            btEditReview.setOnClickListener(btEditReviewOnClick)
+            btUpdateReview.setOnClickListener(btUpdateReviewOnClick)
+            btRemoveReview.setOnClickListener(btRemoveReviewOnClick)
+            btCancelReviewEdit.setOnClickListener(btCancelReviewEditOnClick)
+        }
     }
 
     override fun onResume() {
@@ -133,8 +143,8 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
             setHasFixedSize(true)
             adapter = reviewsRecyclerAdapter
             val linearLayoutManager = LinearLayoutManager(requireContext())
+            linearLayoutManager.orientation = LinearLayoutManager.HORIZONTAL
             layoutManager = linearLayoutManager
-            addItemDecoration(DividerItemDecoration(context, linearLayoutManager.orientation))
         }
     }
 
@@ -157,8 +167,6 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
     }
 
     private fun observeShareUri() {
-
-
         viewModel.exportedRouteUri.observe(viewLifecycleOwner, { uri ->
                         Glide.with(requireContext())
 //                .load(cardviewImage)
@@ -173,9 +181,19 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
     }
 
     private fun observeReviews() {
-        viewModel.reviews.observe(viewLifecycleOwner, {
-            if(it.isNotEmpty()) {
-                showReviews(it)
+        viewModel.reviews.observe(viewLifecycleOwner, { list ->
+            reviews = ArrayList(list)
+            val otherUsersReviews = ArrayList<ReviewDisplayable>()
+            currentUserReview = null
+            list.forEach {
+                if(it.userId == getCurrentUserUid(preferenceHelper))
+                    currentUserReview = it
+                else
+                    otherUsersReviews.add(it)
+            }
+            showCurrentUserReview(currentUserReview)
+            if(otherUsersReviews.isNotEmpty()) {
+                showReviews(otherUsersReviews)
             } else {
                 hideReviews()
             }
@@ -183,9 +201,22 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
     }
 
     private fun showReviews(reviews: List<ReviewDisplayable>) {
-        binding.tvReviews.makeVisible()
-        binding.rvReviews.makeVisible()
         reviewsRecyclerAdapter.setItems(reviews)
+        if(reviewsRecyclerAdapter.itemCount>0) {
+            binding.tvReviews.makeVisible()
+            binding.rvReviews.makeVisible()
+        }
+    }
+
+    private fun showCurrentUserReview(currentUserReview: ReviewDisplayable?) {
+        if(currentUserReview!=null) {
+            binding.tvCurrentReview.text = currentUserReview.content
+            binding.llAddReview.makeGone()
+            binding.llEditReview.makeVisible()
+        } else if(!isMyRoute()) {
+            binding.llEditReview.makeGone()
+            binding.llAddReview.makeVisible()
+        }
     }
 
     private fun hideReviews() {
@@ -248,7 +279,6 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
             showRoute()
             viewModel.getSegments(route.routeId)
             viewModel.getReviews(route.routeId)
-
 
 
         }
@@ -447,7 +477,7 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
         navigator.openFollowRouteFragment(route, points)
     }
 
-    private val ibRemoveOnClick = View.OnClickListener {
+    private val ibRemoveSegmentOnClick = View.OnClickListener {
         viewModel.removeSegment(selectedSegment.segmentId)
         val removedSegmentIndex = segments.indexOf(selectedSegment)
         binding.mapView.overlays.remove(segmentPolylines[removedSegmentIndex])
@@ -455,6 +485,55 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
         binding.mapView.invalidate()
         segments.removeAt(removedSegmentIndex)
         binding.llSegment.makeGone()
+    }
+
+    private val btSaveReviewOnClick = View.OnClickListener {
+        if(binding.etAddReview.text.isNotEmpty()) {
+            val review = ReviewDisplayable(
+                "",
+                getCurrentUserUid(preferenceHelper),
+                route.routeId,
+                System.currentTimeMillis(),
+                binding.etAddReview.text.toString())
+            viewModel.addReview(review)
+            binding.tvCurrentReview.text = review.content
+            binding.llAddReview.makeGone()
+            binding.llEditReview.makeVisible()
+        } else
+            showToast("Review is empty")
+    }
+
+    private val btEditReviewOnClick = View.OnClickListener {
+        binding.etUpdateReview.setText(binding.tvCurrentReview.text.toString(), TextView.BufferType.EDITABLE)
+        binding.llUpdateReview.makeVisible()
+        binding.llEditReview.makeGone()
+    }
+
+    private val btUpdateReviewOnClick = View.OnClickListener {
+        if (binding.etUpdateReview.text.isNotEmpty()) {
+            currentUserReview!!.content = binding.etUpdateReview.text.toString()
+            currentUserReview!!.createdAt = System.currentTimeMillis()
+            viewModel.updateReview(currentUserReview!!)
+            binding.tvCurrentReview.text = currentUserReview!!.content
+            binding.llUpdateReview.makeGone()
+            binding.llEditReview.makeVisible()
+        } else
+            showToast("Review is empty")
+    }
+
+    private val btRemoveReviewOnClick = View.OnClickListener {
+        reviews.remove(currentUserReview!!)
+        viewModel.removeReview(currentUserReview!!.reviewId)
+        currentUserReview = null
+        binding.llEditReview.makeGone()
+        binding.etAddReview.text.clear()
+        binding.etUpdateReview.text.clear()
+        binding.llAddReview.makeVisible()
+    }
+
+    private val btCancelReviewEditOnClick = View.OnClickListener {
+        binding.llUpdateReview.makeGone()
+        binding.llEditReview.makeVisible()
     }
 
     private val segmentOnClickListener = object: Polyline.OnClickListener {
@@ -480,7 +559,7 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
         private fun showSegmentButtonsIfMyRoute() {
             if (isMyRoute()) {
                 binding.ibEdit.makeVisible()
-                binding.ibRemove.makeVisible()
+                binding.ibRemoveSegment.makeVisible()
             }
         }
 
@@ -499,7 +578,7 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
             val colorStateList = ColorStateList.valueOf(Color.parseColor(segmentColor))
             binding.btSegmentType.backgroundTintList = colorStateList
             binding.ibEdit.backgroundTintList = colorStateList
-            binding.ibRemove.backgroundTintList = colorStateList
+            binding.ibRemoveSegment.backgroundTintList = colorStateList
         }
     }
 

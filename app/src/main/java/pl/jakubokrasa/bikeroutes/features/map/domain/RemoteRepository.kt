@@ -43,4 +43,8 @@ interface RemoteRepository {
 	suspend fun getSegments(routeId: String): List<Segment>
 
     suspend fun getReviews(routeId: String): List<Review>
+    suspend fun addReview(review: Review)
+    suspend fun updateReview(review: Review)
+    suspend fun removeReview(reviewId: String)
+
 }

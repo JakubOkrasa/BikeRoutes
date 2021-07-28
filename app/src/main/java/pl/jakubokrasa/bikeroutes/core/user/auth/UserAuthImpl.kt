@@ -57,8 +57,19 @@ class UserAuthImpl(private val auth: FirebaseAuth): UserAuth {
         auth.sendPasswordResetEmail(email).await()
     }
 
-    override suspend fun signIn(email: String, password: String) {
-        auth.signInWithEmailAndPassword(email, password).await()
+    override suspend fun signIn(email: String, password: String): UserAuthResult {
+        val userAuthResult = UserAuthResult()
+        val exception: Exception?
+        val task = auth.signInWithEmailAndPassword(email, password)
+            //Kotlin nie tworzy tu nowego obiektu klasy Exception, tylko przypisuje do
+            // referencji, dlatego przy sprawdzaniu czy == null ten obiekt będzie
+            // miał dane z czasu PO wykonaniu funkcji await()
+            .also { exception = it.exception }
+            .await()
+
+        userAuthResult.success = exception == null
+        userAuthResult.uid = task.user?.uid
+        return userAuthResult
     }
 
     override suspend fun logOut() {

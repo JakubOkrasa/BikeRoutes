@@ -1,6 +1,5 @@
 package pl.jakubokrasa.bikeroutes.features.map.data.remote
 
-import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import android.net.Uri
@@ -9,7 +8,6 @@ import com.google.firebase.storage.StorageReference
 import kotlinx.coroutines.tasks.await
 import pl.jakubokrasa.bikeroutes.core.util.enums.SharingType
 import pl.jakubokrasa.bikeroutes.features.common.data.GeocodingAPI
-import pl.jakubokrasa.bikeroutes.features.common.domain.BoundingBoxData
 import pl.jakubokrasa.bikeroutes.features.common.domain.FilterData
 import pl.jakubokrasa.bikeroutes.features.common.domain.model.GeocodingItem
 import pl.jakubokrasa.bikeroutes.features.common.data.model.PhotoInfoResponse
@@ -105,6 +103,7 @@ class RemoteRepositoryImpl(
             .collection("routes")
             .document(route.routeId)
             .set(routeResponse)
+            .await()
     }
 
     override suspend fun deleteRoute(route: Route) {
@@ -180,8 +179,8 @@ class RemoteRepositoryImpl(
         val documents =
             firestore
                 .collection("routes")
-//                .whereNotEqualTo("userId", uid) //todo omitted for tests
-                .whereNotEqualTo("sharingType", SharingType.PRIVATE.name)
+                .whereNotEqualTo("userId", uid)
+                .whereIn("sharingType", listOf(SharingType.PUBLIC.name, SharingType.PUBLIC_WITH_PRIVATE_PHOTOS.name))
                 .get().await().documents
 
         for (doc in documents)
@@ -207,8 +206,8 @@ class RemoteRepositoryImpl(
         }
 
         var query = firestore.collection("routes")
-        // .whereNotEqualTo("userId", uid) //todo omitted for tests
-            .whereNotEqualTo("sharingType", SharingType.PRIVATE.name)
+            .whereNotEqualTo("userId", uid)
+            .whereIn("sharingType", listOf(SharingType.PUBLIC.name, SharingType.PUBLIC_WITH_PRIVATE_PHOTOS.name))
         maxDistanceMeters?.let { query = query.whereLessThanOrEqualTo("distance", it) }
         minDistanceMeters?.let { query = query.whereGreaterThanOrEqualTo("distance", it) }
         val documents = query.get().await()
@@ -248,6 +247,29 @@ class RemoteRepositoryImpl(
             .get()
             .await()
             .map { doc -> doc.toObject(ReviewResponse::class.java).toReview() }
+    }
+
+    override suspend fun addReview(review: Review) {
+        val reviewDoc = firestore.collection("reviews").document()
+
+        firestore.runBatch { batch ->
+            batch.set(reviewDoc, ReviewResponse(review))
+            batch.update(reviewDoc, "reviewId", reviewDoc.id)
+        }.await()
+    }
+
+    override suspend fun updateReview(review: Review) {
+        firestore.collection("reviews")
+            .document(review.reviewId)
+            .set(ReviewResponse(review))
+            .await()
+    }
+
+    override suspend fun removeReview(reviewId: String) {
+        firestore.collection("reviews")
+            .document(reviewId)
+            .delete()
+            .await()
     }
 
 

@@ -13,7 +13,7 @@ interface UserAuth {
 
     suspend fun resetPassword(email: String)
 
-    suspend fun signIn(email: String, password: String)
+    suspend fun signIn(email: String, password: String): UserAuthResult
 
     suspend fun logOut()
 }

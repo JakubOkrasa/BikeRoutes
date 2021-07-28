@@ -25,8 +25,10 @@ class SignUpViewModel(
             scope = viewModelScope
         ) {
                 result ->
-            result.onSuccess {
-                preferenceHelper.saveUserDataToSharedPreferences(email, password)
+            result.onSuccess { authResult ->
+                authResult.uid?.let {
+                    preferenceHelper.saveUserDataToSharedPreferences(email, password, it)
+                }
                 _startActivity.value = true
                 handleSuccess("createUser")
             }

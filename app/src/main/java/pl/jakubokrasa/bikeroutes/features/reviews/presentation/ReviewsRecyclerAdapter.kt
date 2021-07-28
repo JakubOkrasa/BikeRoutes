@@ -2,10 +2,13 @@ package pl.jakubokrasa.bikeroutes.features.reviews.presentation
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import pl.jakubokrasa.bikeroutes.core.extensions.displayWithShowMoreButton
 import pl.jakubokrasa.bikeroutes.core.util.getFormattedDate
 import pl.jakubokrasa.bikeroutes.core.util.getFormattedUserDisplayName
 import pl.jakubokrasa.bikeroutes.databinding.RvReviewItemBinding
+import pl.jakubokrasa.bikeroutes.features.common.presentation.model.PhotoInfoDisplayable
 import pl.jakubokrasa.bikeroutes.features.reviews.presentation.model.ReviewDisplayable
 
 class ReviewsRecyclerAdapter: RecyclerView.Adapter<ReviewsRecyclerAdapter.ReviewViewHolder>() {
@@ -26,9 +29,9 @@ class ReviewsRecyclerAdapter: RecyclerView.Adapter<ReviewsRecyclerAdapter.Review
         return reviews.size
     }
 
-    fun setItems(reviews: List<ReviewDisplayable>) {
-        if (reviews.isNotEmpty()) this.reviews.clear()
-        this.reviews.addAll(reviews)
+    fun setItems(newReviews: List<ReviewDisplayable>) {
+        if (newReviews.isNotEmpty()) this.reviews.clear()
+        this.reviews.addAll(newReviews)
         notifyDataSetChanged()
     }
 
