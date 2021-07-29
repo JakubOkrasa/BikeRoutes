@@ -10,6 +10,7 @@ import pl.jakubokrasa.bikeroutes.core.app.domain.IsUserSignedInUseCase
 import pl.jakubokrasa.bikeroutes.core.base.platform.BaseViewModel
 import pl.jakubokrasa.bikeroutes.core.extensions.PreferenceHelper
 import pl.jakubokrasa.bikeroutes.core.user.domain.DataSignIn
+import pl.jakubokrasa.bikeroutes.core.user.domain.GetUserUseCase
 import pl.jakubokrasa.bikeroutes.core.user.domain.SignInUseCase
 import pl.jakubokrasa.bikeroutes.features.myroutes.presentation.MyRoutesViewModel
 
@@ -17,6 +18,7 @@ class MainViewModel(
     private val preferenceHelper: PreferenceHelper,
     private val isUserEmailSignedInUseCase: IsUserSignedInUseCase,
     private val signInUseCase: SignInUseCase,
+    private val getUserUseCase: GetUserUseCase,
     private val mainNavigator: MainNavigator,
 ): BaseViewModel() { //todo isUserSignedIN in BaseVM
     override val LOG_TAG: String = MainViewModel::class.simpleName ?: "unknown"
@@ -54,6 +56,7 @@ class MainViewModel(
             setPendingState()
             result.onSuccess { authResult ->
                 authResult.uid?.let {
+                    getUser(it)
                     preferenceHelper.saveUserDataToSharedPreferences(email, password, it)
                 }
                 _isSignedIn.value = true //todo osobna livedata do tego chyba nie jest potrzebna
@@ -63,6 +66,22 @@ class MainViewModel(
                 handleFailure("signIn", it.message ?: "Sign in failed")
                 _startActivity.value = true
 
+            }
+        }
+    }
+
+    private fun getUser(uid: String) {
+        getUserUseCase(
+            params = uid,
+            scope = viewModelScope
+        ) {
+                result ->
+            result.onSuccess {
+                preferenceHelper.saveDisplayNameToSharedPreferences(it.displayName)
+                handleSuccess("getUser")
+            }
+            result.onFailure {
+                handleFailure("getUser", it.message ?: "Sign in failed")
             }
         }
     }

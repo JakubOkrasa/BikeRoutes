@@ -43,7 +43,7 @@ class SignUpActivity : BaseActivity<SignUpViewModel>() {
         val password: String = binding.etPassword.text.toString()
         val displayName: String = binding.etDisplayName.text.toString()
 
-        if(TextUtils.isEmpty(email) || TextUtils.isEmpty(password)) {
+        if(TextUtils.isEmpty(email) || TextUtils.isEmpty(password) || TextUtils.isEmpty(displayName) ) {
             Toast.makeText(this, "Please fill all the fields!", Toast.LENGTH_LONG).show()
         } else if (password.length<6) {
             Toast.makeText(this, "Password need to have at least 6 characters.", Toast.LENGTH_LONG).show()

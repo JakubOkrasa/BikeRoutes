@@ -28,9 +28,10 @@ val userModule = module {
     factory { ResetPasswordUseCase(get()) }
     factory { SignInUseCase(get()) }
     factory { LogOutUseCase(get()) }
+    factory { GetUserUseCase(get()) }
 
     viewModel { UserViewModel(get(), get(), get(), get()) }
-    viewModel { SignInViewModel(get(), get()) }
+    viewModel { SignInViewModel(get(), get(), get()) }
     viewModel { SignUpViewModel(get(), get()) }
     viewModel { ForgotPasswordViewModel(get()) }
 }

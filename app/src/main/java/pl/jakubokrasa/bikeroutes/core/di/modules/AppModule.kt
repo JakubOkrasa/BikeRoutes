@@ -1,4 +1,4 @@
-package pl.jakubokrasa.bikeroutes.core.di
+package pl.jakubokrasa.bikeroutes.core.di.modules
 
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
@@ -17,5 +17,5 @@ val appModule = module {
 
     factory { IsUserSignedInUseCase(get()) }
 
-    viewModel { MainViewModel(get(), get(), get(), get()) }
+    viewModel { MainViewModel(get(), get(), get(), get(), get()) }
 }

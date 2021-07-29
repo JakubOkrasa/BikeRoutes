@@ -13,14 +13,15 @@
         android:layout_width="300dp"
         android:layout_height="match_parent">
         <TextView
-            android:id="@+id/tv_author"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:id="@+id/tv_created_by"
             android:layout_width="300dp"
             android:layout_height="wrap_content"
             style="@style/tv_small"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            android:textStyle="italic"
             android:text="user-123"/>
+
 
         <TextView
             android:id="@+id/tv_date"
@@ -36,7 +37,7 @@
             android:id="@+id/tv_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/tv_author"
+            app:layout_constraintTop_toBottomOf="@id/tv_created_by"
             app:layout_constraintStart_toStartOf="parent"
             android:layout_marginTop="5dp"
             style="@style/tv_medium"

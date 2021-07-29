@@ -17,6 +17,7 @@ class PreferenceHelper(ctx: Context) {
         const val PREF_KEY_USER_EMAIL = "user_email"
         const val PREF_KEY_USER_PASSWORD = "user_password"
         const val PREF_KEY_USER_UID = "user_uid"
+        const val PREF_KEY_USER_DISPLAY_NAME = "user_display_name"
 
         const val PREF_KEY_TIPS_SEGMENTS_NOT_SHOWED = "key_tips_segments_not_showed"
     }
@@ -37,6 +38,13 @@ class PreferenceHelper(ctx: Context) {
             remove(PREF_KEY_USER_EMAIL)
             remove(PREF_KEY_USER_PASSWORD)
             remove(PREF_KEY_USER_UID)
+            remove(PREF_KEY_USER_DISPLAY_NAME)
+        }
+    }
+
+    fun saveDisplayNameToSharedPreferences(displayName: String) {
+        this.preferences.edit() {
+            putString(PREF_KEY_USER_DISPLAY_NAME, displayName)
         }
     }
 
@@ -50,3 +58,5 @@ fun SharedPreferences.getDouble(key: String, default: Double) =
     java.lang.Double.longBitsToDouble(getLong(key, java.lang.Double.doubleToRawLongBits(default)))
 
 fun getCurrentUserUid(preferenceHelper: PreferenceHelper) =  preferenceHelper.preferences.getString(PreferenceHelper.PREF_KEY_USER_UID, "")!!
+
+fun getCurrentUserDisplayName(preferenceHelper: PreferenceHelper) =  preferenceHelper.preferences.getString(PreferenceHelper.PREF_KEY_USER_DISPLAY_NAME, "unknown-user")!!

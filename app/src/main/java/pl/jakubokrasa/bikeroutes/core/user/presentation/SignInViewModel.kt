@@ -5,10 +5,12 @@ import com.hadilq.liveevent.LiveEvent
 import pl.jakubokrasa.bikeroutes.core.base.platform.BaseViewModel
 import pl.jakubokrasa.bikeroutes.core.extensions.PreferenceHelper
 import pl.jakubokrasa.bikeroutes.core.user.domain.DataSignIn
+import pl.jakubokrasa.bikeroutes.core.user.domain.GetUserUseCase
 import pl.jakubokrasa.bikeroutes.core.user.domain.SignInUseCase
 
 class SignInViewModel(
     private val signInUseCase: SignInUseCase,
+    private val getUserUseCase: GetUserUseCase,
     private val preferenceHelper: PreferenceHelper
 ): BaseViewModel() {
 
@@ -24,6 +26,7 @@ class SignInViewModel(
                 result ->
             result.onSuccess { authResult ->
                 authResult.uid?.let {
+                    getUser(it)
                     preferenceHelper.saveUserDataToSharedPreferences(email, password, it)
                 }
                 _startActivity.value = true
@@ -31,6 +34,22 @@ class SignInViewModel(
             }
             result.onFailure {
                 handleFailure("signIn", it.message ?: "Sign in failed")
+            }
+        }
+    }
+
+    fun getUser(uid: String) {
+        getUserUseCase(
+            params = uid,
+            scope = viewModelScope
+        ) {
+                result ->
+            result.onSuccess {
+                preferenceHelper.saveDisplayNameToSharedPreferences(it.displayName)
+                handleSuccess("getUser")
+            }
+            result.onFailure {
+                handleFailure("getUser", it.message ?: "Sign in failed")
             }
         }
     }
