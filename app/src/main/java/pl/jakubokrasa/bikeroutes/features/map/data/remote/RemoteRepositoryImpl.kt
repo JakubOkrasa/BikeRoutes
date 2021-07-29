@@ -37,7 +37,6 @@ class RemoteRepositoryImpl(
         val routeDoc = firestore.collection("routes").document()
         val pointsMap = mapOf("pointsArray" to points.map { PointResponse(it) })
         val pointsDoc = firestore.collection("points").document(routeDoc.id)
-        val userDoc = firestore.collection("users").document(route.userId)
 
         //WRITE BATCHES WORK OFFLINE
         firestore.runBatch { batch ->
@@ -47,10 +46,7 @@ class RemoteRepositoryImpl(
             //save Points
             batch.set(pointsDoc, pointsMap)
 
-            //assign route to a user
-            batch.update(userDoc, "routes", FieldValue.arrayUnion(routeDoc.id))
-
-            //assign route document id to routeId in the document (which is used in the view layer)
+            //assign route document id to routeId in the document (which is used in the presentation layer)
             batch.update(routeDoc, "routeId", routeDoc.id)
         }.await()
 
@@ -109,12 +105,10 @@ class RemoteRepositoryImpl(
     override suspend fun deleteRoute(route: Route) {
         val routeDoc = firestore.collection("routes").document(route.routeId)
         val pointsDoc = firestore.collection("points").document(route.routeId)
-        val userDoc = firestore.collection("users").document(route.userId)
 
         firestore.runBatch { batch ->
             batch.delete(routeDoc)
             batch.delete(pointsDoc)
-            batch.update(userDoc, "routes", FieldValue.arrayRemove(route.routeId))
         }.await()
     }
 
