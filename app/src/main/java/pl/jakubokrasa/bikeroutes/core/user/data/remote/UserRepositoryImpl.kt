@@ -7,8 +7,8 @@ import pl.jakubokrasa.bikeroutes.core.user.domain.UserRepository
 
 class UserRepositoryImpl(private val firestore: FirebaseFirestore): UserRepository {
 
-    override suspend fun createUser(uid: String) {
-        val userResponse = UserResponse(ArrayList())
+    override suspend fun createUser(uid: String, displayName: String) {
+        val userResponse = UserResponse(displayName)
         firestore.collection("users").document(uid).set(userResponse).await()
     }
 

@@ -19,9 +19,9 @@ class SignUpViewModel(
         private val _startActivity by lazy { LiveEvent<Boolean>() }
     val startActivity by lazy { _startActivity }
 
-    fun createUser(email: String, password: String) {
+    fun createUser(email: String, password: String, displayName: String) {
         createUserUseCase(
-            params = CreateUserData(email, password),
+            params = CreateUserData(email, password, displayName),
             scope = viewModelScope
         ) {
                 result ->

@@ -9,12 +9,13 @@ class CreateUserUseCase(private val userAuth: UserAuth,
     override suspend fun action(params: CreateUserData): UserAuthResult {
         val result = userAuth.createUser(params.email, params.password)
         if (result.success)
-           userRepository.createUser(result.uid!!)
+           userRepository.createUser(result.uid!!, params.displayName)
         return result
     }
 }
 
 data class CreateUserData(
     val email: String,
-    val password: String
+    val password: String,
+    val displayName: String
 )

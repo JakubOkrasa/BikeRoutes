@@ -41,15 +41,18 @@ class SignUpActivity : BaseActivity<SignUpViewModel>() {
     private val btSignUpOnClick = View.OnClickListener {
         val email: String = binding.etEmail.text.toString()
         val password: String = binding.etPassword.text.toString()
+        val displayName: String = binding.etDisplayName.text.toString()
 
         if(TextUtils.isEmpty(email) || TextUtils.isEmpty(password)) {
             Toast.makeText(this, "Please fill all the fields!", Toast.LENGTH_LONG).show()
         } else if (password.length<6) {
-            Toast.makeText(this, "Password must have at least 6 characters.", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "Password need to have at least 6 characters.", Toast.LENGTH_LONG).show()
         } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             Toast.makeText(this, "Email address is invalid.", Toast.LENGTH_LONG).show()
+        } else if (displayName.length<3) {
+            Toast.makeText(this, "Name need to have at least 3 characters", Toast.LENGTH_LONG).show()
         } else{
-            viewModel.createUser(email, password)
+            viewModel.createUser(email, password, displayName)
         }
     }
 
