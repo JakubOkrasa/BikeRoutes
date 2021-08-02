@@ -7,7 +7,6 @@ import androidx.lifecycle.viewModelScope
 import com.hadilq.liveevent.LiveEvent
 import kotlinx.coroutines.Dispatchers
 import org.osmdroid.util.GeoPoint
-import org.osmdroid.views.drawing.MapSnapshot
 import org.osmdroid.views.overlay.Polyline
 import pl.jakubokrasa.bikeroutes.core.base.platform.BaseViewModel
 import pl.jakubokrasa.bikeroutes.features.common.domain.FilterData
@@ -36,7 +35,6 @@ class MyRoutesViewModel(
     private val removeSegmentUseCase: RemoveSegmentUseCase,
     private val getSegmentsUseCase: GetSegmentsUseCase,
     private val exportRouteUseCase: ExportRouteUseCase,
-    private val completeExportRouteUseCase: CompleteExportRouteUseCase,
 
     private val myRoutesNavigator: MyRoutesNavigator,
     private val addPhotoUseCase: AddPhotoUseCase,
@@ -279,39 +277,22 @@ fun addPhoto(routeId: String, localPath: String, sharingType: SharingType) {
         }
     }
 
-    fun exportRoute(route: RouteDisplayable, polyline: Polyline, segmentPolylines: List<Polyline>, zoom: Double) {
+    fun exportRoute(route: RouteDisplayable, polyline: Polyline, zoom: Double) {
         setPendingState()
         exportRouteUseCase(
-            params = ExportRouteData(route.toRoute(), polyline, segmentPolylines, zoom),
+            params = ExportRouteData(route.toRoute(), polyline, zoom),
             scope = viewModelScope,
             dispatcher = Dispatchers.Main //creating MapSnapshot requires UI thread
         ) {
                 result ->
             setIdleState()
             result.onSuccess {
-                completeExportRoute(it, route)
+//                completeExportRoute(it, route)
+                _exportedRoute.value = it
                 handleSuccess("exportRoute")
             }
             result.onFailure {
                 handleFailure("exportRoute", errLog = it.message)
-            }
-        }
-    }
-
-    fun completeExportRoute(snapshot: MapSnapshot, route: RouteDisplayable) {
-        setPendingState()
-        completeExportRouteUseCase(
-            params = CompleteExportRouteData(snapshot, route.toRoute()),
-            scope = viewModelScope
-        ) {
-                result ->
-            setIdleState()
-            result.onSuccess {
-                _exportedRoute.value = it
-                handleSuccess("completeExportRoute")
-            }
-            result.onFailure {
-                handleFailure("completeExportRoute", errLog = it.message)
             }
         }
     }
