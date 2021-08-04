@@ -11,4 +11,6 @@ class Point(
 data class GeoPointData(
     val latitude: Double,
     val longitude: Double
-)
+) {
+    constructor(): this(0.0, 0.0) //for firestore
+}

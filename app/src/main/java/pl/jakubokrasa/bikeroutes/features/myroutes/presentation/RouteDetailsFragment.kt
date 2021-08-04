@@ -90,7 +90,6 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
 
     override fun onStart() {
         super.onStart()
-        Log.e("TEST", "On Start")
         initPhotoRecycler()
         if(this::route.isInitialized)
             viewModel.getPhotos(route.routeId)

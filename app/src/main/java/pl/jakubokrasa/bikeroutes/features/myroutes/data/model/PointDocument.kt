@@ -2,7 +2,7 @@ package pl.jakubokrasa.bikeroutes.features.myroutes.data.model
 
 import pl.jakubokrasa.bikeroutes.features.map.data.remote.model.PointResponse
 
-// for firestore deserialize
+// for Firestore model deserializer
 data class PointDocument(
     val pointsArray: List<PointResponse>
 ) {
