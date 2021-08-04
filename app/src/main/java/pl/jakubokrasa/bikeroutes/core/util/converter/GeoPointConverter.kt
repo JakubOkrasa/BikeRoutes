@@ -2,18 +2,17 @@ package pl.jakubokrasa.bikeroutes.core.util.converter
 
 import androidx.room.TypeConverter
 import com.google.gson.Gson
-import org.osmdroid.util.GeoPoint
+import pl.jakubokrasa.bikeroutes.features.map.domain.model.GeoPointData
 
 
 class GeoPointConverter {
-    // todo AA robi to w inny sposob: jvmstatic + typetoken
     @TypeConverter
-    fun toGeoPoint(data: String?): GeoPoint {
-        return Gson().fromJson(data, GeoPoint::class.java)
+    fun toGeoPoint(data: String?): GeoPointData {
+        return Gson().fromJson(data, GeoPointData::class.java)
     }
 
     @TypeConverter
-    fun toJson(geoPoint: GeoPoint?): String {
-        return Gson().toJson(geoPoint)
+    fun toJson(geoPointData: GeoPointData?): String {
+        return Gson().toJson(geoPointData)
     }
 }

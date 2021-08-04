@@ -1,15 +1,15 @@
 package pl.jakubokrasa.bikeroutes.features.myroutes.data.model
 
-import org.osmdroid.util.GeoPoint
+import pl.jakubokrasa.bikeroutes.features.map.domain.model.GeoPointData
 
-data class GeoPointResponse(
+data class GeoPointDataResponse(
     val longitude: Double,
     val latitude: Double,
 )
 {
     constructor(): this(0.0, 0.0) //for firestore
 
-    constructor(geoPoint: GeoPoint): this(
+    constructor(geoPoint: GeoPointData): this(
         geoPoint.longitude,
         geoPoint.latitude
     )

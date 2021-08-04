@@ -1,6 +1,5 @@
 package pl.jakubokrasa.bikeroutes.features.myroutes.domain
 
-import android.util.Log
 import org.osmdroid.util.GeoPoint
 import pl.jakubokrasa.bikeroutes.core.base.domain.UseCase
 import pl.jakubokrasa.bikeroutes.features.map.domain.model.Point
@@ -15,14 +14,10 @@ class GetSegmentPointUseCase(): UseCase<Int, GetSegmentBeginData>() {
 
         with(params) {
             for(i in points.indices) {
-                currentDistance = params.geoPoint.distanceToAsDouble(points[i].geoPoint)
+                currentDistance = params.geoPoint.distanceToAsDouble(GeoPoint(points[i].geoPointData.latitude, points[i].geoPointData.longitude))
                 if(currentDistance<minDistance) {
                     minDistance = currentDistance
-                    if (minDistance < thresholdDistance) { //todo tu może być jeszcze sprawdzanie czy następny jest bliżej, jeśli tak sprawdź jeszcze następny, jeśli nie - weź ten
-                                                            //todo można by jeszcze pozwolić na wybór punktu pomiędzy punktami z route
-                                                            //todo wtedy do SegmentLocationData byłyby po dwie lokalizacje dla punktu (więc w sumie 4)
-                                                            //todo pierwsze to dokładny zaznaczony punkt, od niego szła by polyline w linii prostej do drugiego - należącego do route
-//                        while(params.geoPoint.distanceToAsDouble(points[i+1].geoPoint)<minDistance) i++
+                    if (minDistance < thresholdDistance) {
                         beginPointIndex = i
                         break
                     }

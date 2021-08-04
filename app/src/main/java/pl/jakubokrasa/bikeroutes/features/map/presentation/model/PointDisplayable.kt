@@ -1,8 +1,7 @@
 package pl.jakubokrasa.bikeroutes.features.map.presentation.model
 
-import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
 import org.osmdroid.util.GeoPoint
+import pl.jakubokrasa.bikeroutes.features.map.domain.model.GeoPointData
 import pl.jakubokrasa.bikeroutes.features.map.domain.model.Point
 import java.io.Serializable
 
@@ -12,16 +11,15 @@ data class PointDisplayable(
 ): Serializable {
     constructor(point: Point) : this (
         pointId = point.pointId,
-        geoPoint = point.geoPoint
+        geoPoint = GeoPoint(
+            point.geoPointData.latitude, point.geoPointData.longitude)
     )
 
     fun toPointNoCreatedAt(): Point {
         return Point(
             this.pointId,
-            GeoPoint(this.geoPoint.latitude, this.geoPoint.longitude),
+            GeoPointData(geoPoint.latitude, geoPoint.latitude),
             0,
-            false,
-            false
         )
     }
 }

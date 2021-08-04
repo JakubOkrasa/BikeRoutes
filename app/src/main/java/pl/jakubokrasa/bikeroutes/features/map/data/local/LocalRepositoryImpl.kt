@@ -5,12 +5,13 @@ import androidx.lifecycle.Transformations
 import org.osmdroid.util.GeoPoint
 import pl.jakubokrasa.bikeroutes.features.map.data.local.model.PointCached
 import pl.jakubokrasa.bikeroutes.features.map.domain.LocalRepository
+import pl.jakubokrasa.bikeroutes.features.map.domain.model.GeoPointData
 import pl.jakubokrasa.bikeroutes.features.map.domain.model.Point
 
 class LocalRepositoryImpl(private val pointDao: PointDao): LocalRepository {
 
 
-    override suspend fun insertPoint(geoPoint: GeoPoint) {
+    override suspend fun insertPoint(geoPoint: GeoPointData) {
         val createdAt = System.currentTimeMillis()
         return pointDao.insertPoint(geoPoint, createdAt)
     }
