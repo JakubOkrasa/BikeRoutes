@@ -34,7 +34,7 @@ class MyRoutesViewModel(
     private val addSegmentUseCase: AddSegmentUseCase,
     private val removeSegmentUseCase: RemoveSegmentUseCase,
     private val getSegmentsUseCase: GetSegmentsUseCase,
-    private val exportRouteUseCase: ExportRouteUseCase,
+    private val exportRouteHelper: ExportRouteHelper,
 
     private val myRoutesNavigator: MyRoutesNavigator,
     private val addPhotoUseCase: AddPhotoUseCase,
@@ -279,15 +279,13 @@ fun addPhoto(routeId: String, localPath: String, sharingType: SharingType) {
 
     fun exportRoute(route: RouteDisplayable, polyline: Polyline, zoom: Double) {
         setPendingState()
-        exportRouteUseCase(
-            params = ExportRouteData(route.toRoute(), polyline, zoom),
-            scope = viewModelScope,
-            dispatcher = Dispatchers.Main //creating MapSnapshot requires UI thread
+        exportRouteHelper(
+            exportRouteData = ExportRouteData(route.toRoute(), polyline, zoom),
+            scope = viewModelScope
         ) {
                 result ->
             setIdleState()
             result.onSuccess {
-//                completeExportRoute(it, route)
                 _exportedRoute.value = it
                 handleSuccess("exportRoute")
             }

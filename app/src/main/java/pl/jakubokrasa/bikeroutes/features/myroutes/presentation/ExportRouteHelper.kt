@@ -1,42 +1,51 @@
-package pl.jakubokrasa.bikeroutes.features.myroutes.domain
+package pl.jakubokrasa.bikeroutes.features.myroutes.presentation
 
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.net.Uri
-import android.os.Build
-import android.os.Environment
 import android.view.View
 import android.widget.TextView
 import androidx.core.content.FileProvider
 import kotlinx.coroutines.*
 import org.osmdroid.tileprovider.MapTileProviderBasic
-import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.BoundingBox
 import org.osmdroid.views.Projection
 import org.osmdroid.views.drawing.MapSnapshot
-import org.osmdroid.views.overlay.Overlay
 import org.osmdroid.views.overlay.Polyline
 import pl.jakubokrasa.bikeroutes.BuildConfig
 import pl.jakubokrasa.bikeroutes.R
-import pl.jakubokrasa.bikeroutes.core.base.domain.UseCase
 import pl.jakubokrasa.bikeroutes.core.util.getFormattedAvgSpeed
 import pl.jakubokrasa.bikeroutes.core.util.getFormattedDistance
 import pl.jakubokrasa.bikeroutes.core.util.getFormattedRideTime
 import pl.jakubokrasa.bikeroutes.core.util.mapTileSource
-import pl.jakubokrasa.bikeroutes.features.common.segments.domain.model.Segment
 import pl.jakubokrasa.bikeroutes.features.map.domain.model.Route
 import java.io.File
 import java.io.FileOutputStream
 
-class ExportRouteUseCase(private val context: Context): UseCase<Uri, ExportRouteData>() {
+class ExportRouteHelper(private val context: Context) {
     @ExperimentalCoroutinesApi
-    override suspend fun action(params: ExportRouteData): Uri {
-        val snapshot = getSnapshot(params)
-        return getUriOfExportImage(snapshot, params.route)
+    suspend fun action(exportRouteData: ExportRouteData): Uri {
+        val snapshot = getSnapshot(exportRouteData)
+        return getUriOfExportImage(snapshot, exportRouteData.route)
     }
 
-    private suspend fun getUriOfExportImage(snapshot: MapSnapshot, route: Route) = withContext(Dispatchers.Default) {
+    @ExperimentalCoroutinesApi
+    operator fun invoke(
+        exportRouteData: ExportRouteData,
+        scope: CoroutineScope,
+        onResult: (Result<Uri>) -> Unit = {}
+    ) {
+        scope.launch {
+            val result = withContext(Dispatchers.Main) {
+                runCatching { action(exportRouteData) }
+            }
+        onResult(result)
+        }
+    }
+
+    private suspend fun getUriOfExportImage(snapshot: MapSnapshot, route: Route) = withContext(
+        Dispatchers.Default) {
         val infoBitmap = loadBitmapFromView(View.inflate(context, R.layout.export_route_info,  null), route)
         val mapBitmap = Bitmap.createBitmap(snapshot.bitmap)
         val outBitmap = mergeExportRouteBitmaps(mapBitmap, infoBitmap)
