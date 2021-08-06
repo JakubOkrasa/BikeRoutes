@@ -298,7 +298,7 @@ fun addPhoto(routeId: String, localPath: String, sharingType: SharingType) {
                 result ->
             setIdleState()
             result.onSuccess {
-                _exportedRoute.value = it
+                _exportedRouteUri.value = it
                 handleSuccess("exportRoute")
             }
             result.onFailure {

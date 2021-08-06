@@ -19,6 +19,7 @@ import org.osmdroid.util.GeoPoint
 import pl.jakubokrasa.bikeroutes.core.app.presentation.MainActivity
 import pl.jakubokrasa.bikeroutes.R
 import pl.jakubokrasa.bikeroutes.core.extensions.PreferenceHelper
+import pl.jakubokrasa.bikeroutes.features.map.domain.model.GeoPointData
 import pl.jakubokrasa.bikeroutes.features.map.presentation.MapFragment.Companion.SEND_LOCATION_ACTION
 import pl.jakubokrasa.bikeroutes.features.map.presentation.MapViewModel
 
@@ -138,7 +139,7 @@ class LocationService : Service(), KoinComponent {
         mLocation = loc
 
         if(isRecordingMode()) {
-            mapViewModel.insertPoint(GeoPoint(loc))
+            mapViewModel.insertPoint(GeoPointData(loc.latitude, loc.longitude))
         }
 
         //send update UI broadcast

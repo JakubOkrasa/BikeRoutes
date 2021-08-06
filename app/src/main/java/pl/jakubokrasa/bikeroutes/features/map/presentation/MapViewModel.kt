@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.*
 import org.osmdroid.util.GeoPoint
 import pl.jakubokrasa.bikeroutes.core.base.platform.BaseViewModel
+import pl.jakubokrasa.bikeroutes.features.map.domain.model.GeoPointData
 import pl.jakubokrasa.bikeroutes.features.map.domain.usecase.*
 import pl.jakubokrasa.bikeroutes.features.map.presentation.model.PointDisplayable
 
@@ -23,7 +24,7 @@ class MapViewModel(
             .map { list -> list.map { PointDisplayable(it) } }
     }
 
-    fun insertPoint(geoPoint: GeoPoint) {
+    fun insertPoint(geoPoint: GeoPointData) {
         insertPointUseCase(
             params = geoPoint,
             scope = viewModelScope

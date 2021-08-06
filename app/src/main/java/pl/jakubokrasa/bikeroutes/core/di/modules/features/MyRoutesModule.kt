@@ -40,6 +40,7 @@ val myRoutesModule = module {
     factory { MyRoutesRecyclerAdapter() }
 
     viewModel { MyRoutesViewModel(get(), get(), get(), get(), get(), get(), get(),
-        get(), get(), get(), get(), get(), get(), get(), get()) }
+        get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(),
+        get()) }
 
 }

@@ -6,12 +6,13 @@ import androidx.room.Delete
 import androidx.room.Query
 import org.osmdroid.util.GeoPoint
 import pl.jakubokrasa.bikeroutes.features.map.data.local.model.PointCached
+import pl.jakubokrasa.bikeroutes.features.map.domain.model.GeoPointData
 
 @Dao
 interface PointDao {
 
-    @Query("INSERT INTO PointCached(geoPoint, createdAt) VALUES(:geoPoint, :createdAt)")
-    suspend fun insertPoint(geoPoint: GeoPoint, createdAt: Long)
+    @Query("INSERT INTO PointCached(geoPointData, createdAt) VALUES(:geoPointData, :createdAt)")
+    suspend fun insertPoint(geoPointData: GeoPointData, createdAt: Long)
 
     @Query("SELECT * FROM PointCached ORDER BY createdAt")
     fun getPoints(): LiveData<List<PointCached>>
