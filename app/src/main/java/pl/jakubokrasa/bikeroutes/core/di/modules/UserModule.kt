@@ -32,6 +32,6 @@ val userModule = module {
 
     viewModel { UserViewModel(get(), get(), get(), get()) }
     viewModel { SignInViewModel(get(), get(), get()) }
-    viewModel { SignUpViewModel(get(), get()) }
+    viewModel { SignUpViewModel(get(), get(), get()) }
     viewModel { ForgotPasswordViewModel(get()) }
 }

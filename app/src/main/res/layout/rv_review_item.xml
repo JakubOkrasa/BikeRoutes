@@ -20,7 +20,7 @@
             android:layout_height="wrap_content"
             style="@style/tv_small"
             android:textStyle="italic"
-            android:text="user-123"/>
+            android:text="unknown-user"/>
 
 
         <TextView

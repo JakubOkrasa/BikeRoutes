@@ -46,7 +46,7 @@ class ReviewsRecyclerAdapter: RecyclerView.Adapter<ReviewsRecyclerAdapter.Review
     ) : RecyclerView.ViewHolder(binding.root) {
             fun bind(review: ReviewDisplayable) {
                 with(binding) {
-                    tvCreatedBy.text = getCurrentUserDisplayName(preferenceHelper)
+                    tvCreatedBy.text = review.createdBy
                     tvDate.text = getFormattedDate(review.createdAt)
                     tvContent.text = review.content
                 }

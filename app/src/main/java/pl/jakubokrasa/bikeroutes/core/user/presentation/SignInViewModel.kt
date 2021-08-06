@@ -38,7 +38,7 @@ class SignInViewModel(
         }
     }
 
-    fun getUser(uid: String) {
+    private fun getUser(uid: String) {
         getUserUseCase(
             params = uid,
             scope = viewModelScope
@@ -49,7 +49,7 @@ class SignInViewModel(
                 handleSuccess("getUser")
             }
             result.onFailure {
-                handleFailure("getUser", it.message ?: "Sign in failed")
+                handleFailure("getUser", it.message ?: "couldn't get user info")
             }
         }
     }

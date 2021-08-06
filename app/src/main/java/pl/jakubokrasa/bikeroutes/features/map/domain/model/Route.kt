@@ -13,5 +13,6 @@ data class Route(
     val sharingType: SharingType,
     val rideTimeMinutes: Int,
     val avgSpeedKmPerH: Int,
-    val boundingBoxData: BoundingBoxData
+    val boundingBoxData: BoundingBoxData,
+    val createdBy: String
 ) {}

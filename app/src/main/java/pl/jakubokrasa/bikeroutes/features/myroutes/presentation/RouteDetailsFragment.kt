@@ -14,7 +14,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
-import org.koin.android.ext.android.bind
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.osmdroid.util.GeoPoint
@@ -59,8 +58,6 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
         uri?.let {
             val picturePath = FileUtils(requireContext()).getPath(uri)
             viewModel.addPhoto(route.routeId, picturePath, route.sharingType)
-            onPendingState() // the call is needed here because when view model calls it setPendingState, RouteDetailsFragment is not showed
-
 //            initRecycler() //w MyRoutesFragment RV jest inicjowany także w onResume, nie pamiętam czemu
         }
     }
@@ -108,12 +105,14 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
 
     override fun onDestroy() {
         super.onDestroy()
-        destroyRecycler() // needed for every Recycler View Adapter while using Navigation Component
+        destroyRecyclers() // needed for every Recycler View Adapter while using Navigation Component
     }
 
-    private fun destroyRecycler() {
+    private fun destroyRecyclers() {
         binding.rvPhotos.layoutManager = null
+        binding.rvReviews.layoutManager = null
         binding.rvPhotos.adapter = null
+        binding.rvReviews.adapter = null
     }
 
     private fun initVisibilitySpinner() {
@@ -235,7 +234,6 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
 
     private fun observeSegments() {
         viewModel.segments.observe(viewLifecycleOwner, {
-            //todo possible optimization (by checking which segment already exists)
             segments = ArrayList(it)
             showSegments(segments)
         })
@@ -277,14 +275,13 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
     private fun onViewPost(view: View) {
         view.post {
             showRoute()
+            viewModel.getPhotos(route.routeId)
             viewModel.getSegments(route.routeId)
             viewModel.getReviews(route.routeId)
 
 
         }
     }
-
-
 
     private fun showRoute() {
         setRoute()
@@ -400,6 +397,7 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
     private fun updateRouteInfoLayout() {
         with(binding) {
             tvRouteName.text = route.name
+            tvCreatedBy.text = route.createdBy.ifBlank { "no data" }
 
             if(route.description.isBlank()) tvRouteDescription.makeGone()
             else {
@@ -492,6 +490,7 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
             val review = ReviewDisplayable(
                 "",
                 getCurrentUserUid(preferenceHelper),
+                getCurrentUserDisplayName(preferenceHelper),
                 route.routeId,
                 System.currentTimeMillis(),
                 binding.etAddReview.text.toString())

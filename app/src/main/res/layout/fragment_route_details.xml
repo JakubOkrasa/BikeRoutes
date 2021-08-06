@@ -177,7 +177,7 @@
                         style="@style/tv_small"
                         android:textStyle="italic"
                         android:textColor="@color/dark_grey"
-                        android:text="user-123"/>
+                        android:text="unknown-user"/>
                 </LinearLayout>
 
                 <TextView

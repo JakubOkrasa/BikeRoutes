@@ -122,7 +122,7 @@ class RemoteRepositoryImpl(
 
         //save image to Firebase Cloud Storage
         val uri = Uri.fromFile(File(localPath)) //encode local path (e.g. no polish characters)
-        val photoName = uri.lastPathSegment ?: throw Exception("Error while adding photo")
+        val photoName = "photo_${System.currentTimeMillis()}"
         val photoRef = storageRef.child("routes/$routeId/photos/${photoName}")
         photoRef.putFile(uri).await()
 
