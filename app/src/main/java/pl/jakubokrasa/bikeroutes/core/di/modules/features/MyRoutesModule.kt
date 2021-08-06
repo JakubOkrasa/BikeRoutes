@@ -13,6 +13,7 @@ import pl.jakubokrasa.bikeroutes.features.common.segments.domain.GetSegmentsUseC
 import pl.jakubokrasa.bikeroutes.features.myroutes.domain.*
 import pl.jakubokrasa.bikeroutes.features.myroutes.presentation.DialogSegment
 import org.koin.android.ext.koin.androidContext
+import pl.jakubokrasa.bikeroutes.features.myroutes.presentation.ExportRouteHelper
 import pl.jakubokrasa.bikeroutes.features.myroutes.presentation.MyRoutesRecyclerAdapter
 import pl.jakubokrasa.bikeroutes.features.myroutes.presentation.MyRoutesViewModel
 import pl.jakubokrasa.bikeroutes.features.reviews.domain.AddReviewUseCase
@@ -31,16 +32,14 @@ val myRoutesModule = module {
 	factory { GetSegmentPointUseCase() }
     factory { AddSegmentUseCase(get()) }
     factory { RemoveSegmentUseCase(get()) }
-    factory { ExportRouteUseCase(androidContext()) }
-    factory { CompleteExportRouteUseCase(androidContext()) }
     factory { AddReviewUseCase(get()) }
     factory { UpdateReviewUseCase(get()) }
     factory { RemoveReviewUseCase(get()) }
 
+    factory { ExportRouteHelper(androidContext()) }
     factory { MyRoutesRecyclerAdapter() }
 
     viewModel { MyRoutesViewModel(get(), get(), get(), get(), get(), get(), get(),
-        get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(),
-        get(), get()) }
+        get(), get(), get(), get(), get(), get(), get(), get()) }
 
 }

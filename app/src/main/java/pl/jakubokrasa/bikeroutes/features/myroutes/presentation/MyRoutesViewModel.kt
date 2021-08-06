@@ -40,8 +40,6 @@ class MyRoutesViewModel(
     private val addSegmentUseCase: AddSegmentUseCase,
     private val removeSegmentUseCase: RemoveSegmentUseCase,
     private val getSegmentsUseCase: GetSegmentsUseCase,
-    private val exportRouteUseCase: ExportRouteUseCase,
-    private val completeExportRouteUseCase: CompleteExportRouteUseCase,
     private val addPhotoUseCase: AddPhotoUseCase,
     private val getPhotosUseCase: GetPhotosUseCase,
     private val removePhotoUseCase: RemovePhotoUseCase,
@@ -49,6 +47,7 @@ class MyRoutesViewModel(
     private val addReviewUseCase: AddReviewUseCase,
     private val updateReviewUseCase: UpdateReviewUseCase,
     private val removeReviewUseCase: RemoveReviewUseCase,
+	private val exportRouteHelper: ExportRouteHelper,
 
     private val myRoutesNavigator: MyRoutesNavigator,
 ): BaseViewModel() {
@@ -290,39 +289,20 @@ fun addPhoto(routeId: String, localPath: String, sharingType: SharingType) {
         }
     }
 
-    fun exportRoute(route: RouteDisplayable, polyline: Polyline, segmentPolylines: List<Polyline>, zoom: Double) {
+    fun exportRoute(route: RouteDisplayable, polyline: Polyline, zoom: Double) {
         setPendingState()
-        exportRouteUseCase(
-            params = ExportRouteData(route.toRoute(), polyline, segmentPolylines, zoom),
-            scope = viewModelScope,
-            dispatcher = Dispatchers.Main //creating MapSnapshot requires UI thread
-        ) {
-                result ->
-            setIdleState()
-            result.onSuccess {
-                completeExportRoute(it, route)
-                handleSuccess("exportRoute")
-            }
-            result.onFailure {
-                handleFailure("exportRoute", errLog = it.message)
-            }
-        }
-    }
-
-    private fun completeExportRoute(snapshot: MapSnapshot, route: RouteDisplayable) {
-        setPendingState()
-        completeExportRouteUseCase(
-            params = CompleteExportRouteData(snapshot, route.toRoute()),
+        exportRouteHelper(
+            exportRouteData = ExportRouteData(route.toRoute(), polyline, zoom),
             scope = viewModelScope
         ) {
                 result ->
             setIdleState()
             result.onSuccess {
-                _exportedRouteUri.value = it
-                handleSuccess("completeExportRoute")
+                _exportedRoute.value = it
+                handleSuccess("exportRoute")
             }
             result.onFailure {
-                handleFailure("completeExportRoute", errLog = it.message)
+                handleFailure("exportRoute", errLog = it.message)
             }
         }
     }

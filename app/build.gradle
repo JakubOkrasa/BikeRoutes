@@ -35,7 +35,7 @@ android {
             resValue "string", "version", '"dev"'
         }
         prod {
-            resValue "string", "version", '"v.0.5 prod"'
+            resValue "string", "version", '"v.0.8 prod"'
         }
     }
 
