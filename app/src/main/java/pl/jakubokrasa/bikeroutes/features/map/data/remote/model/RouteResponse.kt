@@ -14,14 +14,15 @@ class RouteResponse(
     val distance: Int,
     val rideTimeMinutes: Int,
     val avgSpeedKmPerH: Int,
-    val boundingBoxData: BoundingBoxData
+    val boundingBoxData: BoundingBoxData,
+    val createdBy: String
 ) {
 
     constructor() : this("", 0,"", "", "", pl.jakubokrasa.bikeroutes.core.util.enums.SharingType.PRIVATE, //for firestore
-        0, 0, 0, BoundingBoxData(0.0, 0.0,0.0,0.0))
+        0, 0, 0, BoundingBoxData(0.0, 0.0,0.0,0.0), "")
 
     constructor(route: Route) : this(route.routeId, route.createdAt, route.userId, route.name, route.description, route.sharingType,
-        route.distance, route.rideTimeMinutes, route.avgSpeedKmPerH, route.boundingBoxData)
+        route.distance, route.rideTimeMinutes, route.avgSpeedKmPerH, route.boundingBoxData, route.createdBy)
 
     fun toRoute(): Route {
         return Route(
@@ -34,7 +35,8 @@ class RouteResponse(
             sharingType = this.sharingType,
             rideTimeMinutes = this.rideTimeMinutes,
             avgSpeedKmPerH = this.avgSpeedKmPerH,
-            boundingBoxData = this.boundingBoxData
+            boundingBoxData = this.boundingBoxData,
+            createdBy = this.createdBy
         )
     }
 }

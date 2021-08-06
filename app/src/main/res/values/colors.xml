@@ -12,6 +12,7 @@
     <color name="black_default">#222</color>
     <color name="light_orange">#FF8D69</color>
     <color name="light_green">#69AE6C</color>
+    <color name="dark_grey">#676767</color>
 
     <color name="seg_red">#E91E63</color>
     <color name="seg_orange">#FF6839</color>

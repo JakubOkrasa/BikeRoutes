@@ -17,8 +17,9 @@ data class RouteDisplayable (
     var sharingType: SharingType,
     val rideTimeMinutes: Int,
     val avgSpeedKmPerH: Int,
-    val boundingBoxData: BoundingBoxData
-    ): Parcelable {
+    val boundingBoxData: BoundingBoxData,
+    val createdBy: String
+): Parcelable {
 
     fun toRoute(): Route {
         return Route(
@@ -31,7 +32,8 @@ data class RouteDisplayable (
             sharingType = sharingType,
             rideTimeMinutes = rideTimeMinutes,
             avgSpeedKmPerH = avgSpeedKmPerH,
-            boundingBoxData = boundingBoxData)
+            boundingBoxData = boundingBoxData,
+            createdBy = createdBy)
     }
 
     constructor(route: Route) : this (
@@ -44,6 +46,7 @@ data class RouteDisplayable (
         sharingType = route.sharingType,
         rideTimeMinutes = route.rideTimeMinutes,
         avgSpeedKmPerH = route.avgSpeedKmPerH,
-        boundingBoxData = route.boundingBoxData
+        boundingBoxData = route.boundingBoxData,
+        createdBy = route.createdBy
     )
 }

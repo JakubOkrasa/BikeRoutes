@@ -71,7 +71,7 @@ class PhotoGalleryAdapter(
                         topBar.makeVisible()
                 }
 
-                ibRemove.setOnClickListener {
+                ibRemovePhoto.setOnClickListener {
                     DialogRemovePhoto(context, viewModel, photo, adapterPosition).show()
                 }
             }

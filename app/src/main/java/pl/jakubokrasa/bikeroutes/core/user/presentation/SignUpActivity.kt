@@ -41,15 +41,20 @@ class SignUpActivity : BaseActivity<SignUpViewModel>() {
     private val btSignUpOnClick = View.OnClickListener {
         val email: String = binding.etEmail.text.toString()
         val password: String = binding.etPassword.text.toString()
+        val displayName: String = binding.etDisplayName.text.toString()
 
-        if(TextUtils.isEmpty(email) || TextUtils.isEmpty(password)) {
-            Toast.makeText(this, "Please fill all the fields!", Toast.LENGTH_LONG).show()
+        if(TextUtils.isEmpty(email) || TextUtils.isEmpty(password) || TextUtils.isEmpty(displayName) ) {
+            showToast("Please fill all the fields!")
         } else if (password.length<6) {
-            Toast.makeText(this, "Password must have at least 6 characters.", Toast.LENGTH_LONG).show()
+            showToast("Password need to have at least 6 characters.")
         } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            Toast.makeText(this, "Email address is invalid.", Toast.LENGTH_LONG).show()
+            showToast("Email address is invalid.")
+        } else if (displayName.length<3) {
+            showToast("Name need to have at least 3 characters.")
+        } else if(!displayName.matches("[a-zA-Z0-9-]{3,15}".toRegex())) {
+            showToast("Display Name can contain only letters, digits an dashes and have from 3 to 15 characters.")
         } else{
-            viewModel.createUser(email, password)
+            viewModel.createUser(email, password, displayName)
         }
     }
 
@@ -58,4 +63,5 @@ class SignUpActivity : BaseActivity<SignUpViewModel>() {
         startActivity(intent)
         finish()
     }
+
 }

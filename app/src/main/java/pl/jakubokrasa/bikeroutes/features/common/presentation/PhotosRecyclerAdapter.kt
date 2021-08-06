@@ -49,7 +49,6 @@ class PhotosRecyclerAdapter: RecyclerView.Adapter<PhotosRecyclerAdapter.PhotosVi
             }
         }
         init {
-            // Define click listener for the MyRoutesViewHolder's View.
             itemView.setOnClickListener {
                 onItemClick?.invoke(photos, adapterPosition)
             }

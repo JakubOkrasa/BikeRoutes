@@ -1,6 +1,5 @@
 package pl.jakubokrasa.bikeroutes.features.map.data.remote
 
-import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import android.net.Uri
@@ -9,7 +8,6 @@ import com.google.firebase.storage.StorageReference
 import kotlinx.coroutines.tasks.await
 import pl.jakubokrasa.bikeroutes.core.util.enums.SharingType
 import pl.jakubokrasa.bikeroutes.features.common.data.GeocodingAPI
-import pl.jakubokrasa.bikeroutes.features.common.domain.BoundingBoxData
 import pl.jakubokrasa.bikeroutes.features.common.domain.FilterData
 import pl.jakubokrasa.bikeroutes.features.common.domain.model.GeocodingItem
 import pl.jakubokrasa.bikeroutes.features.common.data.model.PhotoInfoResponse
@@ -23,6 +21,8 @@ import pl.jakubokrasa.bikeroutes.features.map.domain.model.Point
 import pl.jakubokrasa.bikeroutes.features.map.domain.model.Route
 import pl.jakubokrasa.bikeroutes.features.myroutes.data.model.PointDocument
 import pl.jakubokrasa.bikeroutes.features.myroutes.presentation.MyRoutesFragment.Companion.DISTANCE_SLIDER_VALUE_TO
+import pl.jakubokrasa.bikeroutes.features.reviews.data.model.ReviewResponse
+import pl.jakubokrasa.bikeroutes.features.reviews.domain.model.Review
 import java.io.File
 import java.lang.Exception
 
@@ -37,7 +37,6 @@ class RemoteRepositoryImpl(
         val routeDoc = firestore.collection("routes").document()
         val pointsMap = mapOf("pointsArray" to points.map { PointResponse(it) })
         val pointsDoc = firestore.collection("points").document(routeDoc.id)
-        val userDoc = firestore.collection("users").document(route.userId)
 
         //WRITE BATCHES WORK OFFLINE
         firestore.runBatch { batch ->
@@ -47,10 +46,7 @@ class RemoteRepositoryImpl(
             //save Points
             batch.set(pointsDoc, pointsMap)
 
-            //assign route to a user
-            batch.update(userDoc, "routes", FieldValue.arrayUnion(routeDoc.id))
-
-            //assign route document id to routeId in the document (which is used in the view layer)
+            //assign route document id to routeId in the document (which is used in the presentation layer)
             batch.update(routeDoc, "routeId", routeDoc.id)
         }.await()
 
@@ -103,17 +99,16 @@ class RemoteRepositoryImpl(
             .collection("routes")
             .document(route.routeId)
             .set(routeResponse)
+            .await()
     }
 
     override suspend fun deleteRoute(route: Route) {
         val routeDoc = firestore.collection("routes").document(route.routeId)
         val pointsDoc = firestore.collection("points").document(route.routeId)
-        val userDoc = firestore.collection("users").document(route.userId)
 
         firestore.runBatch { batch ->
             batch.delete(routeDoc)
             batch.delete(pointsDoc)
-            batch.update(userDoc, "routes", FieldValue.arrayRemove(route.routeId))
         }.await()
     }
 
@@ -127,7 +122,7 @@ class RemoteRepositoryImpl(
 
         //save image to Firebase Cloud Storage
         val uri = Uri.fromFile(File(localPath)) //encode local path (e.g. no polish characters)
-        val photoName = uri.lastPathSegment ?: throw Exception("Error while adding photo")
+        val photoName = "photo_${System.currentTimeMillis()}"
         val photoRef = storageRef.child("routes/$routeId/photos/${photoName}")
         photoRef.putFile(uri).await()
 
@@ -178,8 +173,8 @@ class RemoteRepositoryImpl(
         val documents =
             firestore
                 .collection("routes")
-//                .whereNotEqualTo("userId", uid) //todo omitted for tests
-                .whereNotEqualTo("sharingType", SharingType.PRIVATE.name)
+                .whereNotEqualTo("userId", uid)
+                .whereIn("sharingType", listOf(SharingType.PUBLIC.name, SharingType.PUBLIC_WITH_PRIVATE_PHOTOS.name))
                 .get().await().documents
 
         for (doc in documents)
@@ -205,8 +200,8 @@ class RemoteRepositoryImpl(
         }
 
         var query = firestore.collection("routes")
-        // .whereNotEqualTo("userId", uid) //todo omitted for tests
-            .whereNotEqualTo("sharingType", SharingType.PRIVATE.name)
+            .whereNotEqualTo("userId", uid)
+            .whereIn("sharingType", listOf(SharingType.PUBLIC.name, SharingType.PUBLIC_WITH_PRIVATE_PHOTOS.name))
         maxDistanceMeters?.let { query = query.whereLessThanOrEqualTo("distance", it) }
         minDistanceMeters?.let { query = query.whereGreaterThanOrEqualTo("distance", it) }
         val documents = query.get().await()
@@ -238,6 +233,37 @@ class RemoteRepositoryImpl(
             .get()
             .await()
             .map { doc -> doc.toObject(SegmentResponse::class.java).toSegment() }
+    }
+
+    override suspend fun getReviews(routeId: String): List<Review> {
+        return firestore.collection("reviews")
+            .whereEqualTo("routeId", routeId)
+            .get()
+            .await()
+            .map { doc -> doc.toObject(ReviewResponse::class.java).toReview() }
+    }
+
+    override suspend fun addReview(review: Review) {
+        val reviewDoc = firestore.collection("reviews").document()
+
+        firestore.runBatch { batch ->
+            batch.set(reviewDoc, ReviewResponse(review))
+            batch.update(reviewDoc, "reviewId", reviewDoc.id)
+        }.await()
+    }
+
+    override suspend fun updateReview(review: Review) {
+        firestore.collection("reviews")
+            .document(review.reviewId)
+            .set(ReviewResponse(review))
+            .await()
+    }
+
+    override suspend fun removeReview(reviewId: String) {
+        firestore.collection("reviews")
+            .document(reviewId)
+            .delete()
+            .await()
     }
 
 

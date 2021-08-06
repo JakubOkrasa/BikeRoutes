@@ -7,11 +7,15 @@ import pl.jakubokrasa.bikeroutes.features.common.domain.GetPointsFromRemoteUseCa
 import pl.jakubokrasa.bikeroutes.features.common.presentation.PhotoGalleryAdapter
 import pl.jakubokrasa.bikeroutes.features.common.presentation.PhotosRecyclerAdapter
 import pl.jakubokrasa.bikeroutes.features.common.segments.domain.GetSegmentsUseCase
+import pl.jakubokrasa.bikeroutes.features.reviews.domain.GetReviewsUseCase
+import pl.jakubokrasa.bikeroutes.features.reviews.presentation.ReviewsRecyclerAdapter
 
 val commonModule = module {
     factory { GetPointsFromRemoteUseCase(get()) }
 	factory { GetSegmentsUseCase(get()) }
     factory { GetPhotosUseCase(get()) }
+    factory { GetReviewsUseCase(get()) }
 
-    factory { PhotosRecyclerAdapter() }
+    factory { PhotosRecyclerAdapter()}
+    factory { ReviewsRecyclerAdapter() }
 }

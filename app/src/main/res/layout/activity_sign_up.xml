@@ -22,6 +22,19 @@
             android:layout_height="56dp">
 
             <EditText
+                android:id="@+id/et_display_name"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="Enter name visible for others"
+                android:inputType="text"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="56dp">
+
+            <EditText
                 android:id="@+id/et_email"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

@@ -34,6 +34,7 @@ class SaveRouteUseCase(
                 getRideTimeMinutes(points),
                 getAvgSpeedKmH(params.distance),
                 params.boundingBoxData,
+                params.createdBy
             )
             remoteRepository.addRoute(route, points)
             localRepository.deletePoints()
@@ -60,5 +61,6 @@ data class DataSaveRoute (
     val description: String,
     val distance: Int,
     val sharingType: SharingType,
-    val boundingBoxData: BoundingBoxData
+    val boundingBoxData: BoundingBoxData,
+    val createdBy: String
 )

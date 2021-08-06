@@ -8,6 +8,7 @@ import pl.jakubokrasa.bikeroutes.features.common.domain.model.GeocodingItem
 import pl.jakubokrasa.bikeroutes.features.common.segments.domain.model.Segment
 import pl.jakubokrasa.bikeroutes.features.map.domain.model.Point
 import pl.jakubokrasa.bikeroutes.features.map.domain.model.Route
+import pl.jakubokrasa.bikeroutes.features.reviews.domain.model.Review
 
 interface RemoteRepository {
 
@@ -40,4 +41,10 @@ interface RemoteRepository {
 	suspend fun getPhotos(routeId: String): List<PhotoInfo>
 
 	suspend fun getSegments(routeId: String): List<Segment>
+
+    suspend fun getReviews(routeId: String): List<Review>
+    suspend fun addReview(review: Review)
+    suspend fun updateReview(review: Review)
+    suspend fun removeReview(reviewId: String)
+
 }

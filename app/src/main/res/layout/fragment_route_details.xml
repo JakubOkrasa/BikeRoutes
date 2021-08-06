@@ -109,7 +109,7 @@
                                 android:visibility="gone" />
 
                             <ImageButton
-                                android:id="@+id/ib_remove"
+                                android:id="@+id/ib_remove_segment"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:src="@drawable/ic_remove_24"
@@ -158,6 +158,27 @@
                     android:layout_height="wrap_content"
                     android:text="Route name abc"
                     android:textStyle="bold" />
+
+                <LinearLayout
+                    android:id="@+id/ll_created_by"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        style="@style/tv_small"
+                        android:textColor="@color/dark_grey"
+                        android:text="created by: "/>
+                    <TextView
+                        android:id="@+id/tv_created_by"
+                        android:layout_width="300dp"
+                        android:layout_height="wrap_content"
+                        style="@style/tv_small"
+                        android:textStyle="italic"
+                        android:textColor="@color/dark_grey"
+                        android:text="unknown-user"/>
+                </LinearLayout>
 
                 <TextView
                     android:id="@+id/tv_route_description"
@@ -246,7 +267,7 @@
                     android:layout_marginBottom="10dp"
                     android:text="Photos"
                     android:textStyle="bold"
-                    android:visibility="gone" />
+                    android:visibility="gone"/>
 
 
                 <androidx.recyclerview.widget.RecyclerView
@@ -254,8 +275,135 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:visibility="gone" />
-            </LinearLayout>
 
+                <TextView
+                    android:id="@+id/tv_reviews"
+                    style="@style/tv_medium"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="Reviews"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_reviews"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="gone"
+                    android:layout_marginBottom="40dp"/>
+
+                <LinearLayout
+                    android:id="@+id/ll_add_review"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <EditText
+                        android:id="@+id/et_add_review"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:maxLength="500"
+                        android:maxLines="20"
+                        android:hint="Add your review"/>
+
+                    <Button
+                        android:id="@+id/bt_save_review"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="save"
+                        android:layout_gravity="end"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_edit_review"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone"
+                    tools:visibility="visible">
+                    <TextView
+                        style="@style/tv_medium"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:text="Your review"
+                        android:textStyle="bold"/>
+                    <TextView
+                        android:id="@+id/tv_current_review"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        style="@style/tv_medium"
+                        android:text="In publishing and graphic design, Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without relying on meaningful content."/>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_gravity="right">
+
+                        <com.google.android.material.button.MaterialButton
+                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                            android:id="@+id/bt_remove_review"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="10dp"
+                            android:text="remove"/>
+                        <Button
+                            android:id="@+id/bt_edit_review"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="edit"
+                            android:layout_marginRight="10dp"/>
+
+
+                    </LinearLayout>
+                </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/ll_update_review"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <TextView
+                        style="@style/tv_medium"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:text="Your review"
+                        android:textStyle="bold"/>
+                    <EditText
+                        android:id="@+id/et_update_review"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:maxLength="500"
+                        android:maxLines="20"
+                        android:hint="Enter your review"/>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_gravity="right">
+                        <com.google.android.material.button.MaterialButton
+                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                            android:id="@+id/bt_cancel_review_edit"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="10dp"
+                            android:text="cancel"/>
+                        <Button
+                            android:id="@+id/bt_update_review"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="update"
+                            android:layout_gravity="end"/>
+                    </LinearLayout>
+
+                </LinearLayout>
+            </LinearLayout>
             <LinearLayout
                 android:id="@+id/ll_route_edit"
                 android:layout_width="match_parent"
@@ -311,6 +459,7 @@
                 </LinearLayout>
 
             </LinearLayout>
+
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

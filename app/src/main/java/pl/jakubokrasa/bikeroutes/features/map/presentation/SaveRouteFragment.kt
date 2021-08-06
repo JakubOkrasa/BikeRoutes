@@ -7,6 +7,7 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import pl.jakubokrasa.bikeroutes.R
 import pl.jakubokrasa.bikeroutes.core.base.platform.BaseFragment
 import pl.jakubokrasa.bikeroutes.core.extensions.PreferenceHelper.Companion.PREF_KEY_DISTANCE_SUM
+import pl.jakubokrasa.bikeroutes.core.extensions.PreferenceHelper.Companion.PREF_KEY_USER_DISPLAY_NAME
 import pl.jakubokrasa.bikeroutes.core.extensions.hideKeyboard
 import pl.jakubokrasa.bikeroutes.core.util.enums.SharingType
 import pl.jakubokrasa.bikeroutes.databinding.FragmentSaveRouteBinding
@@ -31,12 +32,14 @@ class SaveRouteFragment : BaseFragment<MapViewModel>(R.layout.fragment_save_rout
 
     private val btSaveOnClick = View.OnClickListener() {
         val name = binding.etName.text.toString()
-        val description = binding.etDescription.text.toString()
-        val distance = preferenceHelper.preferences.getInt(PREF_KEY_DISTANCE_SUM, 0)
-        val sharingType = if (binding.swPrivate.isChecked) SharingType.PRIVATE else SharingType.PUBLIC
-        if(name.isEmpty()) showToast("Route must have a name")
+        if(name.isEmpty())
+            showToast("Route must have a name")
         else  {
-            viewModel.saveRoute(DataSaveRoute(name, description, distance, sharingType, getBoundingBoxData()))
+            val description = binding.etDescription.text.toString()
+            val distance = preferenceHelper.preferences.getInt(PREF_KEY_DISTANCE_SUM, 0)
+            val sharingType = if (binding.swPrivate.isChecked) SharingType.PRIVATE else SharingType.PUBLIC
+            val createdBy = preferenceHelper.preferences.getString(PREF_KEY_USER_DISPLAY_NAME, "unknown-user")
+            viewModel.saveRoute(DataSaveRoute(name, description, distance, sharingType, getBoundingBoxData(), createdBy!!))
             hideKeyboard()
             mapFrgNavigator.goBack()
         }

@@ -1,6 +1,7 @@
 package pl.jakubokrasa.bikeroutes.core.di
 
 import org.koin.core.module.Module
+import pl.jakubokrasa.bikeroutes.core.di.modules.appModule
 import pl.jakubokrasa.bikeroutes.core.di.modules.cloudStorageModule
 import pl.jakubokrasa.bikeroutes.core.di.modules.features.commonModule
 import pl.jakubokrasa.bikeroutes.core.di.modules.features.mapModule

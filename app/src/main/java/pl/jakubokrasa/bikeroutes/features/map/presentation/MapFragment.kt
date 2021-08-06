@@ -63,6 +63,8 @@ class MapFragment() : BaseFragment<MapViewModel>(R.layout.fragment_map), KoinCom
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        Log.e("TEST", "onViewCreated")
+
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentMapBinding.bind(view)
         requestPermissionsIfNecessary(OSM_PERMISSIONS)
@@ -93,6 +95,7 @@ class MapFragment() : BaseFragment<MapViewModel>(R.layout.fragment_map), KoinCom
         super.onStart()
         val locFilter = IntentFilter(SEND_LOCATION_ACTION)
         mLocalBR.registerReceiver(locationServiceReceiver, locFilter)
+       Log.e("TEST", "onStart")
     }
 
     override fun onStop() {
@@ -100,6 +103,8 @@ class MapFragment() : BaseFragment<MapViewModel>(R.layout.fragment_map), KoinCom
         if(!isRecordingMode())
             stopLocationService()
         mLocalBR.unregisterReceiver(locationServiceReceiver)
+        Log.e("TEST", "onStop")
+
     }
 
     override fun onResume() {
@@ -110,6 +115,7 @@ class MapFragment() : BaseFragment<MapViewModel>(R.layout.fragment_map), KoinCom
         //Configuration.getInstance().load(this, PreferenceHelper.getDefaultSharedPreferences(this));
         binding.mapView.onResume() //needed for compass, my location overlays, v6.0.0 and up
         requireActivity().startService(Intent(context, LocationService::class.java))
+        Log.e("TEST", "onResume")
 
     }
 
@@ -120,11 +126,19 @@ class MapFragment() : BaseFragment<MapViewModel>(R.layout.fragment_map), KoinCom
         //SharedPreferences prefs = PreferenceHelper.getDefaultSharedPreferences(this);
         //Configuration.getInstance().save(this, prefs);
         binding.mapView.onPause() //needed for compass, my location overlays, v6.0.0 and up
+        Log.e("TEST", "onPause")
+
     }
 
     override fun initObservers() {
         super.initObservers()
         observePoints()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.e("TEST", "onDestroy")
+
     }
 
     private fun requestPermissionsIfNecessary(permissions: Array<String>) {
