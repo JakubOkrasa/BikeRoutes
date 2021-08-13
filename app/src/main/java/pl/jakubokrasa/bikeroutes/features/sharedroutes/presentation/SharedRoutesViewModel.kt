@@ -48,7 +48,7 @@ class SharedRoutesViewModel(
                 handleSuccess("getSharedRoutesWithFilter")
             }
             result.onFailure {
-                handleFailure("getSharedRoutesWithFilter", errLog = it.message)
+                handleFailure("getSharedRoutesWithFilter", "couldn't filter the routes", errLog = it.message)
             }
         }
     }
@@ -66,7 +66,7 @@ class SharedRoutesViewModel(
                 handleSuccess("getSharedRoutes")
             }
             result.onFailure {
-                handleFailure("getSharedRoutes", errLog = it.message)
+                handleFailure("getSharedRoutes", "couldn't get routes", errLog = it.message)
             }
         }
     }
@@ -83,7 +83,7 @@ class SharedRoutesViewModel(
                 handleSuccess("getPointsFromRemote")
                 sharedRoutesNavigator.openRouteDetailsFragment(route, it.map { point -> PointDisplayable(point) })
             }
-            result.onFailure { handleFailure("getPointsFromRemote", errLog = it.message) }
+            result.onFailure { handleFailure("getPointsFromRemote", "couldn't display the route", errLog = it.message) }
         }
     }
 
@@ -97,7 +97,7 @@ class SharedRoutesViewModel(
                 handleSuccess("getGeocodingItem")
                 _geocodingItem.value = GeocodingItemDisplayable(it)
             }
-            result.onFailure { handleFailure("getGeocodingItem", errLog = it.message) }
+            result.onFailure { handleFailure("getGeocodingItem", "couldn't filter by location", errLog = it.message) }
         }
     }
 

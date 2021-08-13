@@ -14,7 +14,8 @@ class UserRepositoryImpl(private val firestore: FirebaseFirestore): UserReposito
     }
 
     override suspend fun deleteUser(uid: String) {
-        firestore.collection("users").document(uid).delete()
+//        firestore.collection("users").document(uid).delete()
+        TODO("To be implemented in the future release")
     }
 
     override suspend fun getUser(uid: String): User {

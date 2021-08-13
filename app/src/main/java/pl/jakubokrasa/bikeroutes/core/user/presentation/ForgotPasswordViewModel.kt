@@ -27,7 +27,7 @@ class ForgotPasswordViewModel(
                 handleSuccess("resetPassword", "Reset password message was sent.")
             }
             result.onFailure {
-                handleFailure("resetPassword", it.message ?: "Reset password message wasn't sent") }
+                handleFailure("resetPassword", it.message ?: "Reset password message wasn't sent", errLog = it.message) }
         }
     }
 }

@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.hadilq.liveevent.LiveEvent
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.drawing.MapSnapshot
 import org.osmdroid.views.overlay.Polyline
@@ -125,7 +126,7 @@ class MyRoutesViewModel(
                 handleSuccess("getMyRoutesWithFilter")
             }
             result.onFailure {
-                handleFailure("getMyRoutesWithFilter", errLog = it.message)
+                handleFailure("getMyRoutesWithFilter", "couldn't filter routes", errLog = it.message)
             }
         }
     }
@@ -143,7 +144,7 @@ class MyRoutesViewModel(
                 handleSuccess("getMyRoutes")
             }
             result.onFailure {
-                handleFailure("getMyRoutes", errLog = it.message)
+                handleFailure("getMyRoutes", "couldn't get routes", errLog = it.message)
             }
         }
     }
@@ -161,7 +162,7 @@ class MyRoutesViewModel(
                 myRoutesNavigator.openRouteDetailsFragment(route, it.map { point -> PointDisplayable(point) })
                 getPhotos(route.routeId)
             }
-            result.onFailure { handleFailure("getPointsFromRemote", errLog = it.message) }
+            result.onFailure { handleFailure("getPointsFromRemote", "couldn't display the route", errLog = it.message) }
         }
     }
 
@@ -175,7 +176,7 @@ class MyRoutesViewModel(
                 handleSuccess("getGeocodingItem")
                 _geocodingItem.value = GeocodingItemDisplayable(it)
             }
-            result.onFailure { handleFailure("getGeocodingItem", errLog = it.message) }
+            result.onFailure { handleFailure("getGeocodingItem", "couldn't filter by this location", errLog = it.message) }
         }
     }
 
@@ -191,7 +192,7 @@ fun addPhoto(routeId: String, localPath: String, sharingType: SharingType) {
                 getPhotos(routeId)
                 handleSuccess("addPhoto", "photo added")
             }
-            result.onFailure { handleFailure("addPhoto", errLog = it.message) }
+            result.onFailure { handleFailure("addPhoto", "couldn't add the photo", errLog = it.message) }
         }
     }
 
@@ -203,7 +204,7 @@ fun addPhoto(routeId: String, localPath: String, sharingType: SharingType) {
                 _photos.value = list.map { PhotoInfoDisplayable(it) }
                 handleSuccess("getPhotos")
             }
-            result.onFailure { handleFailure("getPhotos", errLog = it.message) }
+            result.onFailure { handleFailure("getPhotos", "couldn't download photos", errLog = it.message) }
         }
     }
 
@@ -217,7 +218,7 @@ fun addPhoto(routeId: String, localPath: String, sharingType: SharingType) {
                 _photoRemovePos.value = photoPosition
                 handleSuccess("removePhoto")
             }
-            result.onFailure { handleFailure("removePhoto", errLog = it.message) }
+            result.onFailure { handleFailure("removePhoto", "could't remove photo", errLog = it.message) }
         }
     }
 
@@ -249,7 +250,7 @@ fun addPhoto(routeId: String, localPath: String, sharingType: SharingType) {
             }
             result.onFailure {
                 _isSegmentAdded.value = false
-                handleFailure("addSegment", errLog = it.message)
+                handleFailure("addSegment", "couldn't add the segment", errLog = it.message)
             }
         }
     }
@@ -266,7 +267,7 @@ fun addPhoto(routeId: String, localPath: String, sharingType: SharingType) {
                 handleSuccess("removeSegment", "segment removed")
             }
             result.onFailure {
-                handleFailure("removeSegment", errLog = it.message)
+                handleFailure("removeSegment", "couldn't remove the segment", errLog = it.message)
             }
         }
     }
@@ -284,11 +285,12 @@ fun addPhoto(routeId: String, localPath: String, sharingType: SharingType) {
                 handleSuccess("getSegments")
             }
             result.onFailure {
-                handleFailure("getSegments", errLog = it.message)
+                handleFailure("getSegments", "couldn't get segments", errLog = it.message)
             }
         }
     }
 
+    @ExperimentalCoroutinesApi
     fun exportRoute(route: RouteDisplayable, polyline: Polyline, zoom: Double) {
         setPendingState()
         exportRouteHelper(
@@ -302,7 +304,7 @@ fun addPhoto(routeId: String, localPath: String, sharingType: SharingType) {
                 handleSuccess("exportRoute")
             }
             result.onFailure {
-                handleFailure("exportRoute", errLog = it.message)
+                handleFailure("exportRoute", "couldn't export route", errLog = it.message)
             }
         }
     }
@@ -319,7 +321,7 @@ fun addPhoto(routeId: String, localPath: String, sharingType: SharingType) {
                 _reviews.value = list.map { ReviewDisplayable(it) }
                 handleSuccess("getReviews")
             }
-            result.onFailure { handleFailure("getReviews", errLog = it.message) }
+            result.onFailure { handleFailure("getReviews", "couldn't get reviews", errLog = it.message) }
         }
     }
 
@@ -335,7 +337,7 @@ fun addPhoto(routeId: String, localPath: String, sharingType: SharingType) {
                 getReviews(review.routeId)
                 handleSuccess("addReview")
             }
-            result.onFailure { handleFailure("addReview", errLog = it.message) }
+            result.onFailure { handleFailure("addReview", "couldn't add the review", errLog = it.message) }
         }
     }
 
@@ -350,7 +352,7 @@ fun addPhoto(routeId: String, localPath: String, sharingType: SharingType) {
             result.onSuccess {
                 handleSuccess("updateReview")
             }
-            result.onFailure { handleFailure("updateReview", errLog = it.message) }
+            result.onFailure { handleFailure("updateReview", "couldn't update the review", errLog = it.message) }
         }
     }
 
@@ -365,7 +367,7 @@ fun addPhoto(routeId: String, localPath: String, sharingType: SharingType) {
             result.onSuccess {
                 handleSuccess("removeReview")
             }
-            result.onFailure { handleFailure("removeReview", errLog = it.message) }
+            result.onFailure { handleFailure("removeReview", "couldn't remove the review", errLog = it.message) }
         }
     }
     fun navigateBack() {

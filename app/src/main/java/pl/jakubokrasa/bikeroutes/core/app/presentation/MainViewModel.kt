@@ -19,7 +19,6 @@ class MainViewModel(
     private val isUserEmailSignedInUseCase: IsUserSignedInUseCase,
     private val signInUseCase: SignInUseCase,
     private val getUserUseCase: GetUserUseCase,
-    private val mainNavigator: MainNavigator,
 ): BaseViewModel() { //todo isUserSignedIN in BaseVM
     override val LOG_TAG: String = MainViewModel::class.simpleName ?: "unknown"
     private val _isSignedIn by lazy { MutableLiveData<Boolean>()
