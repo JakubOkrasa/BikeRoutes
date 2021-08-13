@@ -20,6 +20,7 @@ class PreferenceHelper(ctx: Context) {
         const val PREF_KEY_USER_DISPLAY_NAME = "user_display_name"
 
         const val PREF_KEY_TIPS_SEGMENTS_NOT_SHOWED = "key_tips_segments_not_showed"
+        const val PREF_KEY_TIPS_SEGMENTS_DETAILS_NOT_SHOWED = "key_tips_segments_details_not_showed"
     }
 
     private val filePath = BuildConfig.APPLICATION_ID + ".preferences"

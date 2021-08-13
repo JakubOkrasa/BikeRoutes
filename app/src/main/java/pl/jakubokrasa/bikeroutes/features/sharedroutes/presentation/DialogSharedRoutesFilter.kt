@@ -7,10 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.Window
 import com.google.android.material.slider.RangeSlider
-import pl.jakubokrasa.bikeroutes.core.extensions.getValFrom
-import pl.jakubokrasa.bikeroutes.core.extensions.getValTo
-import pl.jakubokrasa.bikeroutes.core.extensions.makeGone
-import pl.jakubokrasa.bikeroutes.core.extensions.makeVisible
+import pl.jakubokrasa.bikeroutes.core.extensions.*
 import pl.jakubokrasa.bikeroutes.core.util.getFormattedFilterDistance
 import pl.jakubokrasa.bikeroutes.core.util.getFormattedFilterDistanceGreaterThan
 import pl.jakubokrasa.bikeroutes.core.util.getFormattedFilterDistanceLessThan
@@ -23,6 +20,7 @@ import pl.jakubokrasa.bikeroutes.features.common.presentation.model.GeocodingIte
 import pl.jakubokrasa.bikeroutes.features.myroutes.presentation.MyRoutesFragment.Companion.DISTANCE_SLIDER_VALUE_TO
 import pl.jakubokrasa.bikeroutes.features.sharedroutes.presentation.SharedRoutesViewModel
 
+//very similar to DialogMyRoutesFilter class but creating base class was impossible because of ViewBinding
 class DialogSharedRoutesFilter(
     ctx: Context,
     private val frgBinding: FragmentSharedRoutesBinding,
@@ -109,6 +107,11 @@ class DialogSharedRoutesFilter(
     }
 
     private val btSaveOnClick = View.OnClickListener {
+        if(dlgBinding.etLocation.text.length == 1 || dlgBinding.etLocation.text.length == 2) {
+            showToast("Location must contain at least 3 characters")
+            return@OnClickListener
+        }
+
         val filterData = FilterData()
         if(isDistanceChanged()) {
             filterData.minDistanceKm = dlgBinding.sliderDistance.getValFrom()
