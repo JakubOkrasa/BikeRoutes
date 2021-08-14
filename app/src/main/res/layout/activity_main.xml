@@ -44,7 +44,7 @@
         android:id="@+id/image_welcome"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/ic_baseline_directions_bike_24"
+        android:background="@drawable/ic_bike_240"
         android:minWidth="300dp"
         android:minHeight="300dp"
         app:layout_constraintBottom_toBottomOf="parent"
