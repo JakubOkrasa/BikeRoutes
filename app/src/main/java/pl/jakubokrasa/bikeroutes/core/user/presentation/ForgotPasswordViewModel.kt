@@ -18,11 +18,13 @@ class ForgotPasswordViewModel(
     override val LOG_TAG: String = ForgotPasswordViewModel::class.simpleName?: "unknown"
 
     fun resetPassword(email: String) {
+        setPendingState()
         resetPasswordUseCase(
             params = email,
             scope = viewModelScope
         ) {
                 result ->
+            setIdleState()
             result.onSuccess {
                 handleSuccess("resetPassword", "Reset password message was sent.")
             }

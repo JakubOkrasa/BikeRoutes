@@ -19,11 +19,13 @@ class SignInViewModel(
     val startActivity by lazy { _startActivity }
 
     fun signIn(email: String, password: String) {
+        setPendingState()
         signInUseCase(
             params = DataSignIn(email, password),
             scope = viewModelScope
         ) {
                 result ->
+            setIdleState()
             result.onSuccess { authResult ->
                 authResult.uid?.let {
                     getUser(it)
@@ -39,11 +41,13 @@ class SignInViewModel(
     }
 
     private fun getUser(uid: String) {
+        setPendingState()
         getUserUseCase(
             params = uid,
             scope = viewModelScope
         ) {
                 result ->
+            setIdleState()
             result.onSuccess {
                 preferenceHelper.saveDisplayNameToSharedPreferences(it.displayName)
                 handleSuccess("getUser")

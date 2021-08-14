@@ -30,7 +30,7 @@ val userModule = module {
     factory { LogOutUseCase(get()) }
     factory { GetUserUseCase(get()) }
 
-    viewModel { UserViewModel(get(), get(), get(), get()) }
+    viewModel { UserViewModel(get(), get(), get()) }
     viewModel { SignInViewModel(get(), get(), get()) }
     viewModel { SignUpViewModel(get(), get(), get()) }
     viewModel { ForgotPasswordViewModel(get()) }

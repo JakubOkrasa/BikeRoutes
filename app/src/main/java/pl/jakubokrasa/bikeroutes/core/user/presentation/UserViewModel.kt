@@ -26,11 +26,13 @@ class UserViewModel(
 
     //TODO("To use in the future release")
     fun deleteCurrentUser() {
+        setPendingState()
         deleteCurrentCurrentUserUseCase(
             params = Unit,
             scope = viewModelScope
         ) {
             result ->
+            setIdleState()
                 result.onSuccess {
                     handleSuccess("deleteCurrentUser", "account was deleted")
                     preferenceHelper.deleteUserDataFromSharedPreferences()
@@ -40,11 +42,13 @@ class UserViewModel(
     }
 
     fun logOut() {
+        setPendingState()
         logOutUseCase(
             params = Unit,
             scope = viewModelScope
         ) {
                 result ->
+            setIdleState()
             setPendingState()
             result.onSuccess {
                 handleSuccess("logOut")

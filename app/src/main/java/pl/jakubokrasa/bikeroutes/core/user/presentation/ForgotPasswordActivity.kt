@@ -5,6 +5,8 @@ import android.text.TextUtils
 import android.widget.Toast
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import pl.jakubokrasa.bikeroutes.core.base.platform.BaseActivity
+import pl.jakubokrasa.bikeroutes.core.extensions.makeGone
+import pl.jakubokrasa.bikeroutes.core.extensions.makeVisible
 import pl.jakubokrasa.bikeroutes.databinding.ActivityForgotPasswordBinding
 
 class ForgotPasswordActivity: BaseActivity<ForgotPasswordViewModel>() {
@@ -34,5 +36,15 @@ class ForgotPasswordActivity: BaseActivity<ForgotPasswordViewModel>() {
                 viewModel.resetPassword(email)
             }
         }
+    }
+
+    override fun onPendingState() {
+        super.onPendingState()
+        binding.progressLayout.makeVisible()
+    }
+
+    override fun onIdleState() {
+        super.onIdleState()
+        binding.progressLayout.makeGone()
     }
 }

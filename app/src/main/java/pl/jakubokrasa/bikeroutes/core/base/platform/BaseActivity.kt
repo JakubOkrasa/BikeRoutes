@@ -11,4 +11,8 @@ abstract class BaseActivity<T: BaseViewModel>: AppCompatActivity() {
     protected fun showToast(it: String?) {
         Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
     }
+
+    protected open fun onPendingState() {}
+
+    protected open fun onIdleState() {}
 }
