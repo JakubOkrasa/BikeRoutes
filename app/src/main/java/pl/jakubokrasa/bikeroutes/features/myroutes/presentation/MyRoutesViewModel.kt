@@ -54,7 +54,6 @@ class MyRoutesViewModel(
 ): BaseViewModel() {
 
     private val _myRoutes by lazy { MutableLiveData<List<RouteDisplayable>>() }
-    private val _pointsFromRemote by lazy { MutableLiveData<List<PointDisplayable>>() } //liveEvent could be better here todo (but points can be set too early)
     private val _isFilter by lazy { MutableLiveData<Boolean>() }
     private val _geocodingItem by lazy { LiveEvent<GeocodingItemDisplayable>() }
 	private val _photos by lazy { MutableLiveData<List<PhotoInfoDisplayable>>() }
@@ -66,7 +65,6 @@ class MyRoutesViewModel(
     private val _reviews by lazy { MutableLiveData<List<ReviewDisplayable>>() }
     override val LOG_TAG: String = MyRoutesViewModel::class.simpleName?: "unknown"
 
-    val pointsFromRemote: LiveData<List<PointDisplayable>> by lazy { _pointsFromRemote }
     val myRoutes: LiveData<List<RouteDisplayable>> by lazy { _myRoutes }
     val photos: LiveData<List<PhotoInfoDisplayable>> by lazy { _photos }
     val photoRemovePos: LiveData<Int> by lazy { _photoRemovePos }

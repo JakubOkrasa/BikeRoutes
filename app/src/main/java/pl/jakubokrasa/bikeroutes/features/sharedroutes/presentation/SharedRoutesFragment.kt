@@ -45,10 +45,6 @@ import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteDisplayabl
         observeGeocodingItem()
     }
 
-    override fun initViews() {
-        super.initViews()
-    }
-
     private fun observeSharedRoutes() {
         viewModel.sharedRoutes.observe(viewLifecycleOwner) {
             if(it.isNotEmpty()) {

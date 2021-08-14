@@ -24,12 +24,10 @@ class SharedRoutesViewModel(
 ): BaseViewModel() {
 
     private val _sharedRoutes by lazy { MutableLiveData<List<RouteDisplayable>>() }
-    private val _pointsFromRemote by lazy { MutableLiveData<List<PointDisplayable>>() } //liveEvent could be better here todo (but points can be set too early)
     private val _isFilter by lazy { MutableLiveData<Boolean>() }
     private val _geocodingItem by lazy { LiveEvent<GeocodingItemDisplayable>() }
     override val LOG_TAG: String = SharedRoutesViewModel::class.simpleName?: "unknown"
 
-    val pointsFromRemote: LiveData<List<PointDisplayable>> by lazy { _pointsFromRemote }
     val sharedRoutes: LiveData<List<RouteDisplayable>> by lazy { _sharedRoutes }
     val isFilter: LiveData<Boolean> by lazy { _isFilter }
     val geocodingItem: LiveData<GeocodingItemDisplayable> by lazy { _geocodingItem }

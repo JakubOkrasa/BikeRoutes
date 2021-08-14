@@ -14,18 +14,15 @@ abstract class BaseFragment<T: BaseViewModel>(@LayoutRes layoutRes: Int): Fragme
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initViews()
         initObservers()
     }
-
-    open fun initViews() {}
 
     open fun initObservers() {
         observeUiState()
         observeMessage()
     }
 
-    fun observeUiState() {
+    private fun observeUiState() {
         viewModel.uiState.observe(viewLifecycleOwner, {
             when(it) {
                 UiState.Idle -> onIdleState()
@@ -34,7 +31,7 @@ abstract class BaseFragment<T: BaseViewModel>(@LayoutRes layoutRes: Int): Fragme
         })
     }
 
-    fun observeMessage() {
+    private fun observeMessage() {
         viewModel.message.observe(viewLifecycleOwner, {
             showToast(it)
         })
@@ -47,6 +44,4 @@ abstract class BaseFragment<T: BaseViewModel>(@LayoutRes layoutRes: Int): Fragme
     protected fun showToast(msg: String?) {
         Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
     }
-
-    // TODO: 4/6/2021 UIState, Message livedata for errors
 }

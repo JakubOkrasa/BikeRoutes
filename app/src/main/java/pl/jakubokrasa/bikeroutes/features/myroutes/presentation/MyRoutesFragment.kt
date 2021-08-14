@@ -45,10 +45,6 @@ import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteDisplayabl
         observeGeocodingItem()
     }
 
-    override fun initViews() {
-        super.initViews()
-    }
-
     private fun observeMyRoutes() {
         viewModel.myRoutes.observe(viewLifecycleOwner) {
             if(it.isNotEmpty()) {
@@ -76,12 +72,6 @@ import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteDisplayabl
          binding.recyclerView.makeVisible()
          binding.tvNoData.makeGone()
          myRoutesRecyclerAdapter.setItems(it)
-     }
-
-     private fun observePoints() {
-         viewModel.pointsFromRemote.observe(viewLifecycleOwner) {
-             // not needed right now, points are taken from remote onClick item by viewModel
-         }
      }
 
      private fun observeIsFilter() {
