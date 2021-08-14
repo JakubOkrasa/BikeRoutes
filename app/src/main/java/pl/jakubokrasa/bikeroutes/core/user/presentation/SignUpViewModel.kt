@@ -22,11 +22,13 @@ class SignUpViewModel(
     val startActivity by lazy { _startActivity }
 
     fun createUser(email: String, password: String, displayName: String) {
+        setPendingState()
         createUserUseCase(
             params = CreateUserData(email, password, displayName),
             scope = viewModelScope
         ) {
                 result ->
+            setIdleState()
             result.onSuccess { authResult ->
                 authResult.uid?.let {
                     getUser(it)
@@ -42,11 +44,13 @@ class SignUpViewModel(
     }
 
     private fun getUser(uid: String) {
+        setPendingState()
         getUserUseCase(
             params = uid,
             scope = viewModelScope
         ) {
                 result ->
+            setIdleState()
             result.onSuccess {
                 preferenceHelper.saveDisplayNameToSharedPreferences(it.displayName)
                 handleSuccess("getUser")

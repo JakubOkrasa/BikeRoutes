@@ -50,7 +50,6 @@ class MapFragment() : BaseFragment<MapViewModel>(R.layout.fragment_map), KoinCom
     private val mLocalBR: LocalBroadcastManager by inject()
     private val mapFrgNavigator: MapFrgNavigator by inject()
     override val viewModel: MapViewModel by sharedViewModel()
-//    private val currentRouteObserver: Observer<RouteDisplayable!>
     private val requestMultiplePermissions = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
         permissions.entries.forEach { Log.d(LOG_TAG, "permission: ${it.key} = ${it.value}") }
     }
@@ -81,7 +80,10 @@ class MapFragment() : BaseFragment<MapViewModel>(R.layout.fragment_map), KoinCom
         setMapViewProperties()
         setPolylineProperties()
 
-        if(!isRecordingMode()) {
+        if (isRecordingMode()) {
+            binding.btStartRecord.makeGone()
+            binding.btStopRecord.makeVisible()
+        } else {
             disableRecordingMode()
             viewModel.deletePoints()
         }
@@ -209,8 +211,7 @@ class MapFragment() : BaseFragment<MapViewModel>(R.layout.fragment_map), KoinCom
         override fun onReceive(context: Context?, intent: Intent?) {
             val loc = intent!!.getParcelableExtra<Location>("EXTRA_LOCATION")
             loc?.let {
-                if(isRecordingMode())
-                    viewModel.updateDistanceByPrefs(GeoPoint(loc))
+
                 newLocationUpdateUI(GeoPoint(loc))
             }
         }

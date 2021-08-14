@@ -15,4 +15,4 @@ data class Route(
     val avgSpeedKmPerH: Int,
     val boundingBoxData: BoundingBoxData,
     val createdBy: String
-) {}
+)

@@ -7,12 +7,13 @@ import android.widget.Toast
 import org.koin.android.ext.android.inject
 import pl.jakubokrasa.bikeroutes.core.app.presentation.MainActivity
 import pl.jakubokrasa.bikeroutes.core.base.platform.BaseActivity
+import pl.jakubokrasa.bikeroutes.core.extensions.makeGone
+import pl.jakubokrasa.bikeroutes.core.extensions.makeVisible
 import pl.jakubokrasa.bikeroutes.databinding.ActivitySignInBinding
 
 class SignInActivity: BaseActivity<SignInViewModel>() {
     private lateinit var binding: ActivitySignInBinding
     override val viewModel: SignInViewModel by inject()
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,5 +49,15 @@ class SignInActivity: BaseActivity<SignInViewModel>() {
             val intent = Intent(this, ForgotPasswordActivity::class.java)
             startActivity(intent)
         }
+    }
+
+    override fun onPendingState() {
+        super.onPendingState()
+        binding.progressLayout.makeVisible()
+    }
+
+    override fun onIdleState() {
+        super.onIdleState()
+        binding.progressLayout.makeGone()
     }
 }

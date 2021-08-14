@@ -24,12 +24,10 @@ class SharedRoutesViewModel(
 ): BaseViewModel() {
 
     private val _sharedRoutes by lazy { MutableLiveData<List<RouteDisplayable>>() }
-    private val _pointsFromRemote by lazy { MutableLiveData<List<PointDisplayable>>() } //liveEvent could be better here todo (but points can be set too early)
     private val _isFilter by lazy { MutableLiveData<Boolean>() }
     private val _geocodingItem by lazy { LiveEvent<GeocodingItemDisplayable>() }
     override val LOG_TAG: String = SharedRoutesViewModel::class.simpleName?: "unknown"
 
-    val pointsFromRemote: LiveData<List<PointDisplayable>> by lazy { _pointsFromRemote }
     val sharedRoutes: LiveData<List<RouteDisplayable>> by lazy { _sharedRoutes }
     val isFilter: LiveData<Boolean> by lazy { _isFilter }
     val geocodingItem: LiveData<GeocodingItemDisplayable> by lazy { _geocodingItem }
@@ -48,7 +46,7 @@ class SharedRoutesViewModel(
                 handleSuccess("getSharedRoutesWithFilter")
             }
             result.onFailure {
-                handleFailure("getSharedRoutesWithFilter", errLog = it.message)
+                handleFailure("getSharedRoutesWithFilter", "couldn't filter the routes", errLog = it.message)
             }
         }
     }
@@ -66,7 +64,7 @@ class SharedRoutesViewModel(
                 handleSuccess("getSharedRoutes")
             }
             result.onFailure {
-                handleFailure("getSharedRoutes", errLog = it.message)
+                handleFailure("getSharedRoutes", "couldn't get routes", errLog = it.message)
             }
         }
     }
@@ -83,7 +81,7 @@ class SharedRoutesViewModel(
                 handleSuccess("getPointsFromRemote")
                 sharedRoutesNavigator.openRouteDetailsFragment(route, it.map { point -> PointDisplayable(point) })
             }
-            result.onFailure { handleFailure("getPointsFromRemote", errLog = it.message) }
+            result.onFailure { handleFailure("getPointsFromRemote", "couldn't display the route", errLog = it.message) }
         }
     }
 
@@ -97,7 +95,7 @@ class SharedRoutesViewModel(
                 handleSuccess("getGeocodingItem")
                 _geocodingItem.value = GeocodingItemDisplayable(it)
             }
-            result.onFailure { handleFailure("getGeocodingItem", errLog = it.message) }
+            result.onFailure { handleFailure("getGeocodingItem", "couldn't filter by location", errLog = it.message) }
         }
     }
 

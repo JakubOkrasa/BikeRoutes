@@ -1,7 +1,9 @@
 package pl.jakubokrasa.bikeroutes.features.myroutes.presentation
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.app.Dialog
+import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
 import android.content.res.ColorStateList
@@ -12,6 +14,7 @@ import android.widget.ArrayAdapter
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.edit
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import org.koin.android.ext.android.inject
@@ -236,6 +239,8 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
         viewModel.segments.observe(viewLifecycleOwner, {
             segments = ArrayList(it)
             showSegments(segments)
+            if(segments.isNotEmpty())
+                showSegmentsDetailsTipDialogForFirstTimeUsage()
         })
     }
 
@@ -579,6 +584,18 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
             binding.ibEdit.backgroundTintList = colorStateList
             binding.ibRemoveSegment.backgroundTintList = colorStateList
         }
+    }
+
+    private fun showSegmentsDetailsTipDialogForFirstTimeUsage() {
+        if(!preferenceHelper.preferences.contains(PreferenceHelper.PREF_KEY_TIPS_SEGMENTS_DETAILS_NOT_SHOWED))
+            AlertDialog.Builder(requireContext())
+                .setTitle("Tip")
+                .setMessage("In order to see a segment details, tap on one.")
+                .setPositiveButton("OK", DialogInterface.OnClickListener { _, _ ->
+                    preferenceHelper.preferences.edit {
+                        putBoolean(PreferenceHelper.PREF_KEY_TIPS_SEGMENTS_DETAILS_NOT_SHOWED, false)
+                    }
+                }).show()
     }
 
     override fun onPendingState() {

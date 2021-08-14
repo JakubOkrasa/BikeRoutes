@@ -17,8 +17,6 @@ class UserViewModel(
     private val preferenceHelper: PreferenceHelper,
     private val deleteCurrentCurrentUserUseCase: DeleteCurrentUserUseCase,
     private val logOutUseCase: LogOutUseCase,
-
-    private val userNavigator: UserNavigator,
 ): BaseViewModel() {
 
     override val LOG_TAG: String = UserViewModel::class.simpleName?: "unknown"
@@ -26,31 +24,31 @@ class UserViewModel(
     private val _startActivity by lazy { LiveEvent<Boolean>() }
     val startActivity by lazy { _startActivity }
 
-
+    //TODO("To use in the future release")
     fun deleteCurrentUser() {
+        setPendingState()
         deleteCurrentCurrentUserUseCase(
             params = Unit,
             scope = viewModelScope
         ) {
             result ->
+            setIdleState()
                 result.onSuccess {
-                    Log.d(LOG_TAG, "user deleted")
+                    handleSuccess("deleteCurrentUser", "account was deleted")
                     preferenceHelper.deleteUserDataFromSharedPreferences()
-                    showMessage("Successfully Registered")
                 }
-                result.onFailure {
-                    Log.e(LOG_TAG, "user not deleted, " + it.message)
-                    showMessage("An error occured while deleting account")
-                }
+                result.onFailure { handleFailure("deleteCurrentUser", "couldn't delete the account", errLog = it.message) }
         }
     }
 
     fun logOut() {
+        setPendingState()
         logOutUseCase(
             params = Unit,
             scope = viewModelScope
         ) {
                 result ->
+            setIdleState()
             setPendingState()
             result.onSuccess {
                 handleSuccess("logOut")

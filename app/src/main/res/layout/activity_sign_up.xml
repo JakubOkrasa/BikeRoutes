@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -9,52 +9,59 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         android:layout_marginLeft="32dp"
         android:layout_marginRight="32dp"
+        android:layout_marginTop="10dp"
         android:orientation="vertical">
-
-        <com.google.android.material.textfield.TextInputLayout
+        <FrameLayout
+            android:id="@+id/progress_layout"
             android:layout_width="match_parent"
-            android:layout_height="56dp">
+            android:layout_height="4dp"
+            android:visibility="gone">
+            <ProgressBar
+                android:id="@+id/progressbar"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:layout_height="32dp"
+                android:indeterminate="true"
+                android:layout_gravity="center"/>
+        </FrameLayout>
+
+        <ImageView
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:src="@drawable/ic_bike_240"
+            android:layout_gravity="center" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:textSize="40dp"
+            android:textColor="@color/light_green"
+            android:fontFamily="sans-serif-black"
+            android:text="Bike Routes"
+            android:gravity="center_horizontal"/>
 
             <EditText
                 android:id="@+id/et_display_name"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:hint="Enter name visible for others"
-                android:inputType="text"/>
-
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="56dp">
-
+                android:inputType="text"
+                android:layout_marginBottom="10dp"/>
             <EditText
                 android:id="@+id/et_email"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:inputType="textEmailAddress"
-                android:hint="@string/email_hint"/>
-
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="56dp">
-
+                android:hint="@string/email_hint"
+                android:layout_marginBottom="10dp"/>
             <EditText
                 android:id="@+id/et_password"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:hint="@string/password_hint"
                 android:inputType="textPassword"/>
-
-        </com.google.android.material.textfield.TextInputLayout>
 
         <Button
             android:id="@+id/bt_sign_up"
@@ -97,7 +104,8 @@
 
         </RelativeLayout>
 
-        <Button
+        <com.google.android.material.button.MaterialButton
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:id="@+id/bt_sign_in"
             android:layout_width="match_parent"
             android:layout_height="56dp"
@@ -106,4 +114,4 @@
 
     </LinearLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

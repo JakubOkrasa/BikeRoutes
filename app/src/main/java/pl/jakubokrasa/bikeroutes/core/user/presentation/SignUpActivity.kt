@@ -10,6 +10,8 @@ import androidx.appcompat.app.AppCompatActivity
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import pl.jakubokrasa.bikeroutes.core.app.presentation.MainActivity
 import pl.jakubokrasa.bikeroutes.core.base.platform.BaseActivity
+import pl.jakubokrasa.bikeroutes.core.extensions.makeGone
+import pl.jakubokrasa.bikeroutes.core.extensions.makeVisible
 import pl.jakubokrasa.bikeroutes.databinding.ActivitySignUpBinding
 
 class SignUpActivity : BaseActivity<SignUpViewModel>() {
@@ -62,6 +64,16 @@ class SignUpActivity : BaseActivity<SignUpViewModel>() {
         val intent = Intent(this, SignInActivity::class.java)
         startActivity(intent)
         finish()
+    }
+
+    override fun onPendingState() {
+        super.onPendingState()
+        binding.progressLayout.makeVisible()
+    }
+
+    override fun onIdleState() {
+        super.onIdleState()
+        binding.progressLayout.makeGone()
     }
 
 }
