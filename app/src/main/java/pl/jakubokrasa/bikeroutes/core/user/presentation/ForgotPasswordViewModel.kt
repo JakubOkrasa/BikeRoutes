@@ -14,7 +14,6 @@ import pl.jakubokrasa.bikeroutes.features.myroutes.presentation.MyRoutesViewMode
 class ForgotPasswordViewModel(
     private val resetPasswordUseCase: ResetPasswordUseCase,
 ): BaseViewModel() {
-
     override val LOG_TAG: String = ForgotPasswordViewModel::class.simpleName?: "unknown"
 
     fun resetPassword(email: String) {
@@ -25,11 +24,8 @@ class ForgotPasswordViewModel(
         ) {
                 result ->
             setIdleState()
-            result.onSuccess {
-                handleSuccess("resetPassword", "Reset password message was sent.")
-            }
-            result.onFailure {
-                handleFailure("resetPassword", it.message ?: "Reset password message wasn't sent", errLog = it.message) }
+            result.onSuccess { handleSuccess("resetPassword", "Reset password message was sent.") }
+            result.onFailure { handleFailure("resetPassword", it.message ?: "Reset password message wasn't sent", errLog = it.message) }
         }
     }
 }

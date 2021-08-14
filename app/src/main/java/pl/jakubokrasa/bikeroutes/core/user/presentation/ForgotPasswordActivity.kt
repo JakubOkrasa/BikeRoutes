@@ -2,6 +2,7 @@ package pl.jakubokrasa.bikeroutes.core.user.presentation
 
 import android.os.Bundle
 import android.text.TextUtils
+import android.view.View
 import android.widget.Toast
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import pl.jakubokrasa.bikeroutes.core.base.platform.BaseActivity
@@ -19,22 +20,19 @@ class ForgotPasswordActivity: BaseActivity<ForgotPasswordViewModel>() {
         val view = binding.root
         setContentView(view)
 
-        viewModel.message.observe(this, {
-            showToast(it)
-        })
+        viewModel.message.observe(this, { showToast(it) })
 
-        binding.backBtn.setOnClickListener {
-            finish()
+        binding.backBtn.setOnClickListener { finish() }
+        binding.resetPassBtn.setOnClickListener(btResetOnClick)
+    }
+
+    private val btResetOnClick = View.OnClickListener {
+        val email :String = binding.etEmail.text.toString()
+        if(TextUtils.isEmpty(email)) {
+            Toast.makeText(this, "Enter your email", Toast.LENGTH_LONG).show()
         }
-
-        binding.resetPassBtn.setOnClickListener {
-            val email :String = binding.etEmail.text.toString()
-            if(TextUtils.isEmpty(email)) {
-                Toast.makeText(this, "Enter your email", Toast.LENGTH_LONG).show()
-            }
-            else {
-                viewModel.resetPassword(email)
-            }
+        else {
+            viewModel.resetPassword(email)
         }
     }
 

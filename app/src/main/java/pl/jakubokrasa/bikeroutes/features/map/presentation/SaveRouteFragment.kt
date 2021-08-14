@@ -28,6 +28,7 @@ class SaveRouteFragment : BaseFragment<MapViewModel>(R.layout.fragment_save_rout
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentSaveRouteBinding.bind(view)
         binding.btSave.setOnClickListener(btSaveOnClick)
+        binding.btCancel.setOnClickListener(btCancelOnClick)
     }
 
     private val btSaveOnClick = View.OnClickListener() {
@@ -43,6 +44,10 @@ class SaveRouteFragment : BaseFragment<MapViewModel>(R.layout.fragment_save_rout
             hideKeyboard()
             mapFrgNavigator.goBack()
         }
+    }
+
+    private val btCancelOnClick = View.OnClickListener {
+        mapFrgNavigator.goBack()
     }
 
     private fun getBoundingBoxData(): BoundingBoxData {

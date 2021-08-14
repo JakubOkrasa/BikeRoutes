@@ -22,12 +22,11 @@ class MainViewModel(
 ): BaseViewModel() { //todo isUserSignedIN in BaseVM
     override val LOG_TAG: String = MainViewModel::class.simpleName ?: "unknown"
     private val _isSignedIn by lazy { MutableLiveData<Boolean>()
-        .also {
-            it.value = isUserSignedIn()
-        }}
-    val isSignedIn: LiveData<Boolean> by lazy { _isSignedIn }
-
+        .also { it.value = isUserSignedIn() }
+    }
     private val _startActivity by lazy { LiveEvent<Boolean>() }
+
+    val isSignedIn: LiveData<Boolean> by lazy { _isSignedIn }
     val startActivity by lazy { _startActivity }
 
     fun isUserSignedIn(): Boolean {
@@ -36,7 +35,7 @@ class MainViewModel(
             params = Unit,
             scope = viewModelScope
         ) {
-            result ->
+                result ->
             result.onSuccess {
                 handleSuccess("isUserSignedIn")
                 signedIn = it
