@@ -13,13 +13,13 @@ import pl.jakubokrasa.bikeroutes.features.myroutes.presentation.MyRoutesViewMode
 abstract class BaseViewModel: ViewModel() {
     abstract val LOG_TAG: String
 
-    protected val _uiState by lazy {
+    private val _uiState by lazy {
         MutableLiveData<UiState>(
             UiState.Idle
         )
     }
 
-    protected val _message by lazy {
+    private val _message by lazy {
         LiveEvent<String>()
     }
 
@@ -37,7 +37,7 @@ abstract class BaseViewModel: ViewModel() {
             UiState.Pending
     }
 
-    protected fun showMessage(message: String) {
+    private fun showMessage(message: String) {
         _message.value = message
     }
 

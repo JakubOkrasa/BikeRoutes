@@ -14,7 +14,7 @@ class MapViewModel(
     private val getPointsUseCase: GetPointsUseCase,
     private val deletePointsUseCase: DeletePointsUseCase,
     private val saveRouteUseCase: SaveRouteUseCase,
-    private val updateDistanceByPrefsUseCase: UpdateDistanceByPrefsUseCase,
+    private val updateDistanceHelper: UpdateDistanceHelper
 
 ) : BaseViewModel() {
 
@@ -62,14 +62,14 @@ class MapViewModel(
         }
     }
 
-    fun updateDistanceByPrefs(geoPoint: GeoPoint) {
-        updateDistanceByPrefsUseCase(
-            params = geoPoint,
+    fun updateDistance(geoPoint: GeoPoint) {
+        updateDistanceHelper(
+            geoPoint = geoPoint,
             scope = viewModelScope
         ){
                 result ->
-            result.onSuccess { handleSuccess("updateDistanceByPrefs") }
-            result.onFailure { handleFailure("updateDistanceByPrefs") }
+            result.onSuccess { handleSuccess("updateDistance") }
+            result.onFailure { handleFailure("updateDistance") }
         }
     }
 

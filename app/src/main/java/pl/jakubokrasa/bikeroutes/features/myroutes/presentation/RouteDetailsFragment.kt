@@ -412,6 +412,7 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
 
             tvRouteDistance.text = getFormattedDistance(route.distance)
             tvRouteRideTime.text = getFormattedRideTime(route.rideTimeMinutes)
+            tvRouteAvgSpeed.text = getFormattedAvgSpeed(route.avgSpeedKmPerH)
             tvVisibility.text = getFormattedSharingTypeName(route.sharingType)
 
             if(isMyRoute())

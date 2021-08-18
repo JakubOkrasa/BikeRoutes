@@ -140,7 +140,7 @@ class LocationService : Service(), KoinComponent {
 
         if(isRecordingMode()) {
             mapViewModel.insertPoint(GeoPointData(loc.latitude, loc.longitude))
-            mapViewModel.updateDistanceByPrefs(GeoPoint(loc))
+            mapViewModel.updateDistance(GeoPoint(loc))
         }
 
         //send update UI broadcast
