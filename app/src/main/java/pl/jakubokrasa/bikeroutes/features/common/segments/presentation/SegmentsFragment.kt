@@ -212,7 +212,7 @@ class SegmentsFragment: BaseFragment<MyRoutesViewModel>(R.layout.fragment_segmen
         if(segmentBeginIndex<segmentEndIndex) {
             segmentPoints = points.subList(segmentBeginIndex, segmentEndIndex + 1).map { it.geoPoint } // +1 since sublist's second index is exclusive
         } else {
-            segmentPoints = points.subList(segmentEndIndex, segmentBeginIndex - 1).map { it.geoPoint }
+            segmentPoints = points.subList(segmentEndIndex, segmentBeginIndex+1).map { it.geoPoint }
         }
         segmentPolyline.setPoints(segmentPoints)
     }

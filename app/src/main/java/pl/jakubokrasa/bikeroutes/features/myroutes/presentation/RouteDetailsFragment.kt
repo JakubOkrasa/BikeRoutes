@@ -563,7 +563,6 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
 
         private fun showSegmentButtonsIfMyRoute() {
             if (isMyRoute()) {
-                binding.ibEdit.makeVisible()
                 binding.ibRemoveSegment.makeVisible()
             }
         }
@@ -582,7 +581,6 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
             val segmentColor = selectedSegment.segmentColor.ifEmpty { requireContext().resources.getString(R.color.seg_red) }
             val colorStateList = ColorStateList.valueOf(Color.parseColor(segmentColor))
             binding.btSegmentType.backgroundTintList = colorStateList
-            binding.ibEdit.backgroundTintList = colorStateList
             binding.ibRemoveSegment.backgroundTintList = colorStateList
         }
     }

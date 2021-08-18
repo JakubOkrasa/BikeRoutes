@@ -18,7 +18,7 @@ data class PointDisplayable(
     fun toPointNoCreatedAt(): Point {
         return Point(
             this.pointId,
-            GeoPointData(geoPoint.latitude, geoPoint.latitude),
+            GeoPointData(geoPoint.latitude, geoPoint.longitude),
             0,
         )
     }
