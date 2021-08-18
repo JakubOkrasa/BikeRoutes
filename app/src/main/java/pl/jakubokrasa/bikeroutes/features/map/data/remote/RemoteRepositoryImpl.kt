@@ -28,7 +28,6 @@ import java.lang.Exception
 
 class RemoteRepositoryImpl(
     private val firestore: FirebaseFirestore,
-    private val api: GeocodingAPI,
 	private val storageRef: StorageReference
 ): RemoteRepository {
     override suspend fun addRoute(route: Route, points: List<Point>) {
@@ -210,10 +209,6 @@ class RemoteRepositoryImpl(
             doc.toObject(RouteResponse::class.java)
                 .let { routeResponseList.add(it) }
         return routeResponseList.map { it.toRoute()}
-    }
-
-    override suspend fun getGeocodingItem(query: String): GeocodingItem {
-        return api.getGeocodingItem(query)[0].toGeocodingItem()
     }
 
 	override suspend fun getPhotos(routeId: String): List<PhotoInfo> {

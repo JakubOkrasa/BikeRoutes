@@ -36,8 +36,6 @@ interface RemoteRepository {
     suspend fun getSharedRoutesWithFilter(uid: String, filterData: FilterData): List<Route>
 
     //COMMON
-    suspend fun getGeocodingItem(query: String): GeocodingItem
-
 	suspend fun getPhotos(routeId: String): List<PhotoInfo>
 
 	suspend fun getSegments(routeId: String): List<Segment>
