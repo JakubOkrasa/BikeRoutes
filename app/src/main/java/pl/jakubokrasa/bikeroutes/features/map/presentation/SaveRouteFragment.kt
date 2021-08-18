@@ -11,11 +11,9 @@ import pl.jakubokrasa.bikeroutes.core.extensions.PreferenceHelper.Companion.PREF
 import pl.jakubokrasa.bikeroutes.core.extensions.hideKeyboard
 import pl.jakubokrasa.bikeroutes.core.util.enums.SharingType
 import pl.jakubokrasa.bikeroutes.databinding.FragmentSaveRouteBinding
-import pl.jakubokrasa.bikeroutes.features.common.domain.BoundingBoxData
+import pl.jakubokrasa.bikeroutes.features.common.domain.model.BoundingBoxData
 import pl.jakubokrasa.bikeroutes.features.map.domain.usecase.DataSaveRoute
 import pl.jakubokrasa.bikeroutes.features.map.navigation.MapFrgNavigator
-import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteDisplayable
-import pl.jakubokrasa.bikeroutes.features.myroutes.presentation.RouteDetailsFragment
 
 class SaveRouteFragment : BaseFragment<MapViewModel>(R.layout.fragment_save_route) {
 

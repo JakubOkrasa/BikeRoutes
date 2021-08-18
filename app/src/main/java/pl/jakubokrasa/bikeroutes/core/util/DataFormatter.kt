@@ -1,6 +1,5 @@
 package pl.jakubokrasa.bikeroutes.core.util
 
-import androidx.room.util.StringUtil
 import pl.jakubokrasa.bikeroutes.core.util.enums.SharingType
 import pl.jakubokrasa.bikeroutes.features.myroutes.presentation.MyRoutesFragment.Companion.DISTANCE_SLIDER_VALUE_TO
 import java.text.SimpleDateFormat

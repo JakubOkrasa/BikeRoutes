@@ -3,7 +3,6 @@ package pl.jakubokrasa.bikeroutes.features.myroutes.domain
 import org.osmdroid.util.GeoPoint
 import pl.jakubokrasa.bikeroutes.core.base.domain.UseCase
 import pl.jakubokrasa.bikeroutes.features.map.domain.model.Point
-import java.lang.Exception
 
 class GetSegmentPointUseCase(): UseCase<Int, GetSegmentBeginData>() {
     override suspend fun action(params: GetSegmentBeginData): Int {

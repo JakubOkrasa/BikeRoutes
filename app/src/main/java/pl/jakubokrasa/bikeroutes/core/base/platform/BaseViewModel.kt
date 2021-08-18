@@ -4,11 +4,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.hadilq.liveevent.LiveEvent
-import org.koin.java.KoinJavaComponent.inject
-import pl.jakubokrasa.bikeroutes.core.app.domain.IsUserSignedInUseCase
-import pl.jakubokrasa.bikeroutes.features.myroutes.presentation.MyRoutesViewModel
 
 abstract class BaseViewModel: ViewModel() {
     abstract val LOG_TAG: String

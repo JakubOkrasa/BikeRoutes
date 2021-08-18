@@ -3,7 +3,6 @@ package pl.jakubokrasa.bikeroutes.core.app.presentation
 import androidx.annotation.IdRes
 import androidx.fragment.app.FragmentActivity
 import androidx.navigation.fragment.findNavController
-import pl.jakubokrasa.bikeroutes.core.navigation.FragmentTransition
 import pl.jakubokrasa.bikeroutes.core.provider.ActivityProvider
 
 class MainNavigator(

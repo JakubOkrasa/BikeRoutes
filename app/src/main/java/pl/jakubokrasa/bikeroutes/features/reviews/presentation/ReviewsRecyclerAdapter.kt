@@ -2,18 +2,12 @@ package pl.jakubokrasa.bikeroutes.features.reviews.presentation
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import org.koin.core.KoinComponent
 import org.koin.core.inject
-import org.koin.java.KoinJavaComponent.inject
 import pl.jakubokrasa.bikeroutes.core.extensions.PreferenceHelper
-import pl.jakubokrasa.bikeroutes.core.extensions.displayWithShowMoreButton
-import pl.jakubokrasa.bikeroutes.core.extensions.getCurrentUserDisplayName
 import pl.jakubokrasa.bikeroutes.core.util.getFormattedDate
-import pl.jakubokrasa.bikeroutes.core.util.getFormattedUserDisplayName
 import pl.jakubokrasa.bikeroutes.databinding.RvReviewItemBinding
-import pl.jakubokrasa.bikeroutes.features.common.presentation.model.PhotoInfoDisplayable
 import pl.jakubokrasa.bikeroutes.features.reviews.presentation.model.ReviewDisplayable
 
 class ReviewsRecyclerAdapter: RecyclerView.Adapter<ReviewsRecyclerAdapter.ReviewViewHolder>(), KoinComponent {

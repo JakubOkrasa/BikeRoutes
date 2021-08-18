@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.Window
-import android.widget.Toast
 import com.google.android.material.slider.RangeSlider
 import pl.jakubokrasa.bikeroutes.core.extensions.*
 import pl.jakubokrasa.bikeroutes.core.util.getFormattedFilterDistance
@@ -15,8 +14,7 @@ import pl.jakubokrasa.bikeroutes.core.util.getFormattedFilterDistanceLessThan
 import pl.jakubokrasa.bikeroutes.core.util.getFormattedFilterLocation
 import pl.jakubokrasa.bikeroutes.databinding.DialogMyroutesFilterBinding
 import pl.jakubokrasa.bikeroutes.databinding.FragmentMyRoutesBinding
-import pl.jakubokrasa.bikeroutes.features.common.domain.BoundingBoxData
-import pl.jakubokrasa.bikeroutes.features.common.domain.FilterData
+import pl.jakubokrasa.bikeroutes.features.common.domain.model.FilterData
 import pl.jakubokrasa.bikeroutes.features.common.presentation.model.GeocodingItemDisplayable
 import pl.jakubokrasa.bikeroutes.features.myroutes.presentation.MyRoutesFragment.Companion.DISTANCE_SLIDER_VALUE_TO
 import java.util.*

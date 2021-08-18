@@ -1,7 +1,7 @@
 package pl.jakubokrasa.bikeroutes.features.common.data.model
 
 import com.google.gson.annotations.SerializedName
-import pl.jakubokrasa.bikeroutes.features.common.domain.BoundingBoxData
+import pl.jakubokrasa.bikeroutes.features.common.domain.model.BoundingBoxData
 import pl.jakubokrasa.bikeroutes.features.common.domain.model.GeocodingItem
 
 data class GeocodingItemResponse(

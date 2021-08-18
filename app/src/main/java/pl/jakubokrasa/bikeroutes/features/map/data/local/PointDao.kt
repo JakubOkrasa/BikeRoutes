@@ -2,9 +2,7 @@ package pl.jakubokrasa.bikeroutes.features.map.data.local
 
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Query
-import org.osmdroid.util.GeoPoint
 import pl.jakubokrasa.bikeroutes.features.map.data.local.model.PointCached
 import pl.jakubokrasa.bikeroutes.features.map.domain.model.GeoPointData
 

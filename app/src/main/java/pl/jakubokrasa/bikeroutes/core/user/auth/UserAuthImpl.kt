@@ -3,7 +3,6 @@ package pl.jakubokrasa.bikeroutes.core.user.auth
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.tasks.await
 import pl.jakubokrasa.bikeroutes.core.user.domain.UserAuth
-import java.lang.Exception
 
 class UserAuthImpl(private val auth: FirebaseAuth): UserAuth {
     override suspend fun createUser(email: String, password: String): UserAuthResult {

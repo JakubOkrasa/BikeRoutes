@@ -1,5 +1,7 @@
 package pl.jakubokrasa.bikeroutes.features.common.domain
 
+import pl.jakubokrasa.bikeroutes.features.common.domain.model.BoundingBoxData
+
 // check if the bounding box of a route at least partly covers the bounding box of chosen location
 fun doesRouteCoversMap(routeBB: BoundingBoxData, mapBB: BoundingBoxData
 ) = doesRouteCoversMapVertically(routeBB, mapBB) && doesRouteCoversMapHorizontally(routeBB, mapBB)

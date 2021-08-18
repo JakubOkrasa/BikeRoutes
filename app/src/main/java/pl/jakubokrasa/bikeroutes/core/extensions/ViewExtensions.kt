@@ -1,6 +1,5 @@
 package pl.jakubokrasa.bikeroutes.core.extensions
 
-import android.R
 import android.graphics.Color
 import android.text.Spannable
 import android.text.SpannableString

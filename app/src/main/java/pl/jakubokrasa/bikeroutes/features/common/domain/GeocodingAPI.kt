@@ -1,4 +1,4 @@
-package pl.jakubokrasa.bikeroutes.features.common.data
+package pl.jakubokrasa.bikeroutes.features.common.domain
 
 import pl.jakubokrasa.bikeroutes.features.common.data.model.GeocodingItemResponse
 import retrofit2.http.GET

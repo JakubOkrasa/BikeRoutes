@@ -5,9 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.hadilq.liveevent.LiveEvent
 import pl.jakubokrasa.bikeroutes.core.base.platform.BaseViewModel
-import pl.jakubokrasa.bikeroutes.features.common.domain.FilterData
 import pl.jakubokrasa.bikeroutes.features.common.domain.GetGeocodingItemUseCase
 import pl.jakubokrasa.bikeroutes.features.common.domain.GetPointsFromRemoteUseCase
+import pl.jakubokrasa.bikeroutes.features.common.domain.model.FilterData
 import pl.jakubokrasa.bikeroutes.features.common.presentation.model.GeocodingItemDisplayable
 import pl.jakubokrasa.bikeroutes.features.map.presentation.model.PointDisplayable
 import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteDisplayable

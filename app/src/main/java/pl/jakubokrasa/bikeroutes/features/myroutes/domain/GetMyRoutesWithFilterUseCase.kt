@@ -5,14 +5,14 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import pl.jakubokrasa.bikeroutes.core.user.domain.UserAuth
-import pl.jakubokrasa.bikeroutes.features.common.domain.BoundingBoxData
-import pl.jakubokrasa.bikeroutes.features.common.domain.FilterData
 import pl.jakubokrasa.bikeroutes.features.common.domain.doesRouteCoversMap
-import pl.jakubokrasa.bikeroutes.features.map.domain.RemoteRepository
+import pl.jakubokrasa.bikeroutes.features.common.domain.model.BoundingBoxData
+import pl.jakubokrasa.bikeroutes.features.common.domain.model.FilterData
+import pl.jakubokrasa.bikeroutes.features.common.domain.repository.RouteRepository
 import pl.jakubokrasa.bikeroutes.features.map.domain.model.Route
 
 class GetMyRoutesWithFilterUseCase(
-    private val remoteRepository: RemoteRepository,
+    private val repository: RouteRepository,
     private val auth: UserAuth
 ) {
     suspend fun action(filterData: FilterData): List<Route> {
@@ -21,7 +21,7 @@ class GetMyRoutesWithFilterUseCase(
             mapBB = if(isBoundingBoxNotInitialized(it)) null
             else it
         }
-        val filteredList = remoteRepository.getMyRoutesWithFilter(auth.getCurrentUserId(), filterData)
+        val filteredList = repository.getMyRoutesWithFilter(auth.getCurrentUserId(), filterData)
         mapBB?.let {
             return filteredList.filter { route ->
                 doesRouteCoversMap(route.boundingBoxData, mapBB!!)

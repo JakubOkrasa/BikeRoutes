@@ -7,7 +7,6 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.LocationSettingsRequest
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
-import pl.jakubokrasa.bikeroutes.core.util.LocationUtils
 
 
 val locationModule = module {

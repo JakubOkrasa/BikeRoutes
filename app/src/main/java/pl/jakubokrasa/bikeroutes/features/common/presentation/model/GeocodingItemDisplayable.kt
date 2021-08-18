@@ -1,6 +1,6 @@
 package pl.jakubokrasa.bikeroutes.features.common.presentation.model
 
-import pl.jakubokrasa.bikeroutes.features.common.domain.BoundingBoxData
+import pl.jakubokrasa.bikeroutes.features.common.domain.model.BoundingBoxData
 import pl.jakubokrasa.bikeroutes.features.common.domain.model.GeocodingItem
 
 data class GeocodingItemDisplayable(

@@ -1,4 +1,4 @@
-package pl.jakubokrasa.bikeroutes.features.common.domain
+package pl.jakubokrasa.bikeroutes.features.common.domain.model
 
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize

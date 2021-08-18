@@ -1,6 +1,5 @@
  package pl.jakubokrasa.bikeroutes.features.sharedroutes.presentation
 
-import android.app.Dialog
 import android.os.Bundle
 import android.view.View
 import org.koin.android.ext.android.inject
