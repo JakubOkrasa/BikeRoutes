@@ -1,4 +1,4 @@
-package pl.jakubokrasa.bikeroutes.core.di
+package pl.jakubokrasa.bikeroutes.core.di.modules
 
 import android.content.Context
 import android.location.LocationManager
@@ -22,7 +22,6 @@ private fun createLocationRequest() =
         .setInterval(UPDATE_INTERVAL_IN_MILLISECONDS)
         .setFastestInterval(FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS)
         .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-//        .setSmallestDisplacement(5f)
 
 const val UPDATE_INTERVAL_IN_MILLISECONDS = 4_000L;
 const val FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS = UPDATE_INTERVAL_IN_MILLISECONDS / 2

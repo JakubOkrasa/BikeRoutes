@@ -1,4 +1,4 @@
-package pl.jakubokrasa.bikeroutes.core.di
+package pl.jakubokrasa.bikeroutes.core.di.modules
 
 import android.content.Context
 import androidx.room.Room

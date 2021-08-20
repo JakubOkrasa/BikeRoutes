@@ -1,10 +1,10 @@
-package pl.jakubokrasa.bikeroutes.features.myroutes.domain
+package pl.jakubokrasa.bikeroutes.features.common.segments.presentation
 
 import org.osmdroid.util.GeoPoint
-import pl.jakubokrasa.bikeroutes.core.base.domain.UseCase
+import pl.jakubokrasa.bikeroutes.core.base.platform.Helper
 import pl.jakubokrasa.bikeroutes.features.map.domain.model.Point
 
-class GetSegmentPointUseCase(): UseCase<Int, GetSegmentBeginData>() {
+class GetSegmentPointHelper: Helper<Int, GetSegmentBeginData>() {
     override suspend fun action(params: GetSegmentBeginData): Int {
         var minDistance = MINIMUM_DISTANCE_INITIAL_VALUE
         var currentDistance = -1.0

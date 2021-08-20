@@ -6,6 +6,7 @@ import org.koin.dsl.module
 import pl.jakubokrasa.bikeroutes.features.common.domain.AddPhotoUseCase
 import pl.jakubokrasa.bikeroutes.features.common.domain.GetGeocodingItemUseCase
 import pl.jakubokrasa.bikeroutes.features.common.domain.RemovePhotoUseCase
+import pl.jakubokrasa.bikeroutes.features.common.segments.presentation.GetSegmentPointHelper
 import pl.jakubokrasa.bikeroutes.features.myroutes.domain.*
 import pl.jakubokrasa.bikeroutes.features.myroutes.presentation.ExportRouteHelper
 import pl.jakubokrasa.bikeroutes.features.myroutes.presentation.MyRoutesRecyclerAdapter
@@ -22,7 +23,6 @@ val myRoutesModule = module {
     factory { GetGeocodingItemUseCase(get()) }
 	factory { AddPhotoUseCase(get()) }
     factory { RemovePhotoUseCase(get()) }
-	factory { GetSegmentPointUseCase() }
     factory { AddSegmentUseCase(get()) }
     factory { RemoveSegmentUseCase(get()) }
     factory { AddReviewUseCase(get()) }
@@ -30,6 +30,7 @@ val myRoutesModule = module {
     factory { RemoveReviewUseCase(get()) }
 
     factory { ExportRouteHelper(androidContext()) }
+    factory { GetSegmentPointHelper() }
     factory { MyRoutesRecyclerAdapter() }
 
     viewModel { MyRoutesViewModel(get(), get(), get(), get(), get(), get(), get(),

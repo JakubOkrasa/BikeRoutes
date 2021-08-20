@@ -7,14 +7,15 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.osmdroid.util.GeoPoint
+import pl.jakubokrasa.bikeroutes.core.base.platform.Helper
 import pl.jakubokrasa.bikeroutes.core.extensions.PreferenceHelper
 import pl.jakubokrasa.bikeroutes.core.extensions.getDouble
 import pl.jakubokrasa.bikeroutes.core.extensions.putDouble
 import kotlin.math.roundToInt
 
-class UpdateDistanceHelper(private val preferenceHelper: PreferenceHelper) {
-    suspend fun action(geoPoint: GeoPoint) {
-        updateDistance(geoPoint)
+class UpdateDistanceHelper(private val preferenceHelper: PreferenceHelper): Helper<Unit, GeoPoint>() {
+    override suspend fun action(params: GeoPoint) {
+        updateDistance(params)
     }
 
     private suspend fun updateDistance(newGeoPoint: GeoPoint) {
@@ -48,17 +49,6 @@ class UpdateDistanceHelper(private val preferenceHelper: PreferenceHelper) {
             p2.longitude,
             output)
         return output[0].roundToInt()
-    }
-
-    operator fun invoke(
-        geoPoint: GeoPoint, scope: CoroutineScope, onResult: (Result<Unit>) -> Unit = {}
-    ) {
-        scope.launch {
-            val result = withContext(Dispatchers.Default) {
-                runCatching { action(geoPoint) }
-            }
-            onResult(result)
-        }
     }
 
 }

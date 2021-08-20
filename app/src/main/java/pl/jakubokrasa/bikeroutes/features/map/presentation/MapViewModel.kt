@@ -64,7 +64,7 @@ class MapViewModel(
 
     fun updateDistance(geoPoint: GeoPoint) {
         updateDistanceHelper(
-            geoPoint = geoPoint,
+            params = geoPoint,
             scope = viewModelScope
         ){
                 result ->

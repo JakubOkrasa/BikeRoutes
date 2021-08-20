@@ -1,4 +1,4 @@
-package pl.jakubokrasa.bikeroutes.core.di
+package pl.jakubokrasa.bikeroutes.core.di.modules
 
 import androidx.navigation.navOptions
 import org.koin.android.ext.koin.androidApplication

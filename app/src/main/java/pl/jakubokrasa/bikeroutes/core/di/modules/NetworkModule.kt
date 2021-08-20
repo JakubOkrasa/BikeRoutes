@@ -13,7 +13,6 @@ val networkModule = module {
         Retrofit.Builder()
             .baseUrl(androidContext().getString(R.string.URL_NOMINATIM_GEOCODING_API))
             .addConverterFactory(GsonConverterFactory.create())
-//            .client(get<OkHttpClient>())
             .build()
     }
 
