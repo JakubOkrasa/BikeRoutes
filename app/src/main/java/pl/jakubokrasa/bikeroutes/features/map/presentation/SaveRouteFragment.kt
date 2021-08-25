@@ -6,9 +6,9 @@ import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import pl.jakubokrasa.bikeroutes.R
 import pl.jakubokrasa.bikeroutes.core.base.platform.BaseFragment
-import pl.jakubokrasa.bikeroutes.core.extensions.PreferenceHelper.Companion.PREF_KEY_DISTANCE_SUM
-import pl.jakubokrasa.bikeroutes.core.extensions.PreferenceHelper.Companion.PREF_KEY_USER_DISPLAY_NAME
 import pl.jakubokrasa.bikeroutes.core.extensions.hideKeyboard
+import pl.jakubokrasa.bikeroutes.core.util.PreferenceHelper.Companion.PREF_KEY_DISTANCE_SUM
+import pl.jakubokrasa.bikeroutes.core.util.PreferenceHelper.Companion.PREF_KEY_USER_DISPLAY_NAME
 import pl.jakubokrasa.bikeroutes.core.util.enums.SharingType
 import pl.jakubokrasa.bikeroutes.databinding.FragmentSaveRouteBinding
 import pl.jakubokrasa.bikeroutes.features.common.domain.model.BoundingBoxData

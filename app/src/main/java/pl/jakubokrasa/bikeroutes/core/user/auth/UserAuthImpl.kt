@@ -10,8 +10,8 @@ class UserAuthImpl(private val auth: FirebaseAuth): UserAuth {
         val exception: Exception?
         val task = auth.createUserWithEmailAndPassword(email, password)
             //Kotlin nie tworzy tu nowego obiektu klasy Exception, tylko przypisuje do
-            // referencji, dlatego przy sprawdzaniu czy == null ten obiekt będzie
-            // miał dane z czasu PO wykonaniu funkcji await()
+            // referencji, dlatego przy sprawdzaniu czy obiekt exception jest równy null będzie
+            // miał dane z czasu PO wykonaniu funkcji await().
             .also { exception = it.exception }
             .await()
 
@@ -45,12 +45,7 @@ class UserAuthImpl(private val auth: FirebaseAuth): UserAuth {
         throw Exception("UserAuth: no current user" )
     }
 
-    override suspend fun isUserSignedIn(): Boolean {
-        auth.currentUser?.let {
-            return true
-        }
-        return false
-    }
+    override suspend fun isUserSignedIn() = auth.currentUser != null
 
     override suspend fun resetPassword(email: String) {
         auth.sendPasswordResetEmail(email).await()
@@ -61,8 +56,8 @@ class UserAuthImpl(private val auth: FirebaseAuth): UserAuth {
         val exception: Exception?
         val task = auth.signInWithEmailAndPassword(email, password)
             //Kotlin nie tworzy tu nowego obiektu klasy Exception, tylko przypisuje do
-            // referencji, dlatego przy sprawdzaniu czy == null ten obiekt będzie
-            // miał dane z czasu PO wykonaniu funkcji await()
+            // referencji, dlatego przy sprawdzaniu czy obiekt exception jest równy null będzie
+            // miał dane z czasu PO wykonaniu funkcji await().
             .also { exception = it.exception }
             .await()
 
@@ -74,5 +69,4 @@ class UserAuthImpl(private val auth: FirebaseAuth): UserAuth {
     override suspend fun logOut() {
         auth.signOut()
     }
-
 }

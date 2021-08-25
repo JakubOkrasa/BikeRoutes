@@ -10,11 +10,11 @@ import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import pl.jakubokrasa.bikeroutes.R
 import pl.jakubokrasa.bikeroutes.core.base.platform.BaseActivity
-import pl.jakubokrasa.bikeroutes.core.extensions.PreferenceHelper
-import pl.jakubokrasa.bikeroutes.core.extensions.PreferenceHelper.Companion.PREF_KEY_USER_EMAIL
-import pl.jakubokrasa.bikeroutes.core.extensions.PreferenceHelper.Companion.PREF_KEY_USER_PASSWORD
 import pl.jakubokrasa.bikeroutes.core.user.presentation.SignInActivity
 import pl.jakubokrasa.bikeroutes.core.user.presentation.SignUpActivity
+import pl.jakubokrasa.bikeroutes.core.util.PreferenceHelper
+import pl.jakubokrasa.bikeroutes.core.util.PreferenceHelper.Companion.PREF_KEY_USER_EMAIL
+import pl.jakubokrasa.bikeroutes.core.util.PreferenceHelper.Companion.PREF_KEY_USER_PASSWORD
 import pl.jakubokrasa.bikeroutes.databinding.ActivityMainBinding
 
 

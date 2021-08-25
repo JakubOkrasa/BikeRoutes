@@ -6,7 +6,7 @@ data class UserResponse(
     val displayName: String
 ) {
 
-    constructor(): this("")
+    constructor(): this("") // for firestore
 
     fun toUser(): User {
         return User(this.displayName)

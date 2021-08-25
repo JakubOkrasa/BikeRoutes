@@ -12,7 +12,6 @@ import com.google.android.gms.location.LocationSettingsStatusCodes
 import com.google.android.gms.location.SettingsClient
 import org.koin.core.KoinComponent
 import org.koin.core.inject
-import pl.jakubokrasa.bikeroutes.core.extensions.PreferenceHelper
 
 class LocationUtils(private val activity: Activity): KoinComponent {
     private val preferenceHelper: PreferenceHelper by inject()

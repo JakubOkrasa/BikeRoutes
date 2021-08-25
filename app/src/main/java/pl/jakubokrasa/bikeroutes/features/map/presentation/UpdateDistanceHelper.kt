@@ -2,15 +2,11 @@ package pl.jakubokrasa.bikeroutes.features.map.presentation
 
 import android.location.Location
 import androidx.core.content.edit
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.osmdroid.util.GeoPoint
 import pl.jakubokrasa.bikeroutes.core.base.platform.Helper
-import pl.jakubokrasa.bikeroutes.core.extensions.PreferenceHelper
 import pl.jakubokrasa.bikeroutes.core.extensions.getDouble
 import pl.jakubokrasa.bikeroutes.core.extensions.putDouble
+import pl.jakubokrasa.bikeroutes.core.util.PreferenceHelper
 import kotlin.math.roundToInt
 
 class UpdateDistanceHelper(private val preferenceHelper: PreferenceHelper): Helper<Unit, GeoPoint>() {

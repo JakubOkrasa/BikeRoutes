@@ -3,9 +3,9 @@ package pl.jakubokrasa.bikeroutes.core.user.presentation
 import androidx.lifecycle.viewModelScope
 import com.hadilq.liveevent.LiveEvent
 import pl.jakubokrasa.bikeroutes.core.base.platform.BaseViewModel
-import pl.jakubokrasa.bikeroutes.core.extensions.PreferenceHelper
 import pl.jakubokrasa.bikeroutes.core.user.domain.DeleteCurrentUserUseCase
 import pl.jakubokrasa.bikeroutes.core.user.domain.LogOutUseCase
+import pl.jakubokrasa.bikeroutes.core.util.PreferenceHelper
 
 class UserViewModel(
     private val preferenceHelper: PreferenceHelper,

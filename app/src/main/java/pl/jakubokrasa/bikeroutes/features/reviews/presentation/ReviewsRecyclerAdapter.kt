@@ -4,15 +4,12 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import org.koin.core.KoinComponent
-import org.koin.core.inject
-import pl.jakubokrasa.bikeroutes.core.extensions.PreferenceHelper
 import pl.jakubokrasa.bikeroutes.core.util.getFormattedDate
 import pl.jakubokrasa.bikeroutes.databinding.RvReviewItemBinding
 import pl.jakubokrasa.bikeroutes.features.reviews.presentation.model.ReviewDisplayable
 
 class ReviewsRecyclerAdapter: RecyclerView.Adapter<ReviewsRecyclerAdapter.ReviewViewHolder>(), KoinComponent {
     private var reviews = mutableListOf<ReviewDisplayable>()
-    private val preferenceHelper: PreferenceHelper by inject()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ReviewViewHolder {
         val binding = RvReviewItemBinding
