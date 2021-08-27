@@ -21,8 +21,19 @@ class RouteResponse(
     constructor() : this("", 0,"", "", "", pl.jakubokrasa.bikeroutes.core.util.enums.SharingType.PRIVATE, //for firestore
         0, 0, 0, BoundingBoxData(0.0, 0.0,0.0,0.0), "")
 
-    constructor(route: Route) : this(route.routeId, route.createdAt, route.userId, route.name, route.description, route.sharingType,
-        route.distance, route.rideTimeMinutes, route.avgSpeedKmPerH, route.boundingBoxData, route.createdBy)
+    constructor(route: Route) : this (
+        routeId = route.routeId,
+        createdAt = route.createdAt,
+        userId = route.userId,
+        name = route.name,
+        description = route.description,
+        distance = route.distance,
+        sharingType = route.sharingType,
+        rideTimeMinutes = route.rideTimeMinutes,
+        avgSpeedKmPerH = route.avgSpeedKmPerH,
+        boundingBoxData = route.boundingBoxData,
+        createdBy = route.createdBy
+    )
 
     fun toRoute(): Route {
         return Route(
