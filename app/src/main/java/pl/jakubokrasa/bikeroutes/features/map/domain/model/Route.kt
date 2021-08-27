@@ -1,7 +1,7 @@
 package pl.jakubokrasa.bikeroutes.features.map.domain.model
 
 import pl.jakubokrasa.bikeroutes.core.util.enums.SharingType
-import pl.jakubokrasa.bikeroutes.features.common.domain.model.BoundingBoxData
+import pl.jakubokrasa.bikeroutes.features.common.filter.domain.model.BoundingBoxData
 
 data class Route(
     val routeId: String,

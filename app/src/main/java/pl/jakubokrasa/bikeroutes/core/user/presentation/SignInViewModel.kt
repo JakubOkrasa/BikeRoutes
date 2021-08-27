@@ -2,7 +2,7 @@ package pl.jakubokrasa.bikeroutes.core.user.presentation
 
 import androidx.lifecycle.viewModelScope
 import com.hadilq.liveevent.LiveEvent
-import pl.jakubokrasa.bikeroutes.core.base.platform.BaseViewModel
+import pl.jakubokrasa.bikeroutes.core.base.presentation.BaseViewModel
 import pl.jakubokrasa.bikeroutes.core.user.domain.DataSignIn
 import pl.jakubokrasa.bikeroutes.core.user.domain.GetUserUseCase
 import pl.jakubokrasa.bikeroutes.core.user.domain.SignInUseCase

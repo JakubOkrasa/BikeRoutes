@@ -23,19 +23,19 @@ import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Polyline
 import pl.jakubokrasa.bikeroutes.R
-import pl.jakubokrasa.bikeroutes.core.base.platform.BaseFragment
+import pl.jakubokrasa.bikeroutes.core.base.presentation.BaseFragment
 import pl.jakubokrasa.bikeroutes.core.extensions.*
 import pl.jakubokrasa.bikeroutes.core.util.*
 import pl.jakubokrasa.bikeroutes.core.util.enums.SharingType
 import pl.jakubokrasa.bikeroutes.databinding.FragmentRouteDetailsBinding
-import pl.jakubokrasa.bikeroutes.features.common.presentation.CommonRoutesNavigator
-import pl.jakubokrasa.bikeroutes.features.common.presentation.PhotosRecyclerAdapter
-import pl.jakubokrasa.bikeroutes.features.common.presentation.model.PhotoInfoDisplayable
+import pl.jakubokrasa.bikeroutes.features.common.routes.navigation.CommonRoutesNavigator
+import pl.jakubokrasa.bikeroutes.features.common.photos.presentation.PhotosRecyclerAdapter
+import pl.jakubokrasa.bikeroutes.features.common.photos.presentation.model.PhotoInfoDisplayable
 import pl.jakubokrasa.bikeroutes.features.common.segments.presentation.model.SegmentDisplayable
 import pl.jakubokrasa.bikeroutes.features.map.presentation.model.PointDisplayable
 import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteDisplayable
-import pl.jakubokrasa.bikeroutes.features.reviews.presentation.ReviewsRecyclerAdapter
-import pl.jakubokrasa.bikeroutes.features.reviews.presentation.model.ReviewDisplayable
+import pl.jakubokrasa.bikeroutes.features.common.reviews.presentation.ReviewsRecyclerAdapter
+import pl.jakubokrasa.bikeroutes.features.common.reviews.presentation.model.ReviewDisplayable
 import java.util.*
 import kotlin.collections.ArrayList
 

@@ -3,17 +3,17 @@ package pl.jakubokrasa.bikeroutes.core.di.modules.features
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
-import pl.jakubokrasa.bikeroutes.features.common.domain.AddPhotoUseCase
-import pl.jakubokrasa.bikeroutes.features.common.domain.GetGeocodingItemUseCase
-import pl.jakubokrasa.bikeroutes.features.common.domain.RemovePhotoUseCase
+import pl.jakubokrasa.bikeroutes.features.common.photos.domain.AddPhotoUseCase
+import pl.jakubokrasa.bikeroutes.features.common.filter.domain.GetGeocodingItemUseCase
+import pl.jakubokrasa.bikeroutes.features.common.photos.domain.RemovePhotoUseCase
 import pl.jakubokrasa.bikeroutes.features.common.segments.presentation.GetSegmentPointHelper
 import pl.jakubokrasa.bikeroutes.features.myroutes.domain.*
 import pl.jakubokrasa.bikeroutes.features.myroutes.presentation.ExportRouteHelper
 import pl.jakubokrasa.bikeroutes.features.myroutes.presentation.MyRoutesRecyclerAdapter
 import pl.jakubokrasa.bikeroutes.features.myroutes.presentation.MyRoutesViewModel
-import pl.jakubokrasa.bikeroutes.features.reviews.domain.AddReviewUseCase
-import pl.jakubokrasa.bikeroutes.features.reviews.domain.RemoveReviewUseCase
-import pl.jakubokrasa.bikeroutes.features.reviews.domain.UpdateReviewUseCase
+import pl.jakubokrasa.bikeroutes.features.common.reviews.domain.AddReviewUseCase
+import pl.jakubokrasa.bikeroutes.features.common.reviews.domain.RemoveReviewUseCase
+import pl.jakubokrasa.bikeroutes.features.common.reviews.domain.UpdateReviewUseCase
 
 val myRoutesModule = module {
     factory { GetMyRoutesUseCase(get(), get()) }

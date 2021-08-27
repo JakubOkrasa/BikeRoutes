@@ -9,7 +9,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import pl.jakubokrasa.bikeroutes.R
-import pl.jakubokrasa.bikeroutes.core.base.platform.BaseActivity
+import pl.jakubokrasa.bikeroutes.core.base.presentation.BaseActivity
 import pl.jakubokrasa.bikeroutes.core.user.presentation.SignInActivity
 import pl.jakubokrasa.bikeroutes.core.user.presentation.SignUpActivity
 import pl.jakubokrasa.bikeroutes.core.util.PreferenceHelper

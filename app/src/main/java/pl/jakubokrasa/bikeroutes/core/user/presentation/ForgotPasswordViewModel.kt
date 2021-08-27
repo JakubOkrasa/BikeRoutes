@@ -1,7 +1,7 @@
 package pl.jakubokrasa.bikeroutes.core.user.presentation
 
 import androidx.lifecycle.viewModelScope
-import pl.jakubokrasa.bikeroutes.core.base.platform.BaseViewModel
+import pl.jakubokrasa.bikeroutes.core.base.presentation.BaseViewModel
 import pl.jakubokrasa.bikeroutes.core.user.domain.ResetPasswordUseCase
 
 class ForgotPasswordViewModel(

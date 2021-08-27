@@ -1,7 +1,7 @@
 package pl.jakubokrasa.bikeroutes.features.myroutes.domain
 
 import pl.jakubokrasa.bikeroutes.core.base.domain.UseCase
-import pl.jakubokrasa.bikeroutes.features.common.domain.repository.SegmentRepository
+import pl.jakubokrasa.bikeroutes.features.common.segments.domain.SegmentRepository
 
 class RemoveSegmentUseCase(private val repository: SegmentRepository): UseCase<Unit, String>() {
     override suspend fun action(params: String) {

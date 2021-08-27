@@ -5,7 +5,7 @@ import android.text.TextUtils
 import android.view.View
 import android.widget.Toast
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import pl.jakubokrasa.bikeroutes.core.base.platform.BaseActivity
+import pl.jakubokrasa.bikeroutes.core.base.presentation.BaseActivity
 import pl.jakubokrasa.bikeroutes.core.extensions.makeGone
 import pl.jakubokrasa.bikeroutes.core.extensions.makeVisible
 import pl.jakubokrasa.bikeroutes.databinding.ActivityForgotPasswordBinding

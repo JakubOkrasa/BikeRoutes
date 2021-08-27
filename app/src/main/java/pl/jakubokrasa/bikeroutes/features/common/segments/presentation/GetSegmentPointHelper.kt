@@ -1,7 +1,7 @@
 package pl.jakubokrasa.bikeroutes.features.common.segments.presentation
 
 import org.osmdroid.util.GeoPoint
-import pl.jakubokrasa.bikeroutes.core.base.platform.Helper
+import pl.jakubokrasa.bikeroutes.core.base.presentation.Helper
 import pl.jakubokrasa.bikeroutes.features.map.domain.model.Point
 
 class GetSegmentPointHelper: Helper<Int, GetSegmentBeginData>() {

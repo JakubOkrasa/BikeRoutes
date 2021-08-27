@@ -3,8 +3,8 @@ package pl.jakubokrasa.bikeroutes.features.map.domain.usecase
 import pl.jakubokrasa.bikeroutes.core.base.domain.UseCase
 import pl.jakubokrasa.bikeroutes.core.user.domain.UserAuth
 import pl.jakubokrasa.bikeroutes.core.util.enums.SharingType
-import pl.jakubokrasa.bikeroutes.features.common.domain.model.BoundingBoxData
-import pl.jakubokrasa.bikeroutes.features.common.domain.repository.RouteRepository
+import pl.jakubokrasa.bikeroutes.features.common.filter.domain.model.BoundingBoxData
+import pl.jakubokrasa.bikeroutes.features.common.routes.domain.RouteRepository
 import pl.jakubokrasa.bikeroutes.features.map.domain.PointLocalRepository
 import pl.jakubokrasa.bikeroutes.features.map.domain.model.Point
 import pl.jakubokrasa.bikeroutes.features.map.domain.model.Route

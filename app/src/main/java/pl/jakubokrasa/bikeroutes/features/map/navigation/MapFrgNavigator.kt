@@ -2,7 +2,7 @@ package pl.jakubokrasa.bikeroutes.features.map.navigation
 
 import pl.jakubokrasa.bikeroutes.R
 import pl.jakubokrasa.bikeroutes.core.navigation.FragmentNavigator
-import pl.jakubokrasa.bikeroutes.features.common.domain.model.BoundingBoxData
+import pl.jakubokrasa.bikeroutes.features.common.filter.domain.model.BoundingBoxData
 import pl.jakubokrasa.bikeroutes.features.map.presentation.MapFragment.Companion.BOUNDING_BOX_DATA_KEY
 
 class MapFrgNavigator(private val fragmentNavigator: FragmentNavigator) {

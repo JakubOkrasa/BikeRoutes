@@ -15,7 +15,7 @@ import org.osmdroid.views.drawing.MapSnapshot
 import org.osmdroid.views.overlay.Polyline
 import pl.jakubokrasa.bikeroutes.BuildConfig
 import pl.jakubokrasa.bikeroutes.R
-import pl.jakubokrasa.bikeroutes.core.base.platform.Helper
+import pl.jakubokrasa.bikeroutes.core.base.presentation.Helper
 import pl.jakubokrasa.bikeroutes.core.util.getFormattedAvgSpeed
 import pl.jakubokrasa.bikeroutes.core.util.getFormattedDistance
 import pl.jakubokrasa.bikeroutes.core.util.getFormattedRideTime

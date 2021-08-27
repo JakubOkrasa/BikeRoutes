@@ -6,9 +6,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import pl.jakubokrasa.bikeroutes.core.user.domain.UserAuth
 import pl.jakubokrasa.bikeroutes.features.common.domain.doesRouteCoversMap
-import pl.jakubokrasa.bikeroutes.features.common.domain.model.BoundingBoxData
-import pl.jakubokrasa.bikeroutes.features.common.domain.model.FilterData
-import pl.jakubokrasa.bikeroutes.features.common.domain.repository.RouteRepository
+import pl.jakubokrasa.bikeroutes.features.common.filter.domain.model.BoundingBoxData
+import pl.jakubokrasa.bikeroutes.features.common.filter.domain.model.FilterData
+import pl.jakubokrasa.bikeroutes.features.common.routes.domain.RouteRepository
 import pl.jakubokrasa.bikeroutes.features.map.domain.model.Route
 
 class GetMyRoutesWithFilterUseCase(

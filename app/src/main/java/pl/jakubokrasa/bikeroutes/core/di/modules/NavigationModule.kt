@@ -9,7 +9,7 @@ import pl.jakubokrasa.bikeroutes.core.navigation.FragmentNavigator
 import pl.jakubokrasa.bikeroutes.core.navigation.FragmentNavigatorImpl
 import pl.jakubokrasa.bikeroutes.core.provider.ActivityProvider
 import pl.jakubokrasa.bikeroutes.core.user.navigation.UserNavigator
-import pl.jakubokrasa.bikeroutes.features.common.presentation.CommonRoutesNavigator
+import pl.jakubokrasa.bikeroutes.features.common.routes.navigation.CommonRoutesNavigator
 import pl.jakubokrasa.bikeroutes.features.map.navigation.MapFrgNavigator
 import pl.jakubokrasa.bikeroutes.features.myroutes.navigation.MyRoutesNavigator
 import pl.jakubokrasa.bikeroutes.features.sharedroutes.navigation.SharedRoutesNavigator

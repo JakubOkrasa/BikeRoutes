@@ -29,14 +29,14 @@ import org.osmdroid.views.overlay.Overlay
 import org.osmdroid.views.overlay.Polyline
 import pl.jakubokrasa.bikeroutes.BuildConfig
 import pl.jakubokrasa.bikeroutes.R
-import pl.jakubokrasa.bikeroutes.core.base.platform.BaseFragment
+import pl.jakubokrasa.bikeroutes.core.base.presentation.BaseFragment
 import pl.jakubokrasa.bikeroutes.core.extensions.makeGone
 import pl.jakubokrasa.bikeroutes.core.extensions.makeVisible
 import pl.jakubokrasa.bikeroutes.core.util.*
 import pl.jakubokrasa.bikeroutes.core.util.PreferenceHelper.Companion.PREF_KEY_MAPFRAGMENT_MODE_RECORDING
 import pl.jakubokrasa.bikeroutes.core.util.enums.MapMode
 import pl.jakubokrasa.bikeroutes.databinding.FragmentMapBinding
-import pl.jakubokrasa.bikeroutes.features.common.domain.model.BoundingBoxData
+import pl.jakubokrasa.bikeroutes.features.common.filter.domain.model.BoundingBoxData
 import pl.jakubokrasa.bikeroutes.features.map.domain.LocationService
 import pl.jakubokrasa.bikeroutes.features.map.navigation.MapFrgNavigator
 import pl.jakubokrasa.bikeroutes.features.map.presentation.model.PointDisplayable
