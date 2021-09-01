@@ -3,19 +3,17 @@ package pl.jakubokrasa.bikeroutes.features.map.domain.usecase
 import pl.jakubokrasa.bikeroutes.core.base.domain.UseCase
 import pl.jakubokrasa.bikeroutes.core.user.domain.UserAuth
 import pl.jakubokrasa.bikeroutes.core.util.enums.SharingType
-import pl.jakubokrasa.bikeroutes.features.common.domain.BoundingBoxData
-import pl.jakubokrasa.bikeroutes.features.map.domain.LocalRepository
-import pl.jakubokrasa.bikeroutes.features.map.domain.RemoteRepository
+import pl.jakubokrasa.bikeroutes.features.common.filter.domain.model.BoundingBoxData
+import pl.jakubokrasa.bikeroutes.features.common.routes.domain.RouteRepository
+import pl.jakubokrasa.bikeroutes.features.map.domain.PointLocalRepository
 import pl.jakubokrasa.bikeroutes.features.map.domain.model.Point
 import pl.jakubokrasa.bikeroutes.features.map.domain.model.Route
-import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteDisplayable
-import pl.jakubokrasa.bikeroutes.features.myroutes.presentation.RouteDetailsFragment
 import java.util.concurrent.TimeUnit
 import kotlin.math.roundToInt
 
 class SaveRouteUseCase(
-    private val localRepository: LocalRepository,
-    private val remoteRepository: RemoteRepository,
+    private val localRepository: PointLocalRepository,
+    private val routeRepository: RouteRepository,
     private val userAuth: UserAuth
 ): UseCase<Unit, DataSaveRoute>() {
     private var rideTimeMinutes = 0
@@ -36,7 +34,7 @@ class SaveRouteUseCase(
                 params.boundingBoxData,
                 params.createdBy
             )
-            remoteRepository.addRoute(route, points)
+            routeRepository.addRoute(route, points)
             localRepository.deletePoints()
         }
     }

@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.Window
-import pl.jakubokrasa.bikeroutes.core.base.platform.BaseViewModel
 import pl.jakubokrasa.bikeroutes.databinding.DialogConfirmBinding
 import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteDisplayable
 

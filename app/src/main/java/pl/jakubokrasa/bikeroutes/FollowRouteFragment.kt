@@ -19,7 +19,7 @@ import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.Polyline
 import pl.jakubokrasa.bikeroutes.R
-import pl.jakubokrasa.bikeroutes.core.base.platform.BaseFragment
+import pl.jakubokrasa.bikeroutes.core.base.presentation.BaseFragment
 import pl.jakubokrasa.bikeroutes.core.util.*
 import pl.jakubokrasa.bikeroutes.core.util.enums.MapMode
 import pl.jakubokrasa.bikeroutes.databinding.FragmentFollowrouteBinding

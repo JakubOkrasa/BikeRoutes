@@ -102,18 +102,13 @@
                                 android:layout_weight="1"/>
 
                             <ImageButton
-                                android:id="@+id/ib_edit"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:src="@drawable/ic_edit_24"
-                                android:visibility="gone" />
-
-                            <ImageButton
                                 android:id="@+id/ib_remove_segment"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:src="@drawable/ic_remove_24"
-                                android:visibility="gone" />
+                                android:visibility="gone"
+                                android:backgroundTint="@color/dark_grey"
+                                tools:visibility="visible" />
 
                         </LinearLayout>
 
@@ -223,6 +218,24 @@
 
                         <TextView
                             android:id="@+id/tv_route_ride_time"
+                            style="@style/tv_small"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="3dp" />
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/ic_avg_speed" />
+
+                        <TextView
+                            android:id="@+id/tv_route_avg_speed"
                             style="@style/tv_small"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"

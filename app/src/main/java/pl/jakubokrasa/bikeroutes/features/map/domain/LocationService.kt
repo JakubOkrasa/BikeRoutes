@@ -6,19 +6,24 @@ import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
 import android.location.Location
-import android.os.*
+import android.os.Build
+import android.os.Handler
+import android.os.HandlerThread
+import android.os.IBinder
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.content.edit
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import com.google.android.gms.location.*
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationResult
 import org.koin.core.KoinComponent
-
 import org.koin.core.inject
 import org.osmdroid.util.GeoPoint
-import pl.jakubokrasa.bikeroutes.core.app.presentation.MainActivity
 import pl.jakubokrasa.bikeroutes.R
-import pl.jakubokrasa.bikeroutes.core.extensions.PreferenceHelper
+import pl.jakubokrasa.bikeroutes.core.app.presentation.MainActivity
+import pl.jakubokrasa.bikeroutes.core.util.PreferenceHelper
 import pl.jakubokrasa.bikeroutes.features.map.domain.model.GeoPointData
 import pl.jakubokrasa.bikeroutes.features.map.presentation.MapFragment.Companion.SEND_LOCATION_ACTION
 import pl.jakubokrasa.bikeroutes.features.map.presentation.MapViewModel
@@ -140,7 +145,7 @@ class LocationService : Service(), KoinComponent {
 
         if(isRecordingMode()) {
             mapViewModel.insertPoint(GeoPointData(loc.latitude, loc.longitude))
-            mapViewModel.updateDistanceByPrefs(GeoPoint(loc))
+            mapViewModel.updateDistance(GeoPoint(loc))
         }
 
         //send update UI broadcast

@@ -3,7 +3,7 @@ package pl.jakubokrasa.bikeroutes.features.map.presentation.model
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 import pl.jakubokrasa.bikeroutes.core.util.enums.SharingType
-import pl.jakubokrasa.bikeroutes.features.common.domain.BoundingBoxData
+import pl.jakubokrasa.bikeroutes.features.common.filter.domain.model.BoundingBoxData
 import pl.jakubokrasa.bikeroutes.features.map.domain.model.Route
 
 @Parcelize

@@ -1,17 +1,11 @@
 package pl.jakubokrasa.bikeroutes.core.user.presentation
 
-import android.util.Log
-import android.widget.Toast
-import androidx.core.content.edit
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import com.hadilq.liveevent.LiveEvent
-import pl.jakubokrasa.bikeroutes.R
-import pl.jakubokrasa.bikeroutes.core.base.platform.BaseViewModel
-import pl.jakubokrasa.bikeroutes.core.extensions.PreferenceHelper
-import pl.jakubokrasa.bikeroutes.core.user.domain.*
-import pl.jakubokrasa.bikeroutes.core.user.navigation.UserNavigator
-import pl.jakubokrasa.bikeroutes.features.myroutes.presentation.MyRoutesViewModel
+import pl.jakubokrasa.bikeroutes.core.base.presentation.BaseViewModel
+import pl.jakubokrasa.bikeroutes.core.user.domain.DeleteCurrentUserUseCase
+import pl.jakubokrasa.bikeroutes.core.user.domain.LogOutUseCase
+import pl.jakubokrasa.bikeroutes.core.util.PreferenceHelper
 
 class UserViewModel(
     private val preferenceHelper: PreferenceHelper,

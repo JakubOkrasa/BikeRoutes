@@ -5,9 +5,8 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FirebaseFirestore
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
-import pl.jakubokrasa.bikeroutes.core.user.data.remote.UserRepositoryImpl
-import pl.jakubokrasa.bikeroutes.core.user.domain.UserAuth
 import pl.jakubokrasa.bikeroutes.core.user.auth.UserAuthImpl
+import pl.jakubokrasa.bikeroutes.core.user.data.remote.UserRepositoryImpl
 import pl.jakubokrasa.bikeroutes.core.user.domain.*
 import pl.jakubokrasa.bikeroutes.core.user.presentation.ForgotPasswordViewModel
 import pl.jakubokrasa.bikeroutes.core.user.presentation.SignInViewModel

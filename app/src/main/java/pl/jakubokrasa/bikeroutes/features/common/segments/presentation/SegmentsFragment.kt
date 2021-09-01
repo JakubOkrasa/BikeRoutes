@@ -5,8 +5,8 @@ import android.app.AlertDialog
 import android.content.DialogInterface
 import android.graphics.Color
 import android.os.Bundle
-import android.view.View
 import android.util.Log
+import android.view.View
 import androidx.core.content.edit
 import androidx.core.content.res.ResourcesCompat
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
@@ -17,11 +17,11 @@ import org.osmdroid.views.overlay.MapEventsOverlay
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.Polyline
 import pl.jakubokrasa.bikeroutes.R
-import pl.jakubokrasa.bikeroutes.core.base.platform.BaseFragment
-import pl.jakubokrasa.bikeroutes.core.extensions.PreferenceHelper.Companion.PREF_KEY_TIPS_SEGMENTS_NOT_SHOWED
+import pl.jakubokrasa.bikeroutes.core.base.presentation.BaseFragment
 import pl.jakubokrasa.bikeroutes.core.extensions.makeGone
 import pl.jakubokrasa.bikeroutes.core.extensions.makeVisible
 import pl.jakubokrasa.bikeroutes.core.util.*
+import pl.jakubokrasa.bikeroutes.core.util.PreferenceHelper.Companion.PREF_KEY_TIPS_SEGMENTS_NOT_SHOWED
 import pl.jakubokrasa.bikeroutes.databinding.FragmentSegmentsBinding
 import pl.jakubokrasa.bikeroutes.features.common.segments.presentation.model.SegmentDisplayable
 import pl.jakubokrasa.bikeroutes.features.map.presentation.model.PointDisplayable
@@ -212,7 +212,7 @@ class SegmentsFragment: BaseFragment<MyRoutesViewModel>(R.layout.fragment_segmen
         if(segmentBeginIndex<segmentEndIndex) {
             segmentPoints = points.subList(segmentBeginIndex, segmentEndIndex + 1).map { it.geoPoint } // +1 since sublist's second index is exclusive
         } else {
-            segmentPoints = points.subList(segmentEndIndex, segmentBeginIndex - 1).map { it.geoPoint }
+            segmentPoints = points.subList(segmentEndIndex, segmentBeginIndex+1).map { it.geoPoint }
         }
         segmentPolyline.setPoints(segmentPoints)
     }

@@ -3,7 +3,10 @@ package pl.jakubokrasa.bikeroutes.features.map.presentation
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.*
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
@@ -19,7 +22,6 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.core.KoinComponent
 import org.koin.core.inject
-import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.CustomZoomButtonsController
 import org.osmdroid.views.overlay.Marker
@@ -27,17 +29,14 @@ import org.osmdroid.views.overlay.Overlay
 import org.osmdroid.views.overlay.Polyline
 import pl.jakubokrasa.bikeroutes.BuildConfig
 import pl.jakubokrasa.bikeroutes.R
-import pl.jakubokrasa.bikeroutes.core.app.presentation.MainActivity
-import pl.jakubokrasa.bikeroutes.core.base.platform.BaseFragment
-import pl.jakubokrasa.bikeroutes.core.extensions.PreferenceHelper
-import pl.jakubokrasa.bikeroutes.core.extensions.PreferenceHelper.Companion.PREF_KEY_MAPFRAGMENT_MODE_RECORDING
+import pl.jakubokrasa.bikeroutes.core.base.presentation.BaseFragment
 import pl.jakubokrasa.bikeroutes.core.extensions.makeGone
 import pl.jakubokrasa.bikeroutes.core.extensions.makeVisible
-import pl.jakubokrasa.bikeroutes.core.extensions.putDouble
 import pl.jakubokrasa.bikeroutes.core.util.*
+import pl.jakubokrasa.bikeroutes.core.util.PreferenceHelper.Companion.PREF_KEY_MAPFRAGMENT_MODE_RECORDING
 import pl.jakubokrasa.bikeroutes.core.util.enums.MapMode
 import pl.jakubokrasa.bikeroutes.databinding.FragmentMapBinding
-import pl.jakubokrasa.bikeroutes.features.common.domain.BoundingBoxData
+import pl.jakubokrasa.bikeroutes.features.common.filter.domain.model.BoundingBoxData
 import pl.jakubokrasa.bikeroutes.features.map.domain.LocationService
 import pl.jakubokrasa.bikeroutes.features.map.navigation.MapFrgNavigator
 import pl.jakubokrasa.bikeroutes.features.map.presentation.model.PointDisplayable
@@ -62,8 +61,6 @@ class MapFragment() : BaseFragment<MapViewModel>(R.layout.fragment_map), KoinCom
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        Log.e("TEST", "onViewCreated")
-
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentMapBinding.bind(view)
         requestPermissionsIfNecessary(OSM_PERMISSIONS)
@@ -97,7 +94,6 @@ class MapFragment() : BaseFragment<MapViewModel>(R.layout.fragment_map), KoinCom
         super.onStart()
         val locFilter = IntentFilter(SEND_LOCATION_ACTION)
         mLocalBR.registerReceiver(locationServiceReceiver, locFilter)
-       Log.e("TEST", "onStart")
     }
 
     override fun onStop() {
@@ -105,7 +101,6 @@ class MapFragment() : BaseFragment<MapViewModel>(R.layout.fragment_map), KoinCom
         if(!isRecordingMode())
             stopLocationService()
         mLocalBR.unregisterReceiver(locationServiceReceiver)
-        Log.e("TEST", "onStop")
 
     }
 
@@ -117,7 +112,6 @@ class MapFragment() : BaseFragment<MapViewModel>(R.layout.fragment_map), KoinCom
         //Configuration.getInstance().load(this, PreferenceHelper.getDefaultSharedPreferences(this));
         binding.mapView.onResume() //needed for compass, my location overlays, v6.0.0 and up
         requireActivity().startService(Intent(context, LocationService::class.java))
-        Log.e("TEST", "onResume")
 
     }
 
@@ -128,19 +122,12 @@ class MapFragment() : BaseFragment<MapViewModel>(R.layout.fragment_map), KoinCom
         //SharedPreferences prefs = PreferenceHelper.getDefaultSharedPreferences(this);
         //Configuration.getInstance().save(this, prefs);
         binding.mapView.onPause() //needed for compass, my location overlays, v6.0.0 and up
-        Log.e("TEST", "onPause")
 
     }
 
     override fun initObservers() {
         super.initObservers()
         observePoints()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        Log.e("TEST", "onDestroy")
-
     }
 
     private fun requestPermissionsIfNecessary(permissions: Array<String>) {

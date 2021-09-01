@@ -1,15 +1,12 @@
 package pl.jakubokrasa.bikeroutes.core.user.presentation
 
-import android.util.Log
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hadilq.liveevent.LiveEvent
-import pl.jakubokrasa.bikeroutes.core.base.platform.BaseViewModel
-import pl.jakubokrasa.bikeroutes.core.extensions.PreferenceHelper
+import pl.jakubokrasa.bikeroutes.core.base.presentation.BaseViewModel
 import pl.jakubokrasa.bikeroutes.core.user.domain.CreateUserData
 import pl.jakubokrasa.bikeroutes.core.user.domain.CreateUserUseCase
 import pl.jakubokrasa.bikeroutes.core.user.domain.GetUserUseCase
-import pl.jakubokrasa.bikeroutes.features.myroutes.presentation.MyRoutesViewModel
+import pl.jakubokrasa.bikeroutes.core.util.PreferenceHelper
 
 class SignUpViewModel(
     private val createUserUseCase: CreateUserUseCase,

@@ -5,17 +5,11 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
-import androidx.core.content.edit
-import androidx.fragment.app.Fragment
 import com.google.firebase.auth.FirebaseAuth
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import pl.jakubokrasa.bikeroutes.R
-import pl.jakubokrasa.bikeroutes.core.app.presentation.MainActivity
-import pl.jakubokrasa.bikeroutes.core.base.platform.BaseFragment
-import pl.jakubokrasa.bikeroutes.core.extensions.PreferenceHelper
-import pl.jakubokrasa.bikeroutes.core.extensions.PreferenceHelper.Companion.PREF_KEY_USER_EMAIL
-import pl.jakubokrasa.bikeroutes.core.extensions.PreferenceHelper.Companion.PREF_KEY_USER_PASSWORD
+import pl.jakubokrasa.bikeroutes.core.base.presentation.BaseFragment
 import pl.jakubokrasa.bikeroutes.databinding.FragmentAccountBinding
 
 class AccountFragment(): BaseFragment<UserViewModel>(R.layout.fragment_account) {
@@ -32,7 +26,7 @@ class AccountFragment(): BaseFragment<UserViewModel>(R.layout.fragment_account) 
             if(it) startActivity(Intent(context, SignInActivity::class.java))
         })
 
-        binding.tvLoggedAs.text = String.format("you are logged as %s", auth.currentUser?.email)
+        binding.tvLoggedAs.text = String.format("You are signed in as:%s%s",System.lineSeparator(), auth.currentUser?.email)
 
         binding.btLogout.setOnClickListener {
             viewModel.logOut()

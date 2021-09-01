@@ -15,6 +15,7 @@ import org.osmdroid.views.drawing.MapSnapshot
 import org.osmdroid.views.overlay.Polyline
 import pl.jakubokrasa.bikeroutes.BuildConfig
 import pl.jakubokrasa.bikeroutes.R
+import pl.jakubokrasa.bikeroutes.core.base.presentation.Helper
 import pl.jakubokrasa.bikeroutes.core.util.getFormattedAvgSpeed
 import pl.jakubokrasa.bikeroutes.core.util.getFormattedDistance
 import pl.jakubokrasa.bikeroutes.core.util.getFormattedRideTime
@@ -23,25 +24,11 @@ import pl.jakubokrasa.bikeroutes.features.map.domain.model.Route
 import java.io.File
 import java.io.FileOutputStream
 
-class ExportRouteHelper(private val context: Context) {
+class ExportRouteHelper(private val context: Context): Helper<Uri, ExportRouteData>() {
     @ExperimentalCoroutinesApi
-    suspend fun action(exportRouteData: ExportRouteData): Uri {
-        val snapshot = getSnapshot(exportRouteData)
-        return getUriOfExportImage(snapshot, exportRouteData.route)
-    }
-
-    @ExperimentalCoroutinesApi
-    operator fun invoke(
-        exportRouteData: ExportRouteData,
-        scope: CoroutineScope,
-        onResult: (Result<Uri>) -> Unit = {}
-    ) {
-        scope.launch {
-            val result = withContext(Dispatchers.Main) {
-                runCatching { action(exportRouteData) }
-            }
-        onResult(result)
-        }
+    override suspend fun action(params: ExportRouteData): Uri {
+        val snapshot = getSnapshot(params)
+        return getUriOfExportImage(snapshot, params.route)
     }
 
     private suspend fun getUriOfExportImage(snapshot: MapSnapshot, route: Route) = withContext(

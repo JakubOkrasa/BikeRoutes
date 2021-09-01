@@ -12,13 +12,11 @@ import pl.jakubokrasa.bikeroutes.core.util.getFormattedFilterDistance
 import pl.jakubokrasa.bikeroutes.core.util.getFormattedFilterDistanceGreaterThan
 import pl.jakubokrasa.bikeroutes.core.util.getFormattedFilterDistanceLessThan
 import pl.jakubokrasa.bikeroutes.core.util.getFormattedFilterLocation
-import pl.jakubokrasa.bikeroutes.databinding.DialogMyroutesFilterBinding
 import pl.jakubokrasa.bikeroutes.databinding.DialogSharedroutesFilterBinding
 import pl.jakubokrasa.bikeroutes.databinding.FragmentSharedRoutesBinding
-import pl.jakubokrasa.bikeroutes.features.common.domain.FilterData
-import pl.jakubokrasa.bikeroutes.features.common.presentation.model.GeocodingItemDisplayable
+import pl.jakubokrasa.bikeroutes.features.common.filter.domain.model.FilterData
+import pl.jakubokrasa.bikeroutes.features.common.filter.presentation.model.GeocodingItemDisplayable
 import pl.jakubokrasa.bikeroutes.features.myroutes.presentation.MyRoutesFragment.Companion.DISTANCE_SLIDER_VALUE_TO
-import pl.jakubokrasa.bikeroutes.features.sharedroutes.presentation.SharedRoutesViewModel
 
 //very similar to DialogMyRoutesFilter class but creating base class was impossible because of ViewBinding
 class DialogSharedRoutesFilter(

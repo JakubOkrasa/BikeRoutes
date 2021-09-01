@@ -5,9 +5,9 @@ import android.app.AlertDialog
 import android.app.Dialog
 import android.content.DialogInterface
 import android.content.Intent
-import android.net.Uri
 import android.content.res.ColorStateList
-import android.graphics.*
+import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
@@ -23,19 +23,19 @@ import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Polyline
 import pl.jakubokrasa.bikeroutes.R
-import pl.jakubokrasa.bikeroutes.core.base.platform.BaseFragment
+import pl.jakubokrasa.bikeroutes.core.base.presentation.BaseFragment
 import pl.jakubokrasa.bikeroutes.core.extensions.*
 import pl.jakubokrasa.bikeroutes.core.util.*
 import pl.jakubokrasa.bikeroutes.core.util.enums.SharingType
 import pl.jakubokrasa.bikeroutes.databinding.FragmentRouteDetailsBinding
-import pl.jakubokrasa.bikeroutes.features.common.presentation.CommonRoutesNavigator
-import pl.jakubokrasa.bikeroutes.features.common.presentation.PhotosRecyclerAdapter
-import pl.jakubokrasa.bikeroutes.features.common.presentation.model.PhotoInfoDisplayable
+import pl.jakubokrasa.bikeroutes.features.common.routes.navigation.CommonRoutesNavigator
+import pl.jakubokrasa.bikeroutes.features.common.photos.presentation.PhotosRecyclerAdapter
+import pl.jakubokrasa.bikeroutes.features.common.photos.presentation.model.PhotoInfoDisplayable
 import pl.jakubokrasa.bikeroutes.features.common.segments.presentation.model.SegmentDisplayable
 import pl.jakubokrasa.bikeroutes.features.map.presentation.model.PointDisplayable
 import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteDisplayable
-import pl.jakubokrasa.bikeroutes.features.reviews.presentation.ReviewsRecyclerAdapter
-import pl.jakubokrasa.bikeroutes.features.reviews.presentation.model.ReviewDisplayable
+import pl.jakubokrasa.bikeroutes.features.common.reviews.presentation.ReviewsRecyclerAdapter
+import pl.jakubokrasa.bikeroutes.features.common.reviews.presentation.model.ReviewDisplayable
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -412,6 +412,7 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
 
             tvRouteDistance.text = getFormattedDistance(route.distance)
             tvRouteRideTime.text = getFormattedRideTime(route.rideTimeMinutes)
+            tvRouteAvgSpeed.text = getFormattedAvgSpeed(route.avgSpeedKmPerH)
             tvVisibility.text = getFormattedSharingTypeName(route.sharingType)
 
             if(isMyRoute())
@@ -562,7 +563,6 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
 
         private fun showSegmentButtonsIfMyRoute() {
             if (isMyRoute()) {
-                binding.ibEdit.makeVisible()
                 binding.ibRemoveSegment.makeVisible()
             }
         }
@@ -581,7 +581,6 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
             val segmentColor = selectedSegment.segmentColor.ifEmpty { requireContext().resources.getString(R.color.seg_red) }
             val colorStateList = ColorStateList.valueOf(Color.parseColor(segmentColor))
             binding.btSegmentType.backgroundTintList = colorStateList
-            binding.ibEdit.backgroundTintList = colorStateList
             binding.ibRemoveSegment.backgroundTintList = colorStateList
         }
     }

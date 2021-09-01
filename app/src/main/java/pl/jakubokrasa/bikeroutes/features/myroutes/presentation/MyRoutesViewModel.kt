@@ -8,27 +8,31 @@ import com.hadilq.liveevent.LiveEvent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.osmdroid.util.GeoPoint
-import org.osmdroid.views.drawing.MapSnapshot
 import org.osmdroid.views.overlay.Polyline
-import pl.jakubokrasa.bikeroutes.core.base.platform.BaseViewModel
-import pl.jakubokrasa.bikeroutes.features.common.domain.FilterData
-import pl.jakubokrasa.bikeroutes.features.common.domain.GetGeocodingItemUseCase
-import pl.jakubokrasa.bikeroutes.features.common.domain.GetPointsFromRemoteUseCase
-import pl.jakubokrasa.bikeroutes.features.common.presentation.model.GeocodingItemDisplayable
+import pl.jakubokrasa.bikeroutes.core.base.presentation.BaseViewModel
 import pl.jakubokrasa.bikeroutes.core.util.enums.SharingType
-import pl.jakubokrasa.bikeroutes.features.common.domain.*
-import pl.jakubokrasa.bikeroutes.features.common.presentation.model.PhotoInfoDisplayable
+import pl.jakubokrasa.bikeroutes.features.common.filter.domain.model.FilterData
+import pl.jakubokrasa.bikeroutes.features.common.filter.domain.GetGeocodingItemUseCase
+import pl.jakubokrasa.bikeroutes.features.common.photos.domain.AddPhotoData
+import pl.jakubokrasa.bikeroutes.features.common.photos.domain.AddPhotoUseCase
+import pl.jakubokrasa.bikeroutes.features.common.photos.domain.GetPhotosUseCase
+import pl.jakubokrasa.bikeroutes.features.common.photos.domain.RemovePhotoUseCase
+import pl.jakubokrasa.bikeroutes.features.common.filter.presentation.model.GeocodingItemDisplayable
+import pl.jakubokrasa.bikeroutes.features.common.photos.presentation.model.PhotoInfoDisplayable
 import pl.jakubokrasa.bikeroutes.features.common.segments.domain.GetSegmentsUseCase
+import pl.jakubokrasa.bikeroutes.features.common.segments.presentation.GetSegmentBeginData
+import pl.jakubokrasa.bikeroutes.features.common.segments.presentation.GetSegmentPointHelper
 import pl.jakubokrasa.bikeroutes.features.common.segments.presentation.model.SegmentDisplayable
 import pl.jakubokrasa.bikeroutes.features.map.presentation.model.PointDisplayable
 import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteDisplayable
 import pl.jakubokrasa.bikeroutes.features.myroutes.domain.*
 import pl.jakubokrasa.bikeroutes.features.myroutes.navigation.MyRoutesNavigator
-import pl.jakubokrasa.bikeroutes.features.reviews.domain.AddReviewUseCase
-import pl.jakubokrasa.bikeroutes.features.reviews.domain.GetReviewsUseCase
-import pl.jakubokrasa.bikeroutes.features.reviews.domain.RemoveReviewUseCase
-import pl.jakubokrasa.bikeroutes.features.reviews.domain.UpdateReviewUseCase
-import pl.jakubokrasa.bikeroutes.features.reviews.presentation.model.ReviewDisplayable
+import pl.jakubokrasa.bikeroutes.features.common.reviews.domain.AddReviewUseCase
+import pl.jakubokrasa.bikeroutes.features.common.reviews.domain.GetReviewsUseCase
+import pl.jakubokrasa.bikeroutes.features.common.reviews.domain.RemoveReviewUseCase
+import pl.jakubokrasa.bikeroutes.features.common.reviews.domain.UpdateReviewUseCase
+import pl.jakubokrasa.bikeroutes.features.common.reviews.presentation.model.ReviewDisplayable
+import pl.jakubokrasa.bikeroutes.features.map.domain.usecase.GetPointsFromRemoteUseCase
 
 class MyRoutesViewModel(
     private val getMyRoutesUseCase: GetMyRoutesUseCase,
@@ -37,7 +41,6 @@ class MyRoutesViewModel(
     private val removeRouteUseCase: RemoveRouteUseCase,
     private val updateRouteUseCase: UpdateRouteUseCase,
     private val getGeocodingItemUseCase: GetGeocodingItemUseCase,
-    private val getSegmentPointUseCase: GetSegmentPointUseCase,
     private val addSegmentUseCase: AddSegmentUseCase,
     private val removeSegmentUseCase: RemoveSegmentUseCase,
     private val getSegmentsUseCase: GetSegmentsUseCase,
@@ -48,7 +51,9 @@ class MyRoutesViewModel(
     private val addReviewUseCase: AddReviewUseCase,
     private val updateReviewUseCase: UpdateReviewUseCase,
     private val removeReviewUseCase: RemoveReviewUseCase,
-	private val exportRouteHelper: ExportRouteHelper,
+
+    private val exportRouteHelper: ExportRouteHelper,
+    private val getSegmentPointHelper: GetSegmentPointHelper,
 
     private val myRoutesNavigator: MyRoutesNavigator,
 ): BaseViewModel() {
@@ -221,7 +226,7 @@ fun addPhoto(routeId: String, localPath: String, sharingType: SharingType) {
     }
 
 	fun getSegmentPoint(geoPoint: GeoPoint, points: List<PointDisplayable>, zoomLevel: Double) {
-        getSegmentPointUseCase(
+        getSegmentPointHelper(
             params = GetSegmentBeginData(geoPoint, points.map { it.toPointNoCreatedAt() }, zoomLevel),
             scope = viewModelScope
         ) {
@@ -292,8 +297,9 @@ fun addPhoto(routeId: String, localPath: String, sharingType: SharingType) {
     fun exportRoute(route: RouteDisplayable, polyline: Polyline, zoom: Double) {
         setPendingState()
         exportRouteHelper(
-            exportRouteData = ExportRouteData(route.toRoute(), polyline, zoom),
-            scope = viewModelScope
+            params = ExportRouteData(route.toRoute(), polyline, zoom),
+            scope = viewModelScope,
+            dispatcher = Dispatchers.Main
         ) {
                 result ->
             setIdleState()

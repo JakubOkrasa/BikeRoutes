@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import org.osmdroid.util.GeoPoint
-import pl.jakubokrasa.bikeroutes.core.base.platform.BaseViewModel
+import pl.jakubokrasa.bikeroutes.core.base.presentation.BaseViewModel
 import pl.jakubokrasa.bikeroutes.features.map.domain.model.GeoPointData
 import pl.jakubokrasa.bikeroutes.features.map.domain.usecase.*
 import pl.jakubokrasa.bikeroutes.features.map.presentation.model.PointDisplayable
@@ -14,7 +14,7 @@ class MapViewModel(
     private val getPointsUseCase: GetPointsUseCase,
     private val deletePointsUseCase: DeletePointsUseCase,
     private val saveRouteUseCase: SaveRouteUseCase,
-    private val updateDistanceByPrefsUseCase: UpdateDistanceByPrefsUseCase,
+    private val updateDistanceHelper: UpdateDistanceHelper
 
 ) : BaseViewModel() {
 
@@ -62,14 +62,14 @@ class MapViewModel(
         }
     }
 
-    fun updateDistanceByPrefs(geoPoint: GeoPoint) {
-        updateDistanceByPrefsUseCase(
+    fun updateDistance(geoPoint: GeoPoint) {
+        updateDistanceHelper(
             params = geoPoint,
             scope = viewModelScope
         ){
                 result ->
-            result.onSuccess { handleSuccess("updateDistanceByPrefs") }
-            result.onFailure { handleFailure("updateDistanceByPrefs") }
+            result.onSuccess { handleSuccess("updateDistance") }
+            result.onFailure { handleFailure("updateDistance") }
         }
     }
 
