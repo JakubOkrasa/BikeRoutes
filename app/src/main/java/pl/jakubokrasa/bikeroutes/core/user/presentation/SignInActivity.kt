@@ -30,8 +30,8 @@ class SignInActivity: BaseActivity<SignInViewModel>() {
         })
 
         binding.btSignIn.setOnClickListener{
-            val email: String = binding.etEmail.text.toString()
-            val password: String = binding.etPassword.text.toString()
+            val email: String = binding.etEmail.text.toString().trim()
+            val password: String = binding.etPassword.text.toString().trim()
             if(TextUtils.isEmpty(email) || TextUtils.isEmpty(password)) {
                 Toast.makeText(this@SignInActivity, "Please fill all the fields", Toast.LENGTH_LONG).show()
             } else{
