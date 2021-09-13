@@ -39,9 +39,9 @@ class SignUpActivity : BaseActivity<SignUpViewModel>() {
     }
 
     private val btSignUpOnClick = View.OnClickListener {
-        val email: String = binding.etEmail.text.toString()
-        val password: String = binding.etPassword.text.toString()
-        val displayName: String = binding.etDisplayName.text.toString()
+        val email: String = binding.etEmail.text.toString().trim()
+        val password: String = binding.etPassword.text.toString().trim()
+        val displayName: String = binding.etDisplayName.text.toString().trim()
 
         if(TextUtils.isEmpty(email) || TextUtils.isEmpty(password) || TextUtils.isEmpty(displayName) ) {
             showToast("Please fill all the fields!")

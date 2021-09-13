@@ -27,7 +27,7 @@ class ForgotPasswordActivity: BaseActivity<ForgotPasswordViewModel>() {
     }
 
     private val btResetOnClick = View.OnClickListener {
-        val email :String = binding.etEmail.text.toString()
+        val email :String = binding.etEmail.text.toString().trim()
         if(TextUtils.isEmpty(email)) {
             Toast.makeText(this, "Enter your email", Toast.LENGTH_LONG).show()
         }

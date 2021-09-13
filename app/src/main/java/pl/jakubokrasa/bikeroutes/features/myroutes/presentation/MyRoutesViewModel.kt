@@ -11,28 +11,28 @@ import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.overlay.Polyline
 import pl.jakubokrasa.bikeroutes.core.base.presentation.BaseViewModel
 import pl.jakubokrasa.bikeroutes.core.util.enums.SharingType
-import pl.jakubokrasa.bikeroutes.features.common.filter.domain.model.FilterData
 import pl.jakubokrasa.bikeroutes.features.common.filter.domain.GetGeocodingItemUseCase
+import pl.jakubokrasa.bikeroutes.features.common.filter.domain.model.FilterData
+import pl.jakubokrasa.bikeroutes.features.common.filter.presentation.model.GeocodingItemDisplayable
 import pl.jakubokrasa.bikeroutes.features.common.photos.domain.AddPhotoData
 import pl.jakubokrasa.bikeroutes.features.common.photos.domain.AddPhotoUseCase
 import pl.jakubokrasa.bikeroutes.features.common.photos.domain.GetPhotosUseCase
 import pl.jakubokrasa.bikeroutes.features.common.photos.domain.RemovePhotoUseCase
-import pl.jakubokrasa.bikeroutes.features.common.filter.presentation.model.GeocodingItemDisplayable
 import pl.jakubokrasa.bikeroutes.features.common.photos.presentation.model.PhotoInfoDisplayable
-import pl.jakubokrasa.bikeroutes.features.common.segments.domain.GetSegmentsUseCase
-import pl.jakubokrasa.bikeroutes.features.common.segments.presentation.GetSegmentBeginData
-import pl.jakubokrasa.bikeroutes.features.common.segments.presentation.GetSegmentPointHelper
-import pl.jakubokrasa.bikeroutes.features.common.segments.presentation.model.SegmentDisplayable
-import pl.jakubokrasa.bikeroutes.features.map.presentation.model.PointDisplayable
-import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteDisplayable
-import pl.jakubokrasa.bikeroutes.features.myroutes.domain.*
-import pl.jakubokrasa.bikeroutes.features.myroutes.navigation.MyRoutesNavigator
 import pl.jakubokrasa.bikeroutes.features.common.reviews.domain.AddReviewUseCase
 import pl.jakubokrasa.bikeroutes.features.common.reviews.domain.GetReviewsUseCase
 import pl.jakubokrasa.bikeroutes.features.common.reviews.domain.RemoveReviewUseCase
 import pl.jakubokrasa.bikeroutes.features.common.reviews.domain.UpdateReviewUseCase
 import pl.jakubokrasa.bikeroutes.features.common.reviews.presentation.model.ReviewDisplayable
+import pl.jakubokrasa.bikeroutes.features.common.segments.domain.GetSegmentsUseCase
+import pl.jakubokrasa.bikeroutes.features.common.segments.presentation.GetSegmentBeginData
+import pl.jakubokrasa.bikeroutes.features.common.segments.presentation.GetSegmentPointHelper
+import pl.jakubokrasa.bikeroutes.features.common.segments.presentation.model.SegmentDisplayable
 import pl.jakubokrasa.bikeroutes.features.map.domain.usecase.GetPointsFromRemoteUseCase
+import pl.jakubokrasa.bikeroutes.features.map.presentation.model.PointDisplayable
+import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteDisplayable
+import pl.jakubokrasa.bikeroutes.features.myroutes.domain.*
+import pl.jakubokrasa.bikeroutes.features.myroutes.navigation.MyRoutesNavigator
 
 class MyRoutesViewModel(
     private val getMyRoutesUseCase: GetMyRoutesUseCase,
@@ -118,7 +118,7 @@ class MyRoutesViewModel(
     fun getMyRoutesWithFilter(filterData: FilterData) {
         setPendingState()
         getMyRoutesWithFilterUseCase(
-            filterData = filterData,
+            params = filterData,
             scope = viewModelScope
         ) {
                 result ->

@@ -3,13 +3,11 @@ package pl.jakubokrasa.bikeroutes.features.common.routes.data
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 import pl.jakubokrasa.bikeroutes.core.util.enums.SharingType
-import pl.jakubokrasa.bikeroutes.features.common.filter.domain.model.FilterData
 import pl.jakubokrasa.bikeroutes.features.common.routes.domain.RouteRepository
 import pl.jakubokrasa.bikeroutes.features.map.data.remote.model.PointResponse
 import pl.jakubokrasa.bikeroutes.features.map.data.remote.model.RouteResponse
 import pl.jakubokrasa.bikeroutes.features.map.domain.model.Point
 import pl.jakubokrasa.bikeroutes.features.map.domain.model.Route
-import pl.jakubokrasa.bikeroutes.features.myroutes.presentation.MyRoutesFragment
 
 class RouteRepositoryImpl(
     private val firestore: FirebaseFirestore,
@@ -22,7 +20,6 @@ class RouteRepositoryImpl(
         val pointsMap = mapOf("pointsArray" to points.map { PointResponse(it) })
         val pointsDoc = firestore.collection("points").document(routeDoc.id)
 
-        //WRITE BATCHES WORK OFFLINE
         firestore.runBatch { batch ->
             //save RouteResponse
             batch.set(routeDoc, routeResponse)
@@ -46,34 +43,6 @@ class RouteRepositoryImpl(
 
         for (doc in documents)
             doc.toObject(RouteResponse::class.java)?.let { routeResponseList.add(it) }
-        return routeResponseList.map { it.toRoute()}
-    }
-
-    override suspend fun getMyRoutesWithFilter(uid: String, filterData: FilterData): List<Route> {
-        val routeResponseList = ArrayList<RouteResponse>()
-        var minDistanceMeters: Int? = null
-        var maxDistanceMeters: Int? = null
-
-        filterData.minDistanceKm?.let {
-            minDistanceMeters =
-                if(it == 0) null
-                else it * 1000
-        }
-        filterData.maxDistanceKm?.let {
-            maxDistanceMeters =
-                if (it == MyRoutesFragment.DISTANCE_SLIDER_VALUE_TO.toInt()) null
-                else it * 1000
-        }
-
-        var query = firestore.collection("routes")
-            .whereEqualTo("userId", uid)
-        maxDistanceMeters?.let { query = query.whereLessThanOrEqualTo("distance", it) }
-        minDistanceMeters?.let { query = query.whereGreaterThanOrEqualTo("distance", it) }
-        val documents = query.get().await()
-
-        for (doc in documents)
-            doc.toObject(RouteResponse::class.java)
-                .let { routeResponseList.add(it) }
         return routeResponseList.map { it.toRoute()}
     }
 
@@ -107,36 +76,6 @@ class RouteRepositoryImpl(
 
         for (doc in documents)
             doc.toObject(RouteResponse::class.java)?.let { routeResponseList.add(it) }
-        return routeResponseList.map { it.toRoute()}
-    }
-
-
-    override suspend fun getSharedRoutesWithFilter(uid: String, filterData: FilterData): List<Route> {
-        val routeResponseList = ArrayList<RouteResponse>()
-        var minDistanceMeters: Int? = null
-        var maxDistanceMeters: Int? = null
-
-        filterData.minDistanceKm?.let {
-            minDistanceMeters =
-                if(it == 0) null
-                else it * 1000
-        }
-        filterData.maxDistanceKm?.let {
-            maxDistanceMeters =
-                if (it == MyRoutesFragment.DISTANCE_SLIDER_VALUE_TO.toInt()) null
-                else it * 1000
-        }
-
-        var query = firestore.collection("routes")
-            .whereNotEqualTo("userId", uid)
-            .whereIn("sharingType", listOf(SharingType.PUBLIC.name, SharingType.PUBLIC_WITH_PRIVATE_PHOTOS.name))
-        maxDistanceMeters?.let { query = query.whereLessThanOrEqualTo("distance", it) }
-        minDistanceMeters?.let { query = query.whereGreaterThanOrEqualTo("distance", it) }
-        val documents = query.get().await()
-
-        for (doc in documents)
-            doc.toObject(RouteResponse::class.java)
-                .let { routeResponseList.add(it) }
         return routeResponseList.map { it.toRoute()}
     }
 }
