@@ -30,7 +30,7 @@ import pl.jakubokrasa.bikeroutes.features.common.segments.presentation.GetSegmen
 import pl.jakubokrasa.bikeroutes.features.common.segments.presentation.model.SegmentDisplayable
 import pl.jakubokrasa.bikeroutes.features.map.domain.usecase.GetPointsFromRemoteUseCase
 import pl.jakubokrasa.bikeroutes.features.map.presentation.model.PointDisplayable
-import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteDisplayable
+import pl.jakubokrasa.bikeroutes.features.common.routes.presentation.model.RouteDisplayable
 import pl.jakubokrasa.bikeroutes.features.myroutes.domain.*
 import pl.jakubokrasa.bikeroutes.features.myroutes.navigation.MyRoutesNavigator
 
@@ -124,7 +124,7 @@ class MyRoutesViewModel(
                 result ->
             setIdleState()
             result.onSuccess {
-                _myRoutes.value = it.map { route ->  RouteDisplayable(route)}
+                _myRoutes.value = it.map { route ->  RouteDisplayable(route) }
                 _isFilter.value = true
                 handleSuccess("getMyRoutesWithFilter")
             }
@@ -142,7 +142,7 @@ class MyRoutesViewModel(
                 result ->
             setIdleState()
             result.onSuccess {
-                _myRoutes.value = it.map { route ->  RouteDisplayable(route)}
+                _myRoutes.value = it.map { route ->  RouteDisplayable(route) }
                 _isFilter.value = false
                 handleSuccess("getMyRoutes")
             }

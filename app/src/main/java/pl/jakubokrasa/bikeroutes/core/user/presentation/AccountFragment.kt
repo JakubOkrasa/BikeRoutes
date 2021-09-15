@@ -42,14 +42,14 @@ class AccountFragment(): BaseFragment<UserViewModel>(R.layout.fragment_account) 
     }
 
     private fun openWebsite(url: String) {
-        var url = url
+        var urlVar = url
         try{
-            if (!url.startsWith("http://") && !url.startsWith("https://")) url = "http://$url";
+            if (!urlVar.startsWith("http://") && !urlVar.startsWith("https://")) urlVar = "http://$urlVar";
             val intent = Intent(Intent.ACTION_VIEW)
-            intent.data = Uri.parse(url)
+            intent.data = Uri.parse(urlVar)
             startActivity(intent)
         } catch(e: Exception) {
-            Toast.makeText(context, "An error occrured", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "An error occurred", Toast.LENGTH_SHORT).show()
         }
 
     }

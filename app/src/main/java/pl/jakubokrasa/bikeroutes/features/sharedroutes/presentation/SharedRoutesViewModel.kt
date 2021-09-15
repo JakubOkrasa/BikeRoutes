@@ -10,7 +10,7 @@ import pl.jakubokrasa.bikeroutes.features.common.filter.domain.model.FilterData
 import pl.jakubokrasa.bikeroutes.features.common.filter.presentation.model.GeocodingItemDisplayable
 import pl.jakubokrasa.bikeroutes.features.map.domain.usecase.GetPointsFromRemoteUseCase
 import pl.jakubokrasa.bikeroutes.features.map.presentation.model.PointDisplayable
-import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteDisplayable
+import pl.jakubokrasa.bikeroutes.features.common.routes.presentation.model.RouteDisplayable
 import pl.jakubokrasa.bikeroutes.features.sharedroutes.domain.GetSharedRoutesUseCase
 import pl.jakubokrasa.bikeroutes.features.sharedroutes.domain.GetSharedRoutesWithFilterUseCase
 import pl.jakubokrasa.bikeroutes.features.sharedroutes.navigation.SharedRoutesNavigator
@@ -41,7 +41,7 @@ class SharedRoutesViewModel(
                 result ->
             setIdleState()
             result.onSuccess {
-                _sharedRoutes.value = it.map { route ->  RouteDisplayable(route)}
+                _sharedRoutes.value = it.map { route ->  RouteDisplayable(route) }
                 _isFilter.value = true
                 handleSuccess("getSharedRoutesWithFilter")
             }
@@ -59,7 +59,7 @@ class SharedRoutesViewModel(
                 result ->
             setIdleState()
             result.onSuccess {
-                _sharedRoutes.value = it.map { route ->  RouteDisplayable(route)}
+                _sharedRoutes.value = it.map { route ->  RouteDisplayable(route) }
                 _isFilter.value = false
                 handleSuccess("getSharedRoutes")
             }

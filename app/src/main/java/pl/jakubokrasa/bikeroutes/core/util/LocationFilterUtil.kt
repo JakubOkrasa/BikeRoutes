@@ -1,4 +1,4 @@
-package pl.jakubokrasa.bikeroutes.features.common.domain
+package pl.jakubokrasa.bikeroutes.core.util
 
 import pl.jakubokrasa.bikeroutes.features.common.filter.domain.model.BoundingBoxData
 

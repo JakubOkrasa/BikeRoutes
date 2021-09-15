@@ -9,7 +9,7 @@ import pl.jakubokrasa.bikeroutes.core.base.presentation.BaseFragment
 import pl.jakubokrasa.bikeroutes.core.extensions.makeGone
 import pl.jakubokrasa.bikeroutes.core.extensions.makeVisible
 import pl.jakubokrasa.bikeroutes.databinding.FragmentSharedRoutesBinding
-import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteDisplayable
+import pl.jakubokrasa.bikeroutes.features.common.routes.presentation.model.RouteDisplayable
 
  class SharedRoutesFragment : BaseFragment<SharedRoutesViewModel>(R.layout.fragment_shared_routes){
     private var _binding: FragmentSharedRoutesBinding? = null

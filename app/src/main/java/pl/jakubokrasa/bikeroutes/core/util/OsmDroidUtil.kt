@@ -27,12 +27,6 @@ fun MapView.setBaseMapViewProperties() {
     setMultiTouchControls(true)
 }
 
-//fun Polyline.setBaseProperties() {
-//    if (!isEnabled) isEnabled = true //we get the location for the first time
-//    outlinePaint.strokeWidth = routeWidth
-//    outlinePaint.color = routeColor
-//}
-
 fun getSegmentBorderPaint(): Paint {
     val paintBorder = Paint()
     paintBorder.strokeWidth = 20F

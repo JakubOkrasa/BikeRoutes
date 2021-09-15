@@ -57,7 +57,7 @@ class MapFragment() : BaseFragment<MapViewModel>(R.layout.fragment_map), KoinCom
     private var _binding: FragmentMapBinding? = null
     private val binding get() = _binding!! // This property is only valid between onCreateView and onDestroyView.
 
-    private var mapMode = MapMode.followLocation
+    private var mapMode = MapMode.FollowLocation
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -151,7 +151,7 @@ class MapFragment() : BaseFragment<MapViewModel>(R.layout.fragment_map), KoinCom
             if (!polyline.isEnabled) polyline.isEnabled = true //we get the location for the first time
         }
         showCurrentLocationMarker(geoPoint)
-        if(mapMode == MapMode.followLocation) binding.mapView.controller.animateTo(geoPoint)
+        if(mapMode == MapMode.FollowLocation) binding.mapView.controller.animateTo(geoPoint)
         binding.mapView.invalidate()
     }
 
@@ -206,7 +206,7 @@ class MapFragment() : BaseFragment<MapViewModel>(R.layout.fragment_map), KoinCom
 
     private val btShowLocationOnClick = View.OnClickListener {
         binding.mapView.controller.animateTo(mPreviousLocMarker.position)
-        mapMode = MapMode.followLocation
+        mapMode = MapMode.FollowLocation
     }
 
     private val btStopRecordOnClick = View.OnClickListener()  {
@@ -236,7 +236,7 @@ class MapFragment() : BaseFragment<MapViewModel>(R.layout.fragment_map), KoinCom
 
     @SuppressLint("ClickableViewAccessibility")
     private val mapModeTouchListener = View.OnTouchListener { _, _ ->
-        mapMode = MapMode.moveFreely
+        mapMode = MapMode.MoveFreely
         false //
     }
 

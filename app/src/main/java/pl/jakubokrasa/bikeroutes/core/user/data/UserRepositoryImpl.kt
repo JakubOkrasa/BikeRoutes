@@ -1,8 +1,8 @@
-package pl.jakubokrasa.bikeroutes.core.user.data.remote
+package pl.jakubokrasa.bikeroutes.core.user.data
 
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
-import pl.jakubokrasa.bikeroutes.core.user.data.remote.model.UserResponse
+import pl.jakubokrasa.bikeroutes.core.user.data.model.UserResponse
 import pl.jakubokrasa.bikeroutes.core.user.domain.UserRepository
 import pl.jakubokrasa.bikeroutes.core.user.domain.model.User
 

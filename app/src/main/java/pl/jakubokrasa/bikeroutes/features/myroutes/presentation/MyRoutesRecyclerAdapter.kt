@@ -8,7 +8,7 @@ import pl.jakubokrasa.bikeroutes.core.util.getFormattedDistance
 import pl.jakubokrasa.bikeroutes.core.util.getFormattedRideTime
 import pl.jakubokrasa.bikeroutes.core.util.getFormattedSharingTypeName
 import pl.jakubokrasa.bikeroutes.databinding.RvMyroutesItemBinding
-import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteDisplayable
+import pl.jakubokrasa.bikeroutes.features.common.routes.presentation.model.RouteDisplayable
 
 class MyRoutesRecyclerAdapter() : RecyclerView.Adapter<MyRoutesRecyclerAdapter.MyRoutesViewHolder>() {
 

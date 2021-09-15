@@ -7,12 +7,10 @@ import pl.jakubokrasa.bikeroutes.features.map.domain.model.GeoPointData
 
 class GeoPointConverter {
     @TypeConverter
-    fun toGeoPoint(data: String?): GeoPointData {
-        return Gson().fromJson(data, GeoPointData::class.java)
-    }
+    fun toGeoPoint(data: String?): GeoPointData
+        = Gson().fromJson(data, GeoPointData::class.java)
 
     @TypeConverter
-    fun toJson(geoPointData: GeoPointData?): String {
-        return Gson().toJson(geoPointData)
-    }
+    fun toJson(geoPointData: GeoPointData?)
+        = Gson().toJson(geoPointData)
 }

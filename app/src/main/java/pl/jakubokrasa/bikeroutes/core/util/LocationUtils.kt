@@ -14,7 +14,6 @@ import org.koin.core.KoinComponent
 import org.koin.core.inject
 
 class LocationUtils(private val activity: Activity): KoinComponent {
-    private val preferenceHelper: PreferenceHelper by inject()
     private val settingsClient: SettingsClient by inject()
     private val locationSettingsRequest: LocationSettingsRequest by inject()
 

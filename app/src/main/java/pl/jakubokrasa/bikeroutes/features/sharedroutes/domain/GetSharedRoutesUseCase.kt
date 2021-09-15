@@ -6,7 +6,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import pl.jakubokrasa.bikeroutes.core.user.domain.UserAuth
 import pl.jakubokrasa.bikeroutes.features.common.routes.domain.RouteRepository
-import pl.jakubokrasa.bikeroutes.features.map.domain.model.Route
+import pl.jakubokrasa.bikeroutes.features.common.routes.domain.model.Route
 
 class GetSharedRoutesUseCase(
     private val repository: RouteRepository,

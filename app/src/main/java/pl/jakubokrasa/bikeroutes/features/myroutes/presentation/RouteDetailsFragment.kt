@@ -33,7 +33,7 @@ import pl.jakubokrasa.bikeroutes.features.common.photos.presentation.PhotosRecyc
 import pl.jakubokrasa.bikeroutes.features.common.photos.presentation.model.PhotoInfoDisplayable
 import pl.jakubokrasa.bikeroutes.features.common.segments.presentation.model.SegmentDisplayable
 import pl.jakubokrasa.bikeroutes.features.map.presentation.model.PointDisplayable
-import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteDisplayable
+import pl.jakubokrasa.bikeroutes.features.common.routes.presentation.model.RouteDisplayable
 import pl.jakubokrasa.bikeroutes.features.common.reviews.presentation.ReviewsRecyclerAdapter
 import pl.jakubokrasa.bikeroutes.features.common.reviews.presentation.model.ReviewDisplayable
 import java.util.*
