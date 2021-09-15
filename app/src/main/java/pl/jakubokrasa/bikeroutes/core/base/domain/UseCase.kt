@@ -13,7 +13,7 @@ abstract class UseCase<out Type, in Params> {
     ) {
         scope.launch {
             val result = withContext(dispatcher) {
-                runCatching { action(params) } //dzieki runcatching, w viemodelu bedzie mozna wywolac onSuccess / onFailure
+                runCatching { action(params) }
             }
             onResult(result)
         }

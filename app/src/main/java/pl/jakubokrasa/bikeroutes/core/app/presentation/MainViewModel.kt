@@ -4,10 +4,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.hadilq.liveevent.LiveEvent
-import pl.jakubokrasa.bikeroutes.core.user.domain.IsUserSignedInUseCase
 import pl.jakubokrasa.bikeroutes.core.base.presentation.BaseViewModel
 import pl.jakubokrasa.bikeroutes.core.user.domain.DataSignIn
 import pl.jakubokrasa.bikeroutes.core.user.domain.GetUserUseCase
+import pl.jakubokrasa.bikeroutes.core.user.domain.IsUserSignedInUseCase
 import pl.jakubokrasa.bikeroutes.core.user.domain.SignInUseCase
 import pl.jakubokrasa.bikeroutes.core.util.PreferenceHelper
 
@@ -16,7 +16,7 @@ class MainViewModel(
     private val isUserEmailSignedInUseCase: IsUserSignedInUseCase,
     private val signInUseCase: SignInUseCase,
     private val getUserUseCase: GetUserUseCase,
-): BaseViewModel() { //todo isUserSignedIN in BaseVM
+): BaseViewModel() {
     override val LOG_TAG: String = MainViewModel::class.simpleName ?: "unknown"
     private val _isSignedIn by lazy { MutableLiveData<Boolean>()
         .also { it.value = isUserSignedIn() }
@@ -55,7 +55,7 @@ class MainViewModel(
                     getUser(it)
                     preferenceHelper.saveUserDataToSharedPreferences(email, password, it)
                 }
-                _isSignedIn.value = true //todo osobna livedata do tego chyba nie jest potrzebna
+                _isSignedIn.value = true
                 handleSuccess("signIn")
             }
             result.onFailure {
