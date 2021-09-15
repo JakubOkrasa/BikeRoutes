@@ -4,7 +4,7 @@ import pl.jakubokrasa.bikeroutes.core.util.enums.SharingType
 import pl.jakubokrasa.bikeroutes.features.common.filter.domain.model.BoundingBoxData
 import pl.jakubokrasa.bikeroutes.features.map.domain.model.Route
 
-class RouteResponse(
+data class RouteResponse(
     val routeId: String,
     val createdAt: Long,
     val userId: String,

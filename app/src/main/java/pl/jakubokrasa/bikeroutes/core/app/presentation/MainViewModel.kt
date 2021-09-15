@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.hadilq.liveevent.LiveEvent
-import pl.jakubokrasa.bikeroutes.core.app.domain.IsUserSignedInUseCase
+import pl.jakubokrasa.bikeroutes.core.user.domain.IsUserSignedInUseCase
 import pl.jakubokrasa.bikeroutes.core.base.presentation.BaseViewModel
 import pl.jakubokrasa.bikeroutes.core.user.domain.DataSignIn
 import pl.jakubokrasa.bikeroutes.core.user.domain.GetUserUseCase

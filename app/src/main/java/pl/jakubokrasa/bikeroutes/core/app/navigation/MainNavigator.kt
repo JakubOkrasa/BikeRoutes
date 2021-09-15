@@ -1,4 +1,4 @@
-package pl.jakubokrasa.bikeroutes.core.app.presentation
+package pl.jakubokrasa.bikeroutes.core.app.navigation
 
 import androidx.annotation.IdRes
 import androidx.fragment.app.FragmentActivity

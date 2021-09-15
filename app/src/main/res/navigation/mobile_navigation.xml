@@ -118,7 +118,7 @@
         android:label="MainActivity" />
     <fragment
         android:id="@+id/followRouteFragment"
-        android:name="pl.jakubokrasa.bikeroutes.features.myroutes.presentation.FollowRouteFragment"
+        android:name="pl.jakubokrasa.bikeroutes.features.common.followroute.presentation.FollowRouteFragment"
         android:label="fragment_follow_route"
         tools:layout="@layout/fragment_followroute" />
     <fragment
