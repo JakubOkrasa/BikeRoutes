@@ -5,15 +5,8 @@ import com.google.android.material.slider.RangeSlider
 
 
 fun View.makeVisible() = run { visibility = View.VISIBLE }
-
 fun View.makeGone() = run { visibility = View.GONE }
-
 fun View.isVisible() = visibility == View.VISIBLE
 
-fun RangeSlider.getValFrom(): Int {
-    return values[0].toInt()
-}
-
-fun RangeSlider.getValTo(): Int {
-    return values[1].toInt()
-}
+fun RangeSlider.getValFrom() = values[0].toInt()
+fun RangeSlider.getValTo() = values[1].toInt()
