@@ -60,7 +60,7 @@ class DialogMyRoutesFilter(
 
     private fun isLocationChanged() = previousLocation != dlgBinding.etLocation.text.toString()
 
-    private fun showFilterInfoInFragment() { //todo this method should be in fragment
+    private fun showFilterInfoInFragment() {
         showDistanceInfoInFragment()
     }
 
@@ -105,15 +105,12 @@ class DialogMyRoutesFilter(
         showLocationInfoInFragment(geocodingItemDisplayable.displayName)
     }
 
-
-
     private val btSaveOnClick = View.OnClickListener {
         if(dlgBinding.etLocation.text.length == 1 || dlgBinding.etLocation.text.length == 2) {
             showToast("Location must contain at least 3 characters")
             return@OnClickListener
         }
         
-
         val filterData = FilterData()
         if(isDistanceChanged()) {
             filterData.minDistanceKm = dlgBinding.sliderDistance.getValFrom()

@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import pl.jakubokrasa.bikeroutes.R
 import pl.jakubokrasa.bikeroutes.databinding.RvPhotoItemBinding
 import pl.jakubokrasa.bikeroutes.features.common.photos.presentation.model.PhotoInfoDisplayable
 
@@ -44,6 +45,7 @@ class PhotosRecyclerAdapter: RecyclerView.Adapter<PhotosRecyclerAdapter.PhotosVi
             with(binding) {
                 Glide.with(context)
                     .load(photo.downloadUrl)
+                    .placeholder(R.drawable.ic_baseline_photo_24)
                     .centerCrop()
                     .into(smallPhoto)
             }

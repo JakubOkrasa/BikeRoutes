@@ -3,11 +3,11 @@ package pl.jakubokrasa.bikeroutes.features.common.routes.data
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 import pl.jakubokrasa.bikeroutes.core.util.enums.SharingType
-import pl.jakubokrasa.bikeroutes.features.common.routes.domain.RouteRepository
-import pl.jakubokrasa.bikeroutes.features.map.data.remote.model.PointResponse
 import pl.jakubokrasa.bikeroutes.features.common.routes.data.model.RouteResponse
-import pl.jakubokrasa.bikeroutes.features.map.domain.model.Point
+import pl.jakubokrasa.bikeroutes.features.common.routes.domain.RouteRepository
 import pl.jakubokrasa.bikeroutes.features.common.routes.domain.model.Route
+import pl.jakubokrasa.bikeroutes.features.map.data.remote.model.PointResponse
+import pl.jakubokrasa.bikeroutes.features.map.domain.model.Point
 
 class RouteRepositoryImpl(
     private val firestore: FirebaseFirestore,
@@ -34,17 +34,13 @@ class RouteRepositoryImpl(
     }
 
     override suspend fun getMyRoutes(uid: String): List<Route> {
-        val routeResponseList = ArrayList<RouteResponse>()
-        val documents =
-            firestore
+        return firestore
                 .collection("routes")
                 .whereEqualTo("userId", uid)
-                .get().await().documents
-
-        for (doc in documents)
-            doc.toObject(RouteResponse::class.java)?.let { routeResponseList.add(it) }
-        return routeResponseList.map { it.toRoute()}
-    }
+                .get()
+                .await()
+                .map { doc -> doc.toObject(RouteResponse::class.java).toRoute() }
+        }
 
     override suspend fun updateRoute(route: Route) {
         val routeResponse = RouteResponse(route)
@@ -66,16 +62,10 @@ class RouteRepositoryImpl(
     }
 
     override suspend fun getSharedRoutes(uid: String): List<Route> {
-        val routeResponseList = ArrayList<RouteResponse>()
-        val documents =
-            firestore
+        return firestore
                 .collection("routes")
                 .whereNotEqualTo("userId", uid)
                 .whereIn("sharingType", listOf(SharingType.PUBLIC.name, SharingType.PUBLIC_WITH_PRIVATE_PHOTOS.name))
-                .get().await().documents
-
-        for (doc in documents)
-            doc.toObject(RouteResponse::class.java)?.let { routeResponseList.add(it) }
-        return routeResponseList.map { it.toRoute()}
+                .get().await().map { doc -> doc.toObject(RouteResponse::class.java).toRoute() }
     }
 }

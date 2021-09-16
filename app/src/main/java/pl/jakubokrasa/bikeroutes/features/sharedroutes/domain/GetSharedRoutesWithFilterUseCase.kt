@@ -53,7 +53,6 @@ class GetSharedRoutesWithFilterUseCase (
         return routes
     }
 
-
 private fun isBoundingBoxNotInitialized(it: BoundingBoxData) =
     it.latNorth == 0.0 && it.latSouth == 0.0 && it.lonEast == 0.0 && it.lonWest == 0.0
 }

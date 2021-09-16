@@ -22,9 +22,7 @@ import pl.jakubokrasa.bikeroutes.features.common.routes.presentation.model.Route
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentSharedRoutesBinding.bind(view)
-        initRecycler() // todo ten init powinien być w initViews() ale wtedy jest java.lang.NullPointerException
-                        //at pl.jakubokrasa.bikeroutes.features.myroutes.presentation.SharedRoutesFragment.getBinding(SharedRoutesFragment.kt:17)
-                        //w AA to działą
+        initRecycler()
         viewModel.getSharedRoutes()
 
         binding.btFilter.setOnClickListener(btFilterOnClick)

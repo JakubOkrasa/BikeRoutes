@@ -17,7 +17,6 @@ class SharedRoutesNavigator(private val fragmentNavigator: FragmentNavigator) {
                     RouteDetailsFragment.POINTS_BUNDLE_KEY to points,
                     RouteDetailsFragment.IS_MY_ROUTE_BUNDLE_KEY to false,
             )
-
     }
 
     fun goBack() {

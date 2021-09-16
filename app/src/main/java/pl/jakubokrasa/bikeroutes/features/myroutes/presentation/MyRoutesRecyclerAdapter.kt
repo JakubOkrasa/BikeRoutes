@@ -49,7 +49,6 @@ class MyRoutesRecyclerAdapter() : RecyclerView.Adapter<MyRoutesRecyclerAdapter.M
             }
         }
         init {
-            // Define click listener for the MyRoutesViewHolder's View.
             itemView.setOnClickListener {
                 onItemClick?.invoke(routes[adapterPosition])
             }

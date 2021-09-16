@@ -16,7 +16,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.edit
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.bumptech.glide.Glide
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.osmdroid.util.GeoPoint
@@ -24,18 +23,20 @@ import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Polyline
 import pl.jakubokrasa.bikeroutes.R
 import pl.jakubokrasa.bikeroutes.core.base.presentation.BaseFragment
-import pl.jakubokrasa.bikeroutes.core.extensions.*
+import pl.jakubokrasa.bikeroutes.core.extensions.hideKeyboard
+import pl.jakubokrasa.bikeroutes.core.extensions.makeGone
+import pl.jakubokrasa.bikeroutes.core.extensions.makeVisible
 import pl.jakubokrasa.bikeroutes.core.util.*
 import pl.jakubokrasa.bikeroutes.core.util.enums.SharingType
 import pl.jakubokrasa.bikeroutes.databinding.FragmentRouteDetailsBinding
-import pl.jakubokrasa.bikeroutes.features.common.routes.navigation.CommonRoutesNavigator
 import pl.jakubokrasa.bikeroutes.features.common.photos.presentation.PhotosRecyclerAdapter
 import pl.jakubokrasa.bikeroutes.features.common.photos.presentation.model.PhotoInfoDisplayable
-import pl.jakubokrasa.bikeroutes.features.common.segments.presentation.model.SegmentDisplayable
-import pl.jakubokrasa.bikeroutes.features.map.presentation.model.PointDisplayable
-import pl.jakubokrasa.bikeroutes.features.common.routes.presentation.model.RouteDisplayable
 import pl.jakubokrasa.bikeroutes.features.common.reviews.presentation.ReviewsRecyclerAdapter
 import pl.jakubokrasa.bikeroutes.features.common.reviews.presentation.model.ReviewDisplayable
+import pl.jakubokrasa.bikeroutes.features.common.routes.navigation.CommonRoutesNavigator
+import pl.jakubokrasa.bikeroutes.features.common.routes.presentation.model.RouteDisplayable
+import pl.jakubokrasa.bikeroutes.features.common.segments.presentation.model.SegmentDisplayable
+import pl.jakubokrasa.bikeroutes.features.map.presentation.model.PointDisplayable
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -61,7 +62,6 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
         uri?.let {
             val picturePath = FileUtils(requireContext()).getPath(uri)
             viewModel.addPhoto(route.routeId, picturePath, route.sharingType)
-//            initRecycler() //w MyRoutesFragment RV jest inicjowany także w onResume, nie pamiętam czemu
         }
     }
 
@@ -132,7 +132,8 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
             val photosLayoutManager = LinearLayoutManager(requireContext())
             photosLayoutManager.orientation = LinearLayoutManager.HORIZONTAL
             layoutManager = photosLayoutManager
-            photosRecyclerAdapter.onItemClick = { photos, position -> navigator.openGalleryFragment(
+            photosRecyclerAdapter.onItemClick = { photos, position ->
+                navigator.openGalleryFragment(
                 photos,
                 position)
             }
@@ -170,15 +171,7 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
 
     private fun observeShareUri() {
         viewModel.exportedRouteUri.observe(viewLifecycleOwner, { uri ->
-                        Glide.with(requireContext())
-//                .load(cardviewImage)
-//                .placeholder(R.drawable.ic_baseline_photo_24)
-//                .apply(RequestOptions().centerInside())
-//                .into(binding.imgTestExport)
-
-
             startShareChooser(uri)
-
         })
     }
 
@@ -359,8 +352,6 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
                     updateToolbar()
                     true
                 }
-
-
             }
             R.id.action_routedetails_remove -> {
                 if (isMyRoute()) initializeDialogRemove()
@@ -389,7 +380,6 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
         with(binding) {
             route.name = etRouteName.text.toString()
             route.description = etRouteDescription.text.toString()
-//            if (swPrivate.isChecked) route.sharingType = SharingType.PRIVATE else route.sharingType = SharingType.PUBLIC
             when(spinnerVisibility.selectedItem) {
                 SharingType.PUBLIC -> route.sharingType = SharingType.PUBLIC
                 SharingType.PRIVATE -> route.sharingType = SharingType.PRIVATE
@@ -467,7 +457,7 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
 
     private fun setPoints() {
         val serializable = arguments
-            ?.getSerializable(POINTS_BUNDLE_KEY) //I use Serializable instead of Parcelable because I didn't find any simple solution to pass a List through Parcelable
+            ?.getSerializable(POINTS_BUNDLE_KEY) //Serializable was used instead of Parcelable because didn't find any simple solution to pass a List through Parcelable
                 if(serializable is List<*>?) {
                     serializable.let {
                         points = serializable as List<PointDisplayable>

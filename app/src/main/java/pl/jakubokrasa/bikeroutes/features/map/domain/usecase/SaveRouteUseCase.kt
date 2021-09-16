@@ -19,7 +19,7 @@ class SaveRouteUseCase(
     private var rideTimeMinutes = 0
 
     override suspend fun action(params: DataSaveRoute) {
-        val points = localRepository.getPoints2()
+        val points = localRepository.getPoints()
         if(points.isNotEmpty()) {
             val route = Route(
                 "",

@@ -10,14 +10,12 @@ import pl.jakubokrasa.bikeroutes.features.myroutes.presentation.RouteDetailsFrag
 class MyRoutesNavigator(private val fragmentNavigator: FragmentNavigator) {
 
     fun openRouteDetailsFragment(route: RouteDisplayable, points: List<PointDisplayable>) {
-
         fragmentNavigator.navigateTo(
             R.id.action_my_routes_to_routeDetailsFragment,
             null,
         RouteDetailsFragment.ROUTE_BUNDLE_KEY to route,
                 RouteDetailsFragment.POINTS_BUNDLE_KEY to points,
                 RouteDetailsFragment.IS_MY_ROUTE_BUNDLE_KEY to true)
-
     }
 
     fun goBack() {

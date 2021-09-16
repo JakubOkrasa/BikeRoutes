@@ -11,7 +11,7 @@ data class ReviewResponse(
     val content: String,
 )
 {
-    constructor(): this("", "", "", "", 0L, "")
+    constructor(): this("", "", "", "", 0L, "") // for Firestore
 
     constructor(review: Review): this(
         reviewId = review.reviewId,

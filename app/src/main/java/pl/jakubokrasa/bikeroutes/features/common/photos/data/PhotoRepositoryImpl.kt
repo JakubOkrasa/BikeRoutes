@@ -5,9 +5,9 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.StorageReference
 import kotlinx.coroutines.tasks.await
 import pl.jakubokrasa.bikeroutes.core.util.enums.SharingType
-import pl.jakubokrasa.bikeroutes.features.common.photos.domain.model.PhotoInfo
-import pl.jakubokrasa.bikeroutes.features.common.photos.domain.PhotoRepository
 import pl.jakubokrasa.bikeroutes.features.common.photos.data.model.PhotoInfoResponse
+import pl.jakubokrasa.bikeroutes.features.common.photos.domain.PhotoRepository
+import pl.jakubokrasa.bikeroutes.features.common.photos.domain.model.PhotoInfo
 import java.io.File
 
 class PhotoRepositoryImpl(
@@ -15,14 +15,14 @@ class PhotoRepositoryImpl(
     private val storageRef: StorageReference
 ): PhotoRepository {
     override suspend fun getPhotos(routeId: String): List<PhotoInfo> {
-        val photoResponseList = ArrayList<PhotoInfoResponse>()
-        val documents = firestore.collection("photos")
+        return firestore.collection("photos")
             .whereEqualTo("routeId", routeId)
-            .get().await().documents
-
-        for (doc in documents)
-            doc.toObject(PhotoInfoResponse::class.java)?.let { photoResponseList.add(it) }
-        return photoResponseList.map { it.toPhotoInfo() }
+            .get()
+            .await()
+            .map { doc -> doc
+                    .toObject(PhotoInfoResponse::class.java)
+                    .toPhotoInfo()
+            }
     }
 
     override suspend fun addPhoto(routeId: String, localPath: String, sharingType: SharingType) {

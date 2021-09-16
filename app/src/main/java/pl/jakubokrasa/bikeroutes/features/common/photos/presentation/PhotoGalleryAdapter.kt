@@ -2,6 +2,7 @@ package pl.jakubokrasa.bikeroutes.features.common.photos.presentation
 
 import android.content.Context
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -64,12 +65,7 @@ class PhotoGalleryAdapter(
                     .apply(RequestOptions().centerInside())
                     .into(galleryImage)
 
-                galleryImage.setOnClickListener {
-                    if(topBar.isVisible())
-                        topBar.makeGone()
-                    else
-                        topBar.makeVisible()
-                }
+                galleryImage.setOnClickListener(galleryImageOnClick)
 
                 ibRemovePhoto.setOnClickListener {
                     DialogRemovePhoto(context, viewModel, photo, adapterPosition).show()
@@ -79,6 +75,15 @@ class PhotoGalleryAdapter(
 
         fun hideTopBar() {
             binding.topBar.makeGone()
+        }
+
+        private val galleryImageOnClick = View.OnClickListener {
+            with(binding) {
+                if(topBar.isVisible())
+                    topBar.makeGone()
+                else
+                    topBar.makeVisible()
+            }
         }
     }
 

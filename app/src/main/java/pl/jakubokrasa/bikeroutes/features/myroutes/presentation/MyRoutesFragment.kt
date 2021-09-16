@@ -22,9 +22,7 @@ import pl.jakubokrasa.bikeroutes.features.common.routes.presentation.model.Route
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentMyRoutesBinding.bind(view)
-        initRecycler() // todo ten init powinien być w initViews() ale wtedy jest java.lang.NullPointerException
-                        //at pl.jakubokrasa.bikeroutes.features.myroutes.presentation.MyRoutesFragment.getBinding(MyRoutesFragment.kt:17)
-                        //w AA to działą
+        initRecycler()
         viewModel.getMyRoutes()
 
         binding.btFilter.setOnClickListener(btFilterOnClick)
@@ -109,12 +107,12 @@ import pl.jakubokrasa.bikeroutes.features.common.routes.presentation.model.Route
 
      override fun onPendingState() {
          super.onPendingState()
-         binding.progressLayout.visibility = View.VISIBLE
+         binding.progressLayout.makeVisible()
      }
 
      override fun onIdleState() {
          super.onIdleState()
-         binding.progressLayout.visibility = View.GONE
+         binding.progressLayout.makeGone()
      }
 
     companion object {
