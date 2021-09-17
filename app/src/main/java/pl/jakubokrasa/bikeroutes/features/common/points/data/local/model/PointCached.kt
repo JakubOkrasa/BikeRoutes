@@ -1,4 +1,4 @@
-package pl.jakubokrasa.bikeroutes.features.map.data.local.model
+package pl.jakubokrasa.bikeroutes.features.common.points.data.local.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

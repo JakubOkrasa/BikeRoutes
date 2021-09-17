@@ -1,6 +1,4 @@
-package pl.jakubokrasa.bikeroutes.features.myroutes.data.model
-
-import pl.jakubokrasa.bikeroutes.features.map.data.remote.model.PointResponse
+package pl.jakubokrasa.bikeroutes.features.common.points.data.remote.model
 
 // for Firestore model deserializer
 data class PointDocument(

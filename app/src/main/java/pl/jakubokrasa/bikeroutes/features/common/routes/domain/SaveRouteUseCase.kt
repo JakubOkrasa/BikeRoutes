@@ -5,7 +5,7 @@ import pl.jakubokrasa.bikeroutes.core.user.domain.UserAuth
 import pl.jakubokrasa.bikeroutes.core.util.enums.SharingType
 import pl.jakubokrasa.bikeroutes.features.common.filter.domain.model.BoundingBoxData
 import pl.jakubokrasa.bikeroutes.features.common.routes.domain.RouteRepository
-import pl.jakubokrasa.bikeroutes.features.map.domain.PointLocalRepository
+import pl.jakubokrasa.bikeroutes.features.common.points.domain.PointLocalRepository
 import pl.jakubokrasa.bikeroutes.features.map.domain.model.Point
 import pl.jakubokrasa.bikeroutes.features.common.routes.domain.model.Route
 import java.util.concurrent.TimeUnit

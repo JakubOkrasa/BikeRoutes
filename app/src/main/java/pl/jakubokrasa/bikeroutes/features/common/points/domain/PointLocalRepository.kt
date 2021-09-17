@@ -1,4 +1,4 @@
-package pl.jakubokrasa.bikeroutes.features.map.domain
+package pl.jakubokrasa.bikeroutes.features.common.points.domain
 
 import androidx.lifecycle.LiveData
 import pl.jakubokrasa.bikeroutes.features.map.domain.model.GeoPointData

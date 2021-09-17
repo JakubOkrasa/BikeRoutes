@@ -1,4 +1,4 @@
-package pl.jakubokrasa.bikeroutes.features.map.domain
+package pl.jakubokrasa.bikeroutes.core.service
 
 import android.app.NotificationChannel
 import android.app.NotificationManager

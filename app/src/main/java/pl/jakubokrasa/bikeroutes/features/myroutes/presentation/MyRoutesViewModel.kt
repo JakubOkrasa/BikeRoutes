@@ -29,8 +29,12 @@ import pl.jakubokrasa.bikeroutes.features.common.segments.domain.GetSegmentsUseC
 import pl.jakubokrasa.bikeroutes.features.common.segments.presentation.GetSegmentBeginData
 import pl.jakubokrasa.bikeroutes.features.common.segments.presentation.GetSegmentPointHelper
 import pl.jakubokrasa.bikeroutes.features.common.segments.presentation.model.SegmentDisplayable
-import pl.jakubokrasa.bikeroutes.features.map.domain.usecase.GetPointsFromRemoteUseCase
-import pl.jakubokrasa.bikeroutes.features.map.presentation.model.PointDisplayable
+import pl.jakubokrasa.bikeroutes.features.common.points.domain.GetPointsFromRemoteUseCase
+import pl.jakubokrasa.bikeroutes.features.common.points.presentation.model.PointDisplayable
+import pl.jakubokrasa.bikeroutes.features.common.routes.domain.RemoveRouteUseCase
+import pl.jakubokrasa.bikeroutes.features.common.routes.domain.UpdateRouteUseCase
+import pl.jakubokrasa.bikeroutes.features.common.segments.domain.AddSegmentUseCase
+import pl.jakubokrasa.bikeroutes.features.common.segments.domain.RemoveSegmentUseCase
 import pl.jakubokrasa.bikeroutes.features.myroutes.domain.*
 import pl.jakubokrasa.bikeroutes.features.myroutes.navigation.MyRoutesNavigator
 

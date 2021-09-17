@@ -6,7 +6,7 @@ import pl.jakubokrasa.bikeroutes.core.util.enums.SharingType
 import pl.jakubokrasa.bikeroutes.features.common.routes.data.model.RouteResponse
 import pl.jakubokrasa.bikeroutes.features.common.routes.domain.RouteRepository
 import pl.jakubokrasa.bikeroutes.features.common.routes.domain.model.Route
-import pl.jakubokrasa.bikeroutes.features.map.data.remote.model.PointResponse
+import pl.jakubokrasa.bikeroutes.features.common.points.data.remote.model.PointResponse
 import pl.jakubokrasa.bikeroutes.features.map.domain.model.Point
 
 class RouteRepositoryImpl(

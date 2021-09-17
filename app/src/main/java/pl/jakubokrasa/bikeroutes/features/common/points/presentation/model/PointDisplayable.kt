@@ -1,4 +1,4 @@
-package pl.jakubokrasa.bikeroutes.features.map.presentation.model
+package pl.jakubokrasa.bikeroutes.features.common.points.presentation.model
 
 import org.osmdroid.util.GeoPoint
 import pl.jakubokrasa.bikeroutes.features.map.domain.model.GeoPointData

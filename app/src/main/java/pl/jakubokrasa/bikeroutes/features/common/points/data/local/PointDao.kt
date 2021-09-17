@@ -1,9 +1,9 @@
-package pl.jakubokrasa.bikeroutes.features.map.data.local
+package pl.jakubokrasa.bikeroutes.features.common.points.data.local
 
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Query
-import pl.jakubokrasa.bikeroutes.features.map.data.local.model.PointCached
+import pl.jakubokrasa.bikeroutes.features.common.points.data.local.model.PointCached
 import pl.jakubokrasa.bikeroutes.features.map.domain.model.GeoPointData
 
 @Dao

@@ -25,7 +25,7 @@ import pl.jakubokrasa.bikeroutes.core.util.PreferenceHelper.Companion.PREF_KEY_T
 import pl.jakubokrasa.bikeroutes.databinding.FragmentSegmentsBinding
 import pl.jakubokrasa.bikeroutes.features.common.routes.presentation.model.RouteDisplayable
 import pl.jakubokrasa.bikeroutes.features.common.segments.presentation.model.SegmentDisplayable
-import pl.jakubokrasa.bikeroutes.features.map.presentation.model.PointDisplayable
+import pl.jakubokrasa.bikeroutes.features.common.points.presentation.model.PointDisplayable
 import pl.jakubokrasa.bikeroutes.features.myroutes.presentation.DialogSegment
 import pl.jakubokrasa.bikeroutes.features.myroutes.presentation.MyRoutesViewModel
 import pl.jakubokrasa.bikeroutes.features.myroutes.presentation.RouteDetailsFragment.Companion.POINTS_BUNDLE_KEY

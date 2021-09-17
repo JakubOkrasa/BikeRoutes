@@ -1,8 +1,7 @@
-package pl.jakubokrasa.bikeroutes.features.map.domain.usecase
+package pl.jakubokrasa.bikeroutes.features.common.points.domain
 
 import androidx.lifecycle.LiveData
 import pl.jakubokrasa.bikeroutes.core.base.domain.SynchronousUseCase
-import pl.jakubokrasa.bikeroutes.features.map.domain.PointLocalRepository
 import pl.jakubokrasa.bikeroutes.features.map.domain.model.Point
 
 class GetPointsFromLocalSyncUseCase(private val repository: PointLocalRepository): SynchronousUseCase<LiveData<List<Point>>, Unit>() {

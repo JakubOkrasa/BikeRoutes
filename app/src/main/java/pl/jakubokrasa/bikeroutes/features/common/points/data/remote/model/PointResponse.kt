@@ -1,4 +1,4 @@
-package pl.jakubokrasa.bikeroutes.features.map.data.remote.model
+package pl.jakubokrasa.bikeroutes.features.common.points.data.remote.model
 
 import pl.jakubokrasa.bikeroutes.features.map.domain.model.GeoPointData
 import pl.jakubokrasa.bikeroutes.features.map.domain.model.Point

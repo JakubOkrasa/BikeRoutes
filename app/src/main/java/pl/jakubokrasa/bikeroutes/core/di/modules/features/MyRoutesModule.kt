@@ -14,6 +14,10 @@ import pl.jakubokrasa.bikeroutes.features.myroutes.presentation.MyRoutesViewMode
 import pl.jakubokrasa.bikeroutes.features.common.reviews.domain.AddReviewUseCase
 import pl.jakubokrasa.bikeroutes.features.common.reviews.domain.RemoveReviewUseCase
 import pl.jakubokrasa.bikeroutes.features.common.reviews.domain.UpdateReviewUseCase
+import pl.jakubokrasa.bikeroutes.features.common.routes.domain.RemoveRouteUseCase
+import pl.jakubokrasa.bikeroutes.features.common.routes.domain.UpdateRouteUseCase
+import pl.jakubokrasa.bikeroutes.features.common.segments.domain.AddSegmentUseCase
+import pl.jakubokrasa.bikeroutes.features.common.segments.domain.RemoveSegmentUseCase
 
 val myRoutesModule = module {
     factory { GetMyRoutesUseCase(get(), get()) }

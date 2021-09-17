@@ -1,10 +1,10 @@
-package pl.jakubokrasa.bikeroutes.features.map.data.remote
+package pl.jakubokrasa.bikeroutes.features.common.points.data.remote
 
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
-import pl.jakubokrasa.bikeroutes.features.map.domain.PointRemoteRepository
+import pl.jakubokrasa.bikeroutes.features.common.points.domain.PointRemoteRepository
 import pl.jakubokrasa.bikeroutes.features.map.domain.model.Point
-import pl.jakubokrasa.bikeroutes.features.myroutes.data.model.PointDocument
+import pl.jakubokrasa.bikeroutes.features.common.points.data.remote.model.PointDocument
 
 class PointRemoteRepositoryImpl(
     private val firestore: FirebaseFirestore,

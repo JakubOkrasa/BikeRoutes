@@ -36,7 +36,7 @@ import pl.jakubokrasa.bikeroutes.features.common.reviews.presentation.model.Revi
 import pl.jakubokrasa.bikeroutes.features.common.routes.navigation.CommonRoutesNavigator
 import pl.jakubokrasa.bikeroutes.features.common.routes.presentation.model.RouteDisplayable
 import pl.jakubokrasa.bikeroutes.features.common.segments.presentation.model.SegmentDisplayable
-import pl.jakubokrasa.bikeroutes.features.map.presentation.model.PointDisplayable
+import pl.jakubokrasa.bikeroutes.features.common.points.presentation.model.PointDisplayable
 import java.util.*
 import kotlin.collections.ArrayList
 

@@ -1,4 +1,4 @@
-package pl.jakubokrasa.bikeroutes.features.myroutes.domain
+package pl.jakubokrasa.bikeroutes.features.common.segments.domain
 
 import pl.jakubokrasa.bikeroutes.core.base.domain.UseCase
 import pl.jakubokrasa.bikeroutes.features.common.segments.domain.SegmentRepository

@@ -36,9 +36,9 @@ import pl.jakubokrasa.bikeroutes.core.util.PreferenceHelper.Companion.PREF_KEY_M
 import pl.jakubokrasa.bikeroutes.core.util.enums.MapMode
 import pl.jakubokrasa.bikeroutes.databinding.FragmentMapBinding
 import pl.jakubokrasa.bikeroutes.features.common.filter.domain.model.BoundingBoxData
-import pl.jakubokrasa.bikeroutes.features.map.domain.LocationService
+import pl.jakubokrasa.bikeroutes.core.service.LocationService
 import pl.jakubokrasa.bikeroutes.features.map.navigation.MapFrgNavigator
-import pl.jakubokrasa.bikeroutes.features.map.presentation.model.PointDisplayable
+import pl.jakubokrasa.bikeroutes.features.common.points.presentation.model.PointDisplayable
 
 
 class MapFragment() : BaseFragment<MapViewModel>(R.layout.fragment_map), KoinComponent {
