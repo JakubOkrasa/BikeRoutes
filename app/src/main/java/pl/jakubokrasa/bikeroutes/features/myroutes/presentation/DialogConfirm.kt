@@ -7,7 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.Window
 import pl.jakubokrasa.bikeroutes.databinding.DialogConfirmBinding
-import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteDisplayable
+import pl.jakubokrasa.bikeroutes.features.common.routes.presentation.model.RouteDisplayable
 
 class DialogConfirm(
     ctx: Context,

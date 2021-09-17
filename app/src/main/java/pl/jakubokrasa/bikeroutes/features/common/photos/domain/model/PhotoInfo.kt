@@ -8,4 +8,4 @@ data class PhotoInfo(
     val downloadUrl: String,
     val sharingType: SharingType,
     val name: String
-) {}
+)

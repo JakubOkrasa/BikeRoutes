@@ -25,7 +25,6 @@ import org.koin.core.inject
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.CustomZoomButtonsController
 import org.osmdroid.views.overlay.Marker
-import org.osmdroid.views.overlay.Overlay
 import org.osmdroid.views.overlay.Polyline
 import pl.jakubokrasa.bikeroutes.BuildConfig
 import pl.jakubokrasa.bikeroutes.R
@@ -44,7 +43,6 @@ import pl.jakubokrasa.bikeroutes.features.map.presentation.model.PointDisplayabl
 
 class MapFragment() : BaseFragment<MapViewModel>(R.layout.fragment_map), KoinComponent {
     private lateinit var polyline: Polyline
-    private lateinit var mRotationGestureOverlay: Overlay
     private lateinit var mPreviousLocMarker: Marker
     private val mLocalBR: LocalBroadcastManager by inject()
     private val mapFrgNavigator: MapFrgNavigator by inject()
@@ -53,11 +51,10 @@ class MapFragment() : BaseFragment<MapViewModel>(R.layout.fragment_map), KoinCom
         permissions.entries.forEach { Log.d(LOG_TAG, "permission: ${it.key} = ${it.value}") }
     }
 
-    //from https://developer.android.com/topic/libraries/view-binding
     private var _binding: FragmentMapBinding? = null
     private val binding get() = _binding!! // This property is only valid between onCreateView and onDestroyView.
 
-    private var mapMode = MapMode.followLocation
+    private var mapMode = MapMode.FollowLocation
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -68,7 +65,6 @@ class MapFragment() : BaseFragment<MapViewModel>(R.layout.fragment_map), KoinCom
         LocationUtils(activity as Activity).enableGpsIfNecessary()
         polyline = Polyline(binding.mapView)
         initObservers()
-
 
         binding.btStartRecord.setOnClickListener(btRecordRouteOnClick)
         binding.btStopRecord.setOnClickListener(btStopRecordOnClick)
@@ -133,10 +129,8 @@ class MapFragment() : BaseFragment<MapViewModel>(R.layout.fragment_map), KoinCom
     private fun requestPermissionsIfNecessary(permissions: Array<String>) {
         val permissionsToRequest: ArrayList<String> = ArrayList()
         for (perm in permissions) {
-            if (ContextCompat.checkSelfPermission(requireContext(), perm) != PackageManager.PERMISSION_GRANTED
-            ) { //todo check if context is from fragment (look at 2. comment https://stackoverflow.com/a/40760760/9343040)
+            if (ContextCompat.checkSelfPermission(requireContext(), perm) != PackageManager.PERMISSION_GRANTED)
                 permissionsToRequest.add(perm)
-            }
         }
         if (permissionsToRequest.isNotEmpty()) {
             requestMultiplePermissions.launch(permissionsToRequest.toTypedArray())
@@ -148,10 +142,10 @@ class MapFragment() : BaseFragment<MapViewModel>(R.layout.fragment_map), KoinCom
     private fun newLocationUpdateUI(geoPoint: GeoPoint) {
         if(isRecordingMode()) {
             binding.mapView.overlayManager.add(polyline)
-            if (!polyline.isEnabled) polyline.isEnabled = true //we get the location for the first time
+            if (!polyline.isEnabled) polyline.isEnabled = true //location got for the first time
         }
         showCurrentLocationMarker(geoPoint)
-        if(mapMode == MapMode.followLocation) binding.mapView.controller.animateTo(geoPoint)
+        if(mapMode == MapMode.FollowLocation) binding.mapView.controller.animateTo(geoPoint)
         binding.mapView.invalidate()
     }
 
@@ -198,7 +192,6 @@ class MapFragment() : BaseFragment<MapViewModel>(R.layout.fragment_map), KoinCom
         override fun onReceive(context: Context?, intent: Intent?) {
             val loc = intent!!.getParcelableExtra<Location>("EXTRA_LOCATION")
             loc?.let {
-
                 newLocationUpdateUI(GeoPoint(loc))
             }
         }
@@ -206,7 +199,7 @@ class MapFragment() : BaseFragment<MapViewModel>(R.layout.fragment_map), KoinCom
 
     private val btShowLocationOnClick = View.OnClickListener {
         binding.mapView.controller.animateTo(mPreviousLocMarker.position)
-        mapMode = MapMode.followLocation
+        mapMode = MapMode.FollowLocation
     }
 
     private val btStopRecordOnClick = View.OnClickListener()  {
@@ -236,7 +229,7 @@ class MapFragment() : BaseFragment<MapViewModel>(R.layout.fragment_map), KoinCom
 
     @SuppressLint("ClickableViewAccessibility")
     private val mapModeTouchListener = View.OnTouchListener { _, _ ->
-        mapMode = MapMode.moveFreely
+        mapMode = MapMode.MoveFreely
         false //
     }
 
@@ -270,12 +263,12 @@ class MapFragment() : BaseFragment<MapViewModel>(R.layout.fragment_map), KoinCom
 
     override fun onPendingState() {
         super.onPendingState()
-        binding.progressLayout.visibility = View.VISIBLE
+        binding.progressLayout.makeVisible()
     }
 
     override fun onIdleState() {
         super.onIdleState()
-        binding.progressLayout.visibility = View.GONE
+        binding.progressLayout.makeGone()
     }
 
     companion object {
@@ -284,7 +277,7 @@ class MapFragment() : BaseFragment<MapViewModel>(R.layout.fragment_map), KoinCom
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.WRITE_EXTERNAL_STORAGE)
         const val SEND_LOCATION_ACTION = BuildConfig.APPLICATION_ID + ".send_location_action"
-        val BOUNDING_BOX_DATA_KEY = "boundingBoxDataKey"
+        const val BOUNDING_BOX_DATA_KEY = "boundingBoxDataKey"
 
     }
 }

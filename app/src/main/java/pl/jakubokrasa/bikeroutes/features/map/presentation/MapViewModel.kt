@@ -11,17 +11,16 @@ import pl.jakubokrasa.bikeroutes.features.map.presentation.model.PointDisplayabl
 
 class MapViewModel(
     private val insertPointUseCase: InsertPointUseCase,
-    private val getPointsUseCase: GetPointsUseCase,
+    private val getPointsFromLocalSyncUseCase: GetPointsFromLocalSyncUseCase,
     private val deletePointsUseCase: DeletePointsUseCase,
     private val saveRouteUseCase: SaveRouteUseCase,
     private val updateDistanceHelper: UpdateDistanceHelper
-
 ) : BaseViewModel() {
 
     override val LOG_TAG: String = MapViewModel::class.simpleName ?: "unknown"
 
     fun getPoints(): LiveData<List<PointDisplayable>> {
-        return getPointsUseCase(params = Unit)
+        return getPointsFromLocalSyncUseCase(params = Unit)
             .map { list -> list.map { PointDisplayable(it) } }
     }
 
@@ -31,7 +30,7 @@ class MapViewModel(
             scope = viewModelScope
         ) {
                 result -> result.onSuccess {
-            getPointsUseCase(params = Unit) // LiveData is not so fast to show points immediately after insert
+            getPointsFromLocalSyncUseCase(params = Unit) // LiveData is not so fast to show points immediately after insert
             handleSuccess("insertPoint")
         }
             result.onFailure { handleFailure("insertPoint") }

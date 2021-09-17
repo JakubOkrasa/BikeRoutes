@@ -15,7 +15,7 @@ data class PointResponse(
         geoPointData = point.geoPointData
     )
 
-    constructor(): this(0, GeoPointData(0.0, 0.0), 0)
+    constructor(): this(0, GeoPointData(0.0, 0.0), 0) //for Firestore
 
     fun toPoint(): Point {
         return Point(

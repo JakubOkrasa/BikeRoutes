@@ -9,9 +9,13 @@ import pl.jakubokrasa.bikeroutes.features.myroutes.data.model.PointDocument
 class PointRemoteRepositoryImpl(
     private val firestore: FirebaseFirestore,
 ): PointRemoteRepository {
+
     override suspend fun getPoints(routeId: String): List<Point> {
         val doc = firestore.collection("points").document(routeId).get().await()
-        return doc.toObject(PointDocument::class.java)?.pointsArray?.map { it.toPoint() } ?: throw RuntimeException(
+        return doc
+            .toObject(PointDocument::class.java)
+            ?.pointsArray
+            ?.map { it.toPoint() } ?: throw RuntimeException(
             "no points in the route")
     }
 }

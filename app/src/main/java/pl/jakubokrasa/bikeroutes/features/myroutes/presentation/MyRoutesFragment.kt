@@ -9,7 +9,7 @@ import pl.jakubokrasa.bikeroutes.core.base.presentation.BaseFragment
 import pl.jakubokrasa.bikeroutes.core.extensions.makeGone
 import pl.jakubokrasa.bikeroutes.core.extensions.makeVisible
 import pl.jakubokrasa.bikeroutes.databinding.FragmentMyRoutesBinding
-import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteDisplayable
+import pl.jakubokrasa.bikeroutes.features.common.routes.presentation.model.RouteDisplayable
 
  class MyRoutesFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_my_routes){
     private var _binding: FragmentMyRoutesBinding? = null
@@ -22,9 +22,7 @@ import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteDisplayabl
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentMyRoutesBinding.bind(view)
-        initRecycler() // todo ten init powinien być w initViews() ale wtedy jest java.lang.NullPointerException
-                        //at pl.jakubokrasa.bikeroutes.features.myroutes.presentation.MyRoutesFragment.getBinding(MyRoutesFragment.kt:17)
-                        //w AA to działą
+        initRecycler()
         viewModel.getMyRoutes()
 
         binding.btFilter.setOnClickListener(btFilterOnClick)
@@ -109,12 +107,12 @@ import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteDisplayabl
 
      override fun onPendingState() {
          super.onPendingState()
-         binding.progressLayout.visibility = View.VISIBLE
+         binding.progressLayout.makeVisible()
      }
 
      override fun onIdleState() {
          super.onIdleState()
-         binding.progressLayout.visibility = View.GONE
+         binding.progressLayout.makeGone()
      }
 
     companion object {

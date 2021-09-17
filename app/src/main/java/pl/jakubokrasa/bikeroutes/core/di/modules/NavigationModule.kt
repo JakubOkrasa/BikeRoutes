@@ -4,7 +4,6 @@ import androidx.navigation.navOptions
 import org.koin.android.ext.koin.androidApplication
 import org.koin.dsl.module
 import pl.jakubokrasa.bikeroutes.R
-import pl.jakubokrasa.bikeroutes.core.app.navigation.MainNavigator
 import pl.jakubokrasa.bikeroutes.core.navigation.FragmentNavigator
 import pl.jakubokrasa.bikeroutes.core.navigation.FragmentNavigatorImpl
 import pl.jakubokrasa.bikeroutes.core.provider.ActivityProvider
@@ -22,7 +21,6 @@ val navigationModule = module {
         defaultNavOptions = get()
     ) }
 
-    single { MainNavigator(get(), navHostFragmentRes = R.id.nav_host_fragment) }
     single { MapFrgNavigator(get()) }
     single { MyRoutesNavigator(get()) }
     single { SharedRoutesNavigator(get()) }

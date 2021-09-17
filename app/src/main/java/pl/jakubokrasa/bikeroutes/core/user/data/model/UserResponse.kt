@@ -1,4 +1,4 @@
-package pl.jakubokrasa.bikeroutes.core.user.data.remote.model
+package pl.jakubokrasa.bikeroutes.core.user.data.model
 
 import pl.jakubokrasa.bikeroutes.core.user.domain.model.User
 

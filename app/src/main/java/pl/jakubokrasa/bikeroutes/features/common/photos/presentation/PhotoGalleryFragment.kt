@@ -59,7 +59,7 @@ class PhotoGalleryFragment(): BaseFragment<MyRoutesViewModel>(R.layout.fragment_
     }
 
     private fun destroyRecycler() {
-//        binding.viewPager.layoutManager = null
+//      without "binding.viewPager.layoutManager = null" (in viewpager is no layoutManager)
         binding.viewPager.adapter = null
     }
 

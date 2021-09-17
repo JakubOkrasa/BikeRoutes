@@ -23,9 +23,9 @@ import pl.jakubokrasa.bikeroutes.core.extensions.makeVisible
 import pl.jakubokrasa.bikeroutes.core.util.*
 import pl.jakubokrasa.bikeroutes.core.util.PreferenceHelper.Companion.PREF_KEY_TIPS_SEGMENTS_NOT_SHOWED
 import pl.jakubokrasa.bikeroutes.databinding.FragmentSegmentsBinding
+import pl.jakubokrasa.bikeroutes.features.common.routes.presentation.model.RouteDisplayable
 import pl.jakubokrasa.bikeroutes.features.common.segments.presentation.model.SegmentDisplayable
 import pl.jakubokrasa.bikeroutes.features.map.presentation.model.PointDisplayable
-import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteDisplayable
 import pl.jakubokrasa.bikeroutes.features.myroutes.presentation.DialogSegment
 import pl.jakubokrasa.bikeroutes.features.myroutes.presentation.MyRoutesViewModel
 import pl.jakubokrasa.bikeroutes.features.myroutes.presentation.RouteDetailsFragment.Companion.POINTS_BUNDLE_KEY
@@ -104,10 +104,14 @@ class SegmentsFragment: BaseFragment<MyRoutesViewModel>(R.layout.fragment_segmen
                 .setTitle("Tip")
                 .setMessage("Here you can mark different route segments such as bumpy, sandy or busy road. To do that, tap \"New Segment\" button an then on the begin and the end point of the segment")
                 .setPositiveButton("OK", DialogInterface.OnClickListener { _, _ ->
-                    preferenceHelper.preferences.edit {
-                        putBoolean(PREF_KEY_TIPS_SEGMENTS_NOT_SHOWED, false)
-                    }
+                    segmentTipShowedSaveToPreferences()
                 }).show()
+    }
+
+    private fun segmentTipShowedSaveToPreferences() {
+        preferenceHelper.preferences.edit {
+            putBoolean(PREF_KEY_TIPS_SEGMENTS_NOT_SHOWED, false)
+        }
     }
 
     override fun initObservers() {
@@ -147,8 +151,7 @@ class SegmentsFragment: BaseFragment<MyRoutesViewModel>(R.layout.fragment_segmen
 
     private fun observeSegments() {
         viewModel.segments.observe(viewLifecycleOwner, { newSegments ->
-
-            //todo possible optimization (by checking which segment already exists)
+            //possible optimization (by checking which segment already exists)
             segments = newSegments
             showSegments()
         })

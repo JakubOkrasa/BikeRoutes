@@ -2,11 +2,11 @@ package pl.jakubokrasa.bikeroutes.features.sharedroutes.domain
 
 import pl.jakubokrasa.bikeroutes.core.base.domain.UseCase
 import pl.jakubokrasa.bikeroutes.core.user.domain.UserAuth
-import pl.jakubokrasa.bikeroutes.features.common.domain.doesRouteCoversMap
+import pl.jakubokrasa.bikeroutes.core.util.doesRouteCoversMap
 import pl.jakubokrasa.bikeroutes.features.common.filter.domain.model.BoundingBoxData
 import pl.jakubokrasa.bikeroutes.features.common.filter.domain.model.FilterData
 import pl.jakubokrasa.bikeroutes.features.common.routes.domain.RouteRepository
-import pl.jakubokrasa.bikeroutes.features.map.domain.model.Route
+import pl.jakubokrasa.bikeroutes.features.common.routes.domain.model.Route
 import pl.jakubokrasa.bikeroutes.features.myroutes.presentation.MyRoutesFragment
 
 class GetSharedRoutesWithFilterUseCase (
@@ -52,7 +52,6 @@ class GetSharedRoutesWithFilterUseCase (
         }
         return routes
     }
-
 
 private fun isBoundingBoxNotInitialized(it: BoundingBoxData) =
     it.latNorth == 0.0 && it.latSouth == 0.0 && it.lonEast == 0.0 && it.lonWest == 0.0

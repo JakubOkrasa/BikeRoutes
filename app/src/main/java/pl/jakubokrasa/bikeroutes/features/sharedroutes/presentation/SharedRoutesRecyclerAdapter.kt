@@ -6,9 +6,9 @@ import androidx.recyclerview.widget.RecyclerView
 import pl.jakubokrasa.bikeroutes.core.util.getFormattedDistance
 import pl.jakubokrasa.bikeroutes.core.util.getFormattedRideTime
 import pl.jakubokrasa.bikeroutes.databinding.RvSharedroutesItemBinding
-import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteDisplayable
+import pl.jakubokrasa.bikeroutes.features.common.routes.presentation.model.RouteDisplayable
 
-class SharedRoutesRecyclerAdapter: RecyclerView.Adapter<SharedRoutesRecyclerAdapter.ExploreViewHolder>() {
+class SharedRoutesRecyclerAdapter: RecyclerView.Adapter<SharedRoutesRecyclerAdapter.SharedRoutesViewHolder>() {
 
     var onItemClick: ((RouteDisplayable) -> Unit)? = null
     private var routes = mutableListOf<RouteDisplayable>()
@@ -19,13 +19,13 @@ class SharedRoutesRecyclerAdapter: RecyclerView.Adapter<SharedRoutesRecyclerAdap
         notifyDataSetChanged()
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SharedRoutesRecyclerAdapter.ExploreViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SharedRoutesRecyclerAdapter.SharedRoutesViewHolder {
         val binding = RvSharedroutesItemBinding
             .inflate(LayoutInflater.from(parent.context), parent, false)
-        return ExploreViewHolder(binding)
+        return SharedRoutesViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: ExploreViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: SharedRoutesViewHolder, position: Int) {
         val route = routes[position]
         holder.bind(route)
     }
@@ -34,7 +34,7 @@ class SharedRoutesRecyclerAdapter: RecyclerView.Adapter<SharedRoutesRecyclerAdap
         return routes.size
     }
 
-    inner class ExploreViewHolder(private val binding: RvSharedroutesItemBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class SharedRoutesViewHolder(private val binding: RvSharedroutesItemBinding) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(route: RouteDisplayable) {
             with(binding) {
@@ -45,7 +45,6 @@ class SharedRoutesRecyclerAdapter: RecyclerView.Adapter<SharedRoutesRecyclerAdap
             }
         }
         init {
-            // Define click listener for the ExploreViewHolder's View.
             itemView.setOnClickListener {
                 onItemClick?.invoke(routes[adapterPosition])
             }

@@ -34,7 +34,6 @@ class GetSegmentPointHelper: Helper<Int, GetSegmentBeginData>() {
     companion object {
         const val DISTANCE_COEFFICIENT_A = -20
         const val DISTANCE_COEFFICIENT_B = 360
-        private const val MAX_ZOOM_LEVEL = 16.0
         const val MINIMUM_DISTANCE_INITIAL_VALUE = DISTANCE_COEFFICIENT_B.toDouble()
     }
 

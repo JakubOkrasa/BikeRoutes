@@ -24,13 +24,13 @@ import pl.jakubokrasa.bikeroutes.features.common.reviews.domain.GetReviewsUseCas
 import pl.jakubokrasa.bikeroutes.features.common.reviews.domain.RemoveReviewUseCase
 import pl.jakubokrasa.bikeroutes.features.common.reviews.domain.UpdateReviewUseCase
 import pl.jakubokrasa.bikeroutes.features.common.reviews.presentation.model.ReviewDisplayable
+import pl.jakubokrasa.bikeroutes.features.common.routes.presentation.model.RouteDisplayable
 import pl.jakubokrasa.bikeroutes.features.common.segments.domain.GetSegmentsUseCase
 import pl.jakubokrasa.bikeroutes.features.common.segments.presentation.GetSegmentBeginData
 import pl.jakubokrasa.bikeroutes.features.common.segments.presentation.GetSegmentPointHelper
 import pl.jakubokrasa.bikeroutes.features.common.segments.presentation.model.SegmentDisplayable
 import pl.jakubokrasa.bikeroutes.features.map.domain.usecase.GetPointsFromRemoteUseCase
 import pl.jakubokrasa.bikeroutes.features.map.presentation.model.PointDisplayable
-import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteDisplayable
 import pl.jakubokrasa.bikeroutes.features.myroutes.domain.*
 import pl.jakubokrasa.bikeroutes.features.myroutes.navigation.MyRoutesNavigator
 
@@ -124,7 +124,7 @@ class MyRoutesViewModel(
                 result ->
             setIdleState()
             result.onSuccess {
-                _myRoutes.value = it.map { route ->  RouteDisplayable(route)}
+                _myRoutes.value = it.map { route ->  RouteDisplayable(route) }
                 _isFilter.value = true
                 handleSuccess("getMyRoutesWithFilter")
             }
@@ -137,12 +137,13 @@ class MyRoutesViewModel(
     fun getMyRoutes() {
         setPendingState()
         getMyRoutesUseCase(
+            params = Unit,
             scope = viewModelScope
         ) {
                 result ->
             setIdleState()
             result.onSuccess {
-                _myRoutes.value = it.map { route ->  RouteDisplayable(route)}
+                _myRoutes.value = it.map { route ->  RouteDisplayable(route) }
                 _isFilter.value = false
                 handleSuccess("getMyRoutes")
             }
@@ -155,7 +156,7 @@ class MyRoutesViewModel(
     fun getPointsFromRemoteAndOpenRouteDetailsFrg(route: RouteDisplayable) {
         setPendingState()
         getPointsFromRemoteUseCase(
-            routeId = route.routeId,
+            params = route.routeId,
             scope = viewModelScope
         ) {
                 result ->

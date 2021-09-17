@@ -45,21 +45,23 @@ class LocationService : Service(), KoinComponent {
     }
 
     override fun onCreate() {
-        Log.i(LOG_TAG, "onCreate")
         handlerThread = HandlerThread(LOG_TAG)
         handlerThread.start()
         mServiceHandler = Handler(handlerThread.looper)
         mNotificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         createNotificationChannel()
-        preferenceHelper.preferences.edit {
-            putBoolean(PreferenceHelper.PREF_KEY_MAPFRAGMENT_MODE_RECORDING, false) // useful e.g. when the process with app was killed while the Recording Mode was turned on //todo not tested
-        }
+
+        // useful e.g. when the process with app was killed while the Recording Mode was turned on
+        disableRecordingModeInPreferences()
         super.onCreate()
 
     }
 
-
-
+    private fun disableRecordingModeInPreferences() {
+        preferenceHelper.preferences.edit {
+            putBoolean(PreferenceHelper.PREF_KEY_MAPFRAGMENT_MODE_RECORDING, false)
+        }
+    }
 
     private fun locationCallbackInit() {
         mLocationCallback = object : LocationCallback() {
@@ -81,13 +83,12 @@ class LocationService : Service(), KoinComponent {
                 "Location Service notification",
                 NotificationManager.IMPORTANCE_DEFAULT)
             channel.description = "the notification informs about running Location service"
-            channel.setSound(null, null) //rename channel if there is a sound still
+            channel.setSound(null, null)
             notifyManager.createNotificationChannel(channel)
         }
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        Log.i(LOG_TAG, "onStartCommand")
         val pendingIntent: PendingIntent =
             Intent(this, MainActivity::class.java).let { notificationIntent ->
                 PendingIntent.getActivity(this, 0, notificationIntent, 0)
@@ -100,14 +101,13 @@ class LocationService : Service(), KoinComponent {
             .setSound(null)
             .build()
 
-            startForeground(SERVICE_NOTIFICATION_ID, notification) //todo w przykladzie to jest w onUnBind (wtedy notifikacja jest widoczna tylko gdy aplikacja jest zminimalizowana
+            startForeground(SERVICE_NOTIFICATION_ID, notification)
             requestLocationUpdates()
 
         return START_NOT_STICKY
     }
 
     override fun onDestroy() {
-        Log.d(LOG_TAG, "onDestroy")
         mServiceHandler.removeCallbacksAndMessages(null)
         if(this::mLocationCallback.isInitialized)
             removeLocationUpdates()
@@ -123,20 +123,6 @@ class LocationService : Service(), KoinComponent {
                 handlerThread.looper)
         } catch (unlikely: SecurityException) {
             Log.e(LOG_TAG, "Lost location permission. Could not request updates. $unlikely")
-        }
-    }
-
-    private fun getLastLocation() {
-        try {
-            mFusedLocationClient.lastLocation.addOnCompleteListener { task ->
-                if (task.isSuccessful && task.result != null) {
-                    onNewLocation(task.result)
-                } else {
-                    Log.w(LOG_TAG, "Failed to get location.")
-                }
-            }
-        } catch (unlikely: SecurityException) {
-            Log.e(LOG_TAG, "Lost location permission.$unlikely")
         }
     }
 
@@ -156,7 +142,7 @@ class LocationService : Service(), KoinComponent {
 
     }
 
-    fun isRecordingMode() = preferenceHelper.preferences.getBoolean(PreferenceHelper.PREF_KEY_MAPFRAGMENT_MODE_RECORDING, false)
+    private fun isRecordingMode() = preferenceHelper.preferences.getBoolean(PreferenceHelper.PREF_KEY_MAPFRAGMENT_MODE_RECORDING, false)
 
     private fun removeLocationUpdates() {
         Log.i(LOG_TAG, "Removing location updates")

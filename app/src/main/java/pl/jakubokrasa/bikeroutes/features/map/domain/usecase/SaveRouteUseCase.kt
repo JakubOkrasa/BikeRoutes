@@ -7,7 +7,7 @@ import pl.jakubokrasa.bikeroutes.features.common.filter.domain.model.BoundingBox
 import pl.jakubokrasa.bikeroutes.features.common.routes.domain.RouteRepository
 import pl.jakubokrasa.bikeroutes.features.map.domain.PointLocalRepository
 import pl.jakubokrasa.bikeroutes.features.map.domain.model.Point
-import pl.jakubokrasa.bikeroutes.features.map.domain.model.Route
+import pl.jakubokrasa.bikeroutes.features.common.routes.domain.model.Route
 import java.util.concurrent.TimeUnit
 import kotlin.math.roundToInt
 
@@ -19,7 +19,7 @@ class SaveRouteUseCase(
     private var rideTimeMinutes = 0
 
     override suspend fun action(params: DataSaveRoute) {
-        val points = localRepository.getPoints2()
+        val points = localRepository.getPoints()
         if(points.isNotEmpty()) {
             val route = Route(
                 "",

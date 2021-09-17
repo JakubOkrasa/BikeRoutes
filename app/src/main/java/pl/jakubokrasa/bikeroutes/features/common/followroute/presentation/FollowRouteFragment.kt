@@ -26,7 +26,7 @@ import pl.jakubokrasa.bikeroutes.databinding.FragmentFollowrouteBinding
 import pl.jakubokrasa.bikeroutes.features.map.domain.LocationService
 import pl.jakubokrasa.bikeroutes.features.map.presentation.MapFragment.Companion.SEND_LOCATION_ACTION
 import pl.jakubokrasa.bikeroutes.features.map.presentation.model.PointDisplayable
-import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteDisplayable
+import pl.jakubokrasa.bikeroutes.features.common.routes.presentation.model.RouteDisplayable
 import pl.jakubokrasa.bikeroutes.features.myroutes.presentation.MyRoutesViewModel
 import pl.jakubokrasa.bikeroutes.features.myroutes.presentation.RouteDetailsFragment.Companion.POINTS_BUNDLE_KEY
 import pl.jakubokrasa.bikeroutes.features.myroutes.presentation.RouteDetailsFragment.Companion.ROUTE_BUNDLE_KEY
@@ -43,7 +43,7 @@ class FollowRouteFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_fo
     private val mLocalBR: LocalBroadcastManager by inject()
     private lateinit var mPreviousLocMarker: Marker
 
-    private var mapMode = MapMode.moveFreely
+    private var mapMode = MapMode.MoveFreely
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -116,7 +116,7 @@ class FollowRouteFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_fo
 
     private fun newLocationUpdateUI(geoPoint: GeoPoint) {
         showCurrentLocationMarker(geoPoint)
-        if(mapMode == MapMode.followLocation) binding.mapView.controller.animateTo(geoPoint)
+        if(mapMode == MapMode.FollowLocation) binding.mapView.controller.animateTo(geoPoint)
         binding.mapView.invalidate()
     }
 
@@ -158,12 +158,12 @@ class FollowRouteFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_fo
     }
 
     private fun disableFollowingLocation() {
-        mapMode = MapMode.moveFreely
+        mapMode = MapMode.MoveFreely
         requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
 
     private fun enableFollowingLocation() {
-        mapMode = MapMode.followLocation
+        mapMode = MapMode.FollowLocation
         requireActivity().window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
 

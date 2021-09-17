@@ -9,7 +9,7 @@ import pl.jakubokrasa.bikeroutes.core.base.presentation.BaseFragment
 import pl.jakubokrasa.bikeroutes.core.extensions.makeGone
 import pl.jakubokrasa.bikeroutes.core.extensions.makeVisible
 import pl.jakubokrasa.bikeroutes.databinding.FragmentSharedRoutesBinding
-import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteDisplayable
+import pl.jakubokrasa.bikeroutes.features.common.routes.presentation.model.RouteDisplayable
 
  class SharedRoutesFragment : BaseFragment<SharedRoutesViewModel>(R.layout.fragment_shared_routes){
     private var _binding: FragmentSharedRoutesBinding? = null
@@ -22,9 +22,7 @@ import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteDisplayabl
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentSharedRoutesBinding.bind(view)
-        initRecycler() // todo ten init powinien być w initViews() ale wtedy jest java.lang.NullPointerException
-                        //at pl.jakubokrasa.bikeroutes.features.myroutes.presentation.SharedRoutesFragment.getBinding(SharedRoutesFragment.kt:17)
-                        //w AA to działą
+        initRecycler()
         viewModel.getSharedRoutes()
 
         binding.btFilter.setOnClickListener(btFilterOnClick)

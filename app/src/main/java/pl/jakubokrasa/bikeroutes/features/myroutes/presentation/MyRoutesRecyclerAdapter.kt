@@ -8,7 +8,7 @@ import pl.jakubokrasa.bikeroutes.core.util.getFormattedDistance
 import pl.jakubokrasa.bikeroutes.core.util.getFormattedRideTime
 import pl.jakubokrasa.bikeroutes.core.util.getFormattedSharingTypeName
 import pl.jakubokrasa.bikeroutes.databinding.RvMyroutesItemBinding
-import pl.jakubokrasa.bikeroutes.features.map.presentation.model.RouteDisplayable
+import pl.jakubokrasa.bikeroutes.features.common.routes.presentation.model.RouteDisplayable
 
 class MyRoutesRecyclerAdapter() : RecyclerView.Adapter<MyRoutesRecyclerAdapter.MyRoutesViewHolder>() {
 
@@ -49,7 +49,6 @@ class MyRoutesRecyclerAdapter() : RecyclerView.Adapter<MyRoutesRecyclerAdapter.M
             }
         }
         init {
-            // Define click listener for the MyRoutesViewHolder's View.
             itemView.setOnClickListener {
                 onItemClick?.invoke(routes[adapterPosition])
             }

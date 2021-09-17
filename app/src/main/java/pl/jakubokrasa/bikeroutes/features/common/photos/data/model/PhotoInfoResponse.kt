@@ -18,7 +18,7 @@ data class PhotoInfoResponse(
         name = photoInfo.name
     )
 
-    constructor(): this("", "", "", pl.jakubokrasa.bikeroutes.core.util.enums.SharingType.PUBLIC, "")
+    constructor(): this("", "", "", pl.jakubokrasa.bikeroutes.core.util.enums.SharingType.PUBLIC, "") //for Firestore
 
     fun toPhotoInfo(): PhotoInfo {
         return PhotoInfo(

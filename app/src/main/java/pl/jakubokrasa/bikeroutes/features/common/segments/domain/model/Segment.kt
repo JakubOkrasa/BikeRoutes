@@ -9,10 +9,3 @@ data class Segment(
     val info: String,
     val segmentColor: String
 )
-
-data class SegmentLocationData(
-    val startLat: Double,
-    val startLon: Double,
-    val endLat: Double,
-    val endLon: Double
-)

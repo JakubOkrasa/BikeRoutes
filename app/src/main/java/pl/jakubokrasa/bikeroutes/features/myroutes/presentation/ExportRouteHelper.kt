@@ -20,7 +20,7 @@ import pl.jakubokrasa.bikeroutes.core.util.getFormattedAvgSpeed
 import pl.jakubokrasa.bikeroutes.core.util.getFormattedDistance
 import pl.jakubokrasa.bikeroutes.core.util.getFormattedRideTime
 import pl.jakubokrasa.bikeroutes.core.util.mapTileSource
-import pl.jakubokrasa.bikeroutes.features.map.domain.model.Route
+import pl.jakubokrasa.bikeroutes.features.common.routes.domain.model.Route
 import java.io.File
 import java.io.FileOutputStream
 

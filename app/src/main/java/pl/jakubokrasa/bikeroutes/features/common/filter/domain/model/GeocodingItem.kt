@@ -4,6 +4,5 @@ import pl.jakubokrasa.bikeroutes.features.common.filter.domain.model.BoundingBox
 
 data class GeocodingItem(
     val boundingBoxData: BoundingBoxData,
-
     val displayName: String,
 )

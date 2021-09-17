@@ -7,8 +7,8 @@ import pl.jakubokrasa.bikeroutes.features.map.domain.model.Point
 interface PointLocalRepository {
     suspend fun insertPoint(geoPoint: GeoPointData)
 
-    fun getPoints(): LiveData<List<Point>>
-    suspend fun getPoints2(): List<Point>
+    fun getPointsLiveData(): LiveData<List<Point>>
+    suspend fun getPoints(): List<Point>
 
     suspend fun deletePoints()
 }
