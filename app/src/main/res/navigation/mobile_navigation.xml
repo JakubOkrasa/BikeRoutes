@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/nav_map"
-        android:name="pl.jakubokrasa.bikeroutes.features.map.presentation.MapFragment"
+        android:name="pl.jakubokrasa.bikeroutes.features.ui_features.map.presentation.MapFragment"
         android:label="@string/nav_title_map"
         tools:layout="@layout/fragment_map" >
         <action
@@ -21,7 +21,7 @@
 
     <fragment
         android:id="@+id/nav_my_routes"
-        android:name="pl.jakubokrasa.bikeroutes.features.myroutes.presentation.MyRoutesFragment"
+        android:name="pl.jakubokrasa.bikeroutes.features.ui_features.myroutes.presentation.MyRoutesFragment"
         android:label="@string/nav_title_my_routes"
         tools:layout="@layout/fragment_my_routes" >
         <action
@@ -32,7 +32,7 @@
 
     <fragment
         android:id="@+id/nav_shared_routes"
-        android:name="pl.jakubokrasa.bikeroutes.features.sharedroutes.presentation.SharedRoutesFragment"
+        android:name="pl.jakubokrasa.bikeroutes.features.ui_features.sharedroutes.presentation.SharedRoutesFragment"
         android:label="@string/nav_title_shared_routes"
         tools:layout="@layout/fragment_shared_routes" >
         <action
@@ -82,12 +82,12 @@
 
     <fragment
         android:id="@+id/fragment_save_route"
-        android:name="pl.jakubokrasa.bikeroutes.features.map.presentation.SaveRouteFragment"
+        android:name="pl.jakubokrasa.bikeroutes.features.ui_features.map.presentation.SaveRouteFragment"
         android:label="@string/nav_title_explore"
         tools:layout="@layout/fragment_save_route" />
     <fragment
         android:id="@+id/routeDetailsFragment"
-        android:name="pl.jakubokrasa.bikeroutes.features.myroutes.presentation.RouteDetailsFragment"
+        android:name="pl.jakubokrasa.bikeroutes.features.ui_features.routedetails.presentation.RouteDetailsFragment"
         android:label="fragment_follow_route"
         tools:layout="@layout/fragment_route_details" >
         <action
@@ -118,19 +118,17 @@
         android:label="MainActivity" />
     <fragment
         android:id="@+id/followRouteFragment"
-        android:name="pl.jakubokrasa.bikeroutes.features.common.followroute.presentation.FollowRouteFragment"
+        android:name="pl.jakubokrasa.bikeroutes.features.ui_features.routedetails.presentation.FollowRouteFragment"
         android:label="fragment_follow_route"
         tools:layout="@layout/fragment_followroute" />
     <fragment
         android:id="@+id/photoGalleryFragment"
-        android:name="pl.jakubokrasa.bikeroutes.features.common.photos.presentation.PhotoGalleryFragment"
+        android:name="pl.jakubokrasa.bikeroutes.features.photos.presentation.PhotoGalleryFragment"
         android:label="PhotoGalleryFragment"
         tools:layout="@layout/fragment_photogallery"/>
 	<fragment
         android:id="@+id/segmentsFragment"
-        android:name="pl.jakubokrasa.bikeroutes.features.common.segments.presentation.SegmentsFragment"
+        android:name="pl.jakubokrasa.bikeroutes.features.segments.presentation.SegmentsFragment"
         android:label="SegmentsFragment"
         tools:layout="@layout/fragment_segments"/>
-
-
 </navigation>

@@ -12,7 +12,7 @@ import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Polyline
 import org.osmdroid.views.overlay.advancedpolyline.MonochromaticPaintList
 import pl.jakubokrasa.bikeroutes.R
-import pl.jakubokrasa.bikeroutes.features.common.segments.presentation.model.SegmentDisplayable
+import pl.jakubokrasa.bikeroutes.features.segments.presentation.model.SegmentDisplayable
 
 fun configureOsmDroid(context: Context) {
     Configuration.getInstance().load(context,

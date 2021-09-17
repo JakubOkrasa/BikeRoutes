@@ -25,8 +25,8 @@ import pl.jakubokrasa.bikeroutes.R
 import pl.jakubokrasa.bikeroutes.core.app.presentation.MainActivity
 import pl.jakubokrasa.bikeroutes.core.util.PreferenceHelper
 import pl.jakubokrasa.bikeroutes.features.map.domain.model.GeoPointData
-import pl.jakubokrasa.bikeroutes.features.map.presentation.MapFragment.Companion.SEND_LOCATION_ACTION
-import pl.jakubokrasa.bikeroutes.features.map.presentation.MapViewModel
+import pl.jakubokrasa.bikeroutes.features.ui_features.map.presentation.MapFragment.Companion.SEND_LOCATION_ACTION
+import pl.jakubokrasa.bikeroutes.features.ui_features.map.presentation.MapViewModel
 
 class LocationService : Service(), KoinComponent {
     private val mLocationRequest: LocationRequest by inject()

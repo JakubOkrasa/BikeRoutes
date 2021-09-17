@@ -1,7 +1,7 @@
 package pl.jakubokrasa.bikeroutes.core.util
 
 import pl.jakubokrasa.bikeroutes.core.util.enums.SharingType
-import pl.jakubokrasa.bikeroutes.features.myroutes.presentation.MyRoutesFragment.Companion.DISTANCE_SLIDER_VALUE_TO
+import pl.jakubokrasa.bikeroutes.features.ui_features.myroutes.presentation.MyRoutesFragment.Companion.DISTANCE_SLIDER_VALUE_TO
 import java.text.SimpleDateFormat
 import java.util.*
 
