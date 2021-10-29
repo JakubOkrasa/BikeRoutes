@@ -9,7 +9,7 @@ import org.koin.android.ext.android.inject
 import pl.jakubokrasa.bikeroutes.core.util.PreferenceHelper
 
 abstract class BaseFragment<T: BaseViewModel>(@LayoutRes layoutRes: Int): Fragment(layoutRes) {
-    abstract val viewModel: T
+    protected abstract val viewModel: T
     protected val preferenceHelper: PreferenceHelper by inject()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

@@ -4,9 +4,9 @@ import pl.jakubokrasa.bikeroutes.core.base.domain.UseCase
 import pl.jakubokrasa.bikeroutes.core.user.domain.UserAuth
 import pl.jakubokrasa.bikeroutes.core.util.enums.SharingType
 import pl.jakubokrasa.bikeroutes.features.filter.domain.model.BoundingBoxData
-import pl.jakubokrasa.bikeroutes.features.routes.domain.RouteRepository
-import pl.jakubokrasa.bikeroutes.features.points.domain.PointLocalRepository
 import pl.jakubokrasa.bikeroutes.features.map.domain.model.Point
+import pl.jakubokrasa.bikeroutes.features.points.domain.PointLocalRepository
+import pl.jakubokrasa.bikeroutes.features.routes.domain.RouteRepository
 import pl.jakubokrasa.bikeroutes.features.routes.domain.model.Route
 import java.util.concurrent.TimeUnit
 import kotlin.math.roundToInt

@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 import com.hadilq.liveevent.LiveEvent
 
 abstract class BaseViewModel: ViewModel() {
-    abstract val LOG_TAG: String
+    protected abstract val LOG_TAG: String
 
     private val _uiState by lazy {
         MutableLiveData<UiState>(

@@ -3,7 +3,7 @@ package pl.jakubokrasa.bikeroutes.core.base.domain
 import kotlinx.coroutines.*
 
 abstract class UseCase<out Type, in Params> {
-    abstract suspend fun action(params: Params): Type
+    protected abstract suspend fun action(params: Params): Type
 
     operator fun invoke(
         params: Params,

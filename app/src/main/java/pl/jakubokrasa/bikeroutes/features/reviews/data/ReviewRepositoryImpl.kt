@@ -2,8 +2,8 @@ package pl.jakubokrasa.bikeroutes.features.reviews.data
 
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
-import pl.jakubokrasa.bikeroutes.features.reviews.domain.ReviewRepository
 import pl.jakubokrasa.bikeroutes.features.reviews.data.model.ReviewResponse
+import pl.jakubokrasa.bikeroutes.features.reviews.domain.ReviewRepository
 import pl.jakubokrasa.bikeroutes.features.reviews.domain.model.Review
 
 class ReviewRepositoryImpl(
