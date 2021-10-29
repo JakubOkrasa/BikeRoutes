@@ -3,7 +3,6 @@ package pl.jakubokrasa.bikeroutes.core.user.presentation
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.View
-import android.widget.Toast
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import pl.jakubokrasa.bikeroutes.core.base.presentation.BaseActivity
 import pl.jakubokrasa.bikeroutes.core.extensions.makeGone

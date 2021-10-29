@@ -3,11 +3,11 @@ package pl.jakubokrasa.bikeroutes.features.routes.data
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 import pl.jakubokrasa.bikeroutes.core.util.enums.SharingType
+import pl.jakubokrasa.bikeroutes.features.map.domain.model.Point
+import pl.jakubokrasa.bikeroutes.features.points.data.remote.model.PointResponse
 import pl.jakubokrasa.bikeroutes.features.routes.data.model.RouteResponse
 import pl.jakubokrasa.bikeroutes.features.routes.domain.RouteRepository
 import pl.jakubokrasa.bikeroutes.features.routes.domain.model.Route
-import pl.jakubokrasa.bikeroutes.features.points.data.remote.model.PointResponse
-import pl.jakubokrasa.bikeroutes.features.map.domain.model.Point
 
 class RouteRepositoryImpl(
     private val firestore: FirebaseFirestore,

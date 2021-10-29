@@ -5,11 +5,12 @@ import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import org.osmdroid.util.GeoPoint
 import pl.jakubokrasa.bikeroutes.core.base.presentation.BaseViewModel
+import pl.jakubokrasa.bikeroutes.features.map.domain.model.GeoPointData
+import pl.jakubokrasa.bikeroutes.features.map.domain.usecase.DataSaveRoute
+import pl.jakubokrasa.bikeroutes.features.map.domain.usecase.SaveRouteUseCase
 import pl.jakubokrasa.bikeroutes.features.points.domain.DeletePointsUseCase
 import pl.jakubokrasa.bikeroutes.features.points.domain.GetPointsFromLocalSyncUseCase
 import pl.jakubokrasa.bikeroutes.features.points.domain.InsertPointUseCase
-import pl.jakubokrasa.bikeroutes.features.map.domain.model.GeoPointData
-import pl.jakubokrasa.bikeroutes.features.map.domain.usecase.*
 import pl.jakubokrasa.bikeroutes.features.points.presentation.model.PointDisplayable
 
 class MapViewModel(

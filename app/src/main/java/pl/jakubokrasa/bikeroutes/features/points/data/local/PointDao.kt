@@ -3,8 +3,8 @@ package pl.jakubokrasa.bikeroutes.features.points.data.local
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Query
-import pl.jakubokrasa.bikeroutes.features.points.data.local.model.PointCached
 import pl.jakubokrasa.bikeroutes.features.map.domain.model.GeoPointData
+import pl.jakubokrasa.bikeroutes.features.points.data.local.model.PointCached
 
 @Dao
 interface PointDao {

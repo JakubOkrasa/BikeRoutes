@@ -2,9 +2,9 @@ package pl.jakubokrasa.bikeroutes.features.points.data.local
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
-import pl.jakubokrasa.bikeroutes.features.points.domain.PointLocalRepository
 import pl.jakubokrasa.bikeroutes.features.map.domain.model.GeoPointData
 import pl.jakubokrasa.bikeroutes.features.map.domain.model.Point
+import pl.jakubokrasa.bikeroutes.features.points.domain.PointLocalRepository
 
 class PointLocalRepositoryImpl(private val pointDao: PointDao): PointLocalRepository {
 
