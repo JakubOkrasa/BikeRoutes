@@ -12,7 +12,7 @@ import pl.jakubokrasa.bikeroutes.features.photos.presentation.model.PhotoInfoDis
 
 class PhotosRecyclerAdapter: RecyclerView.Adapter<PhotosRecyclerAdapter.PhotosViewHolder>() {
 
-    var onItemClick: ((List<PhotoInfoDisplayable>, Int) -> Unit)? = null
+    var onPhotoClick: ((List<PhotoInfoDisplayable>, Int) -> Unit)? = null
     private var photos = mutableListOf<PhotoInfoDisplayable>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PhotosViewHolder {
@@ -52,7 +52,7 @@ class PhotosRecyclerAdapter: RecyclerView.Adapter<PhotosRecyclerAdapter.PhotosVi
         }
         init {
             itemView.setOnClickListener {
-                onItemClick?.invoke(photos, adapterPosition)
+                onPhotoClick?.invoke(photos, adapterPosition)
             }
         }
     }

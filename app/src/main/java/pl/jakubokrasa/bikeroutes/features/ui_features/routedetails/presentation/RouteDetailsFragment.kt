@@ -39,7 +39,6 @@ import pl.jakubokrasa.bikeroutes.features.segments.presentation.model.SegmentDis
 import pl.jakubokrasa.bikeroutes.features.ui_features.myroutes.presentation.MyRoutesViewModel
 import pl.jakubokrasa.bikeroutes.features.ui_features.routedetails.navigation.CommonRoutesNavigator
 import java.util.*
-import kotlin.collections.ArrayList
 
 class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_route_details) {
 
@@ -133,7 +132,7 @@ class RouteDetailsFragment : BaseFragment<MyRoutesViewModel>(R.layout.fragment_r
             val photosLayoutManager = LinearLayoutManager(requireContext())
             photosLayoutManager.orientation = LinearLayoutManager.HORIZONTAL
             layoutManager = photosLayoutManager
-            photosRecyclerAdapter.onItemClick = { photos, position ->
+            photosRecyclerAdapter.onPhotoClick = { photos, position ->
                 navigator.openGalleryFragment(
                 photos,
                 position)
