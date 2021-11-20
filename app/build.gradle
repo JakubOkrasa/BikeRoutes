@@ -94,6 +94,8 @@ dependencies {
     //Coroutines
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version"
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.4.3'
+
 
     implementation 'androidx.localbroadcastmanager:localbroadcastmanager:1.0.0'
 	implementation 'androidx.annotation:annotation:1.1.0'
@@ -113,7 +115,6 @@ dependencies {
     //Firestore
     implementation 'com.google.firebase:firebase-firestore:22.1.2'
     implementation 'com.google.android.gms:play-services-tasks:17.2.1'
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.4.3'
 
     //Network
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
@@ -126,7 +127,6 @@ dependencies {
     implementation "androidx.recyclerview:recyclerview:1.1.0"
     implementation "androidx.recyclerview:recyclerview-selection:1.1.0" // For control over item selection of both touch and mouse driven selection
 
-    //debug
     debugImplementation 'com.amitshekhar.android:debug-db:1.0.6'
 
     testImplementation 'junit:junit:4.+'
