@@ -1,4 +1,4 @@
-package pl.jakubokrasa.bikeroutes.core.app.presentation
+package pl.jakubokrasa.bikeroutes.core.user.presentation
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

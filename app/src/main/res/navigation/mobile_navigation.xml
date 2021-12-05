@@ -114,7 +114,7 @@
     </fragment>
     <activity
         android:id="@+id/mainActivity"
-        android:name="pl.jakubokrasa.bikeroutes.core.app.presentation.MainActivity"
+        android:name="pl.jakubokrasa.bikeroutes.core.user.presentation.MainActivity"
         android:label="MainActivity" />
     <fragment
         android:id="@+id/followRouteFragment"

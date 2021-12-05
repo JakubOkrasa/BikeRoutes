@@ -6,7 +6,6 @@ import android.text.TextUtils
 import android.util.Patterns
 import android.view.View
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import pl.jakubokrasa.bikeroutes.core.app.presentation.MainActivity
 import pl.jakubokrasa.bikeroutes.core.base.presentation.BaseActivity
 import pl.jakubokrasa.bikeroutes.core.extensions.makeGone
 import pl.jakubokrasa.bikeroutes.core.extensions.makeVisible

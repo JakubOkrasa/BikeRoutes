@@ -1,4 +1,4 @@
-package pl.jakubokrasa.bikeroutes.core.app.presentation
+package pl.jakubokrasa.bikeroutes.core.user.presentation
 
 import android.content.Intent
 import android.os.Bundle
@@ -10,8 +10,6 @@ import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import pl.jakubokrasa.bikeroutes.R
 import pl.jakubokrasa.bikeroutes.core.base.presentation.BaseActivity
-import pl.jakubokrasa.bikeroutes.core.user.presentation.SignInActivity
-import pl.jakubokrasa.bikeroutes.core.user.presentation.SignUpActivity
 import pl.jakubokrasa.bikeroutes.core.util.PreferenceHelper
 import pl.jakubokrasa.bikeroutes.core.util.PreferenceHelper.Companion.PREF_KEY_USER_EMAIL
 import pl.jakubokrasa.bikeroutes.core.util.PreferenceHelper.Companion.PREF_KEY_USER_PASSWORD
