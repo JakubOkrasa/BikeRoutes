@@ -21,7 +21,7 @@ In this app you can:
 
 Used libraries:</br>
 * under Apache 2.0 License (https://www.apache.org/licenses/LICENSE-2.0) </br>
-o	zestaw bibliotek Android Jetpack </br>
+o	from Android Jetpack </br>
 o	Firebase Database KTX</br>
 o	Firebase Firestore</br>
 o	Firebase Storage</br>
@@ -33,7 +33,7 @@ o	Kotlin Coroutines</br>
 o	LiveEvent</br>
 o	OSMdroid Android</br>
 o	Retrofit</br></br>
-•	under Android Software Development Kit License (https://developer.android.com/studio/terms.html) </br>
+*	under Android Software Development Kit License (https://developer.android.com/studio/terms.html) </br>
 o	Firebase Auth</br>
 o	Play Services Location</br>
 o	Play Services Tasks</br>
